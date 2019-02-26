@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title><ui:insert name="pageTitle">Page Title</ui:insert></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link type="text/css" href="${request.contextPath}/css/template.css"
+		rel="stylesheet"></link>
+	<h:outputScript library="js" name="locale_es.js" />
+	<h:outputScript library="js" name="upload.js" />
+	<h:outputStylesheet name="webjars/font-awesome/4.3.0/css/font-awesome.css"/>
+	
+
+	<script>
+function abrir(nombre){
+	var ficha = document.getElementById(nombre);
+	var ventimp = window.open(' ', 'popimpr');
+	ventimp.document.write( ficha.innerHTML );
+	ventimp.document.close();
+ 	ventimp.print( );
+ 	ventimp.close();
+  }
+
+
+</script>
+
+	
+</h:head>
+<h:body class="clsBody" style="margin: 0">
+	<div id="idBodySII" class="clsBodySII">
+		<table class="clsTablePrincipal" cellspacing="0" cellpadding="0"
+			style="width: 100%">
+			<tr>
+				<td>
+
+					<div style="height : 200px; background-image: url('${request.contextPath}/images/dota.jpg'); background-size: 1500px 200px;">
+					
+					</div>
+					
+
+					<div style="height : 40px; background-image: -moz-linear-gradient(top, #fff, #33AFDE);">
+						<div style="float: right; text-align: right; font-weight: bold; font-size: 13px; font-family: 'Arial'; margin-right: 10px;" class="right">							
+				
+							<p:menubar activeIndex="5" align="right"  height="5px" style="border:none;width:980px; text-align: right;background-image: -moz-linear-gradient(top, #fff, #33AFDE);">																				
+										<p:menuitem style="visibility: hidden; " value="______________________________________________" url="#"/>
+										<p:menuitem value="Bienvenido: #{sesionUsuario.usuario.nombreUsuario}" icon="fa fa-user [&#xf007;]" url="/seguridad/cambioClave.jsf" style="COLOR:#585F62"/>
+										<p:menuitem url="#" icon="fa fa-ellipsis-v" style="COLOR:#585F62"/>
+										<p:menuitem value="Rol: #{sesionUsuario.perfilSeleccionado} ( #{sesionUsuario.accesos} )" icon="fa fa-users blue" url="/seguridad/seleccionRol.jsf" style="COLOR:#585F62"/>
+										<p:menuitem url="#" icon="fa fa-ellipsis-v" style="COLOR:#585F62"/>
+										<p:menuitem value="Cerrar Sesión" icon="fa fa-user-times [&#xf235;]" url="/seguridad/cerrarSesion" style="COLOR:#585F62"/>					
+							</p:menubar>
+						</div>
+
+					</div>
+
+
+					<div id="idCuerpoSII" style="float: none"
+						onmouseover="pintar('#DBDBDB')">
+						<div class="clsIzquierdo"
+							style="float: left; border: 1px solid #CAD6E0">
+							<div>
+								<ui:include src="/Template-old/tree-page.xhtml" />
+							</div>
+						</div>
+						<div class="clsCentro" style="float: left; margin: 10px">
+							<ui:insert name="body">Page Body</ui:insert>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</h:body>
+</html>

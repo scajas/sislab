@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+
+	<ui:define name="pageTitle">SII-EPN</ui:define>
+
+	<ui:define name="body">
+		<h:form>
+		
+			<div
+				style="background-image: url('${request.contextPath}/images/background.jpg'); background-size: 100% 605px; width: 100%; height: 605px;">
+
+				<center>
+					<br /> <br />
+					<p:panel
+						style="width:400px; border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1;background-image: url('${request.contextPath}/images/background.jpg');">
+						<div>
+							<br />
+							<h:outputText value="Selección de Rol"
+								style="FONT-SIZE: small; FONT-WEIGHT: bold; font-family: Arial;" />
+							<br />
+							<h:graphicImage value="/images/usuario.png" width="35"
+								height="35" />
+							<br />
+							<h:outputText
+								value="Por favor seleccione el rol con el que desea trabajar: "
+								style="font-family: Arial; FONT-SIZE: small; font-weight: bold" />
+						</div>
+						<br />
+
+						<br />
+						<h:panelGrid columns="1">
+							<p:selectOneMenu style="width:280px" id="selectorMenu"
+								value="#{sesionUsuario.perfilSeleccionado}" filter="true">
+								<f:selectItems value="#{sesionUsuario.perfiles}" itemLabel="#{perfil.nombre}"  var="perfil" itemValue="#{perfil.nombre}"/>
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<br />
+						<br />
+						<p:commandButton value="Seleccionar"
+							action="#{sesionUsuario.seleccionRol}" ajax="false" />
+
+					</p:panel>
+
+					<br /> <br />
+
+
+
+				</center>
+
+
+
+
+
+
+			</div>
+
+
+
+		</h:form>
+
+
+
+	</ui:define>
+
+</ui:composition>

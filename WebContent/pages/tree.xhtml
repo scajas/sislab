@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>RichFaces Test</title>
+
+	<h:outputStylesheet>
+  .tree-node-dragging { font: 10px arial; }
+  .tree-node-accept { color: green; }
+  .tree-node-reject { color: red; }
+  </h:outputStylesheet>
+</h:head>
+
+<h:body>
+	<h:form >
+		<rich:panel>
+		<f:facet name="header">
+			Implementación de TREE
+		</f:facet>
+		<rich:tree value="#{treeBean.root}" var="node"
+			nodeType="#{node.type}" toggleType="client" selectionType="ajax"
+			selectionChangeListener="#{treeBean.selectionChanged}"
+			rowKeyConverter="org.richfaces.IntegerSequenceRowKeyConverter">
+
+			<rich:treeNode type="leaf" iconLeaf="/images/leaf.jpg">
+				<h:outputText value="#{node}" />
+			</rich:treeNode>
+
+			<rich:treeNode type="branch" iconCollapsed="/images/tree.jpg" iconExpanded="/images/tree.jpg">
+				<h:outputText value="#{node}" />
+			</rich:treeNode>
+
+		</rich:tree>
+
+		<a4j:outputPanel ajaxRendered="true" >
+			<h:outputText value="#{treeBean.selected}"
+				rendered="#{not empty treeBean.selected}" />
+		</a4j:outputPanel>
+		</rich:panel>
+	</h:form>
+
+</h:body>
+
+</html>

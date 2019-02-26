@@ -1,0 +1,75 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+	<div id="particles-js"
+		style="position: absolute; z-index: 1; width: 100%; height: 175px; background: linear-gradient(to right, #cfd6e8 0%, #0ca2d8 100%);">
+
+		<div id="logo"
+			style="position: absolute; z-index: 2; margin-top: 40px; margin-left: 40px;">
+
+			<p:panelGrid>
+				<h:graphicImage value="/images/logoSII/EPN.png" width="160px" />
+				<p:spacer width="15px" />
+				<h:graphicImage value="/images/logoSII/separador.png" height="90px" />
+				<p:spacer width="15px" />
+				<h:graphicImage value="/images/logoSII/logo-EPN.png" width="155px" />
+				<h:graphicImage value="/images/logoSII/letras-SII-01.png"
+					width="58%" />
+			</p:panelGrid>
+
+		</div>
+	</div>
+
+
+
+
+	<div id="layout-topbar" class="ShadowGray" style="margin-top: 155px;">
+
+
+		<div id="layout-topbar-indent">
+
+
+			<a href="#" id="mobile-menu-button"
+				style="background-color: #33AFDE !important"
+				class="BordRad3 white ShowOnMobile"> <i class="fa fa-bars"></i>
+				Menú
+			</a> <a href="#" id="mobile-menu-button-gray"
+				style="background-color: #33AFDE !important"
+				class="BordRad3 white ShowOnMobile"> <i class="fa fa-caret-down"></i>
+				Menú Usuario
+			</a>
+
+
+
+			<ul id="layout-topbar-menu">
+
+				
+				<li><a style="COLOR: #585F62;"  href="http://localhost:55507/logout.aspx" 
+					class="Animated05"><i class="fa fa-sign-out"></i> Cerrar Sesión</a></li>
+				<li class="fa fa-ellipsis-v menu-separator"></li>
+				<li><a
+					href="${request.contextPath}/seguridad/seleccionRol.jsf"
+					class="Animated05"><i class="fa fa-users"
+						style="COLOR: #585F62"></i> <h:outputText
+							value="Rol: #{sesionUsuario.perfilSeleccionado} ( #{sesionUsuario.accesos} )" />
+				</a></li>
+				<li class="fa fa-ellipsis-v menu-separator"></li>
+
+				<li><a style="COLOR: #585F62;"
+					href="${request.contextPath}/seguridad/cambioClave.jsf" class="Animated05"><i
+						class="fa fa-user [&#xf007;]"></i> <h:outputText
+							value="Bienvenido: #{sesionUsuario.usuario.nombreUsuario}" /> </a></li>
+
+			</ul>
+
+		</div>
+	</div>
+
+
+
+</ui:composition>

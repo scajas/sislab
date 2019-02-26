@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="pageTitle">ModeloWEB - TITLE</ui:define>
+
+	<ui:define name="body">
+		<center>
+			<p:panel style="width:350px;">
+				<div style="font-family: Arial; font-size: 16; font-weight: bold">Cambio de Clave</div>
+				<br />
+				<br />
+
+				<h:form id="formCambio">
+					<table border="0">
+						<tr>
+							<td>Clave Anterior:</td>
+							<td><p:password id="claveAnterior"
+									value="#{cambioClave.claveAnterior}" required="true"
+									requiredMessage="obligatorio"
+									validator="#{cambioClave.validaClaveAnterior}" /> 
+									<h:message style="color:red" for="claveAnterior" />
+							</td>
+						</tr>
+						<tr>
+							<td>Clave Nueva:</td>
+							<td><p:password id="claveNueva"
+									value="#{cambioClave.claveNueva}" required="true"
+									requiredMessage="obligatorio" /> 
+									<h:message style="color:red" for="claveNueva" />
+							</td>
+						</tr>
+						<tr>
+							<td>Confirmación Clave:</td>
+							<td><p:password id="claveNueva2"
+									value="#{cambioClave.claveNueva2}" required="true"
+									requiredMessage="obligatorio"
+									validator="#{cambioClave.validaClave2}" /> 
+									<h:message style="color:red" for="claveNueva2" />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" align="center"><br /> 
+							<p:commandButton value="Actualizar" action="#{cambioClave.cambiarClave}" />
+							</td>
+						</tr>
+					</table>
+
+				</h:form>
+
+
+			</p:panel>
+		</center>
+	</ui:define>
+</ui:composition>

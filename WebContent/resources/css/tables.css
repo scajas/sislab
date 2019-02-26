@@ -1,0 +1,10 @@
+@CHARSET "ISO-8859-1";
+
+.tablaPersonalizada{
+	border-collapse: separate;
+	border-spacing: 5px 3px;
+	*border-collapse: expression('separate', cellSpacing = '10px');
+}
+.dataTableMin{
+	font-size: 14px !important;
+}

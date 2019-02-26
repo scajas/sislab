@@ -1,0 +1,1344 @@
+/*-------------------------*/
+/* Éstilo inpuText Sistema */
+/*-------------------------*/
+
+.search-button{
+  width: 400px;
+  height: 50px;
+  margin: 150px auto;
+}
+.container{
+  width: 400px;
+  position: relative;
+}
+.container .lupa{
+  position: absolute;
+  margin-left: 28px;
+  margin-top: 27px;
+  color: #FFF;
+  -webkit-transition: 0.3s ease-out;
+          transition: 0.3s ease-out;
+}
+#search{
+  width: 70px;
+  height: 70px;
+  background-color: #335D6B;
+  color: #FFF;
+  border: none;
+  font-size: 0.9em;
+  float: left;
+  padding-left: 70px;
+  -webkit-transition: 0.6s ease-out;
+          transition: 0.6s ease-out;
+}
+/*eventos*/
+#search:focus, 
+#search:active{
+  outline:none;
+  width: 400px;
+  padding-right: 20px;
+}
+.container:hover #search{
+  width: 400px;
+  background-color:#3299BB;
+}
+.container:hover .lupa{
+  color: #424242;
+}
+/*placeholder*/
+::-webkit-input-placeholder { color: #CCC; }
+:-moz-placeholder { color: #CCC; }
+::-moz-placeholder { color: #CCC; }
+:-ms-input-placeholder { color: #CCC; }
+
+value input[type=text]{
+	color: black;
+	font_weight: normal;
+}
+
+
+@font-face {
+	font-family: 'VerdanaVCSFCF';
+	src: url('../fonts/verdana/verdana.eot');
+	src: url('../fonts/verdana/verdana.eot?#iefix')
+		format('embedded-opentype'), url('../fonts/verdana/verdana.woff')
+		format('woff'), url('../fonts/verdana/verdana.ttf') format('truetype'),
+		url('../fonts/verdana/verdana.svg#vintage') format('svg');
+	font-weight: bold;
+	font-style: normal;
+}
+
+a.clase-link:hover{
+	color: #44a6ea;
+}
+
+
+html,body {
+	margin: 0px;
+	height: 100%;
+	width: 100%;
+	width: 100%;
+	
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+	/*border: 0px;*/
+	/*font-family: VerdanaVCSFCF;*/
+	font-size: 11px;
+}
+
+ul,li {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	list-style: none;
+}
+
+li.titulo4 {
+	list-style: circle;
+}
+
+#content {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background: transparent;
+}
+
+#header {
+	width: 100%;
+	background: transparent;
+	border: solid 0px transparent;
+}
+
+#contentBody {
+	border: 0px transparent;
+	overflow: hidden;
+}
+
+#contentNavigation {
+	float: left;
+	background-color: transparent;
+	border-radius: 0px 0px 20px 0px;
+}
+
+#contentWorkspace {
+	float: left;
+}
+/*
+Estilo usado en la pagina de certificaciones
+presupuestarias globales
+*/
+.gridAlert{
+	background-color: #E16A59;
+}
+.SheetLabel{
+	font-family: 'VerdanaVCSFCF';
+	color: rgb(52, 93, 152);
+}
+/* ------------------ */
+/* Estilos de un GRID */
+/* ------------------ */
+TABLE.GridTable {
+	border: 1px solid rgb(47, 94, 161);
+	vertical-align: top;
+	font-family: 'VerdanaVCSFCF';
+}
+
+TH.GridHeader {
+	height: 30px;
+	color: rgb(52, 93, 152);
+	border: 1px solid rgb(66, 151, 215);
+	text-align: center;
+	background-color: rgb(229, 237, 247);
+	
+}
+
+TR.GridRow {
+	height: 15px;
+	border: 0px solid;
+	/*color: #9d9797;*/
+	/*text-transform: uppercase;*/
+}
+
+TD.GridRow {
+	height: 15px;
+	border: 0px solid;
+	/*color: #9d9797;*/
+	/*text-transform: uppercase;*/
+}
+
+TR.GridAlternateRow {
+	height: 15px;
+	border: 0px solid;
+	/*color: #9d9797;*/
+	/*text-transform: uppercase;*/
+}
+
+TD.GridAlternateRow {
+	height: 15px;
+	border: 0px solid;
+	/*color: #9d9797;*/
+	/*text-transform: uppercase;*/
+}
+
+/*====================================*/
+/*   ESTILOS DE LA NAVEGACION         */
+/*====================================*/
+ul#navigation { /*position: fixed;*/
+	margin: 0px;
+	padding: 0px;
+	top: 10px;
+	left: 0px;
+	list-style: none;
+	/*z-index: 99999;*/
+	font-size: 11px;
+}
+
+ul#navigation li#liNav {
+	display: block;
+	margin-left: -257px;
+	text-align: left;
+	background-color: #9BBBE4;
+	background-repeat: no-repeat;
+	background-position: center center;
+	border-radius: 22px 0px 20px 0px;
+}
+#menuButton_menu{
+	width: 220px;
+}
+.tabViewNavi .ui-tabs-panel {
+	padding: 0.3em 0.1em;
+	
+}
+.tabViewNavi .ui-tabs-nav{
+	border: 0px;
+}
+
+
+.tabViewNavi .ui-accordion-content {
+	padding: 0.9em 0.5em;
+	background: transparent;
+}
+
+.tabViewNavi .ui-menu {
+	width: 96%;
+}
+
+.ui-tabs .ui-tabs-panel{
+	padding: 0em 0em;
+}
+
+.rightup {
+	background-color: transparent;
+	float: right;
+	height: 15px;
+	width: 15px;
+}
+
+.rightup:hover {
+	background-color: transparent;
+	float: right;
+	height: 15px;
+	width: 15px;
+	cursor: pointer;
+}
+
+.bordesuperior {
+	/*text-align: center;*/
+	/*padding-right: 10px;*/
+}
+.ui-menubutton{
+	width: 200px;
+}
+
+.franjalateral {
+	background: transparent;
+	border-radius: 0px 0px 20px 0px;
+}
+
+/*=============================================*/
+/* ESTILOS DE LA BARRA DE HERRAMIENTAS         */
+/*=============================================*/
+INPUT.toolBarAction {
+	background-repeat: no-repeat;
+	padding: 0px 3px 0px 0px;
+	margin: 3px 3px 0px 0px;
+	font: 10px VerdanaVCSFCF;
+	cursor: pointer;
+	color: black;
+	border: 1px solid silver;
+	background-color: white;
+	text-align: left;	
+	height: 22px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+	vertical-align: top;
+}
+
+INPUT.toolBarAction:hover {
+	background-repeat: no-repeat;
+	padding: 0px 3px 0px 0px;
+	margin: 3px 3px 0px 0px;
+	font: 10px VerdanaVCSFCF;
+	cursor: pointer;
+	color: #ffffff;
+	border: 1px solid silver;
+	background-color: #0174DF;
+	text-align: left;
+	height: 22px;	
+	-webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, .6);
+	-moz-box-shadow: 0 1px 8px rgba(0, 0, 0, .6);
+	box-shadow: 0 1px 8px rgba(0, 0, 0, .6);
+	background-position: inherit;
+}
+
+INPUT.toolBarActionSearch {
+	background-image: url('../../Tools/Images/Vinculacion_icon36.png');
+	margin-top: 0px;
+	width: 20px;
+	background-repeat: no-repeat;
+	padding: 0px 3px 0px 3px;
+	margin: 0px;
+	margin-left: 4px;
+	font: 10px VerdanaVCSFCF;
+	cursor: pointer;
+	color: Transparent;
+	border: 1px solid silver;
+	background-color: Transparent;
+	text-align: left;
+	height: 20px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	vertical-align: top;
+}
+
+INPUT.toolBarActionAttachDocument {
+	background-image: url('../../Tools/Images/ToolbarIcon03.gif');
+	margin-top: 0px;
+	width: 20px;
+	background-repeat: no-repeat;
+	padding: 0px 3px 0px 3px;
+	margin: 0px;
+	margin-left: 4px;
+	font: 10px VerdanaVCSFCF;
+	cursor: pointer;
+	color: Transparent;
+	border: 1px solid silver;
+	background-color: Transparent;
+	text-align: left;
+	height: 20px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	vertical-align: top;
+}
+
+
+button.toolBarActionSearch {
+	background-image: url('../../Tools/Images/GeneralIcon03.png');
+	margin-top: 0px;
+	width: 20px;
+	background-repeat: no-repeat;
+	padding: 0px 3px 0px 3px;
+	margin: 0px;
+	margin-left: 4px;
+	font: 10px VerdanaVCSFCF;
+	cursor: pointer;
+	color: Transparent;
+	border: 1px solid silver;
+	background-color: Transparent;
+	text-align: left;
+	height: 20px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	vertical-align: top;
+}
+
+button.toolBarAction:hover {
+	background-repeat: no-repeat;
+	padding: 0px 3px 0px 25px;
+	margin: 3px 10px 0px 0px;
+	font: 10px VerdanaVCSFCF;
+	cursor: pointer;
+	color: #44a6ea;
+	border: 1px solid silver;
+	background-color: Transparent;
+	text-align: left;
+	height: 20px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
+	box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
+	background-position: inherit;
+}
+
+/*=============================================*/
+/* ESTILOS DE LA PAGINA DE TRABAJO             */
+/*=============================================*/
+.even-row {
+	background-color: #FFFFFF;
+}
+
+.odd-row {
+	background-color: #F8F8F8;
+}
+
+.active-row {
+	background-color: #FFEBDA !important;
+}
+
+.Error {
+	font: 12px VerdanaVCSFCF;
+	color: red;
+	width: 500px;
+	text-align: left;
+}
+
+SPAN.Success {
+	font: 12px VerdanaVCSFCF;
+	color: #70BA43;
+	width: 500px;
+	text-align: left;
+}
+
+#PageToolBar {
+	height: 55px;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	vertical-align: top;
+}
+
+TABLE.ToolBar {
+	
+}
+
+TD.LeftToolBar {
+	height: 26px;
+	vertical-align: middle;
+	text-align: left;
+	padding: 0px 0px 0px 0px;
+}
+
+TD.BotonGeneral {
+	height: 30px;
+	vertical-align: middle;
+	text-align: left;
+	padding: 0px 0px 0px 0px;
+}
+
+TD.lineToolbar {
+	background-color: #D4D4D4;
+	padding: 0px 0 1px;
+}
+
+TD.ToolBarLabel {
+	height: 34px;
+}
+
+TD.BottomToolBar {
+	
+}
+
+SPAN.ToolBarLabel {
+	font-family: VerdanaVCSFCF;
+	vertical-align: middle;
+	width: 100%;
+	color: #DF7401;
+	font-size: 13px;
+}
+
+#SmartForm {
+	height: 100%;
+}
+
+#PageAction {
+	visibility: hidden;
+}
+
+#PageData {
+	height: 100%;
+	overflow: auto;
+	margin-right: 5px;
+	overflow: auto;
+}
+
+/*#PageDataLeft {
+	margin: 2px 0px 0px 0px;
+	float: left;
+	width: 500px;
+}
+
+#PageDataRight {
+	margin: 2px 0px 0px 5px;
+	float: left;
+	width: 220px;
+	height: 1%;
+}
+
+#PageDataBotom {
+	clear: both;
+	vertical-align: top;
+	font: 10px VerdanaVCSFCF;
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+}
+
+#Panel {
+	border: solid 1px #81acdc;
+	with: 100%;
+	vertical-align: top;
+	font: 10px VerdanaVCSFCF;
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+}
+
+#PanelFree {
+	with: 100%;
+	vertical-align: top;
+	font: 10px VerdanaVCSFCF;
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+}
+
+#PanelTitle {
+	width: 100%;
+	height: 28px;
+	vertical-align: middle;
+	text-align: center;
+	color: #44a6ea;
+	background-color: #e2f5e0;
+	border-bottom: solid 1px #81acdc;
+	padding-top: 5px;
+}
+
+#PanelData {
+	height: 22px;
+	vertical-align: middle;
+	font: 10px VerdanaVCSFCF;
+	text-align: left;
+	color: Black;
+	padding: 2px 2px 2px 2px;
+}
+
+#PanelLabel {
+	width: 100px;
+	color: #9d9797;
+	padding-right: 3px;
+	text-align: right;
+	vertical-align: middle;
+	display: block;
+	overflow: hidden;
+	float: left;
+}
+
+#PanelLabelFree {
+	color: #9d9797;
+	padding-right: 3px;
+	vertical-align: middle;
+	display: block;
+	overflow: hidden;
+	float: left;
+}
+
+#PanelLabel01 {
+	width: 70px;
+	color: #9d9797;
+	padding-right: 3px;
+	text-align: right;
+	vertical-align: middle;
+	display: block;
+	overflow: hidden;
+	float: left;
+}
+
+HR {
+	margin: 0px 2px 0px 2px;
+	border: 0px solid #81acdc;
+}
+
+DIV.OptionGroup {
+	border-left: none 10px transparent;
+	padding: 5px 0px 5px 10px;
+	color: #0086e3;
+	font: bold;
+	background: #fffdf0;
+	width: 100%;
+}
+*/
+INPUT.SheetDisabledInput {
+	background-color: #C7DCF9 !important;
+	color: #7E7F80 !important;
+	background-image: none;
+	font-family: VerdanaVCSFCF;
+	border: solid 1px #728BAE;
+}
+
+TEXTAREA.SheetDisabledInput {
+	background-color: #F3F3F3;
+	color: #7E7F80;
+	background-image: none;
+	font-family: VerdanaVCSFCF;
+}
+
+SELECT.SheetDisabledInput {
+	background-color: #F3F3F3;
+	color: #7E7F80;
+	background-image: none;
+	font-family: VerdanaVCSFCF;
+	border: solid 1px #728BAE;
+}
+
+INPUT.ColorText{
+	color: black;
+	font_weight: normal;
+}
+
+SELECT.ColorText{
+	color: black;
+	font_weight: normal;
+}
+
+TEXTAREA.ColorText{
+	color: black;
+	font_weight: normal;
+}
+
+
+INPUT.SheetInput {
+	font-family: VerdanaVCSFCF;
+}
+
+TEXTAREA.SheetInput {
+	font-family: VerdanaVCSFCF;
+	background-color: White;
+}
+
+SELECT.SheetInput {
+	font-family: VerdanaVCSFCF;
+	background-color: White;
+}
+
+.label {
+	color: #4E7CB2;
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+	margin-top: 10px;
+	width: 120px;
+	white-space: nowrap;
+}
+
+.labelDim {
+	color: #4E7CB2;
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+	margin-top: 10px;
+	width: 220px;
+	padding-right: 1px;
+	padding-top: 4px;
+	white-space: nowrap;
+}
+
+.labelSearch {
+	white-space: nowrap;
+	color: #4E7CB2;
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+	margin-top: 10px;
+}
+
+.labelSearchSec {
+	white-space: nowrap;
+	color: #4E7CB2;
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+	margin-top: 10px;
+	width: 220px;
+}
+
+.labelPrime {
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+	margin-top: 10px;
+	white-space: nowrap;
+}
+
+.value {
+	vertical-align: top;
+}
+
+.valueDim {
+	padding-top: 4px;
+	vertical-align: top;
+}
+
+/*.value input[type=text] {
+	float: left;
+	margin-right: 6px;
+	/*color: #000;*/
+	/*padding: 0px;*/
+    /*box-shadow:0 0 0 #8F8F8F inset;*/
+   /* border-radius:0px 0px 0px 0px;
+    border: 1px solid #4E7CB2;
+    
+    opacity: 1 !important;
+    background-image: none;
+    font-family: Verdana;
+    font-weight: normal !important;
+    color: black;*/
+}
+
+.value textarea{
+	float: left;
+	margin-right: 6px;
+	/*color: #000;*/
+	padding: 0px;
+    /*box-shadow:0 0 0 #8F8F8F inset;*/
+    border-radius:0px 0px 0px 0px;
+    border: 1px solid #4E7CB2 !important;
+    background-image: none !important;
+    opacity: 1 !important;
+    background-image: none;
+    font-family: Verdana;
+    font-weight: normal !important;
+    color: black;
+}
+
+.tableGridLeft {
+	vertical-align: top;
+}
+
+.tableGridRigth {
+	vertical-align: top;
+	width: 100%;
+}
+
+/*=============================================*/
+/* ESTILOS DE LA PAGINA SHEET                  */
+/*=============================================*/
+BODY.SheetPage {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: none 0px transparent;
+	background-color: White;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+#SheetPage {
+	overflow: auto;
+	height: 100%;
+}
+
+#SheetPagePopup {
+	overflow: auto;
+}
+
+#WorkFrame {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: none 0px transparent;
+	overflow: hidden;
+	padding-left: 5px;
+}
+
+/*=============================================*/
+/* ESTILOS DE LA PAGINA DEL RESUMEN            */
+/*=============================================*/
+.divProcesoResumen1 {
+	-moz-border-bottom-colors: none;
+	-moz-border-image: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: none repeat scroll 0 0 #F1F1F1;
+	border-color: #DDDDDD #DDDDDD #CCCCCC;
+	border-style: solid;
+	border-radius: 15px;
+	border-width: 1px;
+	width: 150px;
+	text-align: left;
+	box-shadow: 0px 1px 5px #4E7CB2;
+	height: 200px;
+}
+
+.divProcesoResumen2 {
+	-moz-border-bottom-colors: none;
+	-moz-border-image: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: none repeat scroll 0 0 #FFFFB4;
+	border-color: #DDDDDD #DDDDDD #CCCCCC;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 15px;
+	width: 200px;
+	text-align: left;
+	height: 200px;
+}
+
+.divProcesoResumen3 {
+	-moz-border-bottom-colors: none;
+	-moz-border-image: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	background: none repeat scroll 0 0 #E4F4FF;
+	border-color: #DDDDDD #DDDDDD #CCCCCC;
+	border-style: solid;
+	border-radius: 15px;
+	border-width: 1px;
+	width: 200px;
+	text-align: left;
+}
+
+.divProcesoResumen4 {
+	-moz-border-bottom-colors: none;
+	-moz-border-image: none;
+	-moz-border-left-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-top-colors: none;
+	border-radius: 15px;
+	background: none repeat scroll 0 0 #FFE4F0;
+	border-color: #DDDDDD #DDDDDD #CCCCCC;
+	border-style: solid;
+	border-width: 1px;
+	text-align: left;
+	width: 200px;
+}
+
+.divProcesoResumen1:hover {
+	box-shadow: 0px 1px 15px #4E7CB2;
+}
+
+.divProcesoResumen2:hover {
+	box-shadow: 0px 1px 15px #4E7CB2;
+}
+
+.divProcesoResumen3:hover {
+	box-shadow: 0px 1px 15px #4E7CB2;
+}
+
+.divProcesoResumen4:hover {
+	box-shadow: 0px 1px 15px #4E7CB2;
+}
+
+.richTable img {
+	width: 12px;
+	border: 0px;
+	vertical-align: middle;
+	margin: 0px 2px 0px 2px;
+}
+
+.divProcesoResumen4 img {
+	width: 12px;
+	border: 0px;
+	vertical-align: middle;
+	margin: 0px 4px 0px 4px;
+}
+
+.richTable .linkEjecucionResumen {
+	margin: 0px;
+}
+
+.richTable .linkEjecucionResumen:hover {
+	margin: 0px;
+}
+
+.richTable .linkEjecucionResumen:link {
+	margin: 0px;
+} /* Link no visitado*/
+.richTable .linkEjecucionResumen:visited {
+	margin: 0px;
+} /*Link visitado*/
+.richTable .linkEjecucionResumen:active {
+	margin: 0px 0px 0px 0px;
+}
+
+.linkEjecucionResumen img {
+	width: 12px;
+	border: 0px;
+	vertical-align: middle;
+}
+
+.divProcesoResumen4 .linkEjecucionResumen {
+	margin-left: 5px;
+}
+
+.separator {
+	margin-top: 20px;
+}
+
+.separator  img {
+	
+}
+
+.linkEjecucionResumen:link {
+	font-family: VerdanaVCSFCF;
+	font-size: 10px;
+	margin-left: 10px;
+	text-decoration: none;
+	color: #4E7CB2;
+	text-transform: capitalize;
+	font-size: 10px;
+} /* Link no visitado*/
+.linkEjecucionResumen:visited {
+	font-family: VerdanaVCSFCF;
+	margin-left: 10px;
+	text-decoration: none;
+	color: #3F9BE1;
+	text-transform: capitalize;
+} /*Link visitado*/
+.linkEjecucionResumen:active {
+	font-family: VerdanaVCSFCF;
+	margin-left: 10px;
+	text-decoration: none;
+	color: #2A5373;
+	text-transform: capitalize;
+} /*Link activo*/
+.linkEjecucionResumen:hover {
+	font-family: VerdanaVCSFCF;
+	margin-left: 10px;
+	text-decoration: underline;
+	color: #3F9BE1;
+	text-transform: capitalize;
+} /*Mause sobre el link*/
+.divResumenHeader {
+	background-color: #F6A828;
+	border: 1px solid #E78F08;
+	color: #FFFFFF;
+	font-weight: bold;
+	border-radius: 10px;
+	text-align: center;
+	font-size: 15px;
+	margin: 5px;
+}
+
+/*=============================================*/
+/* ESTILOS DE LA PAGINA DEL PROCESO            */
+/*=============================================*/
+.spacer {
+	width: 2px;
+	height: 20px;
+}
+
+.tabActiveLavel {
+	border-radius: 3px;
+	text-align: center;
+	background-color: #FFBC74;
+	border-top: 1px solid #FFA646;
+	border-left: 1px solid #FFA646;
+	border-right: 1px solid #FFA646;
+	vertical-align: middle;
+	-webkit-border-radius: 5px 20px 0px 0px;
+	-moz-border-radius: 5px 20px 0px 0px;
+	-o-border-radius: 5px 20px 0px 0px;
+	border-radius: 5px 20px 0px 0px;
+	padding: 6px;
+	text-align: center;
+}
+
+.tabInactiveLavel {
+	text-align: center;
+	background-color: #D3DFED;
+	border-top: 1px solid #D4D4D4;
+	border-left: 1px solid #D4D4D4;
+	border-right: 1px solid #D4D4D4;
+	vertical-align: middle;
+	-webkit-border-radius: 5px 20px 0px 0px;
+	-moz-border-radius: 5px 20px 0px 0px;
+	-o-border-radius: 5px 20px 0px 0px;
+	border-radius: 5px 20px 0px 0px;
+	padding: 6px;
+}
+
+.tabInactiveLavel a {
+	text-decoration: none;
+}
+
+.tabActiveCont {
+	border-top: 1px solid #FFA646;
+	vertical-align: top;
+}
+/*=============================================*/
+/* ESTILOS DE LA TABLA DINÁMICA                */
+/*=============================================*/
+.linkText {
+	font-family: VerdanaVCSFCF;
+	text-decoration: none;
+}
+
+#tableFijaTBody  .odd-row {
+	background-color: #FEFEFE;
+}
+
+#tableFijaTBody  .rich-table-cell-num {
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	font-size: 11px;
+	border-width: 1px 0px 0px 1px;
+	text-align: right;
+}
+
+#tableFijaTBody  a {
+	color: #7F7F7F;
+}
+
+#tableScrollTBody  a {
+	color: #7F7F7F;
+}
+
+#tableScrollThead a {
+	color: #7F7F7F;
+}
+
+#tableFijaThead a {
+	color: #7F7F7F;
+}
+
+}
+#tableFijaTBody  .rich-table-cell-edit-num {
+	font-family: VerdanaVCSFCF;
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	font-size: 11px;
+	border-width: 1px 0px 0px 1px;
+	background-color: #F0EFEF;
+	text-align: right;
+}
+
+#tableFijaTBody  .rich-table-cell-des {
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	border-width: 1px 0px 0px 1px;
+	font-size: 11px;
+}
+
+#tableFijaTBody .rich-table-cell-edit-des {
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	font-size: 11px;
+	border-width: 1px 0px 0px 1px;
+	background-color: #F0EFEF;
+}
+
+#tableScrollTBody  .odd-row {
+	background-color: #FEFEFE;
+}
+
+#tableScrollTBody  .rich-table-cell-num {
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	font-size: 11px;
+	border-width: 1px 1px 0px 0px;
+	text-align: right;
+}
+
+#tableScrollTBody  .rich-table-cell-edit-num {
+	font-family: VerdanaVCSFCF;
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	font-size: 11px;
+	border-width: 1px 1px 0px 0px;
+	background-color: #F0EFEF;
+	text-align: right;
+}
+
+#tableScrollTBody  .rich-table-cell-des {
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	border-width: 1px 1px 0px 0px;
+	font-size: 11px;
+}
+
+#tableScrollTBody .rich-table-cell-edit-des {
+	border: 1px solid #D4D4D4;
+	color: #7F7F7F;
+	text-transform: uppercase;
+	font-family: VerdanaVCSFCF;
+	font-size: 11px;
+	border-width: 1px 1px 0px 0px;
+	background-color: #F0EFEF;
+}
+
+#tableFijaThead .rich-table-subheadercell {
+	border-bottom: 1px;
+	border-color: #D4D4D4;
+	border-style: solid;
+	border-width: 1px 0px 0px 1px;
+	background: none repeat scroll 0 0 #E6ECF3;
+}
+
+#tableScrollThead  .rich-table-subheadercell {
+	border: 1px solid #D4D4D4;
+	border-width: 1px 1px 0px 0px;
+	background: none repeat scroll 0 0 #E6ECF3;
+}
+
+#tableFijaTBody  .rich-table-subheadercell {
+	border: 1px solid #D4D4D4;
+	border-width: 1px 0 0px 1px;
+	background: none repeat scroll 0 0 #E6ECF3;
+}
+/*=============================================*/
+/*ESTILO DEL MENU DE INFORMES                  */
+/*=============================================*/
+.divInformes {
+	position: fixed;
+	margin: 0px;
+	padding: 0px;
+	top: 33px;
+	right: 100px;
+	list-style: none;
+	z-index: 9999;
+	background: none repeat scroll 0 0 #4E7CB2;
+	border-color: #4E7CB2 #4E7CB2 #4E7CB2;
+	border-style: solid;
+	-webkit-border-radius: 0 0 10px 10px;
+	-moz-border-radius: 0 0 10px 10px;
+	border-radius: 0 0 10px 10px;
+	border-width: 1px;
+	text-align: left;
+}
+
+.divInformes .divResumenHeader {
+	margin: 0px;
+	background-color: #4E7CB2;
+	border: 1px solid #4E7CB2;
+	color: #FFF;
+	font-weight: bold;
+	-webkit-border-radius: 0px 0px 10px 10px;
+	-moz-border-radius: 0px 0px 10px 10px;
+	border-radius: 0px 0px 10px 10px;
+	text-align: center;
+	font-size: 15px;
+}
+
+.linkEjecucionResumenDin:link {
+	font-family: VerdanaVCSFCF;
+	font-size: 10px;
+	margin-top: 3px;
+	margin-left: 10px;
+	text-decoration: none;
+	color: #FFF;
+	text-transform: capitalize;
+} /* Link no visitado*/
+.linkEjecucionResumenDin:visited {
+	font-family: VerdanaVCSFCF;
+	text-decoration: none;
+	color: #FFF;
+} /*Link visitado*/
+.linkEjecucionResumenDin:active {
+	font-family: VerdanaVCSFCF;
+	text-decoration: none;
+	color: #FFF;
+} /*Link activo*/
+.linkEjecucionResumenDin:hover {
+	font-family: VerdanaVCSFCF;
+	text-decoration: underline;
+	color: #FFF;
+}
+
+.columnNumStyle {
+	text-align: right;
+}
+
+.toolbarHeader {
+	padding: 0px 3px;
+}
+
+.toolbarHeader .rf-tb-itm {
+	padding: 0px 2px;
+}
+
+.toolbarHeader .rf-tb-itm:HOVER {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
+	border: 0 none;
+	text-decoration: :none;
+}
+
+/*.toolbarHeader .rf-tb-itm a img:HOVER {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
+	border: 0 none;
+	text-decoration: :none;
+}*/
+#divOptions a:ACTIVE {
+	opacity: 1;
+}
+
+#divOptions img {
+	opacity: 0.7;
+	padding: 2px 10px;
+	border: 0px solid transparent;
+	margin: 0px;
+}
+
+#divOptions img:hover {
+	opacity: 1;
+	box-shadow: 0px 1px 15px #FFFFFF;
+}
+
+#divCnfig li.link:hover {
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
+	border: 0 none;
+	text-decoration: :none;
+}
+
+.drg {
+	background-color: transparent;
+	border-color: transparent;
+	padding: 0px;
+}
+
+.alink { color: #44a6ea;
+	text-decoration: underline;
+	padding: 0 0 0 5px;
+	font-family: VerdanaVCSFCF;
+}
+
+.alink:hover { /*color: #4E7CB2;*/
+	/*text-decoration: underline;
+	padding: 0 0 0 5px;*/	
+	color: #4E7CB2;
+	
+}
+.ui-datatable-even  .alink {
+	padding: 0 0 0 0;
+}
+.ui-datatable-odd .alink {
+	padding: 0 0 0 0;
+}
+
+button.toolBarActionSearch:hover,input[type="reset"].toolBarActionSearch:hover,input[type="submit"].toolBarActionSearch:hover,input[type="button"].toolBarActionSearch:hover
+	{
+	background-image: url("../../Tools/Images/Vinculacion_icon21.png");
+	background-position: inherit;
+	background-repeat: no-repeat;
+	-webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
+	box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
+}
+/*=============================================*/
+/*ESTILO DEL ARBOL RECURSOS HUMANOS            */
+/*=============================================*/
+.descripcionResumenRH .valueRH {
+	text-align: left;
+	/*color: #44A6EA;*/
+	font-size: 9px;
+}
+
+.titulo1 {
+	font-size: 12px;
+	/*color: #225F8B;*/
+	font-weight: bold;
+	text-transform: uppercase;
+	vertical-align: middle;
+}
+
+.titulo2 {
+	font-size: 13px;
+	/*color: #437CB2;*/
+}
+
+.titulo3 {
+	font-size: 12px;
+	/*color: #437CB2;*/
+}
+
+.titulo4 {
+	font-size: 11px;
+	/*color: #539CE1;*/
+}
+
+.titulo5 {
+	font-size: 10px;
+	/*color: #437CB2;*/
+}
+
+.titulo6 {
+	font-size: 9px;
+	/*color: #437CB2;*/
+}
+/*Estilo columnas con contenido*/
+td.columnContent {
+	padding: 0 0 0 3px;
+	text-align: left;
+	vertical-align: top;
+}
+
+.ui-state-default{
+	
+	background-color: transparent !important;	
+	/**/
+}
+
+
+.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
+    opacity: 1 !important;
+    background-image: none;
+    background-color: #C7DCF9 !important;
+	color: #7E7F80 !important;
+}
+
+ .ui-icon-bscar { 
+	 background: url('../../Tools/Images/GeneralIcon03.png')  no-repeat top left !important;;
+ 	margin-top: 0px;
+	width: 20px;
+	background-repeat: no-repeat;
+	padding: 0px 3px 0px 3px;
+	margin: 0px;
+	margin-left: 4px;
+	font: 10px VerdanaVCSFCF;
+	cursor: pointer;
+	color: Transparent;
+	border: 1px solid silver;
+	background-color: Transparent;
+	text-align: left;
+	height: 20px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	vertical-align: top;
+ }
+ 
+ 

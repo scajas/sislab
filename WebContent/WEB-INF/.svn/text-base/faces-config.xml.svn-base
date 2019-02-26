@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+	version="2.1">
+	<converter>
+		<display-name>converterUpper</display-name>
+		<converter-id>convertUpper</converter-id>
+		<converter-class>ec.edu.epn.becas.model.StringUpperCaseConverter</converter-class>
+	</converter>
+
+
+	<managed-bean>
+		<managed-bean-name>sesionUsuario</managed-bean-name>
+		<managed-bean-class>ec.edu.epn.seguridad.VO.SesionUsuario</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>cambioClave</managed-bean-name>
+		<managed-bean-class>ec.edu.epn.seguridad.VO.CambioClave</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>gestionAplicaciones</managed-bean-name>
+		<managed-bean-class>ec.edu.epn.seguridad.VO.GestionAplicaciones</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>gestionMenus</managed-bean-name>
+		<managed-bean-class>ec.edu.epn.seguridad.VO.GestionMenus</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>gestionPerfil</managed-bean-name>
+		<managed-bean-class>ec.edu.epn.seguridad.VO.GestionPerfil</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>gestionUsuario</managed-bean-name>
+		<managed-bean-class>ec.edu.epn.seguridad.VO.GestionUsuario</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>gestionAutorizacion</managed-bean-name>
+		<managed-bean-class>ec.edu.epn.seguridad.VO.GestionAutorizacion</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+
+
+
+
+
+	<validator>
+		<validator-id>ipv4Validator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.Ipv4Validator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>ipv6Validator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.Ipv6Validator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>macAddressValidator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.MACAddressValidator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>ipv6ShortMaskValidator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.Ipv6ShortMaskValidator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>bigDecimal6_2Validator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.BigDecimal6_2Validator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>bigDecimal10_2Validator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.BigDecimal10_2Validator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>cedulaValidator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.CedulaValidator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>rucValidator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.RucValidator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>telefonoValidator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.TelefonoValidator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>emailValidator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.EmailValidator</validator-class>
+	</validator>
+	<validator>
+		<validator-id>numericValidator</validator-id>
+		<validator-class>ec.edu.epn.becas.model.NumericValidator</validator-class>
+	</validator>
+	<application>
+		<message-bundle>ec.edu.epn.becas.model.Messages</message-bundle>
+	</application>
+
+
+
+	
+</faces-config>

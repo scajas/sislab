@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+			rel="stylesheet" />
+		<meta charset="utf-8" />
+		<meta name="description"
+			content="particles.js is a lightweight JavaScript library for creating particles." />
+		<meta name="author" content="Vincent Garreau" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" media="screen"
+			href="${request.contextPath}/particulas/demo/css/style.css" />
+
+
+<!--Import materialize.css-->
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+			rel="stylesheet" />
+		
+		<link type="text/css" rel="stylesheet"
+			href="${request.contextPath}/materialize/css/materialize.min.css"
+			 />
+
+
+	</f:facet>
+	<title>DGIP EPN</title>
+	<h:outputScript name="js/layout.js" library="spark-layout" />
+
+	<ui:insert name="head" />
+</h:head>
+
+<h:body style="position: absolute; z-index: 0;">
+	<div id="menu-mask"></div>
+
+	<ui:include src="topbar.xhtml" />
+
+	<ui:include src="layoutmenu.xhtml" />
+
+	<div id="layout-portlets-cover">
+		<ui:insert name="body">
+
+
+
+		</ui:insert>
+
+		<ui:include src="footer.xhtml" />
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<p:graphicImage name="images/preloader.gif" library="spark-layout" />
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+	<h:outputStylesheet name="css/core-layout.css" library="spark-layout" />
+	<h:outputStylesheet name="css/font-awesome.css" library="spark-layout" />
+	<h:outputStylesheet name="css/animate.css" library="spark-layout" />
+	<h:outputStylesheet name="css/spark-layout-blue.css"
+		library="spark-layout" />
+
+	<script src="${request.contextPath}/particulas/particles.js"></script>
+	<script src="${request.contextPath}/particulas/demo/js/app.js"></script>
+
+	<!-- stats.js -->
+	<script src="${request.contextPath}/particulas/demo/js/lib/stats.js"></script>
+	<script>
+  var count_particles, stats, update;
+  stats = new Stats;
+  stats.setMode(0);
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = '0px';
+  stats.domElement.style.top = '0px';
+  document.body.appendChild(stats.domElement);
+  count_particles = document.querySelector('.js-count-particles');
+  update = function() {
+    stats.begin();
+    stats.end();
+    if (window.pJSDom[0].pJS.particles &amp;&amp; window.pJSDom[0].pJS.particles.array) {
+      count_particles.innerText = window.pJSDom[0].pJS.particles.array.length;
+    }
+    requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+</script>
+
+
+<!--Import jQuery before materialize.js
+  -->
+      <script type="text/javascript" src="${request.contextPath}/materialize/js/materialize.min.js"></script>
+  
+
+</h:body>
+
+</html>

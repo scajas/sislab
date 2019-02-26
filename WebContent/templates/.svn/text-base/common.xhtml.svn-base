@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+
+
+		<meta charset="utf-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" media="screen"
+			href="${request.contextPath}/particulas/demo/css/style.css" />
+
+		<link rel="stylesheet" media="screen"
+			href="${request.contextPath}/css/wilsonstyle.css" />
+
+ 
+
+
+
+		<link rel="stylesheet"
+			href="${request.contextPath}/font-awesome-4.7.0/css/font-awesome.min.css" />
+			<link rel="stylesheet"
+			href="${request.contextPath}/font-awesome-4.7.0/css/font-awesome.css" />
+
+
+ <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/css?family=Playfair+Display:700|Raleway:500.700'/>
+
+      <link rel="stylesheet" href="${request.contextPath}/parallax cards/css/style.css"/>
+
+
+	</f:facet>
+	<title>DGIP EPN</title>
+	<h:outputScript name="js/layout.js" library="spark-layout" />
+
+	<ui:insert name="head" />
+</h:head>
+
+<h:body style="position: absolute; z-index: 0;">
+	<div id="menu-mask"></div>
+
+	<ui:include src="topbar.xhtml" />
+
+	<ui:include src="layoutmenu.xhtml" />
+
+	<div id="layout-portlets-cover">
+		<ui:insert name="body">
+
+
+
+		</ui:insert>
+
+		<ui:include src="footer.xhtml" />
+	</div>
+
+	<p:ajaxStatus
+		style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
+		<f:facet name="start">
+			<p:graphicImage name="images/preloader.gif" library="spark-layout" />
+		</f:facet>
+
+		<f:facet name="complete">
+			<h:outputText value="" />
+		</f:facet>
+	</p:ajaxStatus>
+
+
+
+	<h:outputStylesheet name="css/core-layout.css" library="spark-layout" />
+	<h:outputStylesheet name="css/font-awesome.css" library="spark-layout" />
+	<h:outputStylesheet name="css/animate.css" library="spark-layout" />
+	<h:outputStylesheet name="tables.css" library="css" />
+	<h:outputStylesheet name="css/spark-layout-blue.css"
+		library="spark-layout" />
+
+	<script src="${request.contextPath}/particulas/particles.js"></script>
+	<script src="${request.contextPath}/particulas/demo/js/app.js"></script>
+	<script
+		src="${request.contextPath}/animated-page-transition/js/main.js"></script>
+
+	<!-- stats.js -->
+	<script src="${request.contextPath}/particulas/demo/js/lib/stats.js"></script>
+
+
+
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery.waitforimages/2.2.0/jquery.waitforimages.min.js"></script>
+	 <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.min.js'></script>
+
+    <script  src="${request.contextPath}/parallax cards/js/index.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.0/pixi.min.js"></script>
+
+
+
+<!-- SCRIPTS PARA GESTION DE PANELES OVER -->
+	<script>
+(function(){
+		$('.flex-container').waitForImages(function() {
+			$('.spinner').fadeOut();
+	}, $.noop, true);
+	
+	$(".flex-slide").each(function(){
+		$(this).hover(function(){
+			$(this).find('.flex-title').css({
+				transform: 'rotate(0deg)',
+				top: '10%'
+			});
+			$(this).find('.flex-about').css({
+				opacity: '1'
+			});
+		}, function(){
+			$(this).find('.flex-title').css({
+				transform: 'rotate(90deg)',
+				top: '15%'
+			});
+			$(this).find('.flex-about').css({
+				opacity: '0'
+			});
+		})
+	});
+})();
+</script>
+
+	
+
+
+
+
+
+
+	<!-- SCRIPTS PARA PARTICULAS -->
+
+	<script>
+  var count_particles, stats, update;
+  stats = new Stats;
+  stats.setMode(0);
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = '0px';
+  stats.domElement.style.top = '0px';
+  document.body.appendChild(stats.domElement);
+  count_particles = document.querySelector('.js-count-particles');
+  update = function() {
+    stats.begin();
+    stats.end();
+    if (window.pJSDom[0].pJS.particles &amp;&amp; window.pJSDom[0].pJS.particles.array) {
+      count_particles.innerText = window.pJSDom[0].pJS.particles.array.length;
+    }
+    requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+</script>
+
+
+
+<script>
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("myBtn").style.display = "block";
+    } else {
+        document.getElementById("myBtn").style.display = "none";
+    }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+    $('html, body').animate({scrollTop:0}, 'slow');
+    return false;
+}
+</script>
+
+
+
+</h:body>
+
+</html>

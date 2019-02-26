@@ -1,0 +1,80 @@
+10
+
+dir
+1682
+http://desarrollo-gr:8085/svn/VersionadorEPN/TalentoHEPN/WebContent
+http://desarrollo-gr:8085/svn/VersionadorEPN
+
+
+
+2018-07-10T19:07:53.545914Z
+1676
+andres
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+a9d79fb9-c079-a241-bfa4-b8ec989a5a0d
+
+
+
+
+
+
+0
+
+META-INF
+dir
+
+Template-old
+dir
+
+WEB-INF
+dir
+
+animated-page-transition
+dir
+
+css
+dir
+
+documents
+dir
+
+font-awesome-4.7.0
+dir
+
+images
+dir
+
+materialize
+dir
+
+pages
+dir
+
+parallax cards
+dir
+
+particulas
+dir
+
+resources
+dir
+
+seguridad
+dir
+
+templates
+dir
+

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: ServiciosSeguridadEPN.jar
+Created-By: PrimeFaces Extensions
+Bundle-ManifestVersion: 2
+Bundle-Name: primefaces.extensions
+Bundle-Description: PrimeFaces Extensions
+Bundle-SymbolicName: org.primefaces.extensions

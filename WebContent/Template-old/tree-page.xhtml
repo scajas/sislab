@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"	
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- 
+		Replace path to template, title, header and body
+		with actual data.
+	 -->
+<ui:composition>
+	<p:accordionPanel style="height: auto" dir="ltr">
+        <p:tab title="Menu Opciones">
+	 <!--  <p:fieldset legend="Menu Opciones" toggleable="true" toggleSpeed="500" style="width:auto; border: none;" >-->
+	 	<h:form id="treeForm">
+	 		<p:tree id="docs" value="#{sesionUsuario.root}" var="doc" selectionMode="single" 
+	 				selection="#{sesionUsuario.selectedNode}" dynamic="true" style="width:auto; background:#F1F6F9;" animate="true"
+	 				 >
+	 			<p:treeNode expandedIcon="ui-icon ui-icon-folder-open" collapsedIcon="ui-icon ui-icon-folder-collapsed" >
+	 				<h:outputLink value="#{doc.menu.urlCompleto}">
+	 					<h:outputText value="#{doc.menu.nombre}" style="FONT-FAMILY: 'Verdana'; FONT-WEIGHT: bold; " />
+	 				</h:outputLink>
+						 			
+	 			</p:treeNode>
+	 			
+	 			
+	 			
+	 			
+	 		</p:tree>	 	
+	 	</h:form>
+	 	</p:tab>
+	 	</p:accordionPanel>
+	 <!--  </p:fieldset>-->
+
+	
+</ui:composition>
+
+</html>
