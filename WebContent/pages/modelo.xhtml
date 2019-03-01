@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/spark">
+
+	<ui:define name="pageTitle">Modelo</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+			<script type="text/javascript">
+			//<![CDATA[	
+				function printDiv(divName) {
+					var f = new Date();					
+				     var printContents = document.getElementById(divName).innerHTML;
+				     var originalContents = document.body.innerHTML;				
+				     document.body.innerHTML = printContents;				
+				     window.print();				
+				     document.body.innerHTML = originalContents;
+				}
+			 //]]>
+			</script>
+
+		</h:head>
+		<h:body>
+			<h:form id="formPrincipal">
+
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoUpdate="true" life="3000" />
+
+			</h:form>
+
+		</h:body>
+
+
+
+
+		<script type="text/javascript">
+			function start() {
+    			PF('statusDialog').show();
+				}
+ 
+				function stop() {
+    			PF('statusDialog').hide();
+				}
+		</script>
+
+
+	</ui:define>
+</ui:composition>
+
