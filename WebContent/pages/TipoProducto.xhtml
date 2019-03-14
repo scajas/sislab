@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/spark"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+	<ui:define name="pageTitle">Tipo Producto</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+			<script type="text/javascript">
+			//<![CDATA[	
+				function printDiv(divName) {
+					var f = new Date();					
+				     var printContents = document.getElementById(divName).innerHTML;
+				     var originalContents = document.body.innerHTML;				
+				     document.body.innerHTML = printContents;				
+				     window.print();				
+				     document.body.innerHTML = originalContents;
+				}
+			 //]]>
+			</script>
+
+		</h:head>
+		<h:body>
+			<h:form id="formPrincipal">
+
+
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoUpdate="true" life="3000" />
+
+				<p:panel>
+
+					<p:fieldset legend="TIPOS DE PRODUCTO"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+
+						<br />
+						<br />
+						<p:commandLink process="@this" onclick="PF('nuevoTP').show()"
+							update=":formNuevoTP,@this,@([id$=messagesForm])">
+							<center>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+									height="35" />
+							</center>
+							<center>
+								<h:outputText value="Agregar Tipo Producto" />
+							</center>
+						</p:commandLink>
+						<br />
+						<br />
+
+
+
+
+
+						<p:dataTable value="#{tipoProductoController.tiposProducto}"
+							var="tipo" id="tablaTP"
+							filteredValue="#{tipoProductoController.tiposProductoFiltro}"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							widgetVar="dataTableWidgetVar">
+							<p:column headerText="Nombre" filterBy="#{tipo.nombreTprod}"
+								filterMatchMode="contains">
+								<h:outputText value="#{tipo.nombreTprod}" />
+
+							</p:column>
+							<p:column headerText="Descripción" filterBy="#{tipo.descrTprod}"
+								filterMatchMode="contains">
+								<h:outputText value="#{tipo.descrTprod}" />
+							</p:column>
+							<p:column headerText="Acciones">
+
+								<center>
+
+									<p:commandLink process="@this,tablaTP"
+										onclick="PF('editTP').show()" update=":formeditTP">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Actualizar" style="border:0px solid #CAD6E0;"
+											width="36" height="35" />
+
+										<f:setPropertyActionListener value="#{tipo}"
+											target="#{tipoProductoController.tipoProductoSelect}">
+										</f:setPropertyActionListener>
+
+									</p:commandLink>
+
+									<p:commandLink process="@this,tablaTP"
+										onclick="PF('cddeleteTP').show()">
+										<p:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;"
+											height="30" width="30"></p:graphicImage>
+										<f:setPropertyActionListener value="#{tipo}"
+											target="#{tipoProductoController.tipoProductoSelect}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+								</center>
+							</p:column>
+						</p:dataTable>
+					</p:fieldset>
+				</p:panel>
+			</h:form>
+
+			<p:dialog id="panelNuevoTP" resizable="true" widgetVar="nuevoTP"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="45%">
+
+
+				<h:form id="formNuevoTP">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{tipoProductoController.nuevoTipoProducto.nombreTprod}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del producto">
+								</p:inputText>
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputText id="desc"
+									value="#{tipoProductoController.nuevoTipoProducto.descrTprod}">
+								</p:inputText>
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{tipoProductoController.agregarTipoProducto}"
+										process="@this,nombre,desc"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal],[id$=tablaTP]),formNuevoTP"
+										oncomplete="PF('dataTableWidgetVar').filter()">
+										<center>
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoTP').hide();" process="@none">
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+
+			<p:dialog id="panelEditTP" resizable="true" widgetVar="editTP"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="65%">
+
+
+				<h:form id="formeditTP">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{tipoProductoController.tipoProductoSelect.nombreTprod}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del producto">
+								</p:inputText>
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputText id="desc"
+									value="#{tipoProductoController.tipoProductoSelect.descrTprod}">
+								</p:inputText>
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{tipoProductoController.editarTipoProducto}"
+										process="@this,nombre,desc"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formeditTP">
+										<center>
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('editTP').hide();" process="@none">
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+			<h:form id="deleteTipoProducto">
+				<p:confirmDialog
+					message="¿Está seguro(a) que desea eliminar este tipo de producto?"
+					header="Eliminando Tipo Producto" severity="warn"
+					widgetVar="cddeleteTP">
+					<center>
+						<p:commandButton value="Aceptar"
+							oncomplete="PF('dataTableWidgetVar').filter()"
+							onsuccess="PF('cddeleteTP').hide();"
+							actionListener="#{tipoProductoController.eliminarTipoProducto}"
+							update="@([id$=messagesForm],[id$=formPrincipal])" />
+						<p:commandButton value="Cancelar"
+							onclick="PF('cddeleteTP').hide();" type="button" />
+					</center>
+				</p:confirmDialog>
+
+
+			</h:form>
+
+		</h:body>
+
+
+
+
+		<script type="text/javascript">
+			function start() {
+    			PF('statusDialog').show();
+				}
+				function stop() {
+    			PF('statusDialog').hide();
+				}
+		</script>
+
+
+	</ui:define>
+</ui:composition>
+
