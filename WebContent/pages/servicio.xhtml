@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Servicio</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="SERVICIO"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+						<br />
+						<br />
+						<p:commandLink process="@this" onclick="PF('nuevoS').show()"
+							update=":formnuevoS,@this,@([id$=messagesForm])">
+							<center>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
+									height="35" />
+							</center>
+							<center>
+								<h:outputText value="Agregar Nuevo" />
+							</center>
+						</p:commandLink>
+						<br />
+						<br />
+
+						<p:dataTable id="tblServicio"
+							value="#{servicioController.listServicio}" var="servicio"
+							widgetVar="filterServicioTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+
+							<!-- <p:column headerText="Id" filterBy="#{servicio.idServicio}"
+								filterMatchMode="contains">
+								<h:outputText value="#{servicio.idServicio}" />
+							</p:column> 
+-->
+							<p:column headerText="Nombre" filterBy="#{servicio.nombreS}"
+								filterMatchMode="contains">
+								<h:outputText value="#{servicio.nombreS}" />
+							</p:column>
+
+							<p:column headerText="Descripción" filterBy="#{servicio.descrS}" filterMatchMode="contains">
+								<h:outputText value="#{servicio.descrS}" />
+							</p:column>
+
+							<p:column headerText="Precio" filterBy="#{servicio.precioS}" filterMatchMode="contains">
+								<h:outputText value="#{servicio.precioS}" />
+							</p:column>
+							
+							<p:column headerText="AuxiliarIDServicio" filterBy="#{servicio.auxIdServicio}" filterMatchMode="contains">
+								<h:outputText value="#{servicio.auxIdServicio}" />
+							</p:column>
+							
+
+
+
+							<!-- **************************  Boton Modificar   *************************** -->
+
+							<p:column headerText="Acciones">
+
+								<center>
+
+									<p:commandLink
+										action="#{servicioController.pasarNombre(servicio.nombreS)}"
+										update=":formModificarS,@this,@([id$=messagesForm])"
+										process="@this,tblServicio" icon="ui-icon-check"
+										oncomplete="PF('modificarS').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{servicioController.servicio}" value="#{servicio}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+									<!-- **************************  Boton Eliminar   *************************** -->
+
+
+									<p:commandLink process="@this" icon="ui-icon-check"
+										onclick="PF('cdEliminarServicio').show();">
+
+										<h:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{servicioController.servicio}" value="#{servicio}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+								</center>
+
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<!-- Panel de actualizacion que se abre en un dialogo -->
+
+			<p:dialog id="panelmodificarS" resizable="true"
+				widgetVar="modificarS" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				header="Modificar Servicio">
+
+
+				<h:form id="formModificarS">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<h:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{servicioController.servicio.nombreS}" required="true"
+									requiredMessage="Debe ingresar el nombre del servicio"
+									size="100" maxlength="50">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+									style="color:white!important" />
+
+								<p:inputTextarea id="desc"
+									value="#{servicioController.servicio.descrS}" maxlength="200"
+									rows="5" cols="30" autoResize="false" size="50" />
+
+
+								<p:outputLabel id="lblPrecio" for="precio" value="Precio: "
+									style="color:white!important" />
+								<p:inputText id="precio"
+									value="#{servicioController.servicio.precioS}" size="50"
+									maxlength="200">
+								</p:inputText>
+
+
+
+							</h:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{servicioController.modificarServivio}"
+										oncomplete="PF('filterServicioTable').filter();"
+										process="@this,nombre,desc,precio"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarS">
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('modificarS').hide();"
+										process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+
+			<!-- Panel de registro que se abre en un dialogo	 -->
+
+			<p:dialog id="panelnuevoS" resizable="true" widgetVar="nuevoS"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Agregar Servicio">
+
+
+				<h:form id="formnuevoS">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<h:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{servicioController.nuevoServicio.nombreS}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Servicio"
+									size="30" maxlength="50">
+								</p:inputText>
+
+
+								<p:outputLabel id="lbltipoServicio" for="tipoServicio"
+									value="Tipo: " style="color:white!important" />
+								<p:selectOneMenu id="tipoServicio"
+									value="#{servicioController.tipoServicioSelect}"
+									required="true">
+									<f:selectItems value="#{servicioController.tipoServicios}"
+										itemLabel="#{servi.nombreTs}" itemValue="#{servi}" var="servi">
+									</f:selectItems>
+								</p:selectOneMenu>
+
+
+								<p:outputLabel id="lbllaboratorio" for="laboratorio"
+									value="Laboratorio: " style="color:white!important" />
+								<p:selectOneMenu id="laboratorio"
+									value="#{servicioController.laboratorioSelect}" required="true">
+									<f:selectItems value="#{servicioController.laboratorios}"
+										itemLabel="#{lab.nombreL}" itemValue="#{lab}" var="lab">
+
+									</f:selectItems>
+
+								</p:selectOneMenu>
+
+
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{servicioController.nuevoServicio.descrS}"
+									maxlength="200" rows="5" cols="30" autoResize="false" />
+
+
+
+								<p:outputLabel id="lblPrecio" for="precio" value="Precio: "
+									style="color:white!important" />
+								<p:inputText id="precio"
+									value="#{servicioController.nuevoServicio.precioS}" size="30"
+									maxlength="200" required="true">
+								</p:inputText>
+
+
+
+								<p:outputLabel id="lblAcreditado" for="acreditado"
+									value="Acreditado: " style="color:white!important" />
+								<p:selectOneMenu id="acreditado"
+									value="#{servicioController.nuevoServicio.acreditado}"
+									required="true"
+									requiredMessage="Este campo es requerido, selecione." size="30">
+									<f:selectItem itemLabel="Por favor Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
+								</p:selectOneMenu>
+
+							</h:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{servicioController.agregarServicio}"
+										oncomplete="PF('nuevoS'); PF('filterServicioTable').filter();"
+										process="@this,nombre,desc,precio"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoS">
+
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoS').hide();" process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Eliminar -->
+
+			<h:form id="eliminarServicio">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar este Servicio"
+					header="Eliminar Servicio" severity="warn"
+					widgetVar="cdEliminarServicio">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							oncomplete="PF('filterServicioTable').filter();"
+							onsuccess="PF('cdEliminarServicio').hide();"
+							actionListener="#{servicioController.eliminarServicio}"
+							update="@([id$=messagesForm],[id$=formprincipal])" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarServicio').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+		</h:body>
+
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Bodega</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="BODEGA"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+						<br />
+						<br />
+						<p:commandLink process="@this" onclick="PF('nuevoB').show()"
+							update=":formnuevoB,@this,@([id$=messagesForm])">
+							<center>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
+									height="35" />
+							</center>
+							<center>
+								<h:outputText value="Agregar Nuevo" />
+							</center>
+						</p:commandLink>
+						<br />
+						<br />
+
+						<p:dataTable id="tblBodega" value="#{bodegaController.bodegas}"
+							var="bodega" widgetVar="filterBodegaTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+							<p:column headerText="Nombre" filterBy="#{bodega.nombreBg}"
+								filterMatchMode="contains">
+								<h:outputText value="#{bodega.nombreBg}" />
+							</p:column>
+
+							<p:column headerText="Descripción" filterBy="#{bodega.descrBg}">
+								<h:outputText value="#{bodega.descrBg}" />
+							</p:column>
+
+							<p:column headerText="Ubicación" filterBy="#{bodega.ubicacionBg}">
+								<h:outputText value="#{bodega.ubicacionBg}" />
+							</p:column>
+
+							<p:column headerText="Habilitado"
+								filterBy="#{bodega.habilitarBd}">
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('filterBodegaTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="Seleccione..." itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
+									</p:selectOneMenu>
+								</f:facet>
+								<h:outputText value="#{bodega.habilitarBd}" />
+							</p:column>
+
+							<!-- **************************  Boton Modificar   *************************** -->
+
+							<p:column headerText="Acciones">
+
+								<center>
+
+									<p:commandLink
+										action="#{bodegaController.pasarNombre(bodega.nombreBg)}"
+										update=":formModificarB,@this,@([id$=messagesForm])"
+										process="@this,tblBodega" icon="ui-icon-check"
+										oncomplete="PF('modificarB').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{bodegaController.bodega}" value="#{bodega}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+									<!-- **************************  Boton Eliminar   *************************** -->
+
+
+									<p:commandLink process="@this" icon="ui-icon-check"
+										onclick="PF('cdEliminarBodega').show();">
+
+										<h:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{bodegaController.bodega}" value="#{bodega}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+								</center>
+
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<!-- Panel de actualizacion que se abre en un dialogo -->
+
+			<p:dialog id="panelmodificarB" resizable="true"
+				widgetVar="modificarB" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				header="Modificar Bodega">
+
+
+				<h:form id="formModificarB">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{bodegaController.bodega.nombreBg}" required="true"
+									requiredMessage="Debe ingresar el nombre de la bodega"
+									size="30" maxlength="50">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+
+								<p:inputTextarea id="desc"
+									value="#{bodegaController.bodega.descrBg}" maxlength="200"
+									rows="5" cols="30" autoResize="false" size="30" />
+
+
+								<p:outputLabel id="lblUbicacion" for="ubicacion"
+									value="Ubicación: " style="color:white!important" />
+								<p:inputText id="ubicacion"
+									value="#{bodegaController.bodega.ubicacionBg}" size="30" maxlength="200">
+								</p:inputText>
+
+								<p:outputLabel id="lblHabilitar" for="habilitar"
+									value="Habilitar: " style="color:white!important" />
+								<p:selectOneMenu id="habilitar"
+									value="#{bodegaController.bodega.habilitarBd}" size="30">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" /> />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{bodegaController.modificarBodega}"
+										oncomplete="PF('filterBodegaTable').filter();"
+										process="@this,nombre,desc,ubicacion,habilitar"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarB">
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('modificarB').hide();"
+										process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+
+			<!-- Panel de registro que se abre en un dialogo	 -->
+
+			<p:dialog id="panelnuevoB" resizable="true" widgetVar="nuevoB"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%" header="Agregar Bodega">
+
+
+				<h:form id="formnuevoB">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{bodegaController.nuevoBodega.nombreBg}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre de la bodega"
+									size="30" maxlength="50">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+
+								<p:inputTextarea id="desc"
+									value="#{bodegaController.nuevoBodega.descrBg}" maxlength="200"
+									rows="5" cols="30" autoResize="false" />
+
+								<p:outputLabel id="lblUbicacion" for="ubicacion"
+									value="Ubicación: " style="color:white!important" />
+								<p:inputText id="ubicacion"
+									value="#{bodegaController.nuevoBodega.ubicacionBg}" size="30" maxlength="200">
+								</p:inputText>
+
+								<p:outputLabel id="lblHabilitar" for="habilitar"
+									value="Habilitar: " style="color:white!important" />
+								<p:selectOneMenu id="habilitar"
+									value="#{bodegaController.nuevoBodega.habilitarBd}"
+									required="true"
+									requiredMessage="Este campo es requerido, selecione."
+									size="30">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{bodegaController.agregarBodega}"
+										oncomplete="PF('nuevoB'); PF('filterBodegaTable').filter();"
+										process="@this,nombre,desc,ubicacion,habilitar"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoB">
+
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoB').hide();" process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Eliminar -->
+
+			<h:form id="eliminarBodega">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar esta Bodega"
+					header="Eliminar Bodega" severity="warn"
+					widgetVar="cdEliminarBodega">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							oncomplete="PF('filterBodegaTable').filter();"
+							onsuccess="PF('cdEliminarBodega').hide();"
+							actionListener="#{bodegaController.eliminarBodega}"
+							update="@([id$=messagesForm],[id$=formprincipal])" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarBodega').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+		</h:body>
+
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>

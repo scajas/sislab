@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Posgiro</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="Posgiro"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+						<br />
+						<br />
+						<p:commandLink process="@this" onclick="PF('nuevoPosgiro').show()"
+							update=":formnuevoPosgiro,@this,@([id$=messagesForm])">
+							<center>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
+									height="35" />
+							</center>
+							<center>
+								<h:outputText value="Agregar Nuevo" />
+							</center>
+						</p:commandLink>
+						<br />
+						<br />
+
+						<p:dataTable id="tblPosgiro"
+							value="#{PosgiroController.listarPosgiros}" var="tipoPosgiro"
+							widgetVar="filterPosgiroTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
+
+							<p:column headerText="Nombre" filterBy="#{tipoPosgiro.nombrePg}"
+								filterMatchMode="contains">
+								<h:outputText value="#{tipoPosgiro.nombrePg}" />
+							</p:column>
+
+							<p:column headerText="Descripción" filterBy="#{tipoPosgiro.descrPg}">
+								<h:outputText value="#{tipoPosgiro.descrPg}" />
+							</p:column>
+
+							<!-- **************************  Boton Modificar   *************************** -->
+
+							<p:column headerText="Acciones">
+								<center>
+									<p:commandLink
+										action="#{PosgiroController.pasarNombre(tipoPosgiro.nombrePg)}"
+										update=":formModificarPosgiro,@this,@([id$=messagesForm])"
+										process="@this,tblPosgiro" icon="ui-icon-check"
+										oncomplete="PF('modificarPosgiro').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{PosgiroController.posgiro}"
+											value="#{tipoPosgiro}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+									<!-- **************************  Boton Eliminar   *************************** -->
+
+
+									<p:commandLink process="@this" icon="ui-icon-check"
+										onclick="PF('cdEliminarPosgiro').show();">
+
+										<h:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{PosgiroController.posgiro}"
+											value="#{tipoPosgiro}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelmodificarPosgiro" resizable="true"
+				widgetVar="modificarPosgiro" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				header="Modificar Posgiro">
+
+
+				<h:form id="formModificarPosgiro">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{PosgiroController.posgiro.nombrePg}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Posgiro" size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{PosgiroController.posgiro.descrPg}"
+									maxlength="100" rows="5" cols="30" autoResize="false" />
+
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{PosgiroController.editarPosgiro}"
+										oncomplete="PF('filterPosgiroTable').filter();"
+										process="@this,nombre,desc"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarPosgiro">
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('modificarPosgiro').hide();"
+										process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+
+			<!-- Panel de registro Nuevo -->
+
+			<p:dialog id="panelnuevoPosgiro" resizable="true" widgetVar="nuevoPosgiro"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Nueva Posgiro">
+
+
+				<h:form id="formnuevoPosgiro">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{PosgiroController.nuevoPosgiro.nombrePg}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre de la Característica" size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{PosgiroController.nuevoPosgiro.descrPg}"
+									maxlength="100" rows="5" cols="30" autoResize="false" />
+
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{PosgiroController.agregarPosgiro}"
+										oncomplete="PF('nuevoPosgiro'); PF('filterPosgiroTable').filter();"
+										process="@this,nombre,desc"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoPosgiro">
+
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoPosgiro').hide();" process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Eliminar -->
+
+			<h:form id="eliminarPosgiro">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar este Posgiro"
+					header="Eliminar Posgiro" severity="warn"
+					widgetVar="cdEliminarPosgiro">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							oncomplete="PF('filterPosgiroTable').filter();"
+							onsuccess="PF('cdEliminarPosgiro').hide();"
+							actionListener="#{PosgiroController.eliminarPosgiro}"
+							update="@([id$=messagesForm],[id$=formprincipal])" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarPosgiro').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+		</h:body>
+
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>

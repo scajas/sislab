@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Tipo Cliente</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="Tipo Cliente"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+						<br />
+						<br />
+						<p:commandLink process="@this"
+							onclick="PF('nuevoTipoCliente').show()"
+							update=":formnuevoTipoCliente,@this,@([id$=messagesForm])">
+							<center>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
+									height="35" />
+							</center>
+							<center>
+								<h:outputText value="Agregar Nuevo" />
+							</center>
+						</p:commandLink>
+						<br />
+						<br />
+
+						<p:dataTable id="tblTipoCliente"
+							value="#{tipoClienteController.listarTipoClientes}" var="tipoCli"
+							widgetVar="filterTipoClienteTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
+
+							<p:column headerText="Tipo Cliente" filterBy="#{tipoCli.tipoTcl}"
+								filterMatchMode="contains">
+								<h:outputText value="#{tipoCli.tipoTcl}" />
+							</p:column>
+
+
+							<p:column headerText="Factura" filterBy="#{tipoCli.facturaTcl}"
+								style="width:120px;text-align: center">
+								<f:facet name="filter">
+									<p:selectOneMenu
+										onchange="PF('filterTipoClienteTable').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="Seleccione..." itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
+									</p:selectOneMenu>
+								</f:facet>
+								<h:outputText value="#{tipoCli.facturaTcl}" />
+							</p:column>
+
+							<p:column headerText="IVA" filterBy="#{tipoCli.ivaTcl}"
+								style="width:70px;text-align: center" filterStyle="width: 50px;">
+								<h:outputText value="#{tipoCli.ivaTcl}" />
+							</p:column>
+
+							<p:column headerText="Descripción" filterBy="#{tipoCli.descrTcl}">
+								<h:outputText value="#{tipoCli.descrTcl}" />
+							</p:column>
+
+
+
+							<!-- **************************  Boton Modificar   *************************** -->
+
+							<p:column headerText="Acciones">
+								<center>
+									<p:commandLink
+										action="#{tipoClienteController.pasarNombre(tipoCli.tipoTcl)}"
+										update=":formModificarTipoCliente,@this,@([id$=messagesForm])"
+										process="@this,tblTipoCliente" icon="ui-icon-check"
+										oncomplete="PF('modificarTipoCliente').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{tipoClienteController.tipoCliente}"
+											value="#{tipoCli}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+									<!-- **************************  Boton Eliminar   *************************** -->
+
+
+									<p:commandLink process="@this" icon="ui-icon-check"
+										onclick="PF('cdEliminarTipoCliente').show();">
+
+										<h:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{tipoClienteController.tipoCliente}"
+											value="#{tipoCli}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelmodificarTipoCliente" resizable="true"
+				widgetVar="modificarTipoCliente" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				header="Modificar Tipo Cliente">
+
+
+				<h:form id="formModificarTipoCliente">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+									<p:outputLabel id="lblNombre" for="nombre"
+										value="Tipo Cliente: " style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{tipoClienteController.tipoCliente.tipoTcl}"
+										required="true"
+										requiredMessage="Debe ingresar el Tipo de Cliente" size="30"
+										maxlength="100">
+									</p:inputText>
+
+									<p:outputLabel id="lblFactura" for="factura" value="Factura: "
+										style="color:white!important" />
+									<p:selectOneMenu id="factura"
+										value="#{tipoClienteController.tipoCliente.facturaTcl}"
+										size="30" required="true" maxlength="10"
+										requiredMessage="Este campo es requerido, selecione.">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
+									</p:selectOneMenu>
+
+
+									<p:outputLabel id="lblIVA" for="iva" value="IVA: "
+										style="color:white!important" />
+									<p:inputNumber id="iva"
+										value="#{tipoClienteController.tipoCliente.ivaTcl}"
+										decimalPlaces="2" required="true" size="30" symbol="% "
+										minValue="0" maxValue="20"
+										requiredMessage="Debe ingresar el IVA">
+									</p:inputNumber>
+
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{tipoClienteController.tipoCliente.descrTcl}"
+										maxlength="200" rows="5" cols="30" autoResize="false" />
+
+
+								</p:panelGrid>
+								<br /> <br />
+
+
+								<center>
+
+									<h:panelGrid columns="2">
+
+										<p:commandLink
+											actionListener="#{tipoClienteController.editarTipoCliente}"
+											oncomplete="PF('filterTipoClienteTable').filter();"
+											process="@this,nombre,desc,factura,iva"
+											update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTipoCliente">
+
+											<center>
+
+												<h:graphicImage value="/images/archivos/guardar.png"
+													title="Guardar" style="border:0px solid #CAD6E0;"
+													width="36" height="35" />
+
+											</center>
+
+										</p:commandLink>
+
+										<p:commandLink onclick="PF('modificarTipoCliente').hide();"
+											process="@none">
+
+											<p:graphicImage value="/images/archivos/atras.png" width="35"
+												height="36" title="Atrás">
+											</p:graphicImage>
+
+										</p:commandLink>
+
+									</h:panelGrid>
+
+
+								</center>
+							</div>
+
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+
+			<!-- Panel de registro Nuevo -->
+
+			<p:dialog id="panelnuevoTipoCliente" resizable="true"
+				widgetVar="nuevoTipoCliente" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				header="Nuevo Tipo Cliente">
+
+
+				<h:form id="formnuevoTipoCliente">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+						<div class="ui-fluid">
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre"
+									value="Tipo Cliente: " style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{tipoClienteController.nuevoTipoCliente.tipoTcl}"
+									required="true"
+									requiredMessage="Debe ingresar el Tipo de Cliente" size="30"
+									maxlength="100">
+								</p:inputText>
+
+								<p:outputLabel id="lblFactura" for="factura" value="Factura: "
+									style="color:white!important" />
+								<p:selectOneMenu id="factura"
+									value="#{tipoClienteController.nuevoTipoCliente.facturaTcl}"
+									required="true"
+									requiredMessage="Este campo es requerido, selecione." size="30"
+									maxlength="10">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
+								</p:selectOneMenu>
+
+								<p:outputLabel id="lblIVA" for="iva" value="IVA: "
+									style="color:white!important" />
+								<p:inputNumber id="iva"
+									value="#{tipoClienteController.nuevoTipoCliente.ivaTcl}"
+									decimalPlaces="2" required="true" size="30" symbol="% "
+									minValue="0" maxValue="20"
+									requiredMessage="Debe ingresar el IVA">
+								</p:inputNumber>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{tipoClienteController.nuevoTipoCliente.descrTcl}"
+									maxlength="200" rows="5" cols="30" autoResize="false" />
+
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{tipoClienteController.agregarTipoCliente}"
+										oncomplete="PF('nuevoTipoCliente'); PF('filterTipoClienteTable').filter();"
+										process="@this,nombre,desc,factura,iva"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoTipoCliente">
+
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoTipoCliente').hide();"
+										process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+							</div>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Eliminar -->
+
+			<h:form id="eliminarTipoCliente">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar este Tipo Cliente"
+					header="Eliminar Tipo Cliente" severity="warn"
+					widgetVar="cdEliminarTipoCliente">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							oncomplete="PF('filterTipoClienteTable').filter();"
+							onsuccess="PF('cdEliminarTipoCliente').hide();"
+							actionListener="#{tipoClienteController.eliminarTipoCliente}"
+							update="@([id$=messagesForm],[id$=formprincipal])" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarTipoCliente').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+		</h:body>
+
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>

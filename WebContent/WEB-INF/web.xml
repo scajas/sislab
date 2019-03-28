@@ -3,7 +3,7 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	id="WebApp_ID" version="3.0">
-	<display-name>DeportivoEPN</display-name>
+	<display-name>SisLab</display-name>
 	
 	
 
@@ -44,15 +44,15 @@
 	</context-param>
 	<context-param>
 		<param-name>serverName</param-name>
-		<param-value>https://wilson.epn.edu.ec</param-value>
+		<param-value>https://pruebas.epn.edu.ec</param-value>
 	</context-param>
 	<context-param>
 		<param-name>urlAplicacion</param-name>
-		<param-value>https://wilson.epn.edu.ec/DeportivoEPN</param-value>
+		<param-value>https://pruebas.epn.edu.ec/SisLab</param-value>
 	</context-param>
 	<context-param>
 		<param-name>urlLogout</param-name>
-		<param-value>https://wilson.epn.edu.ec/cas/logout</param-value>
+		<param-value>https://pruebas.epn.edu.ec/cas/logout</param-value>
 	</context-param>
 
 	<context-param>
@@ -72,11 +72,11 @@
 		<filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
 		<init-param>
 			<param-name>casServerLoginUrl</param-name>
-			<param-value>https://wilson.epn.edu.ec/cas/login</param-value>
+			<param-value>https://pruebas.epn.edu.ec/cas/login</param-value>
 		</init-param>
 		<init-param>
 			<param-name>service</param-name>
-			<param-value>https://wilson.epn.edu.ec/DeportivoEPN/seguridad/seleccionRol.jsf</param-value>
+			<param-value>https://pruebas.epn.edu.ec/SisLab/seguridad/seleccionRol.jsf</param-value>
 		</init-param>
 	</filter>
 	<filter>
@@ -84,7 +84,7 @@
 		<filter-class>org.jasig.cas.client.validation.Cas10TicketValidationFilter</filter-class>
 		<init-param>
 			<param-name>casServerUrlPrefix</param-name>
-			<param-value>https://wilson.epn.edu.ec/cas</param-value>
+			<param-value>https://pruebas.epn.edu.ec/cas</param-value>
 		</init-param>
 	</filter>
 	<filter>
