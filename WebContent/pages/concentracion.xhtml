@@ -10,7 +10,7 @@
 	xmlns:ps="http://primefaces.org/apark">
 
 
-	<ui:define name="pageTitle">Característica</ui:define>
+	<ui:define name="pageTitle">Concentración</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -31,29 +31,27 @@
 
 	</script>
 		</h:head>
-
-
 		<h:body>
 
-
-			<h:form id="formprincipal">
+			<h:form id="formPrincipal">
 				<p:growl id="messagesForm" showDetail="true" sticky="true"
 					autoupdate="true" life="1000" />
 
 				<p:panel>
-					<p:fieldset legend="Característica"
+					<p:fieldset legend="CONCENTRACIÓN"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this" onclick="PF('nuevaCaracteristica').show()"
-							update=":formnuevaCaracteristica,@this,@([id$=messagesForm])">
+						<p:commandLink process="@this"
+							onclick="PF('nuevaConcentracion').show()"
+							update=":formNuevaConcentracion,@this,@([id$=messagesForm])">
 							<center>
 								<h:graphicImage value="/images/archivos/agregar.png"
 									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
@@ -66,24 +64,24 @@
 						<br />
 						<br />
 
-						<p:dataTable id="tblCaracteristica"
-							value="#{CaracteristicaController.listarCaracteristicas}" var="tipoCaracteristica"
-							widgetVar="filterCaracteristicaTable"
-							emptyMessage="No se pudo encontrar ninguna coincidencia"
+						<p:dataTable id="tblConcentracion"
+							value="#{concentracionController.listaConcentracion}"
+							var="concentracion" widgetVar="tblConcentracion"
+							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{concentracionController.filtrarConcentraciones}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
 
-							<p:column headerText="Nombre" filterBy="#{tipoCaracteristica.nombreCr}"
-								filterMatchMode="contains">
-								<h:outputText value="#{tipoCaracteristica.nombreCr}" />
+							<p:column headerText="Nombre" filterBy="#{concentracion.nombreCon}"  filterMatchMode="contains" >
+								<h:outputText value="#{concentracion.nombreCon}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{tipoCaracteristica.descrCr}">
-								<h:outputText value="#{tipoCaracteristica.descrCr}" />
+							<p:column headerText="Descripción" filterBy="#{concentracion.descrCon}"  filterMatchMode="contains">
+								<h:outputText value="#{concentracion.descrCon}" />
 							</p:column>
 
 							<!-- **************************  Boton Modificar   *************************** -->
@@ -91,10 +89,10 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 							<p:column headerText="Acciones">
 								<center>
 									<p:commandLink
-										action="#{CaracteristicaController.pasarNombre(tipoCaracteristica.nombreCr)}"
-										update=":formModificarCaracteristica,@this,@([id$=messagesForm])"
-										process="@this,tblCaracteristica" icon="ui-icon-check"
-										oncomplete="PF('modificarCaracteristica').show();">
+										action="#{concentracionController.pasarNombre(concentracion.nombreCon)}"
+										update=":formModificarConcentracion,@this,@([id$=messagesForm])"
+										process="@this,tblConcentracion" icon="ui-icon-check"
+										oncomplete="PF('modificarConcentracion').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
@@ -102,8 +100,8 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 
 										<f:setPropertyActionListener
-											target="#{CaracteristicaController.caracteristica}"
-											value="#{tipoCaracteristica}">
+											target="#{concentracionController.concentracion}"
+											value="#{concentracion}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
@@ -111,7 +109,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarCaracteristica').show();">
+										onclick="PF('cdEliminarConcentracion').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -119,8 +117,8 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 
 										<f:setPropertyActionListener
-											target="#{CaracteristicaController.caracteristica}"
-											value="#{tipoCaracteristica}">
+											target="#{concentracionController.concentracion}"
+											value="#{concentracion}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 								</center>
@@ -133,15 +131,15 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 			</h:form>
 
-			<!-- Panel de Modificar -->
+			<!-- Panel de actualizacion que se abre en un dialogo -->
 
-			<p:dialog id="panelmodificarCaracteristica" resizable="true"
-				widgetVar="modificarCaracteristica" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Modificar Característica">
+			<p:dialog id="panelModificarConcentracion" resizable="true"
+				widgetVar="modificarConcentracion" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Modificar Concentración">
 
 
-				<h:form id="formModificarCaracteristica">
+				<h:form id="formModificarConcentracion">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -156,41 +154,44 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{CaracteristicaController.caracteristica.nombreCr}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la Característica" size="30" maxlength="60">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{concentracionController.concentracion.nombreCon}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre de la Concentración"
+										size="30" maxlength="60">
+									</p:inputText>
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{CaracteristicaController.caracteristica.descrCr}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{concentracionController.concentracion.descrCon}"
+										maxlength="100" rows="5" cols="30" autoResize="false" />
 
+								</p:panelGrid>
 
-							</p:panelGrid>
+							</div>
 							<br /> <br />
-
 
 							<center>
 
 								<h:panelGrid columns="2">
 
 									<p:commandLink
-										actionListener="#{CaracteristicaController.editarCaracteristica}"
-										oncomplete="PF('filterCaracteristicaTable').filter();"
+										actionListener="#{concentracionController.modificarConcentracion}"
 										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarCaracteristica">
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarConcentracion"
+										oncomplete="PF('tblConcentracion').filter()">
 
 										<center>
 
@@ -202,7 +203,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 									</p:commandLink>
 
-									<p:commandLink onclick="PF('modificarCaracteristica').hide();"
+									<p:commandLink onclick="PF('modificarConcentracion').hide();"
 										process="@none">
 
 										<p:graphicImage value="/images/archivos/atras.png" width="35"
@@ -215,61 +216,58 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 							</center>
 
-
-
 						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
+			<!-- Panel de registro que se abre en un dialogo	 -->
+
+			<p:dialog id="panelNuevaConcentracion" resizable="true"
+				widgetVar="nuevaConcentracion" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nueva Concentración">
 
 
-			<!-- Panel de registro Nuevo -->
-
-			<p:dialog id="panelnuevaCaracteristica" resizable="true" widgetVar="nuevaCaracteristica"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Nueva Característica">
-
-
-				<h:form id="formnuevaCaracteristica">
+				<h:form id="formNuevaConcentracion">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
-						<center>
+								<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
+									style="color:white!important" size="30" />
 								<p:inputText id="nombre"
-									value="#{CaracteristicaController.nuevaCaracteristica.nombreCr}"
+									value="#{concentracionController.nuevaConcentracion.nombreCon}"
 									required="true"
-									requiredMessage="Debe ingresar el nombre de la Característica" size="30" maxlength="60">
+									requiredMessage="Debe ingresar el nombre de la Concentración"
+									size="30" maxlength="60">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
-									value="#{CaracteristicaController.nuevaCaracteristica.descrCr}"
+									value="#{concentracionController.nuevaConcentracion.descrCon}"
 									maxlength="100" rows="5" cols="30" autoResize="false" />
 
 
 							</p:panelGrid>
+							</div>
 							<br /> <br />
 
 
@@ -278,23 +276,19 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								<h:panelGrid columns="2">
 
 									<p:commandLink
-										actionListener="#{CaracteristicaController.agregarCaracteristica}"
-										oncomplete="PF('nuevaCaracteristica'); PF('filterCaracteristicaTable').filter();"
+										actionListener="#{concentracionController.agregarConcentracion}"
 										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevaCaracteristica">
-
-
-										<center>
-
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevaConcentracion"
+										oncomplete="PF('tblConcentracion').filter()">
+										
 											<h:graphicImage value="/images/archivos/guardar.png"
 												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
 												height="35" />
 
-										</center>
-
 									</p:commandLink>
 
-									<p:commandLink onclick="PF('nuevaCaracteristica').hide();" process="@none">
+									<p:commandLink onclick="PF('nuevaConcentracion').hide();"
+										process="@none">
 
 										<p:graphicImage value="/images/archivos/atras.png" width="35"
 											height="36" title="Atrás">
@@ -305,29 +299,27 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								</h:panelGrid>
 
 							</center>
-						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
 			<!-- Panel de Eliminar -->
 
-			<h:form id="eliminarCaracteristica">
+			<h:form id="eliminarConcentracion">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar esta Característica"
-					header="Eliminar Característica" severity="warn"
-					widgetVar="cdEliminarCaracteristica">
+					message="¿Esta seguro(a) que desea eliminar esta Concentración"
+					header="Eliminar Concentración" severity="warn"
+					widgetVar="cdEliminarConcentracion">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterCaracteristicaTable').filter();"
-							onsuccess="PF('cdEliminarCaracteristica').hide();"
-							actionListener="#{CaracteristicaController.eliminarCaracteristica}"
-							update="@([id$=messagesForm],[id$=formprincipal])" />
-
+							onsuccess="PF('cdEliminarConcentracion').hide();"
+							actionListener="#{concentracionController.eliminarConcentracion}"
+							update="@([id$=messagesForm],[id$=formPrincipal])" 
+							oncomplete="PF('tblConcentracion').filter()"/>
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarCaracteristica').hide();" type="button" />
+							onclick="PF('cdEliminarConcentracion').hide();" type="button" />
 
 					</center>
 

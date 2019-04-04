@@ -14,7 +14,7 @@ public class TipoProductoSelectItemConverter extends SelectItemsConverter{
 	@Override
 	public String getAsString(FacesContext context, UIComponent component,
 			Object value) {
-		String id = (value instanceof Tipoproducto) ? ((Tipoproducto) value).getIdTipoprod()
+		Integer id = (value instanceof Tipoproducto) ? ((Tipoproducto) value).getIdTipoprod()
 				: null;
 		return (id != null) ? String.valueOf(id) : null;
 
