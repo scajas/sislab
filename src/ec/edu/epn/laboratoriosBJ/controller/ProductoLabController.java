@@ -23,7 +23,7 @@ import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.event.ActionEvent;
+
 
 @ManagedBean(name = "productoController")
 @SessionScoped
@@ -50,6 +50,7 @@ public class ProductoLabController implements Serializable {
 	/****************************************************************************/
 	/** VARIABLES **/
 
+	private String nombrePro;
 	private List<ProductoLab> listarProductos = new ArrayList<>();
 	private ProductoLab nuevoProducto;
 	private ProductoLab productoLab;// eliminar y editar
@@ -58,7 +59,8 @@ public class ProductoLabController implements Serializable {
 	private Integer riesgoS;
 	private Integer riesgoI;
 	private Integer riesgoR;
-	private List<ProductoLab> productosfiltrados = new ArrayList<>();//filtro global
+	private List<ProductoLab> productosfiltrados = new ArrayList<>();// filtro
+																		// global
 
 	// select de riesgo
 	private Riesgoespecifico riesgoEspecificoSelect;
@@ -75,8 +77,8 @@ public class ProductoLabController implements Serializable {
 	public void init() {
 		try {
 
-			//setListarProductos(productoI.getAll(ProductoLab.class));
-			setListarProductos(productoI.filtrarLista("l"));
+			setListarProductos(productoI.getAll(ProductoLab.class));
+
 			setListarRiesgosEsp(riesgoEspI.getAll(Riesgoespecifico.class));
 			setListarTipoProducto(tipoProI.getAll(Tipoproducto.class));
 			setNuevoProducto(new ProductoLab());
@@ -97,16 +99,27 @@ public class ProductoLabController implements Serializable {
 
 	}
 
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
 	/****** Agregar Estado Producto ****/
 
-	public void agregarProducto(ActionEvent event) {
+	public void agregarProducto() {
 
 		try {
 			if (buscarProducto(nuevoProducto.getNombrePr()) == true) {
-				FacesContext.getCurrentInstance()
-						.addMessage(event.getComponent().getClientId(), new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"ERROR!", "Ha ocurrido un error, El Producto (" + nuevoProducto.getNombrePr()
-										+ ")ya existe."));
+				mensajeError("El Producto ( " + nuevoProducto.getNombrePr() + " ) ya existe.");
 				nuevoProducto = new ProductoLab();
 
 			} else {
@@ -138,7 +151,6 @@ public class ProductoLabController implements Serializable {
 
 				nuevoProducto.setRiesgoespecifico(riesgoEspecificoSelect);
 				nuevoProducto.setTipoproducto(tipoProductoSelect);
-				
 
 				nuevoProducto.setRiesgoPr("S" + nuevoProducto.getRiesgosaludPr() + "I"
 						+ nuevoProducto.getRiesgoinflamabilidadPr() + "R" + nuevoProducto.getRiesgoreactividadPr());
@@ -150,8 +162,7 @@ public class ProductoLabController implements Serializable {
 				productoI.save(nuevoProducto);
 				listarProductos = productoI.getAll(ProductoLab.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "El Producto se ha almacenado exitosamente"));
+				mensajeInfo("El producto ( " + nuevoProducto.getNombrePr() + " ) se ha almacenado exitosamente.");
 
 				nuevoProducto = new ProductoLab();
 				riesgoEspecificoSelect = new Riesgoespecifico();
@@ -160,15 +171,14 @@ public class ProductoLabController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
+			mensajeError("Ha ocurrido un problema.");
 		}
 
 	}
 
 	/****** Modificar Estado Producto ****/
 
-	public void modificarProducto(ActionEvent event) {
+	public void modificarProducto() {
 		try {
 			if (productoLab.getNombrePr().equals(getNombreTP())) {
 
@@ -180,9 +190,7 @@ public class ProductoLabController implements Serializable {
 				productoI.update(productoLab);
 				listarProductos = productoI.getAll(ProductoLab.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-								"Producto (" + productoLab.getNombrePr() + ") se actualizado exitosamente"));
+				mensajeInfo("El Estado Producto( " + productoLab.getNombrePr() + " ) se ha actualizado exitosamente.");
 
 			} else if (buscarProducto(productoLab.getNombrePr()) == false) {
 
@@ -196,48 +204,44 @@ public class ProductoLabController implements Serializable {
 				productoI.update(productoLab);
 				listarProductos = productoI.getAll(ProductoLab.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-								"Producto (" + productoLab.getNombrePr() + ") se actualizado exitosamente"));
+				mensajeInfo("El Estado Producto( " + productoLab.getNombrePr() + " ) se ha actualizado exitosamente.");
 
 			} else {
 				listarProductos = productoI.getAll(ProductoLab.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(), new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Producto ya existe."));
+				mensajeError("El Producto( " + productoLab.getNombrePr() + " ) ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 	}
 
 	/****** Eliminar Estado Producto ****/
 
-	public void eliminarProducto(ActionEvent event) {
+	public void eliminarProducto() {
 
 		try {
 
 			productoI.delete(productoLab);
 			listarProductos = productoI.getAll(ProductoLab.class);
-
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-							"El Producto (" + productoLab.getNombrePr() + ") se ha eliminado correctamente"));
-
+			mensajeInfo("El Producto( " + productoLab.getNombrePr() + " ) se ha eliminado correctamente.");
+			
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-								"La tabla Producto tiene relación con otra tabla"));
+				mensajeError("La tabla Producto tiene relación con otra tabla.");
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "ERROR!", ""));
+				mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
 
+	}
+
+
+	/****** Busqueda de Estado Producto ****/
+	public void busquedaGloblal() {
+		setListarProductos(productoI.filtrarLista(getNombrePro()));
 	}
 
 	/****** Busqueda de Estado Producto ****/
@@ -275,7 +279,6 @@ public class ProductoLabController implements Serializable {
 		riesgoI = Integer.parseInt(riesgo2.substring(1, 2));
 		riesgoR = Integer.parseInt(riesgo3.substring(1, 2));
 
-		// System.out.println("Unidad"+unidadSelect.getNombreU());
 	}
 
 	/****** Getter y Setter de Estado Producto ****/
@@ -398,6 +401,14 @@ public class ProductoLabController implements Serializable {
 
 	public void setProductosfiltrados(List<ProductoLab> productosfiltrados) {
 		this.productosfiltrados = productosfiltrados;
+	}
+
+	public String getNombrePro() {
+		return nombrePro;
+	}
+
+	public void setNombrePro(String nombrePro) {
+		this.nombrePro = nombrePro;
 	}
 
 }

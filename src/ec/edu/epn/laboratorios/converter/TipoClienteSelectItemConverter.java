@@ -6,7 +6,6 @@ import javax.faces.convert.FacesConverter;
 
 import org.omnifaces.converter.SelectItemsConverter;
 
-import ec.edu.epn.laboratorioBJ.entities.Cliente;
 import ec.edu.epn.laboratorioBJ.entities.Tipocliente;
 
 @FacesConverter(forClass=Tipocliente.class)

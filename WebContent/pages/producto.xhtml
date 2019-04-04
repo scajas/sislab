@@ -7,7 +7,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:v="http://validators.epn.edu.ec.com"
-	xmlns:ps="http://primefaces.org/apark">
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
 
 
 	<ui:define name="pageTitle">Tipo Producto</ui:define>
@@ -67,59 +68,87 @@
 						<br />
 						<br />
 
+
+
 						<p:dataTable id="tblProducto"
 							value="#{productoController.listarProductos}" var="pro"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							widgetVar="filterProductoTable" resizableColumns="true" rows="10"
 							paginator="true"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
 							rowsPerPageTemplate="5,10,15,20,30,50,75,100"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 -moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
+
 							<f:facet name="header">
 								<p:outputPanel>
-									<h:outputText value="Search all fields:" />
+									<h:outputText value="Búsqueda por nombre:" />
 									<p:inputText id="globalFilter"
-										onkeyup="PF('filterProductoTable').filter()" style="width:150px"
-										placeholder="Enter keyword" />
+										value="#{productoController.nombrePro}" style="width:150px"
+										placeholder="Busqueda">
+										<p:ajax event="keyup" update="tblProducto"
+											listener="#{productoController.busquedaGloblal}" />
+									</p:inputText>
 								</p:outputPanel>
 							</f:facet>
 
+
 							<p:column headerText="ID">
+								<f:facet name="header">
+									<h:outputText value="ID" />
+								</f:facet>
 								<h:outputText value="#{pro.idProducto}" />
 							</p:column>
 
 							<p:column headerText="Nombre">
+								<f:facet name="header">
+									<h:outputText value="NOMBRE" />
+								</f:facet>
 								<h:outputText value="#{pro.nombrePr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Específico">
+								<f:facet name="header">
+									<h:outputText value="RIESGO ESPECÍFICO" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgoespecifico.nombreRe}" />
 							</p:column>
 
 							<p:column headerText="Fórmula">
+								<f:facet name="header">
+									<h:outputText value="FORMULA" />
+								</f:facet>
 								<h:outputText value="#{pro.formulaPr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Salud">
+								<f:facet name="header">
+									<h:outputText value="RIESGO SALUD" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgosaludPr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Inflamabilidad">
+								<f:facet name="header">
+									<h:outputText value="RIESGO INFLAMABILIDAD" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgoinflamabilidadPr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Reactividad">
+								<f:facet name="header">
+									<h:outputText value="RIESGO REACTIVIDAD" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgoreactividadPr}" />
 							</p:column>
 
 
 							<!-- **************************  Boton Modificar   *************************** -->
 
-							<p:column headerText="Acciones">
+							<p:column headerText="Acciones" exportable="false">
 								<center>
 									<p:commandLink
 										action="#{productoController.pasarNombre(pro.nombrePr,pro.riesgoespecifico,pro.tipoproducto)}"
@@ -146,17 +175,27 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
-
-
 										<f:setPropertyActionListener
 											target="#{productoController.productoLab}" value="#{pro}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 								</center>
 							</p:column>
-
 						</p:dataTable>
-
+						<br />
+						<br />
+						<br />
+						<center>
+							<h3>Exportar Registros</h3>
+							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+								<h:graphicImage value="/images/excel.png" width="35px"
+									height="35px" />
+								<pe:exporter type="xlsx" target="tblProducto"
+									fileName="Productos" tableTitle="PRODUCTOS"
+									selectionOnly="false" orientation="Landscape"
+									datasetPadding="4" />
+							</h:commandLink>
+						</center>
 					</p:fieldset>
 				</p:panel>
 
@@ -468,12 +507,9 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterProductoTable').filter();"
 							onsuccess="PF('cdEliminarProducto').hide();"
 							actionListener="#{productoController.eliminarProducto}"
 							update="@([id$=messagesForm],[id$=formPrincipal])" />
-
-
 						<p:commandButton value="Cancelar"
 							onclick="PF('cdEliminarProducto').hide();" type="button" />
 
@@ -483,6 +519,10 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 
 			</h:form>
+			<p:dialog modal="true" widgetVar="statusDialog" header="Descargando!"
+				draggable="false" closable="false" resizable="false">
+				<p:graphicImage name="/images/archivos/cargando.gif" />
+			</p:dialog>
 
 		</h:body>
 
