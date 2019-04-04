@@ -77,28 +77,31 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
 
-							<!-- <p:column headerText="Id" filterBy="#{servicio.idServicio}"
+							 <p:column headerText="Id" filterBy="#{servicio.idServicio}"
 								filterMatchMode="contains">
 								<h:outputText value="#{servicio.idServicio}" />
 							</p:column> 
--->
+
 							<p:column headerText="Nombre" filterBy="#{servicio.nombreS}"
 								filterMatchMode="contains">
 								<h:outputText value="#{servicio.nombreS}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{servicio.descrS}" filterMatchMode="contains">
+							<p:column headerText="Descripción" filterBy="#{servicio.descrS}"
+								filterMatchMode="contains">
 								<h:outputText value="#{servicio.descrS}" />
 							</p:column>
 
-							<p:column headerText="Precio" filterBy="#{servicio.precioS}" filterMatchMode="contains">
+							<p:column headerText="Precio" filterBy="#{servicio.precioS}"
+								filterMatchMode="contains">
 								<h:outputText value="#{servicio.precioS}" />
 							</p:column>
-							
-							<p:column headerText="AuxiliarIDServicio" filterBy="#{servicio.auxIdServicio}" filterMatchMode="contains">
+
+							<p:column headerText="AuxiliarIDServicio"
+								filterBy="#{servicio.auxIdServicio}" filterMatchMode="contains">
 								<h:outputText value="#{servicio.auxIdServicio}" />
 							</p:column>
-							
+
 
 
 
@@ -109,7 +112,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								<center>
 
 									<p:commandLink
-										action="#{servicioController.pasarNombre(servicio.nombreS)}"
+										action="#{servicioController.pasarNombre(servicio.tiposervicio)}"
 										update=":formModificarS,@this,@([id$=messagesForm])"
 										process="@this,tblServicio" icon="ui-icon-check"
 										oncomplete="PF('modificarS').show();">
@@ -173,39 +176,73 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 						<br />
 						<br />
 						<center>
-							<h:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							<div class="ui-fluid">
+								<h:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 -moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas">
+									columnClasses="pnlGridFondoFilas">
 
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{servicioController.servicio.nombreS}" required="true"
-									requiredMessage="Debe ingresar el nombre del servicio"
-									size="100" maxlength="50">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{servicioController.servicio.nombreS}" required="true"
+										requiredMessage="Debe ingresar el nombre del servicio"
+										size="100" maxlength="50">
+									</p:inputText>
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
-									style="color:white!important" />
-
-								<p:inputTextarea id="desc"
-									value="#{servicioController.servicio.descrS}" maxlength="200"
-									rows="5" cols="30" autoResize="false" size="50" />
-
-
-								<p:outputLabel id="lblPrecio" for="precio" value="Precio: "
-									style="color:white!important" />
-								<p:inputText id="precio"
-									value="#{servicioController.servicio.precioS}" size="50"
-									maxlength="200">
-								</p:inputText>
+									<p:outputLabel id="lbltipoServicio" for="tipoServicio"
+										value="Tipo: " style="color:white!important" />
+									<p:selectOneMenu id="tipoServicio"
+										value="#{servicioController.tipoServicioSelect}"
+										required="true" requiredMessage="Debe selecionar una opción">
+										<f:selectItems value="#{servicioController.listarTipoServicio}"
+											itemLabel="#{servi.nombreTs}" itemValue="#{servi}"
+											var="servi">
+										</f:selectItems>
+									</p:selectOneMenu>
 
 
+									<p:outputLabel id="lbllaboratorio" for="laboratorio"
+										value="Laboratorio: " style="color:white!important" />
+									<p:selectOneMenu id="laboratorio"
+										value="#{servicioController.laboratorioLabSelect}"
+										required="true">
+										<f:selectItems value="#{servicioController.listarLaboratoriosLab}"
+											itemLabel="#{lab.nombreL}" itemValue="#{lab}" var="lab">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-							</h:panelGrid>
+
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{servicioController.servicio.descrS}" maxlength="200"
+										rows="5" cols="30" autoResize="false" size="50" />
+
+
+									<p:outputLabel id="lblPrecio" for="precio" value="Precio: "
+										style="color:white!important" />
+									<p:inputText id="precio"
+										value="#{servicioController.servicio.precioS}" size="50"
+										maxlength="200">
+									</p:inputText>
+
+									<p:outputLabel id="lblAcreditado" for="acreditado"
+										value="Acreditado: " style="color: white!important" />
+									<p:selectOneMenu id="acreditado"
+										value="#{servicioController.nuevoServicio.acreditado}"
+										required="true"
+										requiredMessage="Este campo es requerido, selecione."
+										size="30">
+										<f:selectItem itemLabel="Por favor Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
+									</p:selectOneMenu>
+
+								</h:panelGrid>
+							</div>
 							<br /> <br />
 
 
@@ -215,8 +252,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 									<p:commandLink
 										actionListener="#{servicioController.modificarServivio}"
-										oncomplete="PF('filterServicioTable').filter();"
-										process="@this,nombre,desc,precio"
+										process="@this,nombre,desc,precio,tipoServicio,laboratorio,acreditado"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarS">
 
 										<center>
@@ -255,8 +291,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			<p:dialog id="panelnuevoS" resizable="true" widgetVar="nuevoS"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Agregar Servicio">
+				responsive="true" dynamic="true" header="Agregar Servicio">
 
 
 				<h:form id="formnuevoS">
@@ -273,12 +308,13 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 						<br />
 						<br />
-						<center>
+						
+							<div class="ui-fluid">
 							<h:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 -moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
@@ -292,11 +328,12 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 
 								<p:outputLabel id="lbltipoServicio" for="tipoServicio"
-									value="Tipo: " style="color:white!important" />
+									value="Tipo de Servicio: " style="color:white!important" />
 								<p:selectOneMenu id="tipoServicio"
 									value="#{servicioController.tipoServicioSelect}"
-									required="true">
-									<f:selectItems value="#{servicioController.tipoServicios}"
+									required="true" requiredMessage="Debe selecionar una opción">
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									<f:selectItems value="#{servicioController.listarTipoServicio}"
 										itemLabel="#{servi.nombreTs}" itemValue="#{servi}" var="servi">
 									</f:selectItems>
 								</p:selectOneMenu>
@@ -305,12 +342,12 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								<p:outputLabel id="lbllaboratorio" for="laboratorio"
 									value="Laboratorio: " style="color:white!important" />
 								<p:selectOneMenu id="laboratorio"
-									value="#{servicioController.laboratorioSelect}" required="true">
-									<f:selectItems value="#{servicioController.laboratorios}"
+									value="#{servicioController.laboratorioLabSelect}" 
+									required="true" requiredMessage="Debe selecionar una opción">>
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									<f:selectItems value="#{servicioController.listarLaboratoriosLab}"
 										itemLabel="#{lab.nombreL}" itemValue="#{lab}" var="lab">
-
 									</f:selectItems>
-
 								</p:selectOneMenu>
 
 
@@ -344,6 +381,8 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								</p:selectOneMenu>
 
 							</h:panelGrid>
+							
+							</div>
 							<br /> <br />
 
 
@@ -353,8 +392,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 									<p:commandLink
 										actionListener="#{servicioController.agregarServicio}"
-										oncomplete="PF('nuevoS'); PF('filterServicioTable').filter();"
-										process="@this,nombre,desc,precio"
+										process="@this,nombre,desc,precio,tipoServicio,laboratorio,acreditado"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoS">
 
 
@@ -379,7 +417,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								</h:panelGrid>
 
 							</center>
-						</center>
+			
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
