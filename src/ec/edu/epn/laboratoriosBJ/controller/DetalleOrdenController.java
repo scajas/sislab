@@ -36,7 +36,7 @@ public class DetalleOrdenController implements Serializable {
 	HttpSession session = request.getSession();
 	SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
 
-	/****************************************************************************/
+	/*****************************************************************************/
 
 	/** SERIVICIOS **/
 

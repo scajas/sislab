@@ -37,7 +37,7 @@ public class OrdenInventarioController implements Serializable {
 	HttpSession session = request.getSession();
 	SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
 
-	/****************************************************************************/
+	/*****************************************************************************/
 
 	/** SERIVICIOS **/
 
