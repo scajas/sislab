@@ -16,9 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-
 import ec.edu.epn.laboratorioBJ.beans.UnidadMedidaDAO;
-import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.laboratorioBJ.entities.Unidadmedida;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
