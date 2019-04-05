@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Listas OI desde OT</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="Lista OI desde OT"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+						<br />
+						<br />
+
+						<p:dataTable id="tblListaOI"
+							value="#{ordenInventarioController.ordenInventarios}"
+							var="listaOi" widgetVar="filterListaOITable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+							<p:column headerText="Id Orden"
+								filterBy="#{listaOi.detalleorden.ordenTrabajo.idOrden}"
+								filterMatchMode="contains">
+								<h:outputText
+									value="#{listaOi.detalleorden.ordenTrabajo.idOrden}" />
+							</p:column>
+
+							<p:column headerText="ID Orden Inv"
+								filterBy="#{listaOi.idOrdeninventario}">
+								<h:outputText value="#{listaOi.idOrdeninventario}" />
+							</p:column>
+
+							<p:column headerText="Responsable"
+								filterBy="#{listaOi.responsableOi}">
+								<h:outputText value="#{listaOi.responsableOi}" />
+							</p:column>
+
+							<p:column headerText="Fecha" filterBy="#{listaOi.fechaingresoOi}">
+								<h:outputText value="#{listaOi.fechaingresoOi}" />
+							</p:column>
+
+							<p:column headerText="Tipo O.I."
+								filterBy="#{listaOi.tipordeninv.nombreToi}">
+								<h:outputText value="#{listaOi.tipordeninv.nombreToi}" />
+							</p:column>
+
+							<p:column headerText="Estado O.I." filterBy="#{listaOi.estadoOi}">
+								<h:outputText value="#{listaOi.estadoOi}" />
+							</p:column>
+
+							<p:column headerText="Motivo O.I."
+								filterBy="#{listaOi.motivoEstado}">
+								<h:outputText value="#{listaOi.motivoEstado}" />
+							</p:column>
+
+							<p:column headerText="Metodo"
+								filterBy="#{listaOi.detalleorden.idMetodo}">
+								<h:outputText value="#{listaOi.detalleorden.idMetodo}" />
+							</p:column>
+
+
+							<!-- **************************  Boton Ver OI   *************************** -->
+
+							<p:column headerText="Ver O.I.">
+								<center>
+									<p:commandLink
+										action="#{ordenInventarioController.pasarDetalleMetodo(listaOi.idOrdeninventario)}"
+										update=":formVerOI,@this,@([id$=messagesForm])"
+										process="@this,tblListaOI" icon="ui-icon-check"
+										oncomplete="PF('verOI').show();">
+
+										<h:graphicImage value="/images/archivos/verMas.png"
+											title="Ver OI" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{ordenInventarioController.verOrdenInventario}"
+											value="#{listaOi}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<!-- Panel de visualizacion de datos con Tabla -->
+
+			<p:dialog id="panelverOI" resizable="true" widgetVar="verOI"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="90%"
+				header="Orden Inventario">
+
+
+				<h:form id="formVerOI">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<div class="ui-fluid">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+
+									<p:outputLabel id="lblIdOrdenTrabajo" for="idOrdenTrabajo"
+										value="Id Orden Trabajo: " style="color:white!important" />
+									<p:outputLabel id="idOrdenTrabajo"
+										value="#{ordenInventarioController.verOrdenInventario.detalleorden.ordenTrabajo.idOrden}"
+										size="31" />
+
+									<p:outputLabel id="lblIdOrdenInventario"
+										for="idOrdenInventario" value="id Orden Inventario: "
+										style="color:white!important" />
+									<p:outputLabel id="idOrdenInventario"
+										value="#{ordenInventarioController.verOrdenInventario.idOrdeninventario}"
+										size="31" />
+
+									<p:outputLabel id="lblFechaIngreso" for="fechaIngreso"
+										value="Fecha de Ingreso: " style="color:white!important" />
+									<p:outputLabel id="fechaIngreso"
+										value="#{ordenInventarioController.verOrdenInventario.fechaingresoOi}"
+										size="31" />
+
+									<p:outputLabel id="lblResponsable" for="responsable"
+										value="Responsable:  " style="color:white!important" />
+									<p:outputLabel id="responsable"
+										value="#{ordenInventarioController.verOrdenInventario.responsableOi}"
+										size="31" />
+
+									<p:outputLabel id="lblServicio" for="servicio"
+										value="Servicio: " style="color:white!important" />
+									<p:outputLabel id="servicio"
+										value="#{ordenInventarioController.servicio(ordenInventarioController.verOrdenInventario.detalleorden.idMetodo)}"
+										size="31" />
+
+									<p:outputLabel id="lblMetodo" for="metodo" value="Método: "
+										style="color:white!important" />
+									<p:outputLabel id="metodo"
+										value="#{ordenInventarioController.metodo(ordenInventarioController.verOrdenInventario.detalleorden.idMetodo)}"
+										size="31" />
+
+									<p:outputLabel id="lblMuestra" for="muestra" value="Muestra: "
+										style="color:white!important" />
+									<p:outputLabel id="muestra"
+										value="#{ordenInventarioController.verOrdenInventario.detalleorden.muestra.idMuestra}"
+										size="31" />
+
+									<p:outputLabel id="lblTipoOrdenInventario"
+										for="tipoOrdenInventario" value="Tipo Orden Inventario: "
+										style="color:white!important" />
+									<p:outputLabel id="tipoOrdenInventario"
+										value="#{ordenInventarioController.verOrdenInventario.tipordeninv.nombreToi}"
+										size="31" />
+
+
+								</p:panelGrid>
+								<br /> <br />
+								<p:accordionPanel>
+									<p:tab title="Existencias del Método">
+										<p:dataTable id="tblExistenciasMetodo"
+											value="#{ordenInventarioController.movimientoInventarios}"
+											var="listaOi" resizableColumns="true"
+											style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
+
+											<p:column headerText="Existencia">
+												<h:outputText value="#{listaOi.idExistencia}" />
+											</p:column>
+
+											<p:column headerText="Producto">
+												<h:outputText
+													value="#{ordenInventarioController.existencia(listaOi.idExistencia)}" />
+											</p:column>
+
+											<p:column headerText="Cant. Requerida">
+												<h:outputText value="#{listaOi.cantidadDmt}" />
+											</p:column>
+
+											<p:column headerText="Cant. Empleada">
+												<h:outputText value="#{listaOi.cantidadMov}" />
+											</p:column>
+
+											<p:column headerText="Justificación">
+												<h:outputText value="#{listaOi.observacionesMov}" />
+											</p:column>
+
+										</p:dataTable>
+									</p:tab>
+									<br />
+									<br />
+								</p:accordionPanel>
+
+								<br /> <br />
+
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel id="lblEstadoOI" for="estadoOI"
+										value="EstadoOI " style="color:white!important" />
+									<p:outputLabel id="estadoOI"
+										value="#{ordenInventarioController.verOrdenInventario.estadoOi}"
+										size="31" disabled="true" />
+
+									<p:outputLabel id="lblMotivo" for="motivo" value="Motivo:  "
+										style="color:white!important" />
+									<p:outputLabel id="motivo"
+										value="#{ordenInventarioController.verOrdenInventario.motivoEstado}"
+										size="31" disabled="true" />
+
+								</p:panelGrid>
+
+								<br /> <br />
+
+								<center>
+
+									<h:panelGrid columns="2">
+
+										<p:commandLink onclick="PF('verOI').hide();" process="@none">
+
+											<p:graphicImage value="/images/archivos/atras.png" width="35"
+												height="36" title="Atrás">
+											</p:graphicImage>
+
+										</p:commandLink>
+
+									</h:panelGrid>
+
+								</center>
+
+							</div>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+		</h:body>
+
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>

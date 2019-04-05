@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Trabajo Analistas</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="Estado Trabajo Analista"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+						<br />
+						<br />
+
+						<p:dataTable id="tblTrabajoAnalista"
+							value="#{detalleOrdenController.detallesOrden}" var="listaOi"
+							widgetVar="filterListaOITable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+							<p:column headerText="Id Orden"
+								filterBy="#{listaOi.ordenTrabajo.idOrden}"
+								filterMatchMode="contains">
+								<h:outputText value="#{listaOi.ordenTrabajo.idOrden}" />
+							</p:column>
+
+							<p:column headerText="ID Muestra"
+								filterBy="#{listaOi.muestra.idMuestra}">
+								<h:outputText value="#{listaOi.muestra.idMuestra}" />
+							</p:column>
+
+							<p:column headerText="Muestra"
+								filterBy="#{listaOi.muestra.codigoMCliente}">
+								<h:outputText value="#{listaOi.muestra.codigoMCliente}" />
+							</p:column>
+
+							<p:column headerText="Servicio" filterBy="#{detalleOrdenController.servicio(listaOi.idMetodo)}">
+								<h:outputText value="#{detalleOrdenController.servicio(listaOi.idMetodo)}" />
+							</p:column>
+
+							<p:column headerText="Metodo" filterBy="#{detalleOrdenController.metodo(listaOi.idMetodo)}">
+								<h:outputText value="#{detalleOrdenController.metodo(listaOi.idMetodo)}" />
+							</p:column>
+
+							<p:column headerText="Horas" filterBy="#{listaOi.horasTrabajo}">
+								<h:outputText value="#{listaOi.horasTrabajo}" />
+							</p:column>
+
+							<p:column headerText="Fecha Inicio"
+								filterBy="#{listaOi.fechaInicioAnalisis}">
+								<h:outputText value="#{listaOi.fechaInicioAnalisis}" />
+							</p:column>
+
+							<p:column headerText="Fecha Fin"
+								filterBy="#{listaOi.fechaFinAnalisis}">
+								<h:outputText value="#{listaOi.fechaFinAnalisis}" />
+							</p:column>
+
+							<p:column headerText="Responsable"
+								filterBy="#{listaOi.ordenTrabajo.responsableOt}">
+								<h:outputText value="#{listaOi.ordenTrabajo.responsableOt}" />
+							</p:column>
+
+							<p:column headerText="Estado" filterBy="#{listaOi.estadoDot}">
+								<h:outputText value="#{listaOi.estadoDot}" />
+							</p:column>
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+		</h:body>
+
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>
