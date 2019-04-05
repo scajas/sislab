@@ -11,11 +11,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.EstadoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
@@ -42,6 +39,13 @@ public class EstadoProductoController implements Serializable {
 
 	/****************************************************************************/
 
+	// Variables de la clase
+	private List<Estadoproducto> listaEstadoProducto = new ArrayList<>();
+	private Estadoproducto nuevoEstadoProducto;
+	private Estadoproducto estadoproducto;
+	private String nombreTP;
+	private List<Estadoproducto> filtrarEstados;
+
 	// Método init
 	@PostConstruct
 	public void init() {
@@ -56,99 +60,100 @@ public class EstadoProductoController implements Serializable {
 
 	}
 
-	// Variables de la clase
-	private List<Estadoproducto> listaEstadoProducto = new ArrayList<>();
-	private Estadoproducto nuevoEstadoProducto;
-	private Estadoproducto estadoproducto;
-	private String nombreTP;
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
 
 	/****** Agregar Estado Producto ****/
 
-	public void agregarEstadoProducto(ActionEvent event) {
+	public void agregarEstadoProducto() {
 
 		try {
 			if (buscarEstadoProducto(nuevoEstadoProducto.getNombreEstp()) == true) {
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "Ha ocurrido un error, El estado del producto ("+ nuevoEstadoProducto.getNombreEstp() +")ya existe."));
-				
-				nuevoEstadoProducto= new Estadoproducto();
+				mensajeError("El Estado Producto ( "+ nuevoEstadoProducto.getNombreEstp()+" ) ya existe.");
+
+				nuevoEstadoProducto = new Estadoproducto();
 
 			} else {
 				estadoProductoI.save(nuevoEstadoProducto);
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-								"El Estado Producto se ha almacenado exitosamente"));
+				mensajeInfo("El Estado producto ( " + nuevoEstadoProducto.getNombreEstp()
+						+ " ) se ha almacenado exitosamente.");
 
 				nuevoEstadoProducto = new Estadoproducto();
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
+
+			mensajeError("Ha ocurrido un problema.");
 		}
 
 	}
 
 	/****** Modificar Estado Producto ****/
 
-	public void modificarEstadoProducto(ActionEvent event) {
+	public void modificarEstadoProducto() {
+
 		try {
 			if (estadoproducto.getNombreEstp().equals(getNombreTP())) {
 				estadoProductoI.update(estadoproducto);
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarEstadoProducto').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Estado Producto actualizado exitosamente"));
+				mensajeInfo(
+						"El Estado Producto( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
 
 			} else if (buscarEstadoProducto(estadoproducto.getNombreEstp()) == false) {
 				estadoProductoI.update(estadoproducto);
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarEstadoProducto').hide();");
+				mensajeInfo(
+						"El Estado Producto( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Concentración actualizado exitosamente"));
 			} else {
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Estado Producto ya existe."));
+				mensajeError("El Estado Producto( " + estadoproducto.getNombreEstp() + " ) ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+
+			mensajeError("Ha ocurrido un problema");
+
 		}
 	}
 
 	/****** Eliminar Estado Producto ****/
 
-	public void eliminarEstadoProducto(ActionEvent event) {
+	public void eliminarEstadoProducto() {
 
 		try {
 
 			estadoProductoI.delete(estadoproducto);
 			listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-							"El Estado producto se ha eliminado correctamente"));
+			mensajeInfo("El Estado Producto( " + estadoproducto.getNombreEstp() + " ) se ha eliminado correctamente.");
+			
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-								"La tabla Estado Producto tiene relación con otra tabla"));
+
+				mensajeError("La tabla Estado Producto tiene relación con otra tabla.");
+
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "ERROR!", ""));
+
+				mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
@@ -158,14 +163,14 @@ public class EstadoProductoController implements Serializable {
 	/****** Busqueda de Estado Producto ****/
 
 	private boolean buscarEstadoProducto(String valor) {
-		
+
 		try {
 			listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		boolean resultado = false;
 		for (Estadoproducto tipo : listaEstadoProducto) {
 			if (tipo.getNombreEstp().equals(valor)) {
@@ -175,16 +180,14 @@ public class EstadoProductoController implements Serializable {
 				resultado = false;
 			}
 		}
-		
+
 		return resultado;
 	}
-	
-	
+
 	public void pasarNombre(String nombre) {
 		setNombreTP(nombre);
 	}
 
-	
 	/****** Getter y Setter de Estado Producto ****/
 
 	public Estadoproducto getNuevoEstadoProducto() {
@@ -217,6 +220,14 @@ public class EstadoProductoController implements Serializable {
 
 	public void setNombreTP(String nombreTP) {
 		this.nombreTP = nombreTP;
+	}
+
+	public List<Estadoproducto> getFiltrarEstados() {
+		return filtrarEstados;
+	}
+
+	public void setFiltrarEstados(List<Estadoproducto> filtrarEstados) {
+		this.filtrarEstados = filtrarEstados;
 	}
 
 }

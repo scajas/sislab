@@ -11,15 +11,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.primefaces.context.RequestContext;
-
 import ec.edu.epn.laboratorioBJ.beans.ConcentracionDAO;
 import ec.edu.epn.laboratorioBJ.entities.Concentracion;
-import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "concentracionController")
@@ -43,6 +38,13 @@ public class ConcentracionController implements Serializable {
 
 	/****************************************************************************/
 
+	// Variables de la clase
+	private List<Concentracion> listaConcentracion = new ArrayList<>();
+	private Concentracion nuevaConcentracion;
+	private Concentracion concentracion;
+	private String nombreConcentracion;
+	private List<Concentracion> filtrarConcentraciones;
+
 	// Método init
 	@PostConstruct
 	public void init() {
@@ -56,123 +58,117 @@ public class ConcentracionController implements Serializable {
 		}
 
 	}
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
 
-	// Variables de la clase
-	private List<Concentracion> listaConcentracion = new ArrayList<>();
-	private Concentracion nuevaConcentracion;
-	private Concentracion concentracion;
-	private List<Concentracion> filtroConcentracion;
-	private String nombreTP;
-	// private List<Concentracion> concentracionFiltro = new ArrayList<>();
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+	}
 
-	/****** Agregar Estado Producto ****/
+	public void mensajeInfo(String mensaje) {
+		FacesContext context = FacesContext.getCurrentInstance();
 
-	public void agregarConcentracion(ActionEvent event) {
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+	
+	/****** Agregar nueva Concentración ****/
+
+	public void agregarConcentracion() {
 
 		try {
 			if (buscarConcentracion(nuevaConcentracion.getNombreCon()) == true) {
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "La concentración ya existe."));
+				mensajeError("La concentración ( " + nuevaConcentracion.getNombreCon()+ " ) ya existe.");
 
+				nuevaConcentracion = new Concentracion();
 			} else {
 
 				concentracionI.save(nuevaConcentracion);
 				listaConcentracion = concentracionI.getAll(Concentracion.class);
-				filtroConcentracion =concentracionI.getAll(Concentracion.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Concentración almacenado exitosamente"));
-
+				mensajeInfo("La concentración ( " + nuevaConcentracion.getNombreCon()+ " ) se ha almacenado exitosamente.");
+				
 				nuevaConcentracion = new Concentracion();
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
+			
+				mensajeError("Ha ocurrido un error.");
 		}
 
 	}
 
-	/****** Modificar Estado Producto ****/
+	/****** Modificar Concentración****/
 
-	public void modificarConcentracion(ActionEvent event) {
+	public void modificarConcentracion() {
+		
 		try {
-			if (concentracion.getNombreCon().equals(getNombreTP())) {
+			if (concentracion.getNombreCon().equals(getNombreConcentracion())) {
 				concentracionI.update(concentracion);
-				listaConcentracion= concentracionI.getAll(Concentracion.class);
+				listaConcentracion = concentracionI.getAll(Concentracion.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarConcentracion').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Concentración actualizado exitosamente"));
+				mensajeInfo(
+						"La Concentración ( " + concentracion.getNombreCon() + " ) se ha actualizado exitosamente.");
 
 			} else if (buscarConcentracion(concentracion.getNombreCon()) == false) {
 				concentracionI.update(concentracion);
-				listaConcentracion= concentracionI.getAll(Concentracion.class);
+				listaConcentracion = concentracionI.getAll(Concentracion.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarConcentracion').hide();");
+				mensajeInfo(
+						"La Concentración ( " + concentracion.getNombreCon() + " ) se ha actualizado exitosamente.");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Concentración actualizado exitosamente"));
 			} else {
-				listaConcentracion= concentracionI.getAll(Concentracion.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "La concentración ya existe."));
+				listaConcentracion = concentracionI.getAll(Concentracion.class);
+				mensajeError("La Concentración ( " + concentracion.getNombreCon() + " ) ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+
+			mensajeError("Ha ocurrido un problema.");
+
 		}
 	}
 
+	/****** Eliminar Concentración ****/
 
-	/****** Eliminar Estado Producto ****/
-
-	public void eliminarConcentracion(ActionEvent event) {
+	public void eliminarConcentracion() {
 
 		try {
 
 			concentracionI.delete(concentracion);
 			listaConcentracion = concentracionI.getAll(Concentracion.class);
+			
+			mensajeInfo("La concentración ( "+ concentracion.getNombreCon() + " )se ha eliminado correctamente.");
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "La concentración se ha eliminado correctamente"));
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-								"La tabla Concentración tiene relación con otra tabla"));
+				
+				mensajeError("La tabla Concentración tiene relación con otra tabla.");
+
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
+				
+				mensajeError("Ha ocurrido un error.");
+
 			}
 
 		}
 
 	}
-	/****** Pasar Nombre ****/
 
-	public void pasarNombre(String nombre) {
-		setNombreTP(nombre);
-	}
-
-	/****** Busqueda de Estado Producto ****/
+	/****** Busqueda de Concentración ****/
 
 	private boolean buscarConcentracion(String valor) {
-		
+
 		try {
 			listaConcentracion = concentracionI.getAll(Concentracion.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		boolean resultado = false;
 		for (Concentracion tipo : listaConcentracion) {
 			if (tipo.getNombreCon().equals(valor)) {
@@ -182,10 +178,14 @@ public class ConcentracionController implements Serializable {
 				resultado = false;
 			}
 		}
-		
+
 		return resultado;
 	}
 	
+	
+	public void pasarNombre(String nombre) {
+		setNombreConcentracion(nombre);
+	}
 
 	/****** Getter y Setter de Estado Producto ****/
 	public List<Concentracion> getListaConcentracion() {
@@ -212,20 +212,16 @@ public class ConcentracionController implements Serializable {
 		this.nuevaConcentracion = nuevaConcentracion;
 	}
 
-	public List<Concentracion> getFiltroConcentracion() {
-		return filtroConcentracion;
+	public String getNombreConcentracion() {
+		return nombreConcentracion;
 	}
-
-	public void setFiltroConcentracion(List<Concentracion> filtroConcentracion) {
-		this.filtroConcentracion = filtroConcentracion;
+	public void setNombreConcentracion(String nombreConcentracion) {
+		this.nombreConcentracion = nombreConcentracion;
 	}
-
-	public String getNombreTP() {
-		return nombreTP;
+	public List<Concentracion> getFiltrarConcentraciones() {
+		return filtrarConcentraciones;
 	}
-
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setFiltrarConcentraciones(List<Concentracion> filtrarConcentraciones) {
+		this.filtrarConcentraciones = filtrarConcentraciones;
 	}
-
 }

@@ -40,6 +40,7 @@ public class TipoProductoController implements Serializable {
 
 	/****************************************************************************/
 
+
 	// Método init
 	@PostConstruct
 	public void init() {
@@ -176,5 +177,4 @@ public class TipoProductoController implements Serializable {
 	public void setTipoProducto(Tipoproducto tipoProducto) {
 		this.tipoProducto = tipoProducto;
 	}
-
 }

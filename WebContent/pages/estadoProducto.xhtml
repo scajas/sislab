@@ -31,25 +31,22 @@
 
 	</script>
 		</h:head>
-
-
 		<h:body>
-
 
 			<h:form id="formprincipal">
 				<p:growl id="messagesForm" showDetail="true" sticky="true"
 					autoupdate="true" life="1000" />
 
 				<p:panel>
-					<p:fieldset legend="Estado Producto"
+					<p:fieldset legend="ESTADO PRODUCTO"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
 						<p:commandLink process="@this"
@@ -69,21 +66,21 @@
 
 						<p:dataTable id="tblEstadoProducto"
 							value="#{estadoProductoController.listaEstadoProducto}"
-							var="estado" widgetVar="filterEstadoProductoTable"
-							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							var="estado" widgetVar="tblEstadoProducto"
+							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{estadoProductoController.filtrarEstados}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bottom">
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
 
-							<p:column headerText="Nombre" filterBy="#{estado.nombreEstp}"
-								filterMatchMode="contains">
+							<p:column headerText="Nombre" filterBy="#{estado.nombreEstp}"  filterMatchMode="contains" >
 								<h:outputText value="#{estado.nombreEstp}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{estado.descrEstp}">
+							<p:column headerText="Descripción" filterBy="#{estado.descrEstp}"  filterMatchMode="contains">
 								<h:outputText value="#{estado.descrEstp}" />
 							</p:column>
 
@@ -100,8 +97,6 @@
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
-
 										<f:setPropertyActionListener
 											target="#{estadoProductoController.estadoproducto}"
 											value="#{estado}">
@@ -139,7 +134,7 @@
 			<p:dialog id="panelModificarEstadoProducto" resizable="true"
 				widgetVar="modificarEstadoProducto" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Modificar Estado Producto">
+				dynamic="true" header="Modificar Estado Producto">
 
 
 				<h:form id="formModificarEstadoProducto">
@@ -157,29 +152,33 @@
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"/>
-								<p:inputText id="nombre"
-									value="#{estadoProductoController.estadoproducto.nombreEstp}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Estado del producto" size="30"
-									maxlength="60">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{estadoProductoController.estadoproducto.nombreEstp}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Estado del producto"
+										size="30" maxlength="60">
+									</p:inputText>
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{estadoProductoController.estadoproducto.descrEstp}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{estadoProductoController.estadoproducto.descrEstp}"
+										maxlength="100" rows="5" cols="30" autoResize="false" />
 
-							</p:panelGrid>
+								</p:panelGrid>
+
+							</div>
 							<br /> <br />
 
 
@@ -189,9 +188,9 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 									<p:commandLink
 										actionListener="#{estadoProductoController.modificarEstadoProducto}"
-										oncomplete="PF('filterEstadoProductoTable').filter();"
 										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEstadoProducto">
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEstadoProducto"
+										oncomplete="PF('tblEstadoProducto').filter()">
 
 										<center>
 
@@ -227,7 +226,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			<p:dialog id="panelNuevoEstadoProducto" resizable="true"
 				widgetVar="nuevoEstadoProducto" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				hideEffect="fade" responsive="true" dynamic="true"
 				header="Nuevo Estado Producto">
 
 
@@ -235,31 +234,30 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
-						<center>
+								<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"  size="30"/>
+									style="color:white!important" size="30" />
 								<p:inputText id="nombre"
 									value="#{estadoProductoController.nuevoEstadoProducto.nombreEstp}"
 									required="true"
-									requiredMessage="Debe ingresar el nombre del Estado del Producto" size="30"
-									maxlength="60">
+									requiredMessage="Debe ingresar el nombre del Estado del Producto"
+									size="30" maxlength="60">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
@@ -270,6 +268,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 
 							</p:panelGrid>
+							</div>
 							<br /> <br />
 
 
@@ -279,18 +278,13 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 									<p:commandLink
 										actionListener="#{estadoProductoController.agregarEstadoProducto}"
-										oncomplete="PF('nuevoEstadoProducto'); PF('filterEstadoProductoTable').filter();"
 										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto">
-
-
-										<center>
-
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto"
+										oncomplete="PF('tblEstadoProducto').filter()">
+										
 											<h:graphicImage value="/images/archivos/guardar.png"
 												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
 												height="35" />
-
-										</center>
 
 									</p:commandLink>
 
@@ -306,7 +300,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								</h:panelGrid>
 
 							</center>
-						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
@@ -321,11 +314,10 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterEstadoProductoTable').filter();"
 							onsuccess="PF('cdEliminarEstadoProducto').hide();"
 							actionListener="#{estadoProductoController.eliminarEstadoProducto}"
-							update="@([id$=messagesForm],[id$=formprincipal])" />
-
+							update="@([id$=messagesForm],[id$=formprincipal])" 
+							oncomplete="PF('tblEstadoProducto').filter()"/>
 
 						<p:commandButton value="Cancelar"
 							onclick="PF('cdEliminarEstadoProducto').hide();" type="button" />
@@ -338,8 +330,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 			</h:form>
 
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){
