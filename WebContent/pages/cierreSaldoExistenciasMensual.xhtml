@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="pageTitle">Saldo Existencia</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" autoupdate="true"
+					life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="Saldo Existencia"
+						style="border-radius: 5px 5px 5px 5px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
+						<br />
+						<br />
+
+						<h:form>
+							<p:growl id="msgs" showDetail="true" />
+							<center>
+								<p:panel header="Seleccione el mes"
+									style="margin-bottom:10px; width:70%; ">
+									<h:panelGrid columns="2" cellpadding="5">
+										<br />
+										<br />
+									</h:panelGrid>
+
+									<h:panelGrid columns="2" cellpadding="5" style="width: 30%; ">
+
+
+
+										<h:outputText for="selectmes" value="MES: "
+											style="font-weight:bold; float: center; " />
+
+										<p:selectOneMenu id="MesRapido"
+											value="#{saldoExistenciaController.mes1}" style="width:150px">
+											<p:ajax listener="#{saldoExistenciaController.mesString}"
+												update="@([id$=mes]),@([id$=mes2])" />
+											<f:selectItem itemLabel="Seleccione..." itemValue="null" />
+											<f:selectItem itemLabel="Enero" itemValue="1" />
+											<f:selectItem itemLabel="Febrero" itemValue="2" />
+											<f:selectItem itemLabel="Marzo" itemValue="3" />
+											<f:selectItem itemLabel="Abril" itemValue="4" />
+											<f:selectItem itemLabel="Mayo" itemValue="5" />
+											<f:selectItem itemLabel="Junio" itemValue="6" />
+											<f:selectItem itemLabel="Julio" itemValue="7" />
+											<f:selectItem itemLabel="Agosto" itemValue="8" />
+											<f:selectItem itemLabel="Septiembre" itemValue="9" />
+											<f:selectItem itemLabel="Octubre" itemValue="10" />
+											<f:selectItem itemLabel="Noviembre" itemValue="11" />
+											<f:selectItem itemLabel="Diciembre" itemValue="12" />
+
+										</p:selectOneMenu>
+
+
+									</h:panelGrid>
+
+									<p:separator />
+
+
+
+
+
+								</p:panel>
+							</center>
+						</h:form>
+
+
+						<br />
+						<br />
+						<br />
+
+						<center>
+							<h:outputText value="ESCUELA POLITECNICA NACIONAL"
+								style="font-weight:bold" />
+							<br />
+							<h:outputText value="SALDO EXISTENCIA MENSUAL"
+								style="font-weight:bold" />
+						</center>
+						<br />
+						<br />
+
+						<div style="float: left;">
+							<h:outputText value="MES: " style="font-weight:bold" />
+							<p:outputLabel id="mes" size="30"
+								value="#{saldoExistenciaController.mesvalue}">
+							</p:outputLabel>
+						</div>
+
+						<div style="float: right;">
+							<h:outputText value="RESPONSABLE: " style="font-weight:bold" />
+							<p:outputLabel id="res" size="30"
+								value="#{sesionUsuario.usuario.nombreUsuario}">
+							</p:outputLabel>
+						</div>
+
+
+
+						<br />
+						<br />
+						<div style="float: left;">
+							<h:outputText value="FECHA: " style="font-weight:bold" />
+							<h:outputText value="#{session.lastAccessedTime}">
+								<f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+							</h:outputText>
+						</div>
+
+
+						<br />
+						<br />
+
+
+						<p:separator />
+
+
+
+						<p:dataTable id="tblTipoProveedor"
+							value="#{saldoExistenciaController.existencias}" var="salExis"
+							widgetVar="filterSaldoExisTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							scrollable="true" scrollHeight="550">
+
+
+
+							<f:facet name="header">
+            				Saldo Existencias            		
+							</f:facet>
+
+							<p:column style="width: 10% !important;">
+								<f:facet name="header">
+									<h:outputText value="Existencia"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{salExis.idExistencia}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Producto"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{salExis.producto.nombrePr}" />
+							</p:column>
+
+							<p:column style="width: 10% !important;">
+								<f:facet name="header">
+									<h:outputText value="Saldo"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{salExis.cantidadE}" />
+							</p:column>
+
+							<p:column style="width: 5% !important;">
+								<f:facet name="header">
+									<h:outputText value="UM"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{salExis.unidadmedida.siglaUm}" />
+							</p:column>
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Grado"></h:outputText>
+								</f:facet>
+								<h:outputText value="#{salExis.grado.nombreGr}" />
+							</p:column>
+
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Producto"></h:outputText>
+								</f:facet>
+								<h:outputText
+									value="#{salExis.producto.tipoproducto.nombreTprod}" />
+							</p:column>
+
+
+
+
+
+
+						</p:dataTable>
+
+						<br />
+						<center>
+							<div style="text-align: center">
+								<p:commandButton icon="ui-icon-check"
+									onclick="PF('cdGuardarSaldoE').show();" value="Guardar" />
+								<p:spacer width="60" height="10" />
+
+
+  
+								<p:commandLink id="excelExport" 
+									onclick="PrimeFaces.monitorDownload(start, stop);">
+									<h:graphicImage value="/images/excel.png" width="35px"
+										height="35px" />
+									<pe:exporter type="xlsx" target="tblTipoProveedor"
+										fileName="Saldo Existencias"
+										tableTitle="ESCUELA POLITECNICA NACIONAL SALDO EXISTENCIA MENSUAL"
+										pageOnly="true" selectionOnly="false" orientation="Landscape"
+										datasetPadding="4" />
+								</p:commandLink>
+								
+           
+
+
+							</div>
+
+
+
+
+
+
+
+						</center>
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+
+
+
+
+
+
+
+
+			<p:dialog modal="true" widgetVar="statusDialog" header="Descargando"
+				draggable="false" closable="false" resizable="false">
+				<p:graphicImage name="/images/archivos/cargando.gif" />
+			</p:dialog>
+
+			<!-- Panel par Guardar -->
+
+			<h:form id="guardarSaldoE">
+				<p:confirmDialog showEffect="fade" hideEffect="fade"
+					widgetVar="cdGuardarSaldoE" header="Confirmar..." id="mes2"
+					message="Esta seguro que desea Guardar los Saldos del mes: #{saldoExistenciaController.mesvalue}">
+					<center>
+						<p:commandButton value="Aceptar"
+							onsuccess="PF('cdGuardarSaldoE').hide();"
+							actionListener="#{saldoExistenciaController.guardar}"
+							icon="pi pi-check" type="submit"
+							update="@this,@([id$=messagesForm],[id$=formprincipal])" />
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdGuardarSaldoE').hide();" type="button" />
+					</center>
+				</p:confirmDialog>
+
+
+			</h:form>
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>
