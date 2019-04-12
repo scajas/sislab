@@ -6,27 +6,24 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import ec.edu.epn.facturacion.entities.EstadoFactura;
-import ec.edu.epn.facturacion.entities.Factura;
+import ec.edu.epn.facturacion.entities.TransferenciaInterna;
 import ec.edu.epn.laboratorioBJ.beans.MuestraDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.Muestra;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
-@ManagedBean(name = "muestraController")
+@ManagedBean(name = "muestraTransferenciaController")
 @SessionScoped
 
-public class MuestraController implements Serializable {
+public class MuestraTransferenciaController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -50,12 +47,11 @@ public class MuestraController implements Serializable {
 	private Muestra nuevaMuestra;
 	private Muestra muestra;
 	private String nombreMuestra;
-	private List<Factura> listaFactura = new ArrayList<>();
-	private Factura factura;
-	private Factura selectFactura;
+	private TransferenciaInterna transferenciaInterna;
+	private TransferenciaInterna  selectTransferenciaInterna;
 
 	// ****** Filtros ****//*
-	private List<Factura> filtrarFacturas;
+	private List<TransferenciaInterna> filtrarTransferenciaInterna;
 	private List<Muestra> filtrarMuestras;
 
 	/** MÉTODO INIT **/
@@ -72,18 +68,18 @@ public class MuestraController implements Serializable {
 
 	}
 
-	/****** Buscar Facturas ****/
-	public List<Factura> buscarFacturas() { // 
+	/****** Buscar Transferencias ****/
+	public List<TransferenciaInterna> buscarTransferencias() { // 
 		try {
 
 			Long idUsuario = su.id_usuario_log;
-			listaFactura = muestraI.getListaFacturas(idUsuario.intValue(), su.UNIDAD_USUARIO_LOGEADO);
-			System.out.println("Facturas consultadas" + listaFactura.size());
+			listaTransferencia = muestraI.getListaTransferencia(idUsuario.intValue(), su.UNIDAD_USUARIO_LOGEADO);
+			System.out.println("Transferencias consultadas:" + listaTransferencia.size());
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return listaFactura;
+		return listaTransferencia;
 
 	}
 
@@ -243,40 +239,25 @@ public class MuestraController implements Serializable {
 		setNombreMuestra(nombre);
 	}
 
-	// ****** Seleccion de Facturas ****//*
-	public void cambiarIdFactura() {
-		
+	// ****** Seleccion de Transferencias ****//*
+	public void seleccionarIdTransferencia() {
 
 		try {
-			getNuevaMuestra().setIdFactura(selectFactura.getIdFactura());
+			getNuevaMuestra().setIdTi(selectTransferenciaInterna.getIdTi());
 
-			mensajeInfo("Se seleccionó la Factura (" + selectFactura.getIdFactura());
+			mensajeInfo("Se seleccionó la Transferencia (" + selectTransferenciaInterna.getIdTi());
+
 			System.out.println(
-					"este es el id de factura: " + selectFactura.getIdFactura() + getNuevaMuestra().getIdFactura());
+					"este es el id de Transferencia: " + selectTransferenciaInterna.getIdTi() + getNuevaMuestra().getIdTi());
 		} catch (Exception e) {
-			mensajeError("No se ha seleccionado ninguna factura");
+			
+			mensajeError("No se ha seleccionado ninguna Transferencia");
 		}
 
 	}
 
-	// ****** Obtener Estados de una Factura ****//*
-	public String metodo(String idEstadoFactura) {
-		String nombre = "";
 
-		EstadoFactura estadoFactura = new EstadoFactura();
-
-		estadoFactura = muestraI.findMetodoById(idEstadoFactura);
-
-		if (estadoFactura == null) {
-			nombre = "N/A";
-		} else {
-			nombre = estadoFactura.getNombreEf();
-		}
-
-		return nombre;
-	}
-
-	/****** Getter y Setter de Muestra ****/
+	/****** metodos Get y Set de Transferencia ****/
 
 	public List<Muestra> getListaMuestra() {
 		return listaMuestra;
@@ -310,44 +291,46 @@ public class MuestraController implements Serializable {
 		this.nuevaMuestra = nuevaMuestra;
 	}
 
-	public List<Factura> getListaFactura() {
-		return listaFactura;
-	}
-
-	public void setListaFactura(List<Factura> listaFactura) {
-		this.listaFactura = listaFactura;
-	}
-
-	public Factura getFactura() {
-		return factura;
-	}
-
-	public void setFactura(Factura factura) {
-		this.factura = factura;
-	}
-
-	public Factura getSelectFactura() {
-		return selectFactura;
-	}
-
-	public void setSelectFactura(Factura selectFactura) {
-		this.selectFactura = selectFactura;
-	}
-
-	public List<Factura> getFiltrarFacturas() {
-		return filtrarFacturas;
-	}
-
-	public void setFiltrarFacturas(List<Factura> filtrarFacturas) {
-		this.filtrarFacturas = filtrarFacturas;
-	}
-
 	public List<Muestra> getFiltrarMuestras() {
 		return filtrarMuestras;
 	}
 
 	public void setFiltrarMuestras(List<Muestra> filtrarMuestras) {
 		this.filtrarMuestras = filtrarMuestras;
+	}
+
+	public TransferenciaInterna getTransferenciaInterna() {
+		return transferenciaInterna;
+	}
+
+	public void setTransferenciaInterna(TransferenciaInterna transferenciaInterna) {
+		this.transferenciaInterna = transferenciaInterna;
+	}
+
+	public TransferenciaInterna getSelectTransferenciaInterna() {
+		return selectTransferenciaInterna;
+	}
+
+	public void setSelectTransferenciaInterna(TransferenciaInterna selectTransferenciaInterna) {
+		this.selectTransferenciaInterna = selectTransferenciaInterna;
+	}
+
+	public List<TransferenciaInterna> getFiltrarTransferenciaInterna() {
+		return filtrarTransferenciaInterna;
+	}
+
+	public void setFiltrarTransferenciaInterna(List<TransferenciaInterna> filtrarTransferenciaInterna) {
+		this.filtrarTransferenciaInterna = filtrarTransferenciaInterna;
+	}
+
+	private List<TransferenciaInterna> listaTransferencia = new ArrayList<>();
+	
+	public List<TransferenciaInterna> getListaTransferencia() {
+		return listaTransferencia;
+	}
+
+	public void setListaTransferencia(List<TransferenciaInterna> listaTransferencia) {
+		this.listaTransferencia = listaTransferencia;
 	}
 
 }
