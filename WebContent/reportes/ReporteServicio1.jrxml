@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteServicio1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="cb922ae5-e0d6-462e-a8c7-5b312846c60f">
+	<property name="ireport.zoom" value="1.4641000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idServicio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT DISTINCT s.id_servicio,
+ts.nombre_ts,
+l.nombre_l,
+s.nombre_s,
+s.precio_s
+FROM "Laboratorios".tiposervicio ts,
+"Laboratorios".laboratorio_usuario lu,
+"Laboratorios".laboratorio l,
+"Laboratorios".servicio s,
+"public".usuario us
+WHERE lu.id_laboratorio=l.id_laboratorio
+and s.id_laboratorio= l.id_laboratorio
+and lu.id_usuario=us.id_usuario
+and lu.id_usuario =1
+and us.id_unidad=1
+and ts.id_tiposerv= $P{idServicio}]]>
+	</queryString>
+	<field name="id_servicio" class="java.lang.String"/>
+	<field name="nombre_ts" class="java.lang.String"/>
+	<field name="nombre_l" class="java.lang.String"/>
+	<field name="nombre_s" class="java.lang.String"/>
+	<field name="precio_s" class="java.lang.Float"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="57" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="13" y="11" width="532" height="30" forecolor="#0000CC" backcolor="#00FFCC" uuid="98f17d3d-2894-467c-9531-f0a36f642a6d"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Campos Servicio]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="231" y="15" width="100" height="20" uuid="8d7e151f-bed7-4998-9a2f-9f2c43ef7519"/>
+				<text><![CDATA[LISTA SERVICIO]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="46" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="219" y="26" width="97" height="20" forecolor="#FFFFFF" backcolor="#3333FF" uuid="9c47d53c-4148-4fc0-b865-85526d7a2d5c"/>
+				<box>
+					<pen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<topPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<leftPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<rightPen lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<text><![CDATA[ID LABORATORIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="129" y="26" width="90" height="20" forecolor="#FFFFFF" backcolor="#3333FF" uuid="78e70341-cb29-4fb5-be82-02f23196696d"/>
+				<box>
+					<pen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<topPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<leftPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<rightPen lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<text><![CDATA[ID TIP SERVICIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="316" y="26" width="65" height="20" forecolor="#FFFFFF" backcolor="#3333FF" uuid="87d1ebe0-f1d4-4e88-bda8-f5d9d1a73eaa"/>
+				<box>
+					<pen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<topPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<leftPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<rightPen lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<text><![CDATA[PRECIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="80" y="26" width="49" height="20" forecolor="#FFFFFF" backcolor="#3333FF" uuid="ee6bb601-580c-4c98-a37d-6ff285220723"/>
+				<box>
+					<pen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<topPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<leftPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<rightPen lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="31" y="26" width="49" height="20" forecolor="#FFFFFF" backcolor="#3333FF" uuid="c731d23a-db0d-4955-b772-ffa2d964bb05"/>
+				<box>
+					<pen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<topPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<leftPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<bottomPen lineStyle="Solid" lineColor="#FFFFFF"/>
+					<rightPen lineStyle="Solid" lineColor="#FFFFFF"/>
+				</box>
+				<text><![CDATA[CÓDIGO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="131" y="0" width="88" height="20" uuid="173eef9d-c376-41a9-a9cb-d52c812410e3"/>
+				<textFieldExpression><![CDATA[$F{nombre_ts}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="49" height="20" uuid="531b7ab0-c6da-49d3-b826-64e680fed41d"/>
+				<textFieldExpression><![CDATA[$F{nombre_s}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="313" y="0" width="65" height="20" uuid="2d96b5b9-8a9e-49ee-9954-9096769459bb"/>
+				<textFieldExpression><![CDATA[$F{precio_s}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="219" y="0" width="94" height="20" uuid="511a9c38-e686-439a-a563-2f768b048041"/>
+				<textFieldExpression><![CDATA[$F{nombre_l}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="31" y="0" width="49" height="20" uuid="c358f670-df22-4191-b9fd-0e465acddc45"/>
+				<textFieldExpression><![CDATA[$F{id_servicio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

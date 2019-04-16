@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Servicio</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+		<h:body>
+
+
+			<h:form id="formprincipal">
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="BUSCAR SERVICIOS"
+						style="border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+	;width: '90%';">
+						<center>
+							<h:form id="formBuscar">
+								<div class="ui-fluid">
+									<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+										style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+										id="pnlgBusquedaServicio">
+										<p:outputLabel value="Tipo Servicio: "
+											style="color:white!important" />
+										<p:selectOneMenu id="tipoServicio"
+											value="#{servicioController.tipoServicioSelect}"
+											style="FONT-FAMILY: arial; width:100px;"
+											requiredMessage="Seleccionar un Tipo">
+											<f:selectItem itemLabel="Seleccione un Tipo de Servicio"
+												itemValue="" />
+											<f:selectItems
+												value="#{servicioController.listarTipoServicio}" var="tipoS"
+												itemLabel="#{tipoS.nombreTs}" itemValue="#{tipoS}"
+												style="font-size:10px;" />
+
+										</p:selectOneMenu>
+
+									</p:panelGrid>
+									<br />
+									<p:panelGrid columns="2" style="width:200px"
+										columnClasses="ui-grid-col-5" layout="grid"
+										styleClass="ui-panelgrid-blank">
+										<p:commandLink oncomplete="PF('repoServicio').show();"
+											id="btnGenerarReporte"
+											update="@([id$=dialogReporteServ], [id$=pdfView])"
+											actionListener="#{servicioController.generarPDF}">
+											<center>
+												<p:graphicImage value="/images/archivos/imprimir.png"
+													height="35px" width="35px" title="Generar Reporte" />
+											</center>
+										</p:commandLink>
+
+										<p:commandLink oncomplete="PF('repoServicioExc').show();"
+											id="btnGenerarReporteExc"
+											update="@([id$=dialogReporteServExc], [id$=pdfView])"
+											actionListener="#{servicioController.generarEXCEL}">
+											<center>
+												<p:graphicImage value="/images/archivos/imprimir.png"
+													height="35px" width="35px" title="Generar Reporte excel" />
+											</center>
+										</p:commandLink>
+
+										<p:commandLink
+											actionListener="#{servicioController.buscarServicioCombo}"
+											update="@([id$=tblServicio])" process="@this,formBuscar">
+											<h:graphicImage value="/images/archivos/busqueda.png"
+												class="btn bt-success" title="Buscar"
+												style="border:0px solid #CAD6E0;" width="35" height="35" />
+										</p:commandLink>
+									</p:panelGrid>
+								</div>
+							</h:form>
+						</center>
+					</p:fieldset>
+					<p:fieldset
+						style="border-radius: 5px 5px 5px 5px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
+						<p:dataTable id="tblServicio"
+							value="#{servicioController.listServicio}" var="servicio"
+							widgetVar="filterServicioTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+
+							<p:column headerText="ID Servicio">
+								<h:outputText value="#{servicio.idServicio}" />
+							</p:column>
+
+							<p:column headerText="Sevicio">
+								<h:outputText value="#{servicio.nombreS}" />
+							</p:column>
+
+							<p:column headerText="Laboratorio">
+								<h:outputText value="#{servicio.laboratorio.nombreL}" />
+							</p:column>
+
+							<p:column headerText="Tipo Servicio">
+								<h:outputText value="#{servicio.tiposervicio.nombreTs}" />
+							</p:column>
+
+							<p:column headerText="Precio">
+								<h:outputText value="#{servicio.precioS}" />
+							</p:column>
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+				<p:dialog id="dialog" header="REPORTE SERVICIOS" showEffect="fade"
+					widgetVar="documentDialog" modal="true" resizable="false">
+					<p:outputPanel id="documentPanel">
+						<p:panelGrid columns="4" columnClasses="label,value"
+							rendered="#{not empty ttBasicView.selectedDocument}">
+							<h:outputLabel for="tipoRep" value="Tipo de reporte: " />
+							<p:selectOneMenu>
+								<f:selectItem itemLabel="Seleccione..." itemValue="#{null}"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Pdf" itemValue="Pdf" />
+								<f:selectItem itemLabel="Excel" itemValue="Excel" />
+							</p:selectOneMenu>
+						</p:panelGrid>
+					</p:outputPanel>
+				</p:dialog>
+
+
+				<p:dialog id="dialogReporteServ" resizable="true"
+					widgetVar="repoServicio" modal="true" hideEffect="fade"
+					responsive="true" dynamic="true" width="65%"
+					header="Reporte Servicio">
+					<p:panel id="toggleable" toggleable="true" closable="true"
+						toggleSpeed="500" closeSpeed="500">
+						<div align="right">
+							<p:commandLink id="btnCerrarDialogs" ajax="false"
+								action="#{servicioController.cerrarArchivo()}"
+								onsuccess="PF('repoServicio').hide();">
+								<h:graphicImage value="/images/dashboard/NoVerificado.png"
+									title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
+									height="25" />
+
+							</p:commandLink>
+						</div>
+						<table style="width: 100%; height: 100%;">
+							<tr>
+								<td><p:media id="pdfView" height="470px" width="100%"
+										cache="false" value="#{servicioController.streamFile}"
+										player="pdf">
+									</p:media></td>
+							</tr>
+						</table>
+					</p:panel>
+				</p:dialog>
+
+				<p:dialog id="dialogReporteServExc" resizable="true"
+					widgetVar="repoServicioExc" modal="true" hideEffect="fade"
+					responsive="true" dynamic="true" width="65%"
+					header="Reporte Servicio">
+					<p:panel id="toggleable2" toggleable="true" closable="true"
+						toggleSpeed="500" closeSpeed="500">
+						<div align="right">
+							<p:commandLink id="btnCerrarDialogs2" ajax="false"
+								action="#{servicioController.cerrarArchivo()}"
+								onsuccess="PF('repoServicioExc').hide();">
+								<h:graphicImage value="/images/dashboard/NoVerificado.png"
+									title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
+									height="25" />
+
+							</p:commandLink>
+						</div>
+						<table style="width: 100%; height: 100%;">
+							<tr>
+								<td><p:media id="pdfView2" height="470px" width="100%"
+										cache="false" value="#{servicioController.streamFile}"
+										player="xls">
+									</p:media></td>
+							</tr>
+						</table>
+					</p:panel>
+				</p:dialog>
+			</h:form>
+		</h:body>
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>
