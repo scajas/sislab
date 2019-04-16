@@ -87,7 +87,7 @@
 								<h:outputText value="#{lab.centrocostoL}" />
 							</p:column>
 
-							<p:column headerText="Responsable" >
+							<p:column headerText="Responsable">
 								<h:outputText value="#{lab.responsableL}" />
 							</p:column>
 
@@ -264,8 +264,7 @@
 									<p:commandLink
 										actionListener="#{laboratorioController.modificarLaboratorioLab}"
 										process="@this,uni,nombre,centrocosto,responsable,email,direccion,telefono,fax,leyendaPro,leyendaOrd"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal])"
-										>
+										update="@this,@([id$=messagesForm],[id$=formPrincipal])">
 
 										<center>
 
@@ -329,7 +328,8 @@
 										style="color:white!important" />
 
 									<p:selectOneMenu id="unidad"
-										value="#{laboratorioController.unidadSelect}">
+										value="#{laboratorioController.unidadSelect}" required="true"
+										requiredMessage="Debe ingresar el centro de costo">
 										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
 										<f:selectItems value="#{laboratorioController.unidades}"
 											itemLabel="#{uni.nombreU}" itemValue="#{uni}" var="uni">
@@ -423,8 +423,7 @@
 									<p:commandLink
 										actionListener="#{laboratorioController.agregarLaboratorioLab}"
 										process="@this,nombre,unidad,centrocosto,responsable,email,direccion,telefono,fax,leyendaPro,leyendaOrd"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoLaboratorio"
-										>
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoLaboratorio">
 
 										<center>
 
@@ -465,8 +464,7 @@
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdEliminarLaboratorio').hide();"
 							actionListener="#{laboratorioController.eliminarLaboratorioLab}"
-							update="@([id$=messagesForm],[id$=formPrincipal])"
-							/>
+							update="@([id$=messagesForm],[id$=formPrincipal])" />
 
 
 						<p:commandButton value="Cancelar"
