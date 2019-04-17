@@ -34,27 +34,25 @@
 
 
 		<h:body>
-
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formPrincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
-
 				<p:panel>
 					<p:fieldset legend="LABORATORIO"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
 						<p:commandLink process="@this"
 							onclick="PF('nuevoLaboratorio').show()"
-							update=":formNuevoLaboratorio,@this,@([id$=messagesForm])">
+							update=":formNuevoLaboratorio,@this">
 							<center>
 								<h:graphicImage value="/images/archivos/agregar.png"
 									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
@@ -69,25 +67,30 @@
 
 						<p:dataTable id="tblLaboratorio"
 							value="#{laboratorioController.listaLaboratorioLab}" var="lab"
-							widgetVar="filterLaboratorioTable"
+							widgetVar="tblLaboratorio"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+							filteredValue="#{laboratorioController.filtrarLaboratorios}">
 
-							<p:column headerText="Nombre">
+							<p:column headerText="Nombre" filterBy="#{lab.nombreL}"
+								filterMatchMode="contains">
 								<h:outputText value="#{lab.nombreL}" />
 							</p:column>
 
-							<p:column headerText="Unidad">
+							<p:column headerText="Unidad" filterBy="#{lab.unidad.nombreU}"
+								filterMatchMode="contains">
 
 								<h:outputText value="#{lab.unidad.nombreU}" />
 							</p:column>
-							<p:column headerText="Centro de Costo">
+							<p:column headerText="Centro de Costo" filterBy="#{lab.centrocostoL}"
+								filterMatchMode="contains">
 								<h:outputText value="#{lab.centrocostoL}" />
 							</p:column>
 
-							<p:column headerText="Responsable">
+							<p:column headerText="Responsable" filterBy="#{lab.responsableL}"
+								filterMatchMode="contains">
 								<h:outputText value="#{lab.responsableL}" />
 							</p:column>
 
@@ -98,7 +101,7 @@
 								<center>
 									<p:commandLink
 										action="#{laboratorioController.pasarNombre(lab.nombreL,lab.unidad)}"
-										update=":formModificarLaboratorio,@this,@([id$=messagesForm])"
+										update=":formModificarLaboratorio,@this"
 										process="@this,tblLaboratorio" icon="ui-icon-check"
 										oncomplete="PF('modificarLaboratorio').show();">
 
@@ -142,7 +145,7 @@
 
 			<p:dialog id="panelmodificarLaboratorio" resizable="true"
 				widgetVar="modificarLaboratorio" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="65%"
+				hideEffect="fade" responsive="true" dynamic="true"
 				header="Modificar Laboratorio">
 
 
@@ -163,8 +166,8 @@
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
 									<p:outputLabel id="lblUnidad" for="uni" value="Unidad: "
@@ -264,7 +267,8 @@
 									<p:commandLink
 										actionListener="#{laboratorioController.modificarLaboratorioLab}"
 										process="@this,uni,nombre,centrocosto,responsable,email,direccion,telefono,fax,leyendaPro,leyendaOrd"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal])">
+										update="@this,@([id$=messagesForm],[id$=formPrincipal])"
+										oncomplete="PF('tblLaboratorio').filter()">
 
 										<center>
 
@@ -320,16 +324,15 @@
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs">
 
 									<p:outputLabel id="lblUnidad" for="unidad" value="Unidad: "
 										style="color:white!important" />
 
 									<p:selectOneMenu id="unidad"
-										value="#{laboratorioController.unidadSelect}" required="true"
-										requiredMessage="Debe ingresar el centro de costo">
+										value="#{laboratorioController.unidadSelect}">
 										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
 										<f:selectItems value="#{laboratorioController.unidades}"
 											itemLabel="#{uni.nombreU}" itemValue="#{uni}" var="uni">
@@ -414,8 +417,6 @@
 								</p:panelGrid>
 							</div>
 							<br /> <br />
-
-
 							<center>
 
 								<h:panelGrid columns="2">
@@ -423,15 +424,12 @@
 									<p:commandLink
 										actionListener="#{laboratorioController.agregarLaboratorioLab}"
 										process="@this,nombre,unidad,centrocosto,responsable,email,direccion,telefono,fax,leyendaPro,leyendaOrd"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoLaboratorio">
-
-										<center>
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoLaboratorio"
+										oncomplete="PF('tblLaboratorio').filter()">
 
 											<h:graphicImage value="/images/archivos/guardar.png"
 												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
 												height="35" />
-
-										</center>
 
 									</p:commandLink>
 
@@ -464,7 +462,8 @@
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdEliminarLaboratorio').hide();"
 							actionListener="#{laboratorioController.eliminarLaboratorioLab}"
-							update="@([id$=messagesForm],[id$=formPrincipal])" />
+							update="@([id$=messagesForm],[id$=formPrincipal])" 
+							oncomplete="PF('tblLaboratorio').filter()"/>
 
 
 						<p:commandButton value="Cancelar"

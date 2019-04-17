@@ -39,8 +39,15 @@ public class TipoProductoController implements Serializable {
 	private TipoProductoDAO tipoProductoI;
 
 	/****************************************************************************/
-
-
+	// Variables de la clase
+	private List<Tipoproducto> listaTipoProducto= new ArrayList<>();
+	private Tipoproducto nuevoTipoProducto;
+	private Tipoproducto tipoProducto;
+	private String nombreTP;
+	
+	//filtro
+	private List<Tipoproducto> filtrarTipoProducto;
+	
 	// Método init
 	@PostConstruct
 	public void init() {
@@ -55,104 +62,132 @@ public class TipoProductoController implements Serializable {
 
 	}
 
-	// Variables de la clase
-	private List<Tipoproducto> listaTipoProducto= new ArrayList<>();
-	private Tipoproducto nuevoTipoProducto;
-	private Tipoproducto tipoProducto;
-	
-	/****** Agregar Estado Producto ****/
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
 
-	public void agregarTipoProducto(ActionEvent event) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	/****** Agregar Tipo Producto ****/
+
+	public void agregarTipoProducto() {
 
 		try {
 			if (buscarTipoProducto(nuevoTipoProducto.getNombreTprod()) == true) {
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "El tipo producto ya existe."));
-
+				mensajeError("El Tipo Producto ( " + nuevoTipoProducto.getNombreTprod() + " ) ya existe ");
+	
 			} else {
 
 				tipoProductoI.save(nuevoTipoProducto);
 				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo Producto almacenado exitosamente"));
-
+				mensajeInfo("El Tipo Producto ( " + nuevoTipoProducto.getNombreTprod() + " ) almacenado exitosamente ");
 				nuevoTipoProducto = new Tipoproducto();
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
-		}
-
-	}
-
-	/****** Modificar Estado Producto ****/
-
-	public void modificarTipoProducto(ActionEvent event) {
-		
-		try {
-
-				tipoProductoI.update(tipoProducto);
-				listaTipoProducto= tipoProductoI.getAll(Tipoproducto.class);
 			
-				
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-								"La concentración se ha modificado exitosamente"));
-				
-				tipoProducto = new Tipoproducto();
-				
+			mensajeError("Ha ocurrido un error");
+		}
+
+	}
+
+	/****** Modificar Tipo Producto ****/
+
+	public void modificarTipoProducto() {
+
+		try {
+			if (tipoProducto.getNombreTprod().equals(getNombreTP())) {
+				tipoProductoI.update(tipoProducto);
+				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
+
+				mensajeInfo(
+						"El Tipo Producto( " + tipoProducto.getNombreTprod() + " ) se ha actualizado exitosamente.");
+
+			} else if (buscarTipoProducto(tipoProducto.getNombreTprod()) == false) {
+				tipoProductoI.update(tipoProducto);
+				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
+
+				mensajeInfo(
+						"El Tipo Producto( " + tipoProducto.getNombreTprod() + " ) se ha actualizado exitosamente.");
+
+			} else {
+				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
+				mensajeError("El Tipo Producto ( " + tipoProducto.getNombreTprod() + " ) ya existe.");
+			}
+
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
+
+			mensajeError("Ha ocurrido un problema");
+
 		}
 	}
 
-	/****** Eliminar Estado Producto ****/
+	/****** Eliminar Tipo Producto ****/
 
-	public void eliminarTipoProducto(ActionEvent event) {
+	public void eliminarTipoProducto() {
 
 		try {
 
 			tipoProductoI.delete(tipoProducto);
 			listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "El tipo producto se ha eliminado correctamente"));
+			mensajeInfo("El Tipo Producto ( " + tipoProducto.getNombreTprod() + " ) se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-								"La tabla Tipo Producto tiene relación con otra tabla"));
+				
+			
+				mensajeError("La tabla Tipo Producto tiene relación con otra tabla");
+
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
+				mensajeError("Ha ocurrido un error");
 			}
 
 		}
 
 	}
 
-	/****** Busqueda de Estado Producto ****/
+	/****** Busqueda de Tipo Producto ****/
+
 
 	private boolean buscarTipoProducto(String valor) {
+
+		try {
+			listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		boolean resultado = false;
-		for (Tipoproducto estadoTP : listaTipoProducto) {
-			if (estadoTP.getNombreTprod().trim().equals(valor.trim())) {
+		for (Tipoproducto tipo : listaTipoProducto) {
+			if (tipo.getNombreTprod().equals(valor)) {
 				resultado = true;
 				break;
 			} else {
 				resultado = false;
 			}
 		}
+
 		return resultado;
 	}
 
-	/****** Getter y Setter de Estado Producto ****/
+	public void pasarNombre(String nombre) {
+		setNombreTP(nombre);
+	}
+	
+	/****** Getter y Setter  ****/
 	
 	public List<Tipoproducto> getListaTipoProducto() {
 		return listaTipoProducto;
@@ -176,5 +211,21 @@ public class TipoProductoController implements Serializable {
 
 	public void setTipoProducto(Tipoproducto tipoProducto) {
 		this.tipoProducto = tipoProducto;
+	}
+
+	public List<Tipoproducto> getFiltrarTipoProducto() {
+		return filtrarTipoProducto;
+	}
+
+	public void setFiltrarTipoProducto(List<Tipoproducto> filtrarTipoProducto) {
+		this.filtrarTipoProducto = filtrarTipoProducto;
+	}
+
+	public String getNombreTP() {
+		return nombreTP;
+	}
+
+	public void setNombreTP(String nombreTP) {
+		this.nombreTP = nombreTP;
 	}
 }

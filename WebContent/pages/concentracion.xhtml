@@ -33,9 +33,10 @@
 		</h:head>
 		<h:body>
 
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+
 			<h:form id="formPrincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="CONCENTRACIÓN"
@@ -51,7 +52,7 @@
 						<br />
 						<p:commandLink process="@this"
 							onclick="PF('nuevaConcentracion').show()"
-							update=":formNuevaConcentracion,@this,@([id$=messagesForm])">
+							update=":formNuevaConcentracion,@this">
 							<center>
 								<h:graphicImage value="/images/archivos/agregar.png"
 									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
@@ -67,7 +68,8 @@
 						<p:dataTable id="tblConcentracion"
 							value="#{concentracionController.listaConcentracion}"
 							var="concentracion" widgetVar="tblConcentracion"
-							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{concentracionController.filtrarConcentraciones}"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{concentracionController.filtrarConcentraciones}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
@@ -76,11 +78,13 @@
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<p:column headerText="Nombre" filterBy="#{concentracion.nombreCon}"  filterMatchMode="contains" >
+							<p:column headerText="Nombre"
+								filterBy="#{concentracion.nombreCon}" filterMatchMode="contains">
 								<h:outputText value="#{concentracion.nombreCon}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{concentracion.descrCon}"  filterMatchMode="contains">
+							<p:column headerText="Descripción"
+								filterBy="#{concentracion.descrCon}" filterMatchMode="contains">
 								<h:outputText value="#{concentracion.descrCon}" />
 							</p:column>
 
@@ -90,7 +94,7 @@
 								<center>
 									<p:commandLink
 										action="#{concentracionController.pasarNombre(concentracion.nombreCon)}"
-										update=":formModificarConcentracion,@this,@([id$=messagesForm])"
+										update=":formModificarConcentracion,@this"
 										process="@this,tblConcentracion" icon="ui-icon-check"
 										oncomplete="PF('modificarConcentracion').show();">
 
@@ -134,9 +138,9 @@
 			<!-- Panel de actualizacion que se abre en un dialogo -->
 
 			<p:dialog id="panelModificarConcentracion" resizable="true"
-				widgetVar="modificarConcentracion" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Concentración">
+				widgetVar="modificarConcentracion" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Concentración">
 
 
 				<h:form id="formModificarConcentracion">
@@ -242,7 +246,7 @@
 
 						<br />
 						<br />
-								<div class="ui-fluid">
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
@@ -267,38 +271,39 @@
 
 
 							</p:panelGrid>
-							</div>
-							<br /> <br />
+						</div>
+						<br />
+						<br />
 
 
-							<center>
+						<center>
 
-								<h:panelGrid columns="2">
+							<h:panelGrid columns="2">
 
-									<p:commandLink
-										actionListener="#{concentracionController.agregarConcentracion}"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevaConcentracion"
-										oncomplete="PF('tblConcentracion').filter()">
-										
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+								<p:commandLink
+									actionListener="#{concentracionController.agregarConcentracion}"
+									process="@this,nombre,desc"
+									update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevaConcentracion"
+									oncomplete="PF('tblConcentracion').filter()">
 
-									</p:commandLink>
+									<h:graphicImage value="/images/archivos/guardar.png"
+										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+										height="35" />
 
-									<p:commandLink onclick="PF('nuevaConcentracion').hide();"
-										process="@none">
+								</p:commandLink>
 
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
+								<p:commandLink onclick="PF('nuevaConcentracion').hide();"
+									process="@none">
 
-									</p:commandLink>
+									<p:graphicImage value="/images/archivos/atras.png" width="35"
+										height="36" title="Atrás">
+									</p:graphicImage>
 
-								</h:panelGrid>
+								</p:commandLink>
 
-							</center>
+							</h:panelGrid>
+
+						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
@@ -315,8 +320,8 @@
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdEliminarConcentracion').hide();"
 							actionListener="#{concentracionController.eliminarConcentracion}"
-							update="@([id$=messagesForm],[id$=formPrincipal])" 
-							oncomplete="PF('tblConcentracion').filter()"/>
+							update="@([id$=messagesForm],[id$=formPrincipal])"
+							oncomplete="PF('tblConcentracion').filter()" />
 
 						<p:commandButton value="Cancelar"
 							onclick="PF('cdEliminarConcentracion').hide();" type="button" />

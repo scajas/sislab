@@ -33,9 +33,10 @@
 		</h:head>
 		<h:body>
 
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+				
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="ESTADO PRODUCTO"
@@ -51,7 +52,7 @@
 						<br />
 						<p:commandLink process="@this"
 							onclick="PF('nuevoEstadoProducto').show()"
-							update=":formNuevoEstadoProducto,@this,@([id$=messagesForm])">
+							update=":formNuevoEstadoProducto,@this">
 							<center>
 								<h:graphicImage value="/images/archivos/agregar.png"
 									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
@@ -67,7 +68,8 @@
 						<p:dataTable id="tblEstadoProducto"
 							value="#{estadoProductoController.listaEstadoProducto}"
 							var="estado" widgetVar="tblEstadoProducto"
-							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{estadoProductoController.filtrarEstados}"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{estadoProductoController.filtrarEstados}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
@@ -76,11 +78,13 @@
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<p:column headerText="Nombre" filterBy="#{estado.nombreEstp}"  filterMatchMode="contains" >
+							<p:column headerText="Nombre" filterBy="#{estado.nombreEstp}"
+								filterMatchMode="contains">
 								<h:outputText value="#{estado.nombreEstp}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{estado.descrEstp}"  filterMatchMode="contains">
+							<p:column headerText="Descripción" filterBy="#{estado.descrEstp}"
+								filterMatchMode="contains">
 								<h:outputText value="#{estado.descrEstp}" />
 							</p:column>
 
@@ -90,7 +94,7 @@
 								<center>
 									<p:commandLink
 										action="#{estadoProductoController.pasarNombre(estado.nombreEstp)}"
-										update=":formModificarEstadoProducto,@this,@([id$=messagesForm])"
+										update=":formModificarEstadoProducto,@this"
 										process="@this,tblEstadoProducto" icon="ui-icon-check"
 										oncomplete="PF('modificarEstadoProducto').show();">
 
@@ -129,7 +133,7 @@
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
+			<!-- Panel de actualizacion  -->
 
 			<p:dialog id="panelModificarEstadoProducto" resizable="true"
 				widgetVar="modificarEstadoProducto" modal="true"
@@ -141,13 +145,12 @@
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
@@ -179,7 +182,7 @@
 								</p:panelGrid>
 
 							</div>
-							<br /> <br />
+							<br/> <br/>
 
 
 							<center>
@@ -243,7 +246,7 @@
 
 						<br />
 						<br />
-								<div class="ui-fluid">
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
@@ -268,38 +271,39 @@
 
 
 							</p:panelGrid>
-							</div>
-							<br /> <br />
+						</div>
+						<br />
+						<br />
 
 
-							<center>
+						<center>
 
-								<h:panelGrid columns="2">
+							<h:panelGrid columns="2">
 
-									<p:commandLink
-										actionListener="#{estadoProductoController.agregarEstadoProducto}"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto"
-										oncomplete="PF('tblEstadoProducto').filter()">
-										
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+								<p:commandLink
+									actionListener="#{estadoProductoController.agregarEstadoProducto}"
+									process="@this,nombre,desc"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto"
+									oncomplete="PF('tblEstadoProducto').filter()">
 
-									</p:commandLink>
+									<h:graphicImage value="/images/archivos/guardar.png"
+										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+										height="35" />
 
-									<p:commandLink onclick="PF('nuevoEstadoProducto').hide();"
-										process="@none">
+								</p:commandLink>
 
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
+								<p:commandLink onclick="PF('nuevoEstadoProducto').hide();"
+									process="@none">
 
-									</p:commandLink>
+									<p:graphicImage value="/images/archivos/atras.png" width="35"
+										height="36" title="Atrás">
+									</p:graphicImage>
 
-								</h:panelGrid>
+								</p:commandLink>
 
-							</center>
+							</h:panelGrid>
+
+						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
@@ -316,8 +320,8 @@
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdEliminarEstadoProducto').hide();"
 							actionListener="#{estadoProductoController.eliminarEstadoProducto}"
-							update="@([id$=messagesForm],[id$=formprincipal])" 
-							oncomplete="PF('tblEstadoProducto').filter()"/>
+							update="@([id$=messagesForm],[id$=formprincipal])"
+							oncomplete="PF('tblEstadoProducto').filter()" />
 
 						<p:commandButton value="Cancelar"
 							onclick="PF('cdEliminarEstadoProducto').hide();" type="button" />
