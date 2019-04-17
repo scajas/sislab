@@ -66,8 +66,8 @@ public class ConcentracionController implements Serializable {
 	}
 
 	public void mensajeInfo(String mensaje) {
+		
 		FacesContext context = FacesContext.getCurrentInstance();
-
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
@@ -139,7 +139,7 @@ public class ConcentracionController implements Serializable {
 			concentracionI.delete(concentracion);
 			listaConcentracion = concentracionI.getAll(Concentracion.class);
 			
-			mensajeInfo("La concentración ( "+ concentracion.getNombreCon() + " )se ha eliminado correctamente.");
+			mensajeInfo("La concentración ( "+ concentracion.getNombreCon() + " ) se ha eliminado correctamente.");
 
 
 		} catch (Exception e) {
@@ -187,7 +187,7 @@ public class ConcentracionController implements Serializable {
 		setNombreConcentracion(nombre);
 	}
 
-	/****** Getter y Setter de Estado Producto ****/
+	/****** Getter y Setter de Concentración ****/
 	public List<Concentracion> getListaConcentracion() {
 		return listaConcentracion;
 	}

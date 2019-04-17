@@ -68,8 +68,8 @@ public class EstadoProductoController implements Serializable {
 	}
 
 	public void mensajeInfo(String mensaje) {
+		
 		FacesContext context = FacesContext.getCurrentInstance();
-
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
@@ -112,18 +112,18 @@ public class EstadoProductoController implements Serializable {
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
 				mensajeInfo(
-						"El Estado Producto( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
+						"El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
 
 			} else if (buscarEstadoProducto(estadoproducto.getNombreEstp()) == false) {
 				estadoProductoI.update(estadoproducto);
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
 				mensajeInfo(
-						"El Estado Producto( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
+						"El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
 
 			} else {
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
-				mensajeError("El Estado Producto( " + estadoproducto.getNombreEstp() + " ) ya existe.");
+				mensajeError("El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) ya existe.");
 			}
 
 		} catch (Exception e) {
@@ -142,7 +142,7 @@ public class EstadoProductoController implements Serializable {
 			estadoProductoI.delete(estadoproducto);
 			listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
-			mensajeInfo("El Estado Producto( " + estadoproducto.getNombreEstp() + " ) se ha eliminado correctamente.");
+			mensajeInfo("El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) se ha eliminado correctamente.");
 			
 
 		} catch (Exception e) {

@@ -7,40 +7,38 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:v="http://validators.epn.edu.ec.com"
-	xmlns:ps="http://primefaces.org/spark"
-	xmlns:a4j="http://richfaces.org/a4j">
+	xmlns:ps="http://primefaces.org/apark">
+
 
 	<ui:define name="pageTitle">Muestra</ui:define>
 	<ui:define name="body">
 
 		<h:head>
+
 			<script type="text/javascript">
-			//<![CDATA[	
-				function printDiv(divName) {
-					var f = new Date();					
-				     var printContents = document.getElementById(divName).innerHTML;
-				     var originalContents = document.body.innerHTML;				
-				     document.body.innerHTML = printContents;				
-				     window.print();				
-				     document.body.innerHTML = originalContents;
-				}
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
 
+		//]]>
 
-			 //]]>
-			</script>
-
+	</script>
 		</h:head>
-
-		<!-- ************************************** Inicio ********************************************* -->
 		<h:body>
 
-			<h:form id="formPrincipal">
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
 
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoUpdate="true" life="3000" />
+			<h:form id="formprincipal">
 
 				<p:panel>
-
 					<p:fieldset legend="MUESTRA"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
@@ -50,14 +48,13 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
 						;width: '90%';">
-
 						<br />
 						<br />
 						<p:commandLink process="@this" onclick="PF('nuevaMuestra').show()"
-							update=":formNuevaMuestra,@this,@([id$=messagesForm])">
+							update=":formNuevaMuestra,@this">
 							<center>
 								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
 									height="35" />
 							</center>
 							<center>
@@ -67,49 +64,49 @@
 						<br />
 						<br />
 
-						<p:dataTable value="#{muestraController.listaMuestra}"
-							widgetVar="tblMuestra" var="muestra"
+						<p:dataTable id="tblMuestra"
+							value="#{muestraController.listaMuestra}" var="muestra"
+							widgetVar="tblMuestra"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{muestraController.filtrarMuestras}"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-							emptyMessage="No se han encontrado coinicidencias"
-							filteredValue="#{muestraController.filtrarMuestras}" rows="10"
-							paginator="true"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
-					>
+							paginatorPosition="bottom">
 
-							<p:column headerText="ID" style="width:11% !important"
-								filterBy="#{muestra.idMuestra}" filterMatchMode="contains">
+							<p:column headerText="ID" filterBy="#{muestra.idMuestra}"
+								filterMatchMode="contains">
 								<h:outputText value="#{muestra.idMuestra}" />
 							</p:column>
 
-							<p:column headerText="Factura" style="width:11% !important"
-								filterBy="#{muestra.idFactura}" filterMatchMode="contains">
+							<p:column headerText="Factura" filterBy="#{muestra.idFactura}"
+								filterMatchMode="contains">
 								<h:outputText value="#{muestra.idFactura}" />
 							</p:column>
 
-							<p:column headerText="Nombre" style="width:25% !important"
+							<p:column headerText="Nombre"
 								filterBy="#{muestra.codigoMCliente}" filterMatchMode="contains">
 								<h:outputText value="#{muestra.codigoMCliente}" />
 							</p:column>
 
-							<p:column headerText="Descripción" style="width:25% !important"
-								filterBy="#{muestra.descrM}" filterMatchMode="contains">
+							<p:column headerText="Descripción" filterBy="#{muestra.descrM}"
+								filterMatchMode="contains">
 								<h:outputText value="#{muestra.descrM}" />
 							</p:column>
 
-							<p:column headerText="Fecha de Toma" style="width:11% !important"
+							<p:column headerText="Fecha de Toma"
 								filterBy="#{muestra.fechaTomaM}" filterMatchMode="contains">
 								<h:outputText value="#{muestra.fechaTomaM}" />
 							</p:column>
 
 							<!-- ************************************** Ver Muestra ************************************ -->
 
-							<p:column headerText="Ver Muestra" style="width:8% !important">
+							<p:column headerText="Ver Muestra">
 
 								<center>
-
 									<p:commandLink onclick="PF('verMuestra').show();"
 										update=":formVerMuestra,@this" process="@this"
 										icon="ui-icon-check">
@@ -125,20 +122,19 @@
 								</center>
 							</p:column>
 
-							<!-- ************************************** Boton de Acciones ************************************ -->
-							<p:column headerText="Acciones" style="width:9% !important">
+							<!-- **************************  Boton Modificar   *************************** -->
 
+							<p:column headerText="Acciones">
 								<center>
 									<p:commandLink
 										action="#{muestraController.pasarNombre(muestra.codigoMCliente)}"
-										update=":formModificarMuestra,@this,@([id$=messagesForm])"
-										process="@this" icon="ui-icon-check"
-										onclick="PF('ModificarMuestra').show();">
+										update=":formModificarMuestra,@this"
+										process="@this,tblMuestra" icon="ui-icon-check"
+										oncomplete="PF('modificarMuestra').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
 										<f:setPropertyActionListener
 											target="#{muestraController.muestra}" value="#{muestra}">
 										</f:setPropertyActionListener>
@@ -146,32 +142,36 @@
 
 									<!-- **************************  Boton Eliminar   *************************** -->
 
+
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarMuestra').show();"
-										update=":@this,@([id$=messagesForm])">
+										onclick="PF('cdEliminarMuestra').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
 
+
 										<f:setPropertyActionListener
 											target="#{muestraController.muestra}" value="#{muestra}">
 										</f:setPropertyActionListener>
-
 									</p:commandLink>
 								</center>
 							</p:column>
+
 						</p:dataTable>
+
 					</p:fieldset>
 				</p:panel>
+
 			</h:form>
 
-			<!-- ************************************** Panel de Guardar ************************************ -->
+			<!-- Panel de registro 	 -->
 
 			<p:dialog id="panelNuevaMuestra" resizable="true"
 				widgetVar="nuevaMuestra" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true"
 				header="Nueva Muestra">
+
 
 				<h:form id="formNuevaMuestra">
 
@@ -186,299 +186,146 @@
 
 						<br />
 						<br />
-						<center>
-							<div class="ui-fluid">
-
+						<div class="ui-fluid">
+							<center>
 								<h:panelGrid styleClass="ui-panelgrid-blank">
 
 									<p:commandButton onclick="PF('verFacturacion').show();"
 										update=":formVerFacturacion,@this" process="@this"
 										icon="ui-icon-search"
 										actionListener="#{muestraController.buscarFacturas}"
-										value="Facturas">
+										value="Listado de Facturas">
 									</p:commandButton>
 
 								</h:panelGrid>
-
-								<br /> <br />
-
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
-
-									<p:outputLabel id="lblFactura" for="factura" value="Factura: "
-										style="color:white!important" />
-									<p:inputText id="factura"
-										value="#{muestraController.nuevaMuestra.idFactura}"
-										required="true" requiredMessage="Debe Seleccionar una Factura"
-										size="30" disabled="true">
-									</p:inputText>
-
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{muestraController.nuevaMuestra.codigoMCliente}"
-										required="true"
-										requiredMessage="Debe Ingresar el nombre de la Muestra"
-										maxlength="50" size="30">
-									</p:inputText>
-
-									<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
-										style="color:white!important" />
-									<p:calendar id="fecha"
-										value="#{muestraController.nuevaMuestra.fechaTomaM}"
-										effect="fold" size="30" />
-
-									<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
-										value="Tipo de Preservante: " style="color:white!important" />
-									<p:inputText id="tipoPreservante"
-										value="#{muestraController.nuevaMuestra.tipopreservanteM}"
-										maxlength="50" size="30">
-									</p:inputText>
-
-									<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
-										value="Tipo de Muestra: " style="color:white!important" />
-									<p:selectOneMenu id="tipoMuestra"
-										value="#{muestraController.nuevaMuestra.tipoM}" size="30">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
-										<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
-										value="Tipo de Envase: " style="color:white!important" />
-									<p:selectOneMenu id="tipoEnvase"
-										value="#{muestraController.nuevaMuestra.tipoenvaseM}"
-										size="30">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
-										<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
-										<f:selectItem itemLabel="LATA" itemValue="LATA" />
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblPreservante" for="preservante"
-										value="Preservante: " style="color:white!important" />
-									<p:selectOneMenu id="preservante"
-										value="#{muestraController.nuevaMuestra.preservanteM}">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Si" itemValue="Si" />
-										<f:selectItem itemLabel="No" itemValue="No" />
-
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblRefrigeración" for="refrigeracion"
-										value="Refrigeración: " style="color:white!important" />
-									<p:selectOneMenu id="refrigeracion"
-										value="#{muestraController.nuevaMuestra.refrigeracionM}">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Si" itemValue="Si" />
-										<f:selectItem itemLabel="No" itemValue="No" />
-
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
-										style="color:white!important" />
-									<p:inputTextarea id="desc"
-										value="#{muestraController.nuevaMuestra.descrM}"
-										maxlength="200" rows="5" cols="30" autoResize="false" />
-
-									<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
-										style="color:white!important" />
-									<p:inputTextarea id="origen"
-										value="#{muestraController.nuevaMuestra.origenM}"
-										maxlength="200" rows="5" cols="30" autoResize="false" />
-								</p:panelGrid>
-							</div>
+							</center>
 							<br /> <br />
 
-							<center>
-								<h:panelGrid columns="2">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
-									<p:commandLink
-										actionListener="#{muestraController.agregarMuestra}"
-										process="@this,nombre,desc,fecha,tipoMuestra,origen,tipoEnvase,preservante,tipoPreservante,refrigeracion"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevaMuestra"
-										oncomplete="PF('tblMuestra').filter()">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-										</center>
+								<p:outputLabel id="lblFactura" for="factura" value="Factura: "
+									style="color:white!important" />
+								<p:inputText id="factura"
+									value="#{muestraController.nuevaMuestra.idFactura}"
+									required="true" requiredMessage="Debe Seleccionar una Factura"
+									size="30" disabled="true">
+								</p:inputText>
 
-									</p:commandLink>
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{muestraController.nuevaMuestra.codigoMCliente}"
+									required="true"
+									requiredMessage="Debe Ingresar el nombre de la Muestra"
+									maxlength="50" size="30">
+								</p:inputText>
 
-									<p:commandLink onclick="PF('nuevaMuestra').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+								<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
+									style="color:white!important" />
+								<p:calendar id="fecha"
+									value="#{muestraController.nuevaMuestra.fechaTomaM}"
+									effect="fold" size="30" />
 
-								</h:panelGrid>
+								<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
+									value="Tipo de Preservante: " style="color:white!important" />
+								<p:inputText id="tipoPreservante"
+									value="#{muestraController.nuevaMuestra.tipopreservanteM}"
+									maxlength="50" size="30">
+								</p:inputText>
 
-							</center>
+								<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
+									value="Tipo de Muestra: " style="color:white!important" />
+								<p:selectOneMenu id="tipoMuestra"
+									value="#{muestraController.nuevaMuestra.tipoM}" size="30">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
+									<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
+								</p:selectOneMenu>
 
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
+								<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
+									value="Tipo de Envase: " style="color:white!important" />
+								<p:selectOneMenu id="tipoEnvase"
+									value="#{muestraController.nuevaMuestra.tipoenvaseM}" size="30">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
+									<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
+									<f:selectItem itemLabel="LATA" itemValue="LATA" />
+								</p:selectOneMenu>
 
-			<!-- ************************************** Panel de Modificar ************************************ -->
+								<p:outputLabel id="lblPreservante" for="preservante"
+									value="Preservante: " style="color:white!important" />
+								<p:selectOneMenu id="preservante"
+									value="#{muestraController.nuevaMuestra.preservanteM}">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
 
-			<p:dialog id="panelModificarMuestra" resizable="true"
-				widgetVar="ModificarMuestra" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Modificar Muestra" >
+								</p:selectOneMenu>
 
-				<h:form id="formModificarMuestra">
+								<p:outputLabel id="lblRefrigeración" for="refrigeracion"
+									value="Refrigeración: " style="color:white!important" />
+								<p:selectOneMenu id="refrigeracion"
+									value="#{muestraController.nuevaMuestra.refrigeracionM}">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
 
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+								</p:selectOneMenu>
 
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{muestraController.nuevaMuestra.descrM}"
+									maxlength="200" rows="5" cols="30" autoResize="false" />
+
+								<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
+									style="color:white!important" />
+								<p:inputTextarea id="origen"
+									value="#{muestraController.nuevaMuestra.origenM}"
+									maxlength="200" rows="5" cols="30" autoResize="false" />
+							</p:panelGrid>
+						</div>
 						<br />
 						<br />
+
+
 						<center>
-							<div class="ui-fluid" align="center">
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
-									<p:outputLabel id="lblID" for="id" value="ID: "
-										style="color:white!important" />
-									<p:outputLabel id="id"
-										value="#{muestraController.muestra.idMuestra}">
-									</p:outputLabel>
+							<h:panelGrid columns="2">
 
-									<p:outputLabel id="lblFactura" for="factura" value="Factura: "
-										style="color:white!important" />
-									<p:outputLabel id="factura"
-										value="#{muestraController.muestra.idFactura}">
-									</p:outputLabel>
+								<p:commandLink
+									actionListener="#{muestraController.agregarMuestra}"
+									process="@this,nombre,desc,fecha,tipoMuestra,origen,tipoEnvase,preservante,tipoPreservante,refrigeracion"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaMuestra,formVerFacturacion"
+									oncomplete="PF('tblMuestra').filter()">
 
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{muestraController.muestra.codigoMCliente}"
-										required="true"
-										requiredMessage="Debe Ingresar el nombre de la Concentración"
-										maxlength="50" size="30">
-									</p:inputText>
+									<h:graphicImage value="/images/archivos/guardar.png"
+										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+										height="35" />
 
-									<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
-										style="color:white!important" />
-									<p:calendar id="fecha"
-										value="#{muestraController.muestra.fechaTomaM}" effect="fold"
-										size="30" />
+								</p:commandLink>
 
-									<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
-										value="Tipo de Preservante: " style="color:white!important" />
-									<p:inputText id="tipoPreservante"
-										value="#{muestraController.muestra.tipopreservanteM}"
-										maxlength="50" size="30">
-									</p:inputText>
+								<p:commandLink onclick="PF('nuevaMuestra').hide();"
+									process="@none">
 
+									<p:graphicImage value="/images/archivos/atras.png" width="35"
+										height="36" title="Atrás">
+									</p:graphicImage>
 
-									<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
-										value="Tipo de Muestra: " style="color:white!important" />
-									<p:selectOneMenu id="tipoMuestra"
-										value="#{muestraController.muestra.tipoM}" size="30">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
-										<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
-									</p:selectOneMenu>
+								</p:commandLink>
 
-									<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
-										value="Tipo de Envase: " style="color:white!important" />
-									<p:selectOneMenu id="tipoEnvase"
-										value="#{muestraController.muestra.tipoenvaseM}" size="30">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
-										<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
-										<f:selectItem itemLabel="LATA" itemValue="LATA" />
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblPreservante" for="preservante"
-										value="Preservante: " style="color:white!important" />
-									<p:selectOneMenu id="preservante"
-										value="#{muestraController.muestra.preservanteM}">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Si" itemValue="Si" />
-										<f:selectItem itemLabel="No" itemValue="No" />
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblRefrigeración" for="refrigeracion"
-										value="Refrigeración: " style="color:white!important" />
-									<p:selectOneMenu id="refrigeracion"
-										value="#{muestraController.muestra.refrigeracionM}">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Si" itemValue="Si" />
-										<f:selectItem itemLabel="No" itemValue="No" />
-
-									</p:selectOneMenu>
-
-									<p:outputLabel />
-									<p:outputLabel>
-									</p:outputLabel>
-
-									<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
-										style="color:white!important" />
-									<p:inputTextarea id="desc"
-										value="#{muestraController.muestra.descrM}" maxlength="200"
-										rows="5" cols="30" autoResize="false" />
-
-									<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
-										style="color:white!important" />
-									<p:inputTextarea id="origen"
-										value="#{muestraController.muestra.origenM}" maxlength="200"
-										rows="5" cols="30" autoResize="false" />
-
-								</p:panelGrid>
-							</div>
-							<br /> <br />
-
-							<center>
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{muestraController.modificarMuestra}"
-										process="@this,id,factura,nombre,desc,fecha,tipoMuestra,origen,tipoEnvase,preservante,tipoPreservante,refrigeracion"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal],[id$=formVerMuestra]),formModificarMuestra"
-										oncomplete="PF('tblMuestra').filter()">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Modificar" style="border:0px solid #CAD6E0;"
-												width="36" height="35" />
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('ModificarMuestra').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
+							</h:panelGrid>
 
 						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
-			<!-- ************************************** Panel Ver Facturación ************************************ -->
+			<!-- Dialogo de Listado de Facturas -->
 
 			<p:dialog id="panelVerFacturacion" resizable="false"
 				widgetVar="verFacturacion" modal="true" showEffect="explode"
@@ -502,11 +349,11 @@
 
 							<div class="ui-fluid" align="center">
 								<p:dataTable value="#{muestraController.listaFactura}"
-									id="selectFactura" widgetVar="tblFactura" var="factura"
+									id="tblFactura" widgetVar="tblFactura" var="factura"
 									style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									rows="10" paginator="true"
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									rows="7" paginator="true"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="5,10,15"
 									emptyMessage="No se han encontrado coinicidencias"
@@ -542,10 +389,11 @@
 							<center>
 								<h:panelGrid columns="1">
 
-									<p:commandLink process="@this,selectFactura"
-										action="#{muestraController.cambiarIdFactura}"
-										update="formNuevaMuestra"
+									<p:commandLink process="@this,tblFactura"
+										action="#{muestraController.seleccionarFactura}"
+										update="@([id$=messagesForm],[id$=formNuevaMuestra])"
 										onclick="PF('verFacturacion').hide();">
+										
 										<p:graphicImage value="/images/archivos/aceptar.png"
 											width="35" height="36" title="Seleccionar">
 										</p:graphicImage>
@@ -559,7 +407,8 @@
 				</h:form>
 			</p:dialog>
 
-			<!-- ************************************** Panel Ver Muestra ************************************ -->
+			<!-- Dialogo de Ver muestra   -->
+
 			<center>
 				<p:dialog id="panelVerMuestra" resizable="true"
 					widgetVar="verMuestra" modal="true" showEffect="explode"
@@ -635,7 +484,7 @@
 
 									<p:commandLink onclick="PF('verMuestra').hide();"
 										process="@this"
-										update="@([id$=messagesForm],[id$=formPrincipal])"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formVerFacturacion"
 										oncomplete="PF('tblMuestra').filter()">
 										<p:graphicImage value="/images/archivos/atras.png" width="35"
 											height="36" title="Atrás">
@@ -651,11 +500,175 @@
 				</p:dialog>
 			</center>
 
-			<!--  ************************************** Panel de Eliminar ************************************-->
+			<!-- Panel de actualizacion  -->
+
+			<p:dialog id="panelModificarMuestra" resizable="true"
+				widgetVar="modificarMuestra" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Muestra">
+
+
+				<h:form id="formModificarMuestra">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+
+							<div class="ui-fluid">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel id="lblID" for="id" value="ID: "
+										style="color:white!important" />
+									<p:outputLabel id="id"
+										value="#{muestraController.muestra.idMuestra}">
+									</p:outputLabel>
+
+									<p:outputLabel id="lblFactura" for="factura" value="Factura: "
+										style="color:white!important" />
+									<p:outputLabel id="factura"
+										value="#{muestraController.muestra.idFactura}">
+									</p:outputLabel>
+
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{muestraController.muestra.codigoMCliente}"
+										required="true"
+										requiredMessage="Debe Ingresar el nombre de la Muestra"
+										maxlength="50" size="30">
+									</p:inputText>
+
+									<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
+										style="color:white!important" />
+									<p:calendar id="fecha"
+										value="#{muestraController.muestra.fechaTomaM}" effect="fold"
+										size="30" />
+
+									<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
+										value="Tipo de Preservante: " style="color:white!important" />
+									<p:inputText id="tipoPreservante"
+										value="#{muestraController.muestra.tipopreservanteM}"
+										maxlength="50" size="30">
+									</p:inputText>
+
+
+									<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
+										value="Tipo de Muestra: " style="color:white!important" />
+									<p:selectOneMenu id="tipoMuestra"
+										value="#{muestraController.muestra.tipoM}" size="30">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
+										<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
+									</p:selectOneMenu>
+
+									<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
+										value="Tipo de Envase: " style="color:white!important" />
+									<p:selectOneMenu id="tipoEnvase"
+										value="#{muestraController.muestra.tipoenvaseM}" size="30">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
+										<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
+										<f:selectItem itemLabel="LATA" itemValue="LATA" />
+									</p:selectOneMenu>
+
+									<p:outputLabel id="lblPreservante" for="preservante"
+										value="Preservante: " style="color:white!important" />
+									<p:selectOneMenu id="preservante"
+										value="#{muestraController.muestra.preservanteM}">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
+									</p:selectOneMenu>
+
+									<p:outputLabel id="lblRefrigeración" for="refrigeracion"
+										value="Refrigeración: " style="color:white!important" />
+									<p:selectOneMenu id="refrigeracion"
+										value="#{muestraController.muestra.refrigeracionM}">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
+
+									</p:selectOneMenu>
+
+									<p:outputLabel />
+									<p:outputLabel>
+									</p:outputLabel>
+
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{muestraController.muestra.descrM}" maxlength="200"
+										rows="5" cols="30" autoResize="false" />
+
+									<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
+										style="color:white!important" />
+									<p:inputTextarea id="origen"
+										value="#{muestraController.muestra.origenM}" maxlength="200"
+										rows="5" cols="30" autoResize="false" />
+
+								</p:panelGrid>
+
+							</div>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{muestraController.modificarMuestra}"
+										process="@this,id,factura,nombre,desc,fecha,tipoMuestra,origen,tipoEnvase,preservante,tipoPreservante,refrigeracion"
+										update="@this,@([id$=messagesForm],[id$=formprincipal],[id$=formVerMuestra]),formModificarMuestra"
+										oncomplete="PF('tblMuestra').filter()">
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('modificarMuestra').hide();"
+										process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+			<!-- Panel de Eliminar -->
 
 			<h:form id="eliminarMuestra">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que deseas eliminar esta Muestra"
+					message="¿Esta seguro(a) que desea eliminar esta Muestra"
 					header="Eliminar Muestra" severity="warn"
 					widgetVar="cdEliminarMuestra">
 					<center>
@@ -663,7 +676,7 @@
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdEliminarMuestra').hide();"
 							actionListener="#{muestraController.eliminarMuestra}"
-							update="@([id$=messagesForm],[id$=formPrincipal])"
+							update="@([id$=messagesForm],[id$=formprincipal])"
 							oncomplete="PF('tblMuestra').filter()" />
 
 						<p:commandButton value="Cancelar"
@@ -672,19 +685,18 @@
 					</center>
 
 				</p:confirmDialog>
-
 			</h:form>
-
-			<!-- ************************************** Cierre ********************************************** -->
 		</h:body>
 
 		<script type="text/javascript">
-			function start() {
-    			PF('statusDialog').show();
-				}
-				function stop() {
-    			PF('statusDialog').hide();
-				}
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
 		</script>
 
 	</ui:define>

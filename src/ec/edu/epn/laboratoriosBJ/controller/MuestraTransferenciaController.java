@@ -240,7 +240,7 @@ public class MuestraTransferenciaController implements Serializable {
 	}
 
 	// ****** Seleccion de Transferencias ****//*
-	public void seleccionarIdTransferencia() {
+	public void seleccionarTransferencia() {
 
 		try {
 			getNuevaMuestra().setIdTi(selectTransferenciaInterna.getIdTi());
@@ -249,6 +249,9 @@ public class MuestraTransferenciaController implements Serializable {
 
 			System.out.println(
 					"este es el id de Transferencia: " + selectTransferenciaInterna.getIdTi() + getNuevaMuestra().getIdTi());
+			
+			selectTransferenciaInterna= new TransferenciaInterna();
+			
 		} catch (Exception e) {
 			
 			mensajeError("No se ha seleccionado ninguna Transferencia");

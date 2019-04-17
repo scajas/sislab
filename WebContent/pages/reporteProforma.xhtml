@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="pageTitle">Proforma</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+		<h:body>
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+			<h:form id="formprincipal">
+
+				<p:panel>
+					<p:fieldset legend="Buscar Proformas"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						<center>
+							<h:form id="formBuscar">
+								<div class="ui-fluid">
+
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,,pnlGridFondoFilas"
+										id="pnlgBusquedaServicio">
+
+										<h:outputLabel value="Ingrese Fecha Inicial: "
+											style="font-size: 15px" />
+
+										<p:calendar id="fechaInicio"
+											value="#{reporteProformaController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es" required="true"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Inicial Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button">
+											<p:ajax event="dateSelect" update="fechaFin" />
+										</p:calendar>
+
+										<h:outputLabel value="Ingrese Fecha Final: "
+											style="font-size: 15px" />
+										<p:calendar id="fechaFin"
+											value="#{reporteProformaController.fechaFin}"
+											mindate="#{reporteProformaController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es" required="true"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Final Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="35">
+											<f:attribute name="fechaInicio"
+												value="#{reporteProformaController.fechaInicio}" />
+											<f:validator validatorId="primeDateRangeValidator" />
+										</p:calendar>
+
+										<h:outputLabel value="Tipo de Cliente:"
+											style="font-size: 15px" size="50" />
+										<p:selectOneMenu id="tipoCliente"
+											value="#{reporteProformaController.nombreCli}"
+											style="FONT-FAMILY: arial;" size="35">
+											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
+											<f:selectItems
+												value="#{reporteProformaController.listaTipoCliente}"
+												var="cliente" itemLabel="#{cliente.tipoTcl}"
+												itemValue="#{cliente.tipoTcl}" />
+
+										</p:selectOneMenu>
+
+										<h:outputLabel value="Estado:"
+											style="FONT-FAMILY: arial; font-size: 15px" />
+										<p:selectOneMenu id="estado"
+											value="#{reporteProformaController.proforma.estadoPo}"
+											style="FONT-FAMILY: arial;font-size: 17px;" size="35">
+											<f:selectItem itemLabel="Seleccione..." itemValue="" />
+											<f:selectItem itemLabel="ACEPTADA" itemValue="Aceptada" />
+											<f:selectItem itemLabel="PENDIENTE" itemValue="Pendiente" />
+											<f:selectItem itemLabel="FACTURADA" itemValue="Facturada" />
+											<f:selectItem itemLabel="TRANSF. INT."
+												itemValue="Transf. Int." />
+										</p:selectOneMenu>
+									</p:panelGrid>
+
+									<br /> <br />
+
+									<p:panelGrid columns="2" style="width:200px "
+										columnClasses="ui-grid-col-2" layout="grid"
+										styleClass="ui-panelgrid-blank">
+
+										<p:commandLink
+											actionListener="#{reporteProformaController.buscarCliente}"
+											update="@([id$=tblProforma]),@([id$=messagesForm])"
+											process="@this,formBuscar">
+
+											<h:graphicImage value="/images/archivos/busqueda.png"
+												class="btn bt-success" title="Buscar"
+												style="border:0px solid #CAD6E0;" width="35" height="35 " />
+
+										</p:commandLink>
+
+
+									</p:panelGrid>
+									<br /> <br />
+								</div>
+							</h:form>
+						</center>
+					</p:fieldset>
+					<br />
+					<p:dataTable id="tblProforma"
+						value="#{reporteProformaController.listaProforma}" var="proforma"
+						emptyMessage="No se pudo encontrar ninguna coincidencia"
+						resizableColumns="true" rows="10" paginator="true"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15"
+						style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+						paginatorPosition="bottom">
+
+
+						<p:column headerText="Proforma">
+							<f:facet name="header">
+								<h:outputText value="Proforma" />
+							</f:facet>
+							<h:outputText value="#{proforma.idProforma}" />
+						</p:column>
+
+						<p:column headerText="Fecha">
+							<f:facet name="header">
+								<h:outputText value="Fecha" />
+							</f:facet>
+							<h:outputText value="#{proforma.fecha}" />
+						</p:column>
+
+						<p:column headerText="Cliente">
+							<f:facet name="header">
+								<h:outputText value="Nombre del Cliente" />
+							</f:facet>
+							<h:outputText value="#{proforma.cliente.nombreCl}" />
+						</p:column>
+
+						<p:column headerText="Tipo de Cliente">
+							<f:facet name="header">
+								<h:outputText value="Tipo de Cliente" />
+							</f:facet>
+							<h:outputText value="#{proforma.cliente.tipocliente.tipoTcl}" />
+						</p:column>
+
+						<p:column headerText="Estado">
+							<f:facet name="header">
+								<h:outputText value="Estado" />
+							</f:facet>
+							<h:outputText value="#{proforma.estadoPo}" />
+						</p:column>
+
+						<p:column headerText="SubTotal">
+							<f:facet name="header">
+								<h:outputText value="Subtotal" />
+							</f:facet>
+							<h:outputText value="#{proforma.subtotalPo}" />
+						</p:column>
+
+						<p:column headerText="IVA">
+							<f:facet name="header">
+								<h:outputText value="IVA" />
+							</f:facet>
+							<h:outputText value="#{proforma.ivaPo}" />
+						</p:column>
+
+						<p:column headerText="Total">
+							<f:facet name="header">
+								<h:outputText value="Total" />
+							</f:facet>
+							<h:outputText value="#{proforma.totalPo}" />
+						</p:column>
+					</p:dataTable>
+
+					<br />
+					<br />
+
+					<center>
+
+						<!-- Exportar a Excel Sin Formato  -->
+						<h3>Exportar sin Formato</h3>
+						<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+							<h:graphicImage value="/images/excel.png" width="35px"
+								height="35px" />
+							<pe:exporter type="xlsx" target="tblProforma" fileName="Proforma"
+								tableTitle="Proforma" selectionOnly="false"
+								orientation="Landscape" datasetPadding="4" />
+						</h:commandLink>
+
+						<br /> <br />
+						<!-- Panel de Exportacion Con Formato  -->
+						<p:commandButton onclick="PF('seleccionArchivo').show();"
+							update="@this" process="@this" icon="ui-icon-search"
+							value="Exportar">
+						</p:commandButton>
+					</center>
+				</p:panel>
+
+			</h:form>
+
+			<p:dialog modal="true" widgetVar="statusDialog" header="Descargando!"
+				draggable="false" closable="false" resizable="false">
+				<p:graphicImage name="/images/archivos/cargando.gif" />
+			</p:dialog>
+
+			<p:dialog id="seleccionArchivo1" resizable="true"
+				widgetVar="seleccionArchivo" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Reporte Proforma">
+
+
+				<h:form id="seleccionArchivo2">
+
+					<p:fieldset legend="PARÁMETROS DE SELECCIÓN"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<h:outputLabel value="Formato:" style="font-size: 17px" size="30" />
+						<p:selectOneMenu style="FONT-FAMILY: arial;" size="30">
+							<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
+							<f:selectItem itemLabel="PDF" itemValue="pdf" />
+							<f:selectItem itemLabel="EXCEL" itemValue="excel" />
+
+						</p:selectOneMenu>
+
+						<br />
+						<br />
+						<center>
+							<p:commandButton value="Generar Reporte" type="button" />
+							<p:commandButton value="Salir"
+								onclick="PF('seleccionArchivo').hide();" type="button" />
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+		    PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
+		</script>
+
+	</ui:define>
+</ui:composition>

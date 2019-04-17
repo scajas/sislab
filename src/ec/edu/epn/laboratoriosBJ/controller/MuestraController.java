@@ -41,7 +41,7 @@ public class MuestraController implements Serializable {
 	/** SERVICIOS **/
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/MuestraDAOImplement!ec.edu.epn.laboratorioBJ.beans.MuestraDAO")
 	private MuestraDAO muestraI;
-	
+
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
 	private UnidadDAO unidadI;
 	/****************************************************************************/
@@ -72,8 +72,8 @@ public class MuestraController implements Serializable {
 
 	}
 
-	/****** Buscar Facturas ****/
-	public List<Factura> buscarFacturas() { // 
+	/****** Metodo de Busqueda de Facturas ****/
+	public List<Factura> buscarFacturas() { //
 		try {
 
 			Long idUsuario = su.id_usuario_log;
@@ -88,6 +88,7 @@ public class MuestraController implements Serializable {
 	}
 
 	/****** Mensajes Personalizados ****/
+	
 	public void mensajeError(String mensaje) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -95,13 +96,13 @@ public class MuestraController implements Serializable {
 	}
 
 	public void mensajeInfo(String mensaje) {
+		
 		FacesContext context = FacesContext.getCurrentInstance();
-
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
-	/****** Agregar Nueva Muestra****/
+	/****** Agregar Nueva Muestra ****/
 
 	public void agregarMuestra() {
 
@@ -110,9 +111,6 @@ public class MuestraController implements Serializable {
 
 				mensajeError(
 						"Ha ocurrido un error, La Muestra ( " + nuevaMuestra.getCodigoMCliente() + " ) ya existe.");
-
-				nuevaMuestra = new Muestra();
-
 			} else {
 
 				Integer idMuestra = muestraI.generarId("Muestra", "auxMuestra");
@@ -123,7 +121,7 @@ public class MuestraController implements Serializable {
 				UnidadLabo uni = new UnidadLabo();
 
 				uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-				
+
 				switch (codigoMuestra.length()) {
 				case 1:
 					nuevaMuestra.setIdMuestra(uni.getCodigoU() + "-MU" + "0000" + codigoMuestra);
@@ -159,7 +157,7 @@ public class MuestraController implements Serializable {
 
 	}
 
-	// ****** Modificar Muestra ****//*
+	/****** Modificar Muestra ****/
 
 	public void modificarMuestra() {
 
@@ -187,7 +185,7 @@ public class MuestraController implements Serializable {
 		}
 	}
 
-	// ****** Eliminar Estado Producto ****//*
+	/****** Eliminar Muestra ****/
 
 	public void eliminarMuestra() {
 
@@ -214,7 +212,7 @@ public class MuestraController implements Serializable {
 
 	}
 
-	// ****** Busqueda de Muestra ****//*
+	/****** Busqueda de Muestra ****/
 
 	private boolean buscarMuesta(String valor) {
 
@@ -238,28 +236,31 @@ public class MuestraController implements Serializable {
 		return resultado;
 	}
 
-	// ****** Validacion de Nombre ****//*
+	/****** Validación del Nombre ****/
 	public void pasarNombre(String nombre) {
 		setNombreMuestra(nombre);
 	}
 
-	// ****** Seleccion de Facturas ****//*
-	public void cambiarIdFactura() {
-		
+	/****** Selección de Facturas ****/
+	
+	public void seleccionarFactura() {
 
 		try {
 			getNuevaMuestra().setIdFactura(selectFactura.getIdFactura());
-
 			mensajeInfo("Se seleccionó la Factura (" + selectFactura.getIdFactura());
 			System.out.println(
 					"este es el id de factura: " + selectFactura.getIdFactura() + getNuevaMuestra().getIdFactura());
+			
+			selectFactura= new Factura();
+			
 		} catch (Exception e) {
 			mensajeError("No se ha seleccionado ninguna factura");
 		}
 
 	}
 
-	// ****** Obtener Estados de una Factura ****//*
+	/****** Metodo de Obtener Facturas ****/
+	
 	public String metodo(String idEstadoFactura) {
 		String nombre = "";
 
