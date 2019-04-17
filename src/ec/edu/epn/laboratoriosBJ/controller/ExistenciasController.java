@@ -36,6 +36,7 @@ import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Grado;
 import ec.edu.epn.laboratorioBJ.entities.Hidratacion;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
+import ec.edu.epn.laboratorioBJ.entities.Metodo;
 import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Posgiro;
 import ec.edu.epn.laboratorioBJ.entities.Presentacion;
@@ -113,7 +114,7 @@ public class ExistenciasController implements Serializable {
 	private List<Existencia> existencias = new ArrayList<>();
 	private List<Existencia> filtrarExistencias = new ArrayList<>();// filtro
 	private List<ProductoLab> productos = new ArrayList<>();// filtro
-	private List<Movimientosinventario> movimientosinventarios= new ArrayList<>();
+	private List<Movimientosinventario> movimientosinventarios = new ArrayList<>();
 	private Existencia nuevoExistencia;
 	private Existencia existencia;// eliminar y editar
 	private String nombreTP;
@@ -189,31 +190,31 @@ public class ExistenciasController implements Serializable {
 
 			// init de Presentacion
 			presentaciones = presentacionI.getAll(Presentacion.class);
-			presentacion = new Presentacion();
+			presentacion = existenciasI.reemplazarNullPresentacion();
 
 			// init de Estadoproducto
 			estadoproductos = estadoProductoI.getAll(Estadoproducto.class);
-			estadoproducto = new Estadoproducto();
+			estadoproducto = existenciasI.reemplazarNullEstadoPro();
 
 			// init de Grado
 			grados = gradoI.getAll(Grado.class);
-			grado = new Grado();
+			grado = existenciasI.reemplazarNullGrado();
 
 			// init de Posgiro
 			posgiros = posgiroI.getAll(Posgiro.class);
-			posgiro = new Posgiro();
+			posgiro = existenciasI.reemplazarNullPosgiro();
 
 			// init de Hidratacion
 			hidrataciones = hidratacionI.getAll(Hidratacion.class);
-			hidratacion = new Hidratacion();
+			hidratacion = existenciasI.reemplazarNullHidratacion();
 
 			// init de Caracteristica
 			caracteristicas = caracteristicaI.getAll(Caracteristica.class);
-			caracteristica = new Caracteristica();
+			caracteristica = existenciasI.reemplazarNullCaracteristica();
 
 			// init de Concentracion
 			concentracions = concentracionI.getAll(Concentracion.class);
-			concentracion = new Concentracion();
+			concentracion = existenciasI.reemplazarNullConcentracion();
 
 			// init de Tipoproducto
 			tipoproductos = tipoProductoI.getAll(Tipoproducto.class);
@@ -221,15 +222,11 @@ public class ExistenciasController implements Serializable {
 
 			// init de Pureza
 			purezas = purezaI.getAll(Pureza.class);
-			pureza = new Pureza();
+			pureza = existenciasI.reemplazarNullPureza();
 
 			// init de Bodega
 			bodegas = bodegaI.getAll(laboratory.class);
-			bodega = new laboratory();
-
-			// init de Unidadmedida
-			unidadmedidas = unidadMedidaI.getAll(Unidadmedida.class);
-			unidadmedida = new Unidadmedida();
+			bodega = existenciasI.reemplazarNullBodega();
 
 			// init de Unidadmedida
 			unidadmedidas = unidadMedidaI.getAll(Unidadmedida.class);
@@ -341,7 +338,7 @@ public class ExistenciasController implements Serializable {
 				default:
 					break;
 				}
-				
+
 				System.out.println("Este es el nuevo id: " + nuevoExistencia.getIdExistencia());
 
 				setNuevaExistenciaSelect(); // setea todos los valores del
@@ -352,7 +349,8 @@ public class ExistenciasController implements Serializable {
 				existenciasI.save(nuevoExistencia);
 				existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 
-				mensajeInfo("La existencia ( " + nuevoExistencia.getIdExistencia() + " ) se ha almacenado exitosamente");
+				mensajeInfo(
+						"La existencia ( " + nuevoExistencia.getIdExistencia() + " ) se ha almacenado exitosamente");
 
 				nuevoExistencia = new Existencia();
 
@@ -445,7 +443,61 @@ public class ExistenciasController implements Serializable {
 		}
 	}
 
-	/****** Reemplazar valores de la tabla ****/
+	public void changeEmpty() {
+		System.out.println("ESTE ES EL VALOR QUE TRAE: " + presentacionSelect.getNombrePrs());
+	}
+
+	/****** Reemplazar valores de la tabla o formulario ****/
+
+	public String pureza(String idPureza) {
+		String nombre = "";
+
+		Pureza purezaN = new Pureza();
+
+		purezaN = existenciasI.buscarPurezaById(idPureza);
+
+		if (purezaN == null) {
+			nombre = "N/A";
+		} else {
+			nombre = purezaN.getNombrePureza();
+		}
+
+		return nombre;
+	}
+
+	public String hidratacion(String idHidratacion) {
+		String nombre = "";
+
+		Hidratacion hidratacionN = new Hidratacion();
+
+		hidratacionN = existenciasI.buscarHidratacionById(idHidratacion);
+
+		if (hidratacionN == null) {
+			nombre = "N/A";
+		} else {
+			nombre = hidratacionN.getNombreHi();
+		}
+
+		System.out.println("Esteeeeeeeeeeeeeeeeeeeeeeeeee: " + hidratacionN.getNombreHi());
+
+		return nombre;
+	}
+
+	public String producto(String id) {
+		String nombre = "";
+
+		Existencia existenciaPro = new Existencia();
+
+		existenciaPro = existenciasI.buscarExistenciaById(id);
+
+		if (existenciaPro == null) {
+			nombre = "N/A";
+		} else {
+			nombre = existenciaPro.getProducto().getNombrePr();
+		}
+
+		return nombre;
+	}
 
 	/****** Getter y Setter de Estado Producto ****/
 

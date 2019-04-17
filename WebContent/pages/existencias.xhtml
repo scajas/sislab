@@ -275,9 +275,9 @@
 											size="31" />
 
 										<p:outputLabel id="lblHidratacion" for="hidratacion"
-											value="Servicio: " style="color:white!important" />
+											value="Hidratación " style="color:white!important" />
 										<p:outputLabel id="hidratacion"
-											value="#{existenciasController.existencia.idHidratacion}"
+											value="#{existenciasController.hidratacion(existenciasController.existencia.idHidratacion)}"
 											size="31" />
 
 										<p:outputLabel id="lblCaracteristica" for="caracteristica"
@@ -330,7 +330,8 @@
 										<p:outputLabel id="lblPureza" for="pureza" value="Pureza:  "
 											style="color:white!important" />
 										<p:outputLabel id="pureza"
-											value="#{existenciasController.existencia.purezaE}" size="31" />
+											value="#{existenciasController.pureza(existenciasController.existencia.purezaE)}"
+											size="31" />
 
 										<p:outputLabel id="lblFechaC" for="fechaC"
 											value="Fecha Caducidad: " style="color:white!important" />
@@ -420,7 +421,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								<f:facet name="header">
 									<h:outputText value="Nombre Producto" />
 								</f:facet>
-								<h:outputText value="#{movimiento.idExistencia}" />
+								<h:outputText value="#{existenciasController.producto(movimiento.idExistencia)}" />
 							</p:column>
 
 							<p:column headerText="F. Ingreso">
@@ -515,7 +516,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 	border-width: 1px;
 	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-						<!-- **************************  Panel - Buscar Producto   *************************** -->
+						<!-- **************************  Sub-Panel - Buscar Producto   *************************** -->
 						<div class="ui-g">
 							<div class="ui-g-4">
 								<p:fieldset
@@ -573,11 +574,11 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								</p:fieldset>
 							</div>
 
-							<!-- **************************  Panel - Registro General  *************************** -->
+							<!-- **************************  Sub-Panel - Registro General  *************************** -->
 
 							<div class="ui-g-8 ui-g-nopad">
 								<div class="ui-g-12">
-									<!-- **************************  Panel - Producto  *************************** -->
+									<!-- **************************  Sub-Panel - Producto  *************************** -->
 									<p:fieldset
 										style="border-radius: 10px 10px 10px 10px;
 										-moz-border-radius: 10px 10px 10px 10px;
@@ -611,7 +612,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									</p:fieldset>
 									<br />
 
-									<!-- **************************  Panel - Informacion Tecnica   *************************** -->
+									<!-- **************************  Sub-Panel - Informacion Tecnica   *************************** -->
 									<p:fieldset
 										style="border-radius: 10px 10px 10px 10px;
 	-moz-border-radius: 10px 10px 10px 10px;
@@ -630,8 +631,9 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 														value="Presentación: " style="color:white!important" />
 													<p:selectOneMenu id="presentacion"
 														value="#{existenciasController.presentacionSelect}">
+														<p:ajax listener="#{existenciasController.changeEmpty}" />
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.presentacion}" />
 														<f:selectItems
 															value="#{existenciasController.presentaciones}"
 															itemLabel="#{presentacion.nombrePrs}"
@@ -644,7 +646,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 													<p:selectOneMenu id="estadoPro"
 														value="#{existenciasController.estadoProSelect}">
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.estadoproducto}" />
 														<f:selectItems
 															value="#{existenciasController.estadoproductos}"
 															itemLabel="#{estadoPro.nombreEstp}"
@@ -657,7 +659,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 													<p:selectOneMenu id="grado"
 														value="#{existenciasController.gradoSelect}">
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.grado}" />
 														<f:selectItems value="#{existenciasController.grados}"
 															itemLabel="#{grado.nombreGr}" itemValue="#{grado}"
 															var="grado">
@@ -669,7 +671,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 													<p:selectOneMenu id="posicionGiro"
 														value="#{existenciasController.posGiroSelect}">
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.posgiro}" />
 														<f:selectItems value="#{existenciasController.posgiros}"
 															itemLabel="#{posgiro.nombrePg}" itemValue="#{posgiro}"
 															var="posgiro">
@@ -681,7 +683,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 													<p:selectOneMenu id="hidratacion"
 														value="#{existenciasController.hidratacionSelect}">
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.hidratacion}" />
 														<f:selectItems
 															value="#{existenciasController.hidrataciones}"
 															itemLabel="#{hidratacion.nombreHi}"
@@ -694,7 +696,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 													<p:selectOneMenu id="caracteristica"
 														value="#{existenciasController.caracteristicaSelect}">
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.caracteristica}" />
 														<f:selectItems
 															value="#{existenciasController.caracteristicas}"
 															itemLabel="#{caracteristica.nombreCr}"
@@ -707,7 +709,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 													<p:selectOneMenu id="concentracion"
 														value="#{existenciasController.concentracionSelect}">
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.concentracion}" />
 														<f:selectItems
 															value="#{existenciasController.concentracions}"
 															itemLabel="#{concentracion.nombreCon}"
@@ -750,7 +752,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									</p:fieldset>
 									<br />
 
-									<!-- **************************  Panel - Informacion General   *************************** -->
+									<!-- **************************  Sub-Panel - Informacion General   *************************** -->
 									<p:fieldset
 										style="border-radius: 10px 10px 10px 10px;
 	-moz-border-radius: 10px 10px 10px 10px;
@@ -773,7 +775,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 													<p:selectOneMenu id="bodega"
 														value="#{existenciasController.bodegaSelect}">
 														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
+															itemValue="#{existenciasController.bodega}" />
 														<f:selectItems value="#{existenciasController.bodegas}"
 															itemLabel="#{bodega.nombreBg}" itemValue="#{bodega}"
 															var="bodega">
