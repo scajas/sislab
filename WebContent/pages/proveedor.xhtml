@@ -10,7 +10,7 @@
 	xmlns:ps="http://primefaces.org/spark">
 
 
-	<ui:define name="pageTitle">Usuario</ui:define>
+	<ui:define name="pageTitle">Proveedor</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -73,22 +73,22 @@ document.body.innerHTML=originalContents;
 						<p:dataTable id="tblProveedor"
 							value="#{proveedorController.listaProveedorLab}" var="proveedor"
 							widgetVar="filterProveedor"
-							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{proveedorController.filtroProveedor}"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
-							
-							
-							
-							
-							
-							
-							 <p:column headerText="Nombre" filterBy="#{proveedor.nombrePv}">
-								<h:outputText value="#{proveedor.nombrePv}" />
 
+
+
+
+
+
+							<p:column headerText="Nombre" filterBy="#{proveedor.nombrePv}">
+								<h:outputText value="#{proveedor.nombrePv}" />
+								
 							</p:column>
 
 							<p:column headerText="Tipo"
@@ -354,7 +354,7 @@ document.body.innerHTML=originalContents;
 										</f:selectItems>
 
 									</p:selectOneMenu>
-											
+
 									<p:outputLabel id="lblRUC" for="ruc" value="Ruc: "
 										style="color:white!important" />
 									<p:inputText id="ruc"
@@ -384,7 +384,7 @@ document.body.innerHTML=originalContents;
 									<p:inputText id="email"
 										value="#{proveedorController.proveedor.emailPv}"
 										validatorMessage="Email no válido" maxlength="50">
-										
+
 									</p:inputText>
 
 
@@ -405,8 +405,7 @@ document.body.innerHTML=originalContents;
 										actionListener="#{proveedorController.modificarProveedor}"
 										process="@this,nom,provee,ruc,telef,dire,email,desc"
 										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarProveedor"
-										onsuccess="PF('modificarProveedor').hide();"
-										oncomplete="PF('modificarProveedor').show();">
+										onsuccess="PF('modificarProveedor').hide();">
 										<center>
 											<h:graphicImage value="/images/archivos/guardar.png"
 												title="Modificar" style="border:0px solid #CAD6E0;"

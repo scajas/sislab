@@ -7,21 +7,21 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
+//import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+//import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.primefaces.context.RequestContext;
+//import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.DetalleOrdenDAO;
-import ec.edu.epn.laboratorioBJ.beans.NormaDAO;
+//import ec.edu.epn.laboratorioBJ.beans.NormaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Detalleorden;
 import ec.edu.epn.laboratorioBJ.entities.Metodo;
-import ec.edu.epn.laboratorioBJ.entities.Norma;
+//import ec.edu.epn.laboratorioBJ.entities.Norma;
 
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
@@ -44,9 +44,8 @@ public class DetalleOrdenController implements Serializable {
 
 	private DetalleOrdenDAO detalleOrdenI;
 
-	// variables de la clase
 	private Detalleorden detalleOrden;
-	private List<Detalleorden> detallesOrden = new ArrayList<>();
+	private List<Detalleorden> detallesOrden = new ArrayList<Detalleorden>();
 
 	// Metodo Init
 	@PostConstruct
@@ -77,12 +76,12 @@ public class DetalleOrdenController implements Serializable {
 		return nombre;
 	}
 	
-	public String servicio(String idMetodo){
+	public String servicio(String idServicio){
 		String nombre = "";
 		
 		Metodo metodo = new Metodo();
 		
-		metodo = detalleOrdenI.findMetodoById(idMetodo);
+		metodo = detalleOrdenI.findMetodoById(idServicio);
 		
 		if(metodo == null){
 			nombre = "N/A";
@@ -92,7 +91,7 @@ public class DetalleOrdenController implements Serializable {
 		
 		return nombre;
 	}
-
+	
 	/*
 	 * get and set
 	 */

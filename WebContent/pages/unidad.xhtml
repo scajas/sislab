@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/spark">
+
+
+	<ui:define name="pageTitle">Unidad</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+
+//<![CDATA[
+function printDiv(divName){
+var f =new Date();
+var printContents =document.getElementById(divName).innerHTML;
+var originalContents =document.body.innerHTML;
+document.body.innerHTML=printContents;
+window.print();
+document.body.innerHTML=originalContents;
+}
+
+//]]>
+
+</script>
+		</h:head>
+
+
+		<h:body>
+
+
+			<h:form id="formprincipal">
+
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="false" life="3000" />
+				
+
+				<p:panel>
+
+					<p:fieldset legend="UNIDAD"
+						style="border-radius: 5px 5px 5px 5px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
+
+						<br />
+						<br />
+						<p:commandLink process="@this" onclick="PF('nuevoUnidad').show()"
+							update=":formnuevoUnidad,@this,@([id$=messagesForm])">
+							<center>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
+									height="35" />
+							</center>
+							<center>
+								<h:outputText value="Agregar Nuevo" />
+							</center>
+						</p:commandLink>
+						<br />
+						<br />
+
+						<p:dataTable id="tblUnidad"
+							value="#{unidadLaboController.listaUnidadLab}" var="unidad"
+							widgetVar="filterUnidad"
+							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{unidadLaboController.filtroUnidad}"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" rendered="true">
+
+							
+							
+							<p:column headerText="Id" filterBy="#{unidad.idUnidad}">
+								<h:outputText value="#{unidad.idUnidad}" />
+
+							</p:column>
+
+							<p:column headerText="Nombre" filterBy="#{unidad.nombreU}">
+								<h:outputText value="#{unidad.nombreU}" />
+
+							</p:column>
+							
+							<p:column headerText="Jefe" filterBy="#{unidad.jefeU}">
+								<h:outputText value="#{unidad.jefeU}" />
+
+							</p:column>
+							<p:column headerText="Descripción" filterBy="#{unidad.descrU}">
+								<h:outputText value="#{unidad.descrU}" />
+							</p:column>
+							
+							<p:column headerText="Siglas" filterBy="#{unidad.siglaU}">
+								<h:outputText value="#{unidad.siglaU}" />
+
+							</p:column>
+
+							<!-- ************************************** Boton Modificar************************************ -->
+							<p:column headerText="Acciones">
+
+								<center>
+									<p:commandLink
+										action="#{unidadLaboController.pasarNombre(unidad.nombreU)}"
+										update=":formModificarUnidad,@this,@([id$=messagesForm])"
+										process="@this,tblUnidad" icon="ui-icon-check"
+										oncomplete="PF('modificarUnidad').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{unidadLaboController.unidad}" value="#{unidad}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+
+									<p:commandLink process="@this" icon="ui-icon-check"
+										onclick="PF('cdEliminarUnidad').show();">
+
+										<h:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+										<f:setPropertyActionListener
+											target="#{unidadLaboController.unidad}" value="#{unidad}">
+										</f:setPropertyActionListener>
+
+									</p:commandLink>
+								</center>
+							</p:column>
+						</p:dataTable>
+					</p:fieldset>
+				</p:panel>
+			</h:form>
+
+			<!--***********Nuevo**************  -->
+
+			<p:dialog id="panelnuevoUnidad" resizable="true"
+				widgetVar="nuevoUnidad" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				header="Ingresar Unidad">
+
+				<h:form id="formnuevoUnidad">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{unidadLaboController.nuevoUnidad.nombreU}"
+									maxlength="150" required="true"
+									requiredMessage="Debe ingresar una nombre de unidad">
+								</p:inputText>
+								
+								
+								<p:outputLabel id="lblJefe" for="jefe" value="Jefe: "
+									style="color:white!important" />
+								<p:inputText id="jefe"
+									value="#{unidadLaboController.nuevoUnidad.jefeU}"
+									maxlength="80" required="true"
+									requiredMessage="Debe ingresar un Jefe de unidad">
+								</p:inputText>
+								
+								
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc" rows="5" cols="30" maxlength="200"
+										value="#{unidadLaboController.nuevoUnidad.descrU}">
+									</p:inputTextarea>
+									
+								
+								<p:outputLabel id="lblSigla" for="sigla" value="Siglas: "
+									style="color:white!important" />
+								<p:inputText id="sigla"
+									value="#{unidadLaboController.nuevoUnidad.siglaU}"
+									maxlength="10" required="true"
+									requiredMessage="Debe ingresar una sigla de unidad">
+								</p:inputText>
+									
+							</p:panelGrid>
+							<br /> <br />
+
+							<center>
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{unidadLaboController.agregarUnidad}"
+										process="@this,nombre,jefe,desc,sigla"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formnuevoUnidad"
+										onsuccess="PF('nuevoUnidad').hide();"
+										rendered="true">
+										<center>
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Agregar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoUnidad').hide();"
+										process="@none">
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!--***************************************Modificar**************************************-->
+
+			<p:dialog id="panelModificarUnidad" resizable="true"
+				widgetVar="modificarUnidad" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				header="Modificar Unidad">
+
+				<h:form id="formModificarUnidad">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+						
+						<div>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+								<p:outputLabel id="lblId" for="id" value="Id Unidad: "
+									style="color:white!important" />
+								<p:inputText id="id"
+									value="#{unidadLaboController.unidad.idUnidad}">
+								</p:inputText>
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{unidadLaboController.unidad.nombreU}"
+									maxlength="150" required="true"
+									requiredMessage="Debe ingresar una nombre de unidad">
+								</p:inputText>
+								
+								
+								<p:outputLabel id="lblJefe" for="jefe" value="Jefe: "
+									style="color:white!important" />
+								<p:inputText id="jefe"
+									value="#{unidadLaboController.unidad.jefeU}"
+									maxlength="80" required="true"
+									requiredMessage="Debe ingresar un Jefe de unidad">
+								</p:inputText>
+								
+								
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc" rows="5" cols="30" maxlength="200"
+										value="#{unidadLaboController.unidad.descrU}">
+									</p:inputTextarea>
+									
+								
+								<p:outputLabel id="lblSigla" for="sigla" value="Siglas: "
+									style="color:white!important" />
+								<p:inputText id="sigla"
+									value="#{unidadLaboController.unidad.siglaU}"
+									maxlength="10" required="true"
+									requiredMessage="Debe ingresar una sigla de unidad">
+								</p:inputText>
+							</p:panelGrid>
+							</div>
+							<br /> <br />
+
+							<center>
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{unidadLaboController.modificarUnidad}"
+										process="@this,nombre,jefe,desc,sigla"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarUnidad"
+										onsuccess="PF('modificarUnidad').hide();"
+										rendered="true">
+										<center>
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Modificar" style="border:0px solid #CAD6E0;"
+												width="36" height="35" />
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('modificarUnidad').hide();"
+										process="@none">
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+			<!--*******************Eliminar**********************************-->
+
+			<h:form id="eliminarUnidad">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar esta Unidad"
+					header="Eliminar Unidad" severity="warn"
+					widgetVar="cdEliminarUnidad">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							onsuccess="PF('cdEliminarUnidad').hide();"
+							actionListener="#{unidadLaboController.eliminarUnidad}"
+							update="@([id$=messagesForm],[id$=formPrincipal])"
+							oncomplete="PF('filterUnidad').filter();" />
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarUnidad').hide();" type="button" />
+							
+					</center>
+
+				</p:confirmDialog>
+
+			</h:form>
+		</h:body>
+
+
+
+		<script type="text/javascript">
+function start(){
+PF('statusDialog').show();
+} 
+
+function stop(){
+PF('statusDialog').hide();
+}
+
+</script>
+
+	</ui:define>
+</ui:composition>
