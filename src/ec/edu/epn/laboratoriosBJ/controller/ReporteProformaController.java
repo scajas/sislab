@@ -27,8 +27,6 @@ import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -39,13 +37,13 @@ import ec.edu.epn.laboratorioBJ.entities.Cliente;
 import ec.edu.epn.laboratorioBJ.entities.Proforma;
 import ec.edu.epn.laboratorioBJ.entities.Tipocliente;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
-/*import net.sf.jasperreports.engine.JRParameter;
+
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;*/
-import ec.gob.bsg.accesobsgservice.MensajeError;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JRParameter;
 
 @ManagedBean(name = "reporteProformaController")
 @SessionScoped
@@ -76,9 +74,9 @@ public class ReporteProformaController implements Serializable, Validator {
 	private List<Proforma> listaProforma = new ArrayList<Proforma>();
 	private Proforma proformaSelect;
 
-	private String nombreCli;
+	private Integer nombreCli;
 	private Date fechaInicio;
-	private Date fechaFin;
+	private Date fechaFinal;
 
 	// select cliente
 
@@ -120,8 +118,8 @@ public class ReporteProformaController implements Serializable, Validator {
 	}
 
 	public void mensajeInfo(String mensaje) {
-		FacesContext context = FacesContext.getCurrentInstance();
 
+		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
@@ -130,7 +128,7 @@ public class ReporteProformaController implements Serializable, Validator {
 
 		try {
 
-			listaProforma = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFin()),
+			listaProforma = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()),
 					getNombreCli(), proforma.getEstadoPo());
 
 			System.out.print("Numero de servicios obtenidos: " + listaProforma.size());
@@ -142,7 +140,7 @@ public class ReporteProformaController implements Serializable, Validator {
 
 	}
 
-	// seteo de fecha
+	/****** Metodo para setear la fecha ****/
 	public String cambioFecha(Date fecha) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -151,19 +149,124 @@ public class ReporteProformaController implements Serializable, Validator {
 		return fechaFinal;
 	}
 
-	/**
-	 * @return the streamFile
-	 */
 	public StreamedContent getStreamFile() {
 		return streamFile;
 	}
 
-	/**
-	 * @param streamFile
-	 *            the streamFile to set
-	 */
+	/****** Generacion de PDF ****/
+
+	public void generarPDF(ActionEvent event) throws Exception {
+		try {
+
+			if (streamFile != null)
+				streamFile.getStream().close();
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("fechaInicio", cambioFecha(getFechaInicio()));
+			parametros.put("fechaFinal", cambioFecha(getFechaFinal()));
+			parametros.put("tipoCliente", getNombreCli());
+			parametros.put("estadoProforma", proforma.getEstadoPo());		
+			
+			
+			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
+			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
+					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
+				direccion = direccion + "\\";
+			} else {
+				direccion = direccion + "/";
+			}
+
+			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
+					.getRealPath("/reportes/reporteProforma.jrxml");
+			InputStream input = new FileInputStream(new File(jrxmlFile));
+			JasperReport jasperReport = JasperCompileManager.compileReport(input);
+			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
+
+			File sourceFile = new File(jrxmlFile);
+			File destFile = new File(sourceFile.getParent(), "proforma.pdf");
+
+			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
+			InputStream stream = new FileInputStream(destFile);
+
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "proforma.pdf");
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
+
+		}
+
+	}
+
+/*	public void generarEXCEL(ActionEvent event) throws Exception {
+		try {
+
+			if (streamFile != null)
+				streamFile.getStream().close();
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("fechaInicial", proformaSelect.getFecha());
+			parametros.put("fechaFinal", proformaSelect.getFecha());
+			parametros.put("tipoCliente", clienteSelect.getTipocliente());
+			parametros.put("estadoProforma", proformaSelect.getEstadoPo());
+
+			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
+			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
+					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
+				direccion = direccion + "\\";
+			} else {
+				direccion = direccion + "/";
+			}
+
+			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
+					.getRealPath("/reportes/reporteProforma.jrxml");
+			InputStream input = new FileInputStream(new File(jrxmlFile));
+			JasperReport jasperReport = JasperCompileManager.compileReport(input);
+			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
+
+			File sourceFile = new File(jrxmlFile);
+			File destFile = new File(sourceFile.getParent(), "reporteProforma.xlsx");
+
+			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
+			InputStream stream = new FileInputStream(destFile);
+
+			streamFile = new DefaultStreamedContent(stream, "application/xlsx", "reporteProforma.xlsx");
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
+
+		}
+
+	}*/
+
+	public void cerrarArchivo() throws IOException {
+		if (streamFile != null)
+			streamFile.getStream().close();
+
+		streamFile = null;
+		System.gc();
+	}
+
+	private Connection coneccionSQL() throws IOException {
+		try {
+			conexionPostrges conexionSQL = new conexionPostrges();
+			Connection con = conexionSQL.getConnection();
+			return con;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
+		
+		System.out.println("PASA POR AQUI "+ streamFile);
 	}
 
 	public Proforma getProforma() {
@@ -246,13 +349,6 @@ public class ReporteProformaController implements Serializable, Validator {
 		this.proformaSelect = proformaSelect;
 	}
 
-	public String getNombreCli() {
-		return nombreCli;
-	}
-
-	public void setNombreCli(String nombreCli) {
-		this.nombreCli = nombreCli;
-	}
 
 	public Date getFechaInicio() {
 		return fechaInicio;
@@ -262,17 +358,25 @@ public class ReporteProformaController implements Serializable, Validator {
 		this.fechaInicio = fechaInicio;
 	}
 
-	public Date getFechaFin() {
-		return fechaFin;
-	}
-
-	public void setFechaFin(Date fechaFin) {
-		this.fechaFin = fechaFin;
-	}
-
 	@Override
 	public void validate(FacesContext arg0, UIComponent arg1, Object arg2) throws ValidatorException {
 		// TODO Auto-generated method stub
 
+	}
+
+	public Date getFechaFinal() {
+		return fechaFinal;
+	}
+
+	public void setFechaFinal(Date fechaFinal) {
+		this.fechaFinal = fechaFinal;
+	}
+
+	public Integer getNombreCli() {
+		return nombreCli;
+	}
+
+	public void setNombreCli(Integer nombreCli) {
+		this.nombreCli = nombreCli;
 	}
 }
