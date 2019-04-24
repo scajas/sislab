@@ -34,11 +34,10 @@
 
 
 		<h:body>
-
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="Norma"
@@ -53,7 +52,7 @@
 						<br />
 						<br />
 						<p:commandLink process="@this" onclick="PF('nuevoN').show()"
-							update=":formnuevoN,@this,@([id$=messagesForm])">
+							update=":formnuevoN,@this">
 							<center>
 								<h:graphicImage value="/images/archivos/agregar.png"
 									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
@@ -66,23 +65,24 @@
 						<br />
 						<br />
 
-						<p:dataTable id="tblNorma"
-							value="#{normaController.normas}" var="norma"
-							widgetVar="filterNormaTable"
+						<p:dataTable id="tblNorma" value="#{normaController.normas}"
+							var="norma" widgetVar="filterNormaTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 -moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bottom">
+box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
 
 							<p:column headerText="Nombre" filterBy="#{norma.nombreN}"
 								filterMatchMode="contains">
 								<h:outputText value="#{norma.nombreN}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{norma.descripcionN}">
+							<p:column headerText="Descripción"
+								filterBy="#{norma.descripcionN}">
 								<h:outputText value="#{norma.descripcionN}" />
 							</p:column>
 
@@ -92,17 +92,15 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bot
 								<center>
 									<p:commandLink
 										action="#{normaController.pasarNombre(norma.nombreN)}"
-										update=":formModificarN,@this,@([id$=messagesForm])"
-										process="@this,tblNorma" icon="ui-icon-check"
-										oncomplete="PF('modificarN').show();">
+										update=":formModificarN,@this" process="@this,tblNorma"
+										icon="ui-icon-check" oncomplete="PF('modificarN').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
 
-										<f:setPropertyActionListener
-											target="#{normaController.norma}"
+										<f:setPropertyActionListener target="#{normaController.norma}"
 											value="#{norma}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -118,8 +116,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bot
 											height="35" />
 
 
-										<f:setPropertyActionListener
-											target="#{normaController.norma}"
+										<f:setPropertyActionListener target="#{normaController.norma}"
 											value="#{norma}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -132,6 +129,86 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bot
 				</p:panel>
 
 			</h:form>
+
+			<!-- Panel de registro que se abre en un dialogo	 -->
+
+			<p:dialog id="panelnuevoN" resizable="true" widgetVar="nuevoN"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%" header="Nueva Norma">
+
+
+				<h:form id="formnuevoN">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{normaController.nuevoNorma.nombreN}" required="true"
+									requiredMessage="Debe ingresar el nombre de la Norma" size="30">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{normaController.nuevoNorma.descripcionN}"
+									maxlength="100" rows="5" cols="30" autoResize="false" />
+
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink actionListener="#{normaController.agregarNorma}"
+										oncomplete="PF('nuevoN'); PF('filterNormaTable').filter();"
+										process="@this,nombre,desc"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoN">
+
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoN').hide();" process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
 
 			<!-- Panel de actualizacion que se abre en un dialogo -->
 
@@ -157,25 +234,21 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bot
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
 								<p:inputText id="nombre"
-									value="#{normaController.norma.nombreN}"
-									required="true"
+									value="#{normaController.norma.nombreN}" required="true"
 									requiredMessage="Debe ingresar el nombre de la norma" size="31">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
-									value="#{normaController.norma.descripcionN}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
+									value="#{normaController.norma.descripcionN}" maxlength="100"
+									rows="5" cols="30" autoResize="false" />
 
 
 							</p:panelGrid>
@@ -222,101 +295,12 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 				</h:form>
 			</p:dialog>
 
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelnuevoN" resizable="true" widgetVar="nuevoN"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Nueva Norma">
-
-
-				<h:form id="formnuevoN">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{normaController.nuevoNorma.nombreN}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la Norma" size="30">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{normaController.nuevoNorma.descripcionN}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{normaController.agregarNorma}"
-										oncomplete="PF('nuevoN'); PF('filterNormaTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoN">
-
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoN').hide();" process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
 			<!-- Panel de Eliminar -->
 
-			<h:form id="eliminarBodega">
+			<h:form id="eliminarNorma">
 				<p:confirmDialog
 					message="¿Esta seguro(a) que desea eliminar la norma"
-					header="Eliminar Norma" severity="warn"
-					widgetVar="cdEliminarNorma">
+					header="Eliminar Norma" severity="warn" widgetVar="cdEliminarNorma">
 					<center>
 
 						<p:commandButton value="Aceptar"

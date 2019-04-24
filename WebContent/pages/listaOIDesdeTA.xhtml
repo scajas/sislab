@@ -56,6 +56,7 @@
 						<p:dataTable id="tblListaOI"
 							value="#{ordenInventarioController.ordenInventarios}"
 							var="listaOi" widgetVar="filterListaOITable"
+							filteredValue="#{ordenInventarioController.filterOrdenInventarios}"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -162,9 +163,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
 
@@ -260,9 +258,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 								<br /> <br />
 
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
 									<p:outputLabel id="lblEstadoOI" for="estadoOI"

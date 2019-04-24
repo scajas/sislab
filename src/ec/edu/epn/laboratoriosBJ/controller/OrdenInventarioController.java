@@ -50,6 +50,7 @@ public class OrdenInventarioController implements Serializable {
 	private Ordeninventario verOrdenInventario;
 	private List<Existencia> existencias = new ArrayList<>();
 	private List<Ordeninventario> ordenInventarios = new ArrayList<>();
+	private List<Ordeninventario> filterOrdenInventarios = new ArrayList<>();
 	private List<Detallemetodo> detallemetodos = new ArrayList<>();
 	private List<Movimientosinventario> movimientoInventarios = new ArrayList<>();
 	private List<String> listOrdenI;
@@ -58,10 +59,10 @@ public class OrdenInventarioController implements Serializable {
 	@PostConstruct
 	public void init() {
 		try {
-			Long idUsuario = su.id_usuario_log;
+			//Long idUsuario = su.id_usuario_log;
 
 			ordenInventarios = ordenInventarioI.listaOI(su.UNIDAD_USUARIO_LOGEADO);
-			//ordenInventarios = ordenInventarioI.getAll(Ordeninventario.class);
+			filterOrdenInventarios = ordenInventarioI.listaOI(su.UNIDAD_USUARIO_LOGEADO);
 			ordenInventario = new Ordeninventario();
 
 			System.out.println("Orde de inventarios consultadas" + ordenInventarios.size());
@@ -185,6 +186,14 @@ public class OrdenInventarioController implements Serializable {
 
 	public void setMovimientoInventarios(List<Movimientosinventario> movimientoInventarios) {
 		this.movimientoInventarios = movimientoInventarios;
+	}
+
+	public List<Ordeninventario> getFilterOrdenInventarios() {
+		return filterOrdenInventarios;
+	}
+
+	public void setFilterOrdenInventarios(List<Ordeninventario> filterOrdenInventarios) {
+		this.filterOrdenInventarios = filterOrdenInventarios;
 	}
 
 }
