@@ -190,12 +190,12 @@
 							<center>
 								<h:panelGrid styleClass="ui-panelgrid-blank">
 
-									<p:commandButton onclick="PF('verFacturacion').show();"
+									<p:ajaxStatus  onclick="PF('verFacturacion').show();"
 										update=":formVerFacturacion,@this" process="@this"
 										icon="ui-icon-search"
 										actionListener="#{muestraController.buscarFacturas}"
 										value="Listado de Facturas">
-									</p:commandButton>
+									</p:ajaxStatus >
 
 								</h:panelGrid>
 							</center>
@@ -330,7 +330,10 @@
 			<p:dialog id="panelVerFacturacion" resizable="false"
 				widgetVar="verFacturacion" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true"
-				header="Listado de Facturas" width="65%">
+				header="Listado de Facturas" width="65%" draggable="false"
+				closable="false">
+
+				<p:graphicImage name="/images/archivos/cargando.gif" />
 
 				<h:form id="formVerFacturacion">
 
@@ -393,7 +396,7 @@
 										action="#{muestraController.seleccionarFactura}"
 										update="@([id$=messagesForm],[id$=formNuevaMuestra])"
 										onclick="PF('verFacturacion').hide();">
-										
+
 										<p:graphicImage value="/images/archivos/aceptar.png"
 											width="35" height="36" title="Seleccionar">
 										</p:graphicImage>

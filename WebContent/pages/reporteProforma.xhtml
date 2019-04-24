@@ -51,8 +51,7 @@
 								<div class="ui-fluid">
 
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,,pnlGridFondoFilas"
-										id="pnlgBusquedaServicio">
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
 										<h:outputLabel value="Ingrese Fecha Inicial: "
 											style="font-size: 15px" />
@@ -63,34 +62,33 @@
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Inicial Requerida" navigator="true"
 											effect="fadeIn" effectDuration="100" showOn="button">
-											<p:ajax event="dateSelect" update="fechaFin" />
+											<p:ajax event="dateSelect" update="fechaFinal" />
 										</p:calendar>
 
 										<h:outputLabel value="Ingrese Fecha Final: "
 											style="font-size: 15px" />
-										<p:calendar id="fechaFin"
-											value="#{reporteProformaController.fechaFin}"
+										<p:calendar id="fechaFinal"
+											value="#{reporteProformaController.fechaFinal}"
 											mindate="#{reporteProformaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es" required="true"
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Final Requerida" navigator="true"
-											effect="fadeIn" effectDuration="100" showOn="button"
-											size="35">
+											effect="fadeIn" effectDuration="100" showOn="button">
 											<f:attribute name="fechaInicio"
 												value="#{reporteProformaController.fechaInicio}" />
 											<f:validator validatorId="primeDateRangeValidator" />
 										</p:calendar>
 
 										<h:outputLabel value="Tipo de Cliente:"
-											style="font-size: 15px" size="50" />
+											style="font-size: 15px" />
 										<p:selectOneMenu id="tipoCliente"
 											value="#{reporteProformaController.nombreCli}"
 											style="FONT-FAMILY: arial;" size="35">
 											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
 											<f:selectItems
 												value="#{reporteProformaController.listaTipoCliente}"
-												var="cliente" itemLabel="#{cliente.tipoTcl}"
-												itemValue="#{cliente.tipoTcl}" />
+												var="tipoCliente" itemLabel="#{tipoCliente.tipoTcl}"
+												itemValue="#{tipoCliente.idTipocliente}" />
 
 										</p:selectOneMenu>
 
@@ -98,7 +96,7 @@
 											style="FONT-FAMILY: arial; font-size: 15px" />
 										<p:selectOneMenu id="estado"
 											value="#{reporteProformaController.proforma.estadoPo}"
-											style="FONT-FAMILY: arial;font-size: 17px;" size="35">
+											style="FONT-FAMILY: arial;font-size: 17px;">
 											<f:selectItem itemLabel="Seleccione..." itemValue="" />
 											<f:selectItem itemLabel="ACEPTADA" itemValue="Aceptada" />
 											<f:selectItem itemLabel="PENDIENTE" itemValue="Pendiente" />
@@ -147,42 +145,42 @@
 
 						<p:column headerText="Proforma">
 							<f:facet name="header">
-								<h:outputText value="Proforma" />
+								<h:outputText value="PROFORMA" />
 							</f:facet>
 							<h:outputText value="#{proforma.idProforma}" />
 						</p:column>
 
 						<p:column headerText="Fecha">
 							<f:facet name="header">
-								<h:outputText value="Fecha" />
+								<h:outputText value="FECHA" />
 							</f:facet>
 							<h:outputText value="#{proforma.fecha}" />
 						</p:column>
 
 						<p:column headerText="Cliente">
 							<f:facet name="header">
-								<h:outputText value="Nombre del Cliente" />
+								<h:outputText value="NOMBRE DEL CLIENTE" />
 							</f:facet>
 							<h:outputText value="#{proforma.cliente.nombreCl}" />
 						</p:column>
 
 						<p:column headerText="Tipo de Cliente">
 							<f:facet name="header">
-								<h:outputText value="Tipo de Cliente" />
+								<h:outputText value="TIPO DE CLIENTE" />
 							</f:facet>
 							<h:outputText value="#{proforma.cliente.tipocliente.tipoTcl}" />
 						</p:column>
 
 						<p:column headerText="Estado">
 							<f:facet name="header">
-								<h:outputText value="Estado" />
+								<h:outputText value="ESTADO" />
 							</f:facet>
 							<h:outputText value="#{proforma.estadoPo}" />
 						</p:column>
 
 						<p:column headerText="SubTotal">
 							<f:facet name="header">
-								<h:outputText value="Subtotal" />
+								<h:outputText value="SUBTOTAL" />
 							</f:facet>
 							<h:outputText value="#{proforma.subtotalPo}" />
 						</p:column>
@@ -196,7 +194,7 @@
 
 						<p:column headerText="Total">
 							<f:facet name="header">
-								<h:outputText value="Total" />
+								<h:outputText value="TOTAL" />
 							</f:facet>
 							<h:outputText value="#{proforma.totalPo}" />
 						</p:column>
@@ -223,6 +221,17 @@
 							update="@this" process="@this" icon="ui-icon-search"
 							value="Exportar">
 						</p:commandButton>
+
+						<p:commandLink oncomplete="PF('repoServicio').show();"
+							id="btnGenerarReporte"
+							update="@([id$=dialogReporteServ], [id$=pdfView])"
+							actionListener="#{reporteProformaController.generarPDF}">
+							<center>
+								<p:graphicImage value="/images/archivos/imprimir.png"
+									height="35px" width="35px" title="Generar Reporte" />
+							</center>
+						</p:commandLink>
+
 					</center>
 				</p:panel>
 
@@ -265,11 +274,42 @@
 							<p:commandButton value="Salir"
 								onclick="PF('seleccionArchivo').hide();" type="button" />
 
+
 						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
+			<h:form>
+				<p:dialog id="dialogReporteServ" resizable="true"
+					widgetVar="repoServicio" modal="true" hideEffect="fade"
+					responsive="true" dynamic="true" width="65%"
+					header="Reporte Servicio">
+					<p:panel id="toggleable" toggleable="true" closable="true"
+						toggleSpeed="500" closeSpeed="500">
+						<div align="right">
+							<p:commandLink id="btnCerrarDialogs" ajax="false"
+								action="#{reporteProformaController.cerrarArchivo()}"
+								onsuccess="PF('repoServicio').hide();">
+								<h:graphicImage value="/images/dashboard/NoVerificado.png"
+									title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
+									height="25" />
+
+							</p:commandLink>
+						</div>
+						<table style="width: 100%; height: 100%;">
+							<tr>
+								<td><p:media id="pdfView" height="470px" width="100%"
+										cache="false" value="#{reporteProformaController.streamFile}"
+										player="pdf">
+									</p:media></td>
+
+							</tr>
+						</table>
+					</p:panel>
+
+				</p:dialog>
+			</h:form>
 		</h:body>
 
 		<script type="text/javascript">

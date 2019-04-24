@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteProforma" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dfd9280b-b74a-4bb5-9a53-356cc548b669">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fechaInicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaFinal" class="java.lang.String"/>
+	<parameter name="tipoCliente" class="java.lang.String"/>
+	<parameter name="estadoProforma" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select p.id_proforma,
+c.nombre_cl,
+p.fecha,
+p.estado_po,
+p.subtotal_po,
+p.iva_po,
+p.total_po
+from "Laboratorios".proforma p,
+"Laboratorios".cliente c,
+"public".usuario us,
+"Laboratorios".tipocliente tc
+where p.id_cliente = c.id_cliente
+AND c.id_tipocliente=tc.id_tipocliente
+AND p.id_usuario=us.id_usuario
+AND p.fecha BETWEEN $P{fechaInicio} AND $P{fechaFinal}
+AND tc.id_tipocliente=$P{tipoCliente}
+AND p.estado_po=$P{estadoProforma}
+AND p.id_usuario =648
+AND us.id_unidad=2
+ORDER BY p.fecha ASC
+]]>
+	</queryString>
+	<field name="id_proforma" class="java.lang.String"/>
+	<field name="nombre_cl" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Date"/>
+	<field name="estado_po" class="java.lang.String"/>
+	<field name="subtotal_po" class="java.lang.Double"/>
+	<field name="iva_po" class="java.lang.Double"/>
+	<field name="total_po" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="145" y="0" width="288" height="22" uuid="00ce7cb7-9613-49ee-876f-819f8ff97ac7"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESCUELA POLITECNICA NACIONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="197" y="37" width="198" height="20" uuid="8fe6903e-8a1e-4bf8-880d-2240316618f6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE PROFORMAS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="50">
+			<staticText>
+				<reportElement mode="Opaque" x="84" y="30" width="190" height="20" forecolor="#000000" backcolor="#99CCFF" uuid="5d9032cf-3829-489c-9f65-f4c228dd2e05"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="30" width="84" height="20" forecolor="#000000" backcolor="#99CCFF" uuid="be28b951-f7d4-4eb7-b73b-02e8ec84cb84">
+					<property name="net.sf.jasperreports.export.pdf.tag.table"/>
+				</reportElement>
+				<textElement textAlignment="Left" markup="none">
+					<font fontName="Arial" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[PROFORMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="274" y="30" width="65" height="20" backcolor="#99CCFF" uuid="574c1e35-c8df-4a2b-abf9-92d84468b38d"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="339" y="30" width="56" height="20" backcolor="#99CCFF" uuid="e647b0cb-331a-4232-872a-6fe426f19282"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="395" y="30" width="58" height="20" backcolor="#99CCFF" uuid="f1b1e65f-b816-4082-a645-a4de77a73120"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUBTOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="453" y="30" width="38" height="20" backcolor="#99CCFF" uuid="bafd661f-bbd2-47c9-9dfe-107be76e8452"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="491" y="30" width="51" height="20" backcolor="#99CCFF" uuid="437877f5-aa27-4480-810b-cab68a2a372a"/>
+				<textElement>
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23">
+			<textField>
+				<reportElement x="84" y="0" width="190" height="20" uuid="42c28bf5-1a6e-415b-b489-fac27002f43d"/>
+				<textFieldExpression><![CDATA[$F{nombre_cl}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement mode="Transparent" x="0" y="0" width="84" height="20" backcolor="#000000" uuid="04011f15-bc61-46e2-b62b-15ba8d802ec1">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="full"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="styled">
+					<font isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id_proforma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="274" y="0" width="65" height="20" uuid="d24d849b-09d7-430a-bf55-ff70598532f0"/>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="395" y="0" width="58" height="20" uuid="06829a81-6e84-4cde-aead-baf63310aca2"/>
+				<textFieldExpression><![CDATA[$F{subtotal_po}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="454" y="0" width="38" height="20" uuid="ffc3fc80-8f92-4ebf-b792-cdacd189c28d"/>
+				<textFieldExpression><![CDATA[$F{iva_po}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="492" y="0" width="51" height="20" uuid="00a4f11b-e794-4009-a485-e1fe7c079e68"/>
+				<textFieldExpression><![CDATA[$F{total_po}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="339" y="0" width="56" height="20" uuid="cbefa6d8-c4d0-4690-ade5-fc8500b0822f"/>
+				<textFieldExpression><![CDATA[$F{estado_po}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="20" uuid="de41eb59-1d41-4ab6-9586-11066ab9b807"/>
+				<textElement>
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
