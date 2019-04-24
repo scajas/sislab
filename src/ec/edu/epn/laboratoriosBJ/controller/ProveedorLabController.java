@@ -49,6 +49,7 @@ public class ProveedorLabController implements Serializable {
 	private String nombreTP;
 	private Tipoproveedor tipoProveedorSelect;
 	private List<Tipoproveedor> tipo= new ArrayList<Tipoproveedor>();
+	private List<ProveedorLabController> filtroProveedor;
 
 	@PostConstruct
 	public void init() {
@@ -259,6 +260,14 @@ public class ProveedorLabController implements Serializable {
 
 			public void setTipo(List<Tipoproveedor> tipo) {
 				this.tipo = tipo;
+			}
+
+			public List<ProveedorLabController> getFiltroProveedor() {
+				return filtroProveedor;
+			}
+
+			public void setFiltroProveedor(List<ProveedorLabController> filtroProveedor) {
+				this.filtroProveedor = filtroProveedor;
 			}
 
 			
