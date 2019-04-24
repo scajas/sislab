@@ -34,26 +34,25 @@
 
 
 		<h:body>
-
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="Tipo Proveedor"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
 						<p:commandLink process="@this" onclick="PF('nuevoTP').show()"
-							update=":formnuevoTP,@this,@([id$=messagesForm])">
+							update=":formnuevoTP,@this">
 							<center>
 								<h:graphicImage value="/images/archivos/agregar.png"
 									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
@@ -74,8 +73,9 @@
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
 
 							<p:column headerText="Nombre" filterBy="#{tipoPro.nombreTpv}"
 								filterMatchMode="contains">
@@ -92,7 +92,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 								<center>
 									<p:commandLink
 										action="#{tipoProveedorController.pasarNombre(tipoPro.nombreTpv)}"
-										update=":formModificarTP,@this,@([id$=messagesForm])"
+										update=":formModificarTP,@this"
 										process="@this,tblTipoProveedor" icon="ui-icon-check"
 										oncomplete="PF('modificarTP').show();">
 
@@ -133,6 +133,90 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 			</h:form>
 
+			<!-- Panel de registro que se abre en un dialogo	 -->
+
+			<p:dialog id="panelnuevoTP" resizable="true" widgetVar="nuevoTP"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Nuevo Tipo Proveedor">
+
+
+				<h:form id="formnuevoTP">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{tipoProveedorController.nuevoTipoProveedor.nombreTpv}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre de la bodega"
+									size="30" maxlength="50">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{tipoProveedorController.nuevoTipoProveedor.descrTpv}"
+									maxlength="200" rows="5" cols="30" autoResize="false" />
+
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandLink
+										actionListener="#{tipoProveedorController.agregarTipoProveedor}"
+										oncomplete="PF('nuevoTP'); PF('filterBodegaTable').filter();"
+										process="@this,nombre,desc"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoTP">
+
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('nuevoTP').hide();" process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
 			<!-- Panel de actualizacion que se abre en un dialogo -->
 
 			<p:dialog id="panelmodificarTP" resizable="true"
@@ -157,9 +241,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
@@ -168,7 +249,8 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								<p:inputText id="nombre"
 									value="#{tipoProveedorController.tipoproveedor.nombreTpv}"
 									required="true"
-									requiredMessage="Debe ingresar el nombre de la bodega" size="30" maxlength="50">
+									requiredMessage="Debe ingresar el nombre de la bodega"
+									size="30" maxlength="50">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
@@ -217,94 +299,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 
 
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelnuevoTP" resizable="true" widgetVar="nuevoTP"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Nuevo Tipo Proveedor">
-
-
-				<h:form id="formnuevoTP">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{tipoProveedorController.nuevoTipoProveedor.nombreTpv}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la bodega" size="30" maxlength="50">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{tipoProveedorController.nuevoTipoProveedor.descrTpv}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
-
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{tipoProveedorController.agregarTipoProveedor}"
-										oncomplete="PF('nuevoTP'); PF('filterBodegaTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoTP">
-
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoTP').hide();" process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
 						</center>
 					</p:fieldset>
 				</h:form>
