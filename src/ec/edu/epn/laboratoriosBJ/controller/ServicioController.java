@@ -104,7 +104,8 @@ public class ServicioController implements Serializable {
 			servicio = new Servicio();
 			nuevoServicio = new Servicio();
 
-			setListarLaboratoriosLab(laboratorioI.getAll(LaboratorioLab.class));
+			setListarLaboratoriosLab(servicioI.listaLaboratorioUnidad(su.UNIDAD_USUARIO_LOGEADO));
+			System.out.println("numero de lista lab: " + getListarLaboratoriosLab().size());
 			setListarTipoServicio(tipoServicioI.getAll(Tiposervicio.class));
 
 			// tipo servicio
@@ -112,7 +113,7 @@ public class ServicioController implements Serializable {
 			tiposerv = new Tiposervicio();
 
 			// Laboratorio
-			listarLaboratoriosLab = laboratorioI.getAll(LaboratorioLab.class);
+			listarLaboratoriosLab = servicioI.listaLaboratorioUnidad(su.UNIDAD_USUARIO_LOGEADO);
 			laboratorioLab = new LaboratorioLab();
 
 			listUnidadLabo = unidadI.getAll(UnidadLabo.class);
@@ -128,34 +129,43 @@ public class ServicioController implements Serializable {
 		try {
 
 			String codigoAux = servicioI.maxIdServ(su.UNIDAD_USUARIO_LOGEADO);
+			System.out.println("Este es el id que trae: " + codigoAux);
+			
 			String codigoCortado = codigoAux.substring(4, 8);
+			System.out.println("Este es el id convertido en numero: " + codigoCortado);
+			
 			Integer codigo = Integer.parseInt(codigoCortado);
 			codigo = codigo + 1;
+			System.out.println("Este es el id oficial: " + codigo);
+			
 			String codigoFinal = codigo.toString();
+			
+			System.out.println("Este es el id oficialdddddddddddddddddddddddddddddddddddddddddddd: " + codigoFinal);
 
 			UnidadLabo uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 
 			switch (codigoFinal.length()) {
 			case 1:
 
-				nuevoServicio.setIdServicio(uni.getCodigoU() + "-S" + "0000" + codigoFinal);
-				break;
-			case 2:
 				nuevoServicio.setIdServicio(uni.getCodigoU() + "-S" + "000" + codigoFinal);
 				break;
-			case 3:
+			case 2:
 				nuevoServicio.setIdServicio(uni.getCodigoU() + "-S" + "00" + codigoFinal);
 				break;
-			case 4:
+			case 3:
 				nuevoServicio.setIdServicio(uni.getCodigoU() + "-S" + "0" + codigoFinal);
 				break;
-			case 5:
+				
+			case 4:
 				nuevoServicio.setIdServicio(uni.getCodigoU() + "-S" + codigoFinal);
 				break;
+		
 
 			default:
 				break;
 			}
+			
+			System.out.println("Este se almacenaa: " + nuevoServicio.getIdServicio());
 
 			nuevoServicio.setTiposervicio(tipoServicioSelect);
 			nuevoServicio.setLaboratorio(laboratorioLabSelect);
@@ -163,12 +173,32 @@ public class ServicioController implements Serializable {
 			servicioI.save(nuevoServicio);
 			listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "El Servicio se ha almacenado exitosamente"));
+			if (nuevoServicio.getTiposervicio().getNombreTs().equals("Analisis Interno")) {
+				if (nuevoServicio.getPrecioS() == 0) {
+					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(), new FacesMessage(
+							FacesMessage.SEVERITY_ERROR, "", "El análisis interno no puede registrar un precio (0)"));
+				} else {
+					servicioI.save(nuevoServicio);
+					listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
 
-			nuevoServicio = new Servicio();
-			tipoServicioSelect = new Tiposervicio();
-			laboratorioLabSelect = new LaboratorioLab();
+					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(), new FacesMessage(
+							FacesMessage.SEVERITY_INFO, "", "El Servicio se ha almacenado exitosamente"));
+
+					nuevoServicio = new Servicio();
+					tipoServicioSelect = new Tiposervicio();
+					laboratorioLabSelect = new LaboratorioLab();
+				}
+			} else {
+				servicioI.save(nuevoServicio);
+				listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+
+				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
+						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "El Servicio se ha almacenado exitosamente"));
+
+				nuevoServicio = new Servicio();
+				tipoServicioSelect = new Tiposervicio();
+				laboratorioLabSelect = new LaboratorioLab();
+			}
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
