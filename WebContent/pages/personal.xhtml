@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Personal</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+		<h:body>
+
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+
+			<h:form id="formprincipal">
+
+				<p:panel>
+					<p:fieldset legend="PERSONAL"
+						style="border-radius: 5px 5px 5px 5px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
+						<br />
+						<br />
+						<p:commandLink  process="@this"
+							onclick="PF('nuevoPersonal').show()"
+							update=":formnuevoPersonal,@this">
+							<center>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
+									height="35" />
+							</center>
+							<center>
+								<h:outputText value="Agregar Nuevo" />
+							</center>
+						</p:commandLink>
+						<br />
+						<br />
+
+						<p:dataTable id="tblPersonal"
+							value="#{personalController.listaPersonal}" var="personal"
+							widgetVar="tblPersonal"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{personalController.filtrarPersonal}"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+							<p:column headerText="ID Personal"
+								filterBy="#{personal.idPersonal}" filterMatchMode="contains">
+								<h:outputText value="#{personal.idPersonal}" />
+							</p:column>
+
+							<p:column headerText="Nombre" filterBy="#{personal.nombresPe}"
+								filterMatchMode="contains">
+								<h:outputText value="#{personal.nombresPe}" />
+							</p:column>
+
+							<p:column headerText="Cédula" filterBy="#{personal.cedulaPe}"
+								filterMatchMode="contains">
+								<h:outputText value="#{personal.cedulaPe}" />
+							</p:column>
+
+							<p:column headerText="Dirección"
+								filterBy="#{personal.direccionPe}" filterMatchMode="contains">
+								<h:outputText value="#{personal.direccionPe}" />
+							</p:column>
+
+							<!-- **************************  Boton Modificar   *************************** -->
+
+							<p:column headerText="Acciones">
+								<center>
+									<p:commandLink
+										action="#{personalController.pasarNombre(personal.nombresPe)}"
+										update=":formModificarPersonal,@this"
+										process="@this,tblPersonal" icon="ui-icon-check"
+										oncomplete="PF('modificarPersonal').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+										<f:setPropertyActionListener
+											target="#{personalController.personal}" value="#{personal}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+									<!-- **************************  Boton Eliminar   *************************** -->
+
+
+									<p:commandLink process="@this" icon="ui-icon-check"
+										onclick="PF('cdEliminarPersonal').show();">
+
+										<h:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{personalController.personal}" value="#{personal}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<!-- Panel de actualizacion  -->
+
+			<p:dialog id="panelModificarPersonal" resizable="true"
+				widgetVar="modificarPersonal" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Personal">
+
+
+				<h:form id="formModificarPersonal">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+
+							<div class="ui-fluid">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{personalController.personal.nombresPe}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Personal"
+										size="30" maxlength="60">
+									</p:inputText>
+
+									<p:outputLabel id="lblCedula" for="cedula" value="Cédula "
+										style="color:white!important" />
+									<p:inputMask id="cedula"
+										value="#{personalController.personal.cedulaPe}" maxlength="15"
+										size="30" mask="9999999999">
+									</p:inputMask>
+
+									<p:outputLabel id="lblFechaInicio" for="fechaInicio"
+										value="Fecha de Ingreso: " style="color:white!important" />
+									<p:calendar id="fechaInicio"
+										value="#{personalController.personal.fechaingPe}"
+										pattern="dd/MM/yyyy" locale="es"
+										onkeypress="return permite(event, 'none')" navigator="true"
+										effect="fadeIn" effectDuration="100" showOn="button">
+										<p:ajax event="dateSelect" update="fechaFin" />
+									</p:calendar>
+
+									<p:outputLabel id="lblFechaFin" for="fechaFin"
+										value="Ingrese Fecha Final: " style="color:white!important" />
+
+									<p:calendar id="fechaFin"
+										value="#{personalController.personal.fechafinPe}"
+										mindate="#{personalController.personal.fechaingPe}"
+										pattern="dd/MM/yyyy" locale="es"
+										onkeypress="return permite(event, 'none')" navigator="true"
+										effect="fadeIn" effectDuration="100" showOn="button" size="35">
+										<f:attribute name="fechaInicio"
+											value="#{personalController.personal.fechaingPe}" />
+										<f:validator validatorId="primeDateRangeValidator" />
+									</p:calendar>
+
+									<p:outputLabel id="lblTelefono" for="telefono"
+										value="Teléfono: " style="color:white!important" />
+									<p:inputMask id="telefono"
+										value="#{personalController.personal.telefonoPe}"
+										maxlength="15" size="30" mask="999-9999">
+									</p:inputMask>
+
+									<p:outputLabel id="lblEmail" for="email" value="Email: "
+										style="color:white!important" />
+
+									<p:inputText id="email" required="true" size="30"
+										requiredMessage="Debe ingresar la email"
+										validatorMessage="Fórmato para email inválido"
+										value="#{personalController.personal.emailPe}" maxlength="50">
+
+										<f:validateRegex
+											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+									</p:inputText>
+
+									<p:outputLabel id="lblSueldo" for="sueldo" value="Sueldo: "
+										style="color:white!important" />
+									<p:inputMask id="sueldo"
+										value="#{personalController.personal.sueldoPe}" size="30"
+										maxlength="60" mask="9999.99">
+									</p:inputMask>
+
+									<p:outputLabel id="lblDireccion" for="direccion"
+										value="Dirección" style="color:white!important" />
+									<p:inputTextarea id="direccion"
+										value="#{personalController.personal.direccionPe}"
+										maxlength="100" rows="5" cols="30" autoResize="false" />
+
+								</p:panelGrid>
+
+							</div>
+							<br /> <br />
+
+							<center>
+								<h:panelGrid columns="2">
+									<p:commandLink
+										actionListener="#{personalController.modificarPersonal}"
+										process="@this,formModificarPersonal"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarPersonal"
+										oncomplete="PF('tblPersonal').filter()">
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+									<p:commandLink onclick="PF('modificarPersonal').hide();"
+										process="@none">
+
+										<p:graphicImage value="/images/archivos/atras.png" width="35"
+											height="36" title="Atrás">
+										</p:graphicImage>
+
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+
+			<!-- Panel de registro que se abre en un dialogo	 -->
+
+			<p:dialog id="panelnuevoPersonal" resizable="true"
+				widgetVar="nuevoPersonal" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nuevo Personal">
+
+
+				<h:form id="formnuevoPersonal">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+								<p:outputLabel id="lblUnidad" for="uni" value="Unidad: "
+									style="color:white!important" />
+
+								<p:selectOneMenu id="uni"
+									value="#{personalController.nuevoPersonal.idUnidad}">
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									<f:selectItems value="#{personalController.listaUnidad}"
+										itemLabel="#{uni.codigoU}" itemValue="#{uni.idUnidad}"
+										var="uni">
+									</f:selectItems>
+
+								</p:selectOneMenu>
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{personalController.nuevoPersonal.nombresPe}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Personal"
+									size="30" maxlength="50">
+								</p:inputText>
+
+								<p:outputLabel id="lblCedula" for="cedula" value="Cédula "
+									style="color:white!important" />
+								<p:inputMask id="cedula"
+									value="#{personalController.nuevoPersonal.cedulaPe}"
+									required="true" requiredMessage="Debe ingresar la cédula"
+									maxlength="10" size="30" mask="9999999999">
+								</p:inputMask>
+
+								<p:outputLabel id="lblDireccion" for="direccion"
+									value="Dirección" style="color:white!important" />
+								<p:inputTextarea id="direccion"
+									value="#{personalController.nuevoPersonal.direccionPe}"
+									required="true" requiredMessage="Debe ingresar la Dirección"
+									maxlength="200" rows="5" cols="30" autoResize="false" />
+
+								<p:outputLabel id="lblTelefono" for="telefono"
+									value="Teléfono: " style="color:white!important" />
+								<p:inputMask id="telefono"
+									value="#{personalController.nuevoPersonal.telefonoPe}"
+									maxlength="20" size="30" mask="999-9999">
+								</p:inputMask>
+
+								<p:outputLabel id="lblEmail" for="email" value="Email: "
+									style="color:white!important" />
+
+								<p:inputText id="email" required="true" size="30"
+									requiredMessage="Debe ingresar la email"
+									validatorMessage="Formato para email inválido"
+									value="#{personalController.nuevoPersonal.emailPe}"
+									maxlength="50">
+
+									<f:validateRegex
+										pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+
+								</p:inputText>
+
+								<p:outputLabel id="lblSueldo" for="sueldo" value="Sueldo: "
+									style="color:white!important" />
+								<p:inputMask id="sueldo"
+									value="#{personalController.nuevoPersonal.sueldoPe}" size="30"
+									maxlength="60" mask="9999.99">
+								</p:inputMask>
+
+								<p:outputLabel id="lblFechaInicio" for="fechaInicio"
+									value="Fecha de Ingreso: " style="color:white!important" />
+								<p:calendar id="fechaInicio"
+									value="#{personalController.nuevoPersonal.fechaingPe}"
+									pattern="dd/MM/yyyy" locale="es"
+									onkeypress="return permite(event, 'none')" navigator="true"
+									effect="fadeIn" effectDuration="100" showOn="button"
+									required="true"
+									requiredMessage="Debe ingresar la fecha de Ingreso">
+									<p:ajax event="dateSelect" update="fechaFin" />
+								</p:calendar>
+
+								<p:outputLabel id="lblFechaFin" for="fechaFin"
+									value="Ingrese Fecha Final: " style="color:white!important" />
+
+								<p:calendar id="fechaFin"
+									value="#{personalController.nuevoPersonal.fechafinPe}"
+									mindate="#{personalController.nuevoPersonal.fechaingPe}"
+									pattern="dd/MM/yyyy" locale="es"
+									onkeypress="return permite(event, 'none')" navigator="true"
+									effect="fadeIn" effectDuration="100" showOn="button" size="35"
+									required="true"
+									requiredMessage="Debe ingresar la fecha de Cierre">
+									<f:attribute name="fechaInicio"
+										value="#{personalController.nuevoPersonal.fechaingPe}" />
+									<f:validator validatorId="primeDateRangeValidator" />
+								</p:calendar>
+
+
+
+							</p:panelGrid>
+						</div>
+						<br />
+						<br />
+
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandLink
+									actionListener="#{personalController.agregarPersonal}"
+									process="@this,formnuevoPersonal"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoPersonal"
+									oncomplete="PF('tblPersonal').filter()">
+
+									<h:graphicImage value="/images/archivos/guardar.png"
+										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+										height="35" />
+
+								</p:commandLink>
+
+								<p:commandLink onclick="PF('nuevoPersonal').hide();"
+									process="@none">
+
+									<p:graphicImage value="/images/archivos/atras.png" width="35"
+										height="36" title="Atrás">
+									</p:graphicImage>
+
+								</p:commandLink>
+
+							</h:panelGrid>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Eliminar -->
+
+			<h:form id="eliminarPersonal">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar este Personal"
+					header="Eliminar Personal" severity="warn"
+					widgetVar="cdEliminarPersonal">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							onsuccess="PF('cdEliminarPersonal').hide();"
+							actionListener="#{personalController.eliminarPersonal}"
+							update="@([id$=messagesForm],[id$=formprincipal])"
+							oncomplete="PF('tblPersonal').filter()" />
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarPersonal').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+		    PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
+		</script>
+
+	</ui:define>
+</ui:composition>
