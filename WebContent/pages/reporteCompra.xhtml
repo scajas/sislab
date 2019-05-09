@@ -64,7 +64,7 @@
 										effect="fadeIn" effectDuration="100" showOn="button">
 										<p:ajax event="dateSelect" update="fechaFin" />
 									</p:calendar>
-								
+
 
 									<h:outputLabel value="Ingrese Fecha Final: "
 										style="font-size: 15px" />
@@ -85,26 +85,30 @@
 								<br />
 
 
-								<p:panelGrid columns="2" columnClasses="ui-grid-col-7"
-									layout="grid" styleClass="ui-panelgrid-blank">
-									
-										<p:commandLink
-											actionListener="#{compraController.consultarCompra}"
-											update="@([id$=tblCompra]),@([id$=messagesForm])"
-											process="@this,formBuscar">
 
-											<h:graphicImage value="/images/archivos/busqueda.png"
-												class="btn bt-success" title="Buscar"
-												style="border:0px solid #CAD6E0;" width="35" height="35 " />
+								<center>
+									<p:commandLink
+										actionListener="#{compraController.consultarCompra}"
+										update="@([id$=tblCompra]),@([id$=messagesForm])"
+										process="@this,formBuscar">
 
-										</p:commandLink>
+										<h:graphicImage value="/images/archivos/busqueda.png"
+											class="btn bt-success" title="Buscar"
+											style="border:0px solid #CAD6E0;" width="35" height="35 " />
 
-										<p:commandButton onclick="PF('seleccionArchivo').show();"
-											update="@this" process="@this" icon="ui-icon-search"
-											value="Generar Reporte" >
-										</p:commandButton>
-								
-								</p:panelGrid>
+									</p:commandLink>
+
+									<p:commandLink oncomplete="PF('repoServicio').show();"
+										id="btnGenerarReporte"
+										update="@([id$=dialogReporteServ], [id$=pdfView])"
+										actionListener="#{compraController.generarPDF}">
+										<center>
+											<p:graphicImage value="/images/archivos/imprimir.png"
+												height="35px" width="35px" title="Generar Reporte" />
+										</center>
+									</p:commandLink>
+
+								</center>
 
 							</h:form>
 						</center>
@@ -151,9 +155,18 @@
 					<center>
 
 						<br /> <br />
-						<!-- Panel de Exportacion Con Formato  -->
+						<!-- Exportar a Excel Sin Formato  -->
+						<h3>Exportar sin Formato</h3>
+						<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+							<h:graphicImage value="/images/excel.png" width="35px"
+								height="35px" />
+							<pe:exporter type="xlsx" target="tblCompra" fileName="Compra"
+								tableTitle="Compra" selectionOnly="false"
+								orientation="Landscape" datasetPadding="4" />
+						</h:commandLink>
 
 					</center>
+
 				</p:panel>
 
 			</h:form>
@@ -163,42 +176,38 @@
 				<p:graphicImage name="/images/archivos/cargando.gif" />
 			</p:dialog>
 
-			<p:dialog id="seleccionArchivo1" resizable="true"
-				widgetVar="seleccionArchivo" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Reporte Compra">
+			<h:form>
+				<p:dialog id="dialogReporteServ" resizable="true"
+					widgetVar="repoServicio" modal="true" hideEffect="fade"
+					responsive="true" dynamic="true" width="65%"
+					header="Reporte Compra">
+					<p:panel id="toggleable" toggleable="true" closable="true"
+						toggleSpeed="500" closeSpeed="500">
+						<div align="right">
+							<p:commandLink id="btnCerrarDialogs" ajax="false"
+								action="#{compraController.cerrarArchivo()}"
+								onsuccess="PF('repoServicio').hide();">
+								<h:graphicImage value="/images/dashboard/NoVerificado.png"
+									title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
+									height="25" />
+
+							</p:commandLink>
+						</div>
+						 <table style="width: 100%; height: 100%;">
+							<tr>
+								<td><p:media id="pdfView" height="470px" width="100%"
+										cache="false" value="#{compraController.streamFile}"
+										player="pdf">
+									</p:media></td>
+
+							</tr>
+						</table> 
 
 
-				<h:form id="seleccionArchivo2">
+					</p:panel>
 
-					<p:fieldset legend="PARÁMETROS DE SELECCIÓN"
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-						<h:outputLabel value="Formato:" style="font-size: 17px" size="30" />
-						<p:selectOneMenu style="FONT-FAMILY: arial;" size="30">
-							<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
-							<f:selectItem itemLabel="PDF" itemValue="pdf" />
-							<f:selectItem itemLabel="EXCEL" itemValue="excel" />
-
-						</p:selectOneMenu>
-
-						<br />
-						<br />
-						<center>
-							<p:commandButton value="Generar Reporte" type="button" />
-							<p:commandButton value="Salir"
-								onclick="PF('seleccionArchivo').hide();" type="button" />
-
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
+				</p:dialog>
+			</h:form>
 
 		</h:body>
 
