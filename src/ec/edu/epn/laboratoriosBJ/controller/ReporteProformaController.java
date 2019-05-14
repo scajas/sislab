@@ -127,7 +127,7 @@ public class ReporteProformaController implements Serializable, Validator {
 	public void buscarCliente() {
 
 		try {
-
+			System.out.println("COMBO OBTENIDO" + getNombreCli());
 			listaProforma = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()),
 					getNombreCli(), proforma.getEstadoPo());
 
@@ -163,11 +163,8 @@ public class ReporteProformaController implements Serializable, Validator {
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("fechaInicio", cambioFecha(getFechaInicio()));
-			parametros.put("fechaFinal", cambioFecha(getFechaFinal()));
-			parametros.put("tipoCliente", getNombreCli());
-			parametros.put("estadoProforma", proforma.getEstadoPo());		
-			
-			
+			parametros.put("fechaFin", cambioFecha(getFechaFinal()));
+
 			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
 			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
 					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
@@ -185,12 +182,12 @@ public class ReporteProformaController implements Serializable, Validator {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "proforma.pdf");
+			File destFile = new File(sourceFile.getParent(), "reporteProforma.pdf");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
 			InputStream stream = new FileInputStream(destFile);
 
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "proforma.pdf");
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteProforma.pdf");
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
@@ -200,49 +197,52 @@ public class ReporteProformaController implements Serializable, Validator {
 
 	}
 
-/*	public void generarEXCEL(ActionEvent event) throws Exception {
-		try {
-
-			if (streamFile != null)
-				streamFile.getStream().close();
-
-			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("fechaInicial", proformaSelect.getFecha());
-			parametros.put("fechaFinal", proformaSelect.getFecha());
-			parametros.put("tipoCliente", clienteSelect.getTipocliente());
-			parametros.put("estadoProforma", proformaSelect.getEstadoPo());
-
-			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
-			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
-					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
-				direccion = direccion + "\\";
-			} else {
-				direccion = direccion + "/";
-			}
-
-			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteProforma.jrxml");
-			InputStream input = new FileInputStream(new File(jrxmlFile));
-			JasperReport jasperReport = JasperCompileManager.compileReport(input);
-			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
-
-			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteProforma.xlsx");
-
-			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
-			InputStream stream = new FileInputStream(destFile);
-
-			streamFile = new DefaultStreamedContent(stream, "application/xlsx", "reporteProforma.xlsx");
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
-
-		}
-
-	}*/
+	/*
+	 * public void generarEXCEL(ActionEvent event) throws Exception { try {
+	 * 
+	 * if (streamFile != null) streamFile.getStream().close();
+	 * 
+	 * Map<String, Object> parametros = new HashMap<String, Object>();
+	 * parametros.put("fechaInicial", proformaSelect.getFecha());
+	 * parametros.put("fechaFinal", proformaSelect.getFecha());
+	 * parametros.put("tipoCliente", clienteSelect.getTipocliente());
+	 * parametros.put("estadoProforma", proformaSelect.getEstadoPo());
+	 * 
+	 * String direccion =
+	 * FacesContext.getCurrentInstance().getExternalContext().getRealPath(
+	 * "/reportes/"); if (direccion.toUpperCase().contains("C:") ||
+	 * direccion.toUpperCase().contains("D:") ||
+	 * direccion.toUpperCase().contains("E:") ||
+	 * direccion.toUpperCase().contains("F:")) { direccion = direccion + "\\"; }
+	 * else { direccion = direccion + "/"; }
+	 * 
+	 * String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
+	 * .getRealPath("/reportes/reporteProforma.jrxml"); InputStream input = new
+	 * FileInputStream(new File(jrxmlFile)); JasperReport jasperReport =
+	 * JasperCompileManager.compileReport(input);
+	 * parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
+	 * 
+	 * JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,
+	 * parametros);
+	 * 
+	 * File sourceFile = new File(jrxmlFile); File destFile = new
+	 * File(sourceFile.getParent(), "reporteProforma.xlsx");
+	 * 
+	 * JasperExportManager.exportReportToPdfFile(jasperPrint,
+	 * destFile.toString()); InputStream stream = new FileInputStream(destFile);
+	 * 
+	 * streamFile = new DefaultStreamedContent(stream, "application/xlsx",
+	 * "reporteProforma.xlsx");
+	 * 
+	 * } catch (Exception e) {
+	 * FacesContext.getCurrentInstance().addMessage(event.getComponent().
+	 * getClientId(), new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
+	 * "ERROR"));
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 
 	public void cerrarArchivo() throws IOException {
 		if (streamFile != null)
@@ -265,8 +265,8 @@ public class ReporteProformaController implements Serializable, Validator {
 
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
-		
-		System.out.println("PASA POR AQUI "+ streamFile);
+
+		System.out.println("PASA POR AQUI " + streamFile);
 	}
 
 	public Proforma getProforma() {
@@ -348,7 +348,6 @@ public class ReporteProformaController implements Serializable, Validator {
 	public void setProformaSelect(Proforma proformaSelect) {
 		this.proformaSelect = proformaSelect;
 	}
-
 
 	public Date getFechaInicio() {
 		return fechaInicio;
