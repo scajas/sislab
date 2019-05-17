@@ -1,0 +1,530 @@
+package ec.edu.epn.laboratoriosBJ.controller;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+import ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO;
+import ec.edu.epn.laboratorioBJ.beans.ConcentracionDAO;
+import ec.edu.epn.laboratorioBJ.beans.EstadoProductoDAO;
+import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
+import ec.edu.epn.laboratorioBJ.beans.GradoDAO;
+import ec.edu.epn.laboratorioBJ.beans.HidratacionDAO;
+import ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO;
+import ec.edu.epn.laboratorioBJ.beans.MovimientoInventarioLabDAO;
+import ec.edu.epn.laboratorioBJ.beans.PosgiroDAO;
+import ec.edu.epn.laboratorioBJ.beans.PresentacionDAO;
+import ec.edu.epn.laboratorioBJ.beans.ProductoLabDAO;
+import ec.edu.epn.laboratorioBJ.beans.PurezaDAO;
+import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
+import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
+import ec.edu.epn.laboratorioBJ.beans.UnidadMedidaDAO;
+import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
+import ec.edu.epn.laboratorioBJ.entities.Existencia;
+import ec.edu.epn.laboratorioBJ.entities.Hidratacion;
+import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
+import ec.edu.epn.laboratorioBJ.entities.ProductoLab;
+import ec.edu.epn.laboratorioBJ.entities.Pureza;
+
+import ec.edu.epn.seguridad.VO.SesionUsuario;
+
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+
+import javax.faces.validator.FacesValidator;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
+import javax.faces.application.FacesMessage;
+
+@ManagedBean(name = "reporteConsumoExistenciasController")
+@SessionScoped
+@FacesValidator("primeDateRangeValidator")
+public class ReporteConsumoExistenciasController implements Serializable, Validator {
+
+	/** VARIABLES DE SESION ***/
+	private static final long serialVersionUID = 1L;
+	FacesContext fc = FacesContext.getCurrentInstance();
+	HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+	HttpSession session = request.getSession();
+	SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
+
+	/****************************************************************************/
+	/** SERVICIOS **/
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ExistenciasDAOImplement!ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO")
+	private ExistenciasDAO existenciasI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/PresentacionDAOImplement!ec.edu.epn.laboratorioBJ.beans.PresentacionDAO")
+	private PresentacionDAO presentacionI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ProductoLabDAOImplement!ec.edu.epn.laboratorioBJ.beans.ProductoLabDAO")
+	private ProductoLabDAO productoI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/EstadoProductoDAOImplement!ec.edu.epn.laboratorioBJ.beans.EstadoProductoDAO")
+	private EstadoProductoDAO estadoProductoI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/GradoDAOImplement!ec.edu.epn.laboratorioBJ.beans.GradoDAO")
+	private GradoDAO gradoI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/PosgiroDAOImplement!ec.edu.epn.laboratorioBJ.beans.PosgiroDAO")
+	private PosgiroDAO posgiroI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/HidratacionDAOImplement!ec.edu.epn.laboratorioBJ.beans.HidratacionDAO")
+	private HidratacionDAO hidratacionI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/CaracteristicaDAOImplement!ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO")
+	private CaracteristicaDAO caracteristicaI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ConcentracionDAOImplement!ec.edu.epn.laboratorioBJ.beans.ConcentracionDAO")
+	private ConcentracionDAO concentracionI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/TipoProductoDAOImplement!ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO")
+	private TipoProductoDAO tipoProductoI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/PurezaDAOImplement!ec.edu.epn.laboratorioBJ.beans.PurezaDAO")
+	private PurezaDAO purezaI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratoryDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO")
+	private LaboratoryDAO bodegaI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadMedidaDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadMedidaDAO")
+	private UnidadMedidaDAO unidadMedidaI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
+	private UnidadDAO unidadI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/MovimientoInventarioLabDAOImplement!ec.edu.epn.laboratorioBJ.beans.MovimientoInventarioLabDAO")
+	private MovimientoInventarioLabDAO movimientoInventarioI;
+
+	/****************************************************************************/
+	/** VARIABLES **/
+
+	private String nombreEx;
+
+	private List<Existencia> existencias = new ArrayList<>();
+	private List<Existencia> filtrarExistencias = new ArrayList<>();// filtro
+	private List<ProductoLab> productos = new ArrayList<>();// filtro
+	private List<Movimientosinventario> movimientosinventarios = new ArrayList<>();
+	private Existencia nuevoExistencia;
+	private Existencia existencia;// eliminar y editar
+	private Movimientosinventario movimientosInventario;
+	private String nombreTP;
+	private String nombrePro;
+
+	private Date fechaInicio;
+	private Date fechaFinal;
+
+	// reporte
+	private StreamedContent streamFile = null;
+
+	/** METODO Init **/
+	@PostConstruct
+	public void init() {
+		try {
+
+			// existencias =
+			// existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			// filtrarExistencias =
+			// existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			//
+			existencia = new Existencia();
+			// nuevoExistencia = new Existencia();
+
+			movimientosinventarios = movimientoInventarioI.getAll(Movimientosinventario.class);
+			System.out.println("Registros Obtenidos: " + movimientosinventarios.size());
+			movimientosInventario = new Movimientosinventario();
+
+		} catch (Exception e) {
+
+		}
+
+	}
+
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+	}
+
+	/** Cambiar dato **/
+	public Existencia cambiarDatosExistencia(String id){
+		Existencia existenciatemp = movimientoInventarioI.buscarExistenciaById(id);
+		return existenciatemp;
+	}
+	
+	/** Generacion de PDF **/
+
+	public void generarPDF(ActionEvent event) throws Exception {
+		try {
+
+			if (streamFile != null)
+				streamFile.getStream().close();
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("fechaInicio", cambioFecha(getFechaInicio()));
+			parametros.put("fechaFinal", cambioFecha(getFechaFinal()));
+
+			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
+			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
+					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
+				direccion = direccion + "\\";
+			} else {
+				direccion = direccion + "/";
+			}
+
+			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
+					.getRealPath("/reportes/reporteConsumoExistencias.jrxml");
+			InputStream input = new FileInputStream(new File(jrxmlFile));
+			JasperReport jasperReport = JasperCompileManager.compileReport(input);
+			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
+
+			File sourceFile = new File(jrxmlFile);
+			File destFile = new File(sourceFile.getParent(), "reporteConsumoExistencias.pdf");
+			
+			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
+			InputStream stream = new FileInputStream(destFile);	
+			
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteConsumoExistencias.pdf");
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
+					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
+
+		}
+
+	}
+
+	public void cerrarArchivo() throws IOException {
+		if (streamFile != null)
+			streamFile.getStream().close();
+
+		streamFile = null;
+		System.gc();
+	}
+
+	private Connection coneccionSQL() throws IOException {
+		try {
+			conexionPostrges conexionSQL = new conexionPostrges();
+			Connection con = conexionSQL.getConnection();
+			return con;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/****** Busqueda de Producto ****/
+	public void busquedaGloblal() {
+
+		setProductos(existenciasI.filtrarLista(getNombrePro()));
+	}
+
+	/****** Busqueda de ID Existencia ****/
+
+	public void listaMovimientoInventario(String idExistencia) {
+		try {
+			System.out.println("ESTE ES EL ID QUE RECIBE: " + idExistencia);
+			setMovimientosinventarios(existenciasI.listarMovimientoById(idExistencia));
+			System.out.println("Numero de Registros traidos: " + getMovimientosinventarios().size());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/****** Reemplazar valores de la tabla o formulario ****/
+
+	public String pureza(String idPureza) {
+		String nombre = "";
+
+		Pureza purezaN = new Pureza();
+
+		purezaN = existenciasI.buscarPurezaById(idPureza);
+
+		if (purezaN == null) {
+			nombre = "N/A";
+		} else {
+			nombre = purezaN.getNombrePureza();
+		}
+
+		return nombre;
+	}
+
+	public String hidratacion(String idHidratacion) {
+		String nombre = "";
+
+		Hidratacion hidratacionN = new Hidratacion();
+
+		hidratacionN = existenciasI.buscarHidratacionById(idHidratacion);
+
+		if (hidratacionN == null) {
+			nombre = "N/A";
+		} else {
+			nombre = hidratacionN.getNombreHi();
+		}
+		return nombre;
+	}
+
+	public String movimientoInv(String idExistencia) {
+
+		System.out.println("Entra a la funcion");
+		String nombre = "";
+
+		Movimientosinventario movimientosinventario = new Movimientosinventario();
+
+		movimientosinventario = existenciasI.movimientoInvenBynombred(idExistencia);
+
+		if (movimientosinventario == null) {
+			nombre = "N/A";
+		} else {
+			nombre = cambioFecha(movimientosinventario.getFechaMi());
+		}
+		return nombre;
+	}
+
+	public String tipoOrdenI(String idExistencia) {
+		String nombre = "";
+
+		Movimientosinventario movimientosinventario = new Movimientosinventario();
+
+		movimientosinventario = existenciasI.movimientoInvenBynombred(idExistencia);
+
+		if (movimientosinventario == null) {
+			nombre = "N/A";
+		} else {
+			nombre = movimientosinventario.getOrdeninventario().getTipordeninv().getNombreToi();
+		}
+		return nombre;
+	}
+
+	public String cantidadMovI(String idExistencia) {
+		String nombre = "";
+
+		Movimientosinventario movimientosinventario = new Movimientosinventario();
+
+		movimientosinventario = existenciasI.movimientoInvenBynombred(idExistencia);
+
+		if (movimientosinventario == null) {
+			nombre = "N/A";
+		} else {
+			nombre = movimientosinventario.getCantidadMov().toString();
+		}
+		return nombre;
+	}
+
+	public String cambioFecha(Date fecha) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+		String fechaFinal = format.format(fecha);
+
+		return fechaFinal;
+	}
+
+	public String producto(String id) {
+		String nombre = "";
+
+		Existencia existenciaPro = new Existencia();
+
+		existenciaPro = existenciasI.buscarExistenciaById(id);
+
+		if (existenciaPro == null) {
+			nombre = "N/A";
+		} else {
+			nombre = existenciaPro.getProducto().getNombrePr();
+		}
+
+		return nombre;
+	}
+
+	// METODO PARA BUSQUEDA
+	public void consultarMovimientos() {
+		try {
+
+			movimientosinventarios = existenciasI.getParametroFecha(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()));
+
+			System.out.print("Número de registros Obtenidos " + movimientosinventarios.size());
+
+			mensajeInfo("Numero de coincidencias encontradas:" + movimientosinventarios.size());
+			
+			movimientosInventario = new Movimientosinventario();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/****** Getter y Setter de Estado Producto ****/
+
+	public String getNombreEx() {
+		return nombreEx;
+	}
+
+	public void setNombreEx(String nombreEx) {
+		this.nombreEx = nombreEx;
+	}
+
+	public List<Existencia> getExistencias() {
+		return existencias;
+	}
+
+	public void setExistencias(List<Existencia> existencias) {
+		this.existencias = existencias;
+	}
+
+	public Existencia getNuevoExistencia() {
+		return nuevoExistencia;
+	}
+
+	public void setNuevoExistencia(Existencia nuevoExistencia) {
+		this.nuevoExistencia = nuevoExistencia;
+	}
+
+	public Existencia getExistencia() {
+		return existencia;
+	}
+
+	public void setExistencia(Existencia existencia) {
+		this.existencia = existencia;
+	}
+
+	public String getNombreTP() {
+		return nombreTP;
+	}
+
+	public void setNombreTP(String nombreTP) {
+		this.nombreTP = nombreTP;
+	}
+
+	public List<Existencia> getFiltrarExistencias() {
+		return filtrarExistencias;
+	}
+
+	public void setFiltrarExistencias(List<Existencia> filtrarExistencias) {
+		this.filtrarExistencias = filtrarExistencias;
+	}
+
+	public List<ProductoLab> getProductos() {
+		return productos;
+	}
+
+	public void setProductos(List<ProductoLab> productos) {
+		this.productos = productos;
+	}
+
+	public String getNombrePro() {
+		return nombrePro;
+	}
+
+	public void setNombrePro(String nombrePro) {
+		this.nombrePro = nombrePro;
+	}
+
+	public List<Movimientosinventario> getMovimientosinventarios() {
+		return movimientosinventarios;
+	}
+
+	public void setMovimientosinventarios(List<Movimientosinventario> movimientosinventarios) {
+		this.movimientosinventarios = movimientosinventarios;
+	}
+
+	/**
+	 * @return the fechaInicio
+	 */
+	public Date getFechaInicio() {
+		return fechaInicio;
+	}
+
+	/**
+	 * @param fechaInicio
+	 *            the fechaInicio to set
+	 */
+	public void setFechaInicio(Date fechaInicio) {
+		this.fechaInicio = fechaInicio;
+	}
+
+	/**
+	 * @return the fechaFinal
+	 */
+	public Date getFechaFinal() {
+		return fechaFinal;
+	}
+
+	/**
+	 * @param fechaFinal
+	 *            the fechaFinal to set
+	 */
+	public void setFechaFinal(Date fechaFinal) {
+		this.fechaFinal = fechaFinal;
+	}
+
+	/**
+	 * @return the streamFile
+	 */
+	public StreamedContent getStreamFile() {
+		return streamFile;
+	}
+
+	/**
+	 * @param streamFile
+	 *            the streamFile to set
+	 */
+	public void setStreamFile(StreamedContent streamFile) {
+		this.streamFile = streamFile;
+	}
+
+	@Override
+	public void validate(FacesContext arg0, UIComponent arg1, Object arg2) throws ValidatorException {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @return the movimientosInventario
+	 */
+	public Movimientosinventario getMovimientosInventario() {
+		return movimientosInventario;
+	}
+
+	/**
+	 * @param movimientosInventario
+	 *            the movimientosInventario to set
+	 */
+	public void setMovimientosInventario(Movimientosinventario movimientosInventario) {
+		this.movimientosInventario = movimientosInventario;
+	}
+
+}

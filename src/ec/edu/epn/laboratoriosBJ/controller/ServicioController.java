@@ -236,13 +236,13 @@ public class ServicioController implements Serializable {
 	}
 
 	public void buscarServicioCombo() {
-		
+
 		nuevoServicio.setTiposervicio(tipoServicioSelect);
-		
+
 		listServicio = servicioI.getparametrosTipoServicio(nuevoServicio.getTiposervicio().getNombreTs());
-		
+
 		System.out.print("Numero de servicios obtenidos: " + listServicio.size());
-		
+
 		tiposerv = new Tiposervicio();
 	}
 
@@ -347,7 +347,7 @@ public class ServicioController implements Serializable {
 		}
 
 	}
-	
+
 	public void generarEXCEL(ActionEvent event) throws Exception {
 		try {
 
@@ -538,18 +538,15 @@ public class ServicioController implements Serializable {
 	}
 
 	/**
-	 * @return the streamFile
-	 */
-	public StreamedContent getStreamFile() {
-		return streamFile;
-	}
-
-	/**
 	 * @param streamFile
 	 *            the streamFile to set
 	 */
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
+	}
+
+	public StreamedContent getStreamFile() {
+		return streamFile;
 	}
 
 }
