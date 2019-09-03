@@ -19,7 +19,7 @@ public class TipoOrdenInvSelectItemConverter extends SelectItemsConverter{
 			Object value) {
 		Integer id = (value instanceof Tipordeninv) ? ((Tipordeninv) value).getIdTipordeninv()
 				: null;
-		return (id != null) ? String.valueOf(id) : null;
+		return (id != null) ? String.valueOf(id) : null; //hola
 
 	}
 

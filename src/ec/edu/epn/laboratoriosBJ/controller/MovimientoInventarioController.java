@@ -100,7 +100,7 @@ public class MovimientoInventarioController implements Serializable {
 		}
 	}
 
-	/****** Agregar/Editar/Eliminar Movimiento de Inventario a lista temporal ****/
+	/****** Agregar/Editar/Eliminar Movimiento de Inventario a lista temporal gd ****/
 
 	public void agregarMovimiento() {
 
