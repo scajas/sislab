@@ -18,6 +18,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.ProveedorLabDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoProveedorDAO;
+import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
 import ec.edu.epn.laboratorioBJ.entities.ProveedorLab;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproveedor;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
@@ -112,7 +113,9 @@ public class ProveedorLabController implements Serializable {
 	public void agregarProveedor(ActionEvent event) {
 		
 		try {
+			System.out.println("aiudaaa");
 			if(buscarProveedor(nuevoProveedor.getNombrePv())==true){
+				System.out.println("pasa por aqui");
 				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
 				new FacesMessage(FacesMessage.SEVERITY_ERROR,"ERROR!","Este Proveedor ya existe."));
 				
@@ -128,12 +131,12 @@ public class ProveedorLabController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
 						new FacesMessage(FacesMessage.SEVERITY_INFO,"", "El Proveedor se ha almacenado exitosamente"));
 				
-				nuevoProveedor = new ProveedorLab();
-				tipoProveedorSelect = new Tipoproveedor();
+				//nuevoProveedor = new ProveedorLab();
+				//tipoProveedorSelect = new Tipoproveedor();
 			}
-				
+			
 		} catch (Exception e) {
-			System.out.println ("El error es: " + e.getMessage());
+			System.out.println ("El error es: " + nuevoProveedor.getNombrePv() + tipoProveedorSelect.getNombreTpv() );
 		    e.printStackTrace();
 			// TODO: handle exception
 			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
@@ -176,9 +179,9 @@ public class ProveedorLabController implements Serializable {
 
 		private boolean buscarProveedor(String valor) {
 			
-		
 			try {
 				listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
+				System.out.println("Esta obteniendo la lista : " + listaProveedorLab.size());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				System.out.println ("El error es: " + e.getMessage());
@@ -186,16 +189,20 @@ public class ProveedorLabController implements Serializable {
 			}
 			
 			boolean resultado = false;
-			for (ProveedorLab pv : listaProveedorLab) {
-				if (pv.getNombrePv().trim().equals(valor.trim())) {
+			
+			System.out.println(valor); 
+			
+			for (ProveedorLab proveedorLab : listaProveedorLab) {
+				if (proveedorLab.getNombrePv().equals(valor)) {
 					resultado = true;
 					break;
 				} else {
 					resultado = false;
 				}
-				
 			}
 			
+			System.out.println("Este es el resultado: " +resultado); 
+
 			return resultado;
 		}
 

@@ -211,12 +211,12 @@ document.body.innerHTML=originalContents;
 									<p:outputLabel id="lblproveedor" for="provee" value="Tipo: "
 										style="color:white!important" />
 									<p:selectOneMenu id="provee"
-										value="#{proveedorController.tipoProveedorSelect}"
+										value="#{proveedorController.tipoProveedorSelect.nombreTpv}"
 										maxlength="10" required="true"
 										requiredMessage="Debe ingresar un Tipo Proveedor">
 										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
 										<f:selectItems value="#{proveedorController.tipo}"
-											itemLabel="#{prov.nombreTpv}" itemValue="#{prov}" var="prov">
+											itemLabel="#{prov.nombreTpv}" itemValue="#{prov.nombreTpv}" var="prov">
 
 										</f:selectItems>
 
@@ -253,9 +253,8 @@ document.body.innerHTML=originalContents;
 										style="color:white!important" />
 									<p:inputText id="email"
 										value="#{proveedorController.nuevoProveedor.emailPv}"
-										validatorMessage="Email no válido" maxlength="50">
-										<f:validateRegex
-											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+										 maxlength="50">
+										
 									</p:inputText>
 
 
@@ -275,7 +274,7 @@ document.body.innerHTML=originalContents;
 
 									<p:commandLink
 										actionListener="#{proveedorController.agregarProveedor}"
-										process="@this,nombre,ruc,tlf,direccion,email,desc"
+										process="@this,formnuevoProveedor"
 										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formnuevoProveedor"
 										onsuccess="PF('nuevoProveedor').hide();"
 										oncomplete="PF('filterCliente').filter();">
