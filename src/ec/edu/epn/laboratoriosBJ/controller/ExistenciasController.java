@@ -437,7 +437,7 @@ public class ExistenciasController implements Serializable {
 		try {
 			System.out.println("ESTE ES EL ID QUE RECIBE: " + idExistencia);
 			setMovimientosinventarios(existenciasI.listarMovimientoById(idExistencia));
-			System.out.println("Numero de Registros traidos: " + getMovimientosinventarios().size());
+			System.out.println("Numero de Registros traido: " + getMovimientosinventarios().size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

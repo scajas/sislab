@@ -76,7 +76,7 @@
 							widgetVar="filterExistenciasTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							filteredValue="#{existenciasController.filtrarExistencias}"
-							resizableColumns="true" rows="10" paginator="true"
+						    rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
@@ -215,7 +215,7 @@
 
 			</h:form>
 
-			<!-- **************************  Panel Detalle Existencia   *************************** -->
+			<!-- **************************  Panel Detalle Existencias   *************************** -->
 
 			<p:dialog id="panelVerDetalleExistencia" resizable="true"
 				widgetVar="verDetalleExistencia" modal="true" showEffect="explode"
@@ -527,7 +527,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 	border-style: double;
 	border-width: 1px;
 	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-									legend="ListaProductos">
+									legend="Lista Productos">
 
 									<p:dataTable id="tblProducto"
 										value="#{existenciasController.productos}" var="pro"
@@ -535,9 +535,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 										rows="10" paginator="true"
 										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
 										rowsPerPageTemplate="5,10,15,20,30,50,75,100"
-										style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 										paginatorPosition="bottom" rowKey="#{pro.idProducto}"
 										selection="#{existenciasController.nuevoExistencia.producto}"
 										selectionMode="single">

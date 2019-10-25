@@ -1,6 +1,7 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,9 +73,11 @@ public class MovimientoInventarioController implements Serializable {
 
 	/** Variables **/
 	private List<Movimientosinventario> movimientoInventarios = new ArrayList<>();
+	private List<Movimientosinventario> tempMovimientoInventarios = new ArrayList<>();
 	private List<Movimientosinventario> filtroMovimientoInventarios = new ArrayList<>();
 	private List<Movimientosinventario> nuevoMovimientoInventarios = new ArrayList<>();
 	private Movimientosinventario nuevoMovimientoInventario;
+	private Movimientosinventario nuevoMovimientoInventarioAux;
 	private Movimientosinventario movimientosinventario;
 
 	/** Variables OrdenInv **/
@@ -91,8 +94,10 @@ public class MovimientoInventarioController implements Serializable {
 
 	// existencias
 	private List<Existencia> existencias = new ArrayList<>();
+	private List<Existencia> tempExistencias = new ArrayList<>();
 	private List<Existencia> filtrarExistencias = new ArrayList<>();
 	private Existencia existencia;
+	private Existencia existenciaAux;
 	private Existencia selectExistencia;
 
 	// saldo Existencia
@@ -104,6 +109,9 @@ public class MovimientoInventarioController implements Serializable {
 
 	// id temporal
 	private String idTemporal;
+	
+	// Num Aux
+	private int aux;
 
 	/** METODO Init **/
 	@PostConstruct
@@ -113,8 +121,12 @@ public class MovimientoInventarioController implements Serializable {
 			// init movimiento inventario
 			// movimientoInventarioI.getAll(Movimientosinventario.class);
 			nuevoMovimientoInventarios = new ArrayList<>();
+			tempMovimientoInventarios = new ArrayList<>();
 			nuevoMovimientoInventario = new Movimientosinventario();
+			nuevoMovimientoInventarioAux = new Movimientosinventario();
 			movimientosinventario = new Movimientosinventario();
+			nuevoMovimientoInventario.setSaldoE(new BigDecimal(0));
+			nuevoMovimientoInventarioAux.setSaldoE(new BigDecimal(0));
 
 			// System.out.println("Orde de inventarios consultadas: " +
 			// movimientoInventarios.size());
@@ -123,6 +135,7 @@ public class MovimientoInventarioController implements Serializable {
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 			ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
+			filterOrdenInventarios = ordenInventarios;
 			ordeninventario = new Ordeninventario();
 			nuevoOrdeninventario = new Ordeninventario();
 			System.out.println("Orde de inventarios consultadas: " + ordenInventarios.size());
@@ -136,10 +149,11 @@ public class MovimientoInventarioController implements Serializable {
 
 			// init de Existencia
 			filtrarExistencias = new ArrayList<Existencia>();
-			existencias = new ArrayList<Existencia>();
 			existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			tempExistencias = new ArrayList<Existencia>();
 			selectExistencia = new Existencia();
 			existencia = new Existencia();
+			existenciaAux = new Existencia();
 
 			// init de Saldo Existencia
 			saldoExistencia = new SaldoExistencia();
@@ -161,30 +175,94 @@ public class MovimientoInventarioController implements Serializable {
 	/******
 	 * Agregar/Editar/Eliminar Movimiento de Inventario a lista temporal
 	 ****/
+	public void holaMundo() {
+		System.out.println("Obligame malphite >:v");
+	}
+
+	public void limpiarCampos() {
+
+		try {
+
+			System.out.println("Esta entrando a la funcion >:D");
+
+			nuevoMovimientoInventarios.clear();
+			tempMovimientoInventarios.clear();
+			nuevoMovimientoInventario = new Movimientosinventario();
+			movimientosinventario = new Movimientosinventario();
+			nuevoMovimientoInventario.setSaldoE(new BigDecimal(0));
+			nuevoMovimientoInventarioAux.setSaldoE(new BigDecimal(0));
+
+			// System.out.println("Orde de inventarios consultadas: " +
+			// movimientoInventarios.size());
+
+			// init Orden inventario
+			ordeninventario = new Ordeninventario();
+			nuevoOrdeninventario = new Ordeninventario();
+
+			// init de Tipo Orden Inventario
+			tipordeninv = new Tipordeninv();
+			tipoOrdenSelect = new Tipordeninv();
+
+			// init de Existencia
+			filtrarExistencias = new ArrayList<Existencia>();
+			existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			tempExistencias = new ArrayList<Existencia>();
+			selectExistencia = new Existencia();
+			existencia = new Existencia();
+			System.out.println("Existencias consultadas: " + existencias.size());
+
+			// init Unidad
+			unidadLabo = ordenInventarioI.obtenerUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			nuevoOrdeninventario.setUnidad(unidadLabo);
+
+			// init id temporal
+			idTemporal = "";
+
+			mensajeInfo("Se ha limpiado todo el formulario");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void cargarMI(String id) {
+		tempMovimientoInventarios.clear();
+		System.out.println("Lista de MI id: " + id);
+		tempMovimientoInventarios = ordenInventarioI.listaMovimientoI(id);
+		System.out.println("Lista de MI: " + tempMovimientoInventarios.size());
+	}
 
 	public void agregarMovimiento() {
 
 		try {
+
 			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
 				double saldoE = nuevoMovimientoInventario.getSaldoE().doubleValue();
 				double cantidadE = existencia.getCantidadE().doubleValue();
 
 				if (saldoE <= cantidadE) {
 					nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
-					// nuevoOrdeninventario.addMovimientosinventario(nuevoMovimientoInventario);
-					mensajeInfo("Se ha almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") correctamente."
-							+ nuevoMovimientoInventario.getIdMovimiento());
+					setMovimientoInventarios(nuevoMovimientoInventarios);
+					mensajeInfo(
+							"Se ha almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") correctamente.");
 
 					nuevoMovimientoInventario = new Movimientosinventario();
-					System.out.println("Esta funcionando el registro");
+					existencia = new Existencia();
 
 				} else {
 					mensajeError("La cantidad es mayor que el saldo existente");
 				}
 			} else {
 				nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
+				setMovimientoInventarios(nuevoMovimientoInventarios);
+
+				mensajeInfo("Se ha almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") correctamente.");
+
 				nuevoMovimientoInventario = new Movimientosinventario();
-				System.out.println("Esta funcionando el registro");
+				existencia = new Existencia();
+
 			}
 
 		} catch (Exception e) {
@@ -193,10 +271,11 @@ public class MovimientoInventarioController implements Serializable {
 
 	}
 
+	/** Guarda MI en la base de datos **/
 	public void guardarMovimientosInv() {
-		for (Movimientosinventario movimientosinventario : nuevoMovimientoInventarios) {
+		for (Movimientosinventario movimientosInventario : movimientoInventarios) {
 			try {
-				movimientoInventarioI.save(movimientosinventario);
+				movimientoInventarioI.save(movimientosInventario);
 			} catch (Exception e) {
 				System.out.println(e);
 				// e.printStackTrace();
@@ -208,19 +287,58 @@ public class MovimientoInventarioController implements Serializable {
 	public void editarMovimiento() {
 
 		try {
-			nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
-			nuevoMovimientoInventario = new Movimientosinventario();
-			System.out.println("Esta funcionando el registro");
+			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
+				double saldoE = getMovimientosinventario().getSaldoE().doubleValue();
+				double cantidadE = cambiarDatosExistencia(getMovimientosinventario().getIdExistencia()).getCantidadE()
+						.doubleValue();
+
+				if (saldoE <= cantidadE) {
+					System.out.println("Entra a");
+					editarMovimientoTemporal();
+					// setMovimientoInventarios(nuevoMovimientoInventarios);
+
+				} else {
+					mensajeError("La cantidad es mayor que el saldo existente");
+				}
+			} else {
+				System.out.println("Entra a else");
+				editarMovimientoTemporal();
+				// setMovimientoInventarios(nuevoMovimientoInventarios);
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
+	public void editarMovimientoTemporal() {
+		int i = 0;
+		RequestContext context = RequestContext.getCurrentInstance();
+		System.out.println("Entra aL EDITAR");
+
+		for (Movimientosinventario movimientoInventario : nuevoMovimientoInventarios) {
+			if (movimientoInventario.getIdExistencia().equals(getMovimientosinventario().getIdExistencia())) {
+				nuevoMovimientoInventarios.set(i, getMovimientosinventario());
+
+				mensajeInfo("Se ha editado (" + getMovimientosinventario().getIdExistencia() + ") correctamente.");
+
+				setMovimientosinventario(new Movimientosinventario());
+
+				context.execute("PF('editarMI').hide();");
+				context.update("formAgregarMI");
+				break;
+			} else {
+				i++;
+			}
+		}
+	}
+
 	public void eliminarMovimiento() {
 
 		try {
 			nuevoMovimientoInventarios.remove(movimientosinventario);
+			setMovimientoInventarios(nuevoMovimientoInventarios);
 			mensajeInfo(
 					"Se ha eliminado el movimiento de Inventario (" + movimientosinventario.getIdExistencia() + ")");
 		} catch (Exception e) {
@@ -245,20 +363,17 @@ public class MovimientoInventarioController implements Serializable {
 	}
 
 	public void llenarCombo() {
-		System.out.println("Chica combo");
 
 		for (Tipordeninv tipordeninv : tipordeninvs) {
 			if (tipordeninv.getIdTipordeninv() == 1 || tipordeninv.getIdTipordeninv() == 2
 					|| tipordeninv.getIdTipordeninv() == 3 || tipordeninv.getIdTipordeninv() == 6
 					|| tipordeninv.getIdTipordeninv() == 7) {
-				
+
 				temptipordeninvs.add(tipordeninv);
 				System.out.println("Se ha agregado: " + tipordeninv.getNombreToi());
-				
+
 			}
 		}
-
-		System.out.println("Este es el tamaño de la lista: " + temptipordeninvs.size());
 
 	}
 
@@ -279,7 +394,6 @@ public class MovimientoInventarioController implements Serializable {
 
 			/** GUARDAR **/
 			ordenInventarioI.save(nuevoOrdeninventario);
-
 			guardarMovimientosInv();
 
 			UnidadLabo uni = new UnidadLabo();
@@ -290,6 +404,7 @@ public class MovimientoInventarioController implements Serializable {
 					+ " ) se ha almacenado exitosamente");
 
 			nuevoOrdeninventario = new Ordeninventario();
+			movimientoInventarios.clear();
 
 		} catch (Exception e) {
 
@@ -300,7 +415,7 @@ public class MovimientoInventarioController implements Serializable {
 
 	/* PENDIENTE */
 	public void buscar() {
-
+		System.out.println("Esta entrando al buscar");
 	}
 
 	public void OrdenISelect() {
@@ -377,13 +492,13 @@ public class MovimientoInventarioController implements Serializable {
 	/****** Cambiar Id de Movimientos Inventarios ****/
 	public void cambiarIdMov(Ordeninventario ordeninventario) {
 		int i = 0;
-		for (Movimientosinventario movimientosinventario : nuevoMovimientoInventarios) {
+		for (Movimientosinventario movimientosinventario : movimientoInventarios) {
 
 			movimientosinventario.setOrdeninventario(ordeninventario);
 			movimientosinventario.setCantidadMov(movimientosinventario.getSaldoE());
 			movimientosinventario.setCantidadDmt(0);
 
-			nuevoMovimientoInventarios.set(i, movimientosinventario);
+			movimientoInventarios.set(i, movimientosinventario);
 
 			i++;
 		}
@@ -411,20 +526,14 @@ public class MovimientoInventarioController implements Serializable {
 
 	/****** Manejo de paneles ****/
 	public void cambiarPanel() {
-
+		RequestContext context = RequestContext.getCurrentInstance();
 		if (getIdTemporal().equals("1")) {
 			mensajeError("Debe seleccionar un tipo de Inventario");
 		} else if (getIdTemporal().equals("7")) {
-			RequestContext context = RequestContext.getCurrentInstance();
-			/*
-			 * context.execute("PF('ingresarMI').show();");
-			 * System.out.println("este es el cambio de combo" +
-			 * getTipoOrdenSelect().getNombreToi());
-			 */
+			context.execute("PF('ingresarMI2').show();");
 			System.out.println("Este es tranferencia");
 		} else {
 			try {
-				RequestContext context = RequestContext.getCurrentInstance();
 				context.execute("PF('ingresarMI').show();");
 				// System.out.println("este es el cambio de combo" +
 				// getTipoOrdenSelect().getNombreToi());
@@ -465,8 +574,28 @@ public class MovimientoInventarioController implements Serializable {
 		}
 	}
 
-	/****** Metodos de existencias ****/
+	public boolean buscarExistencia(String id) {
+		boolean resultado = false;
 
+		for (Movimientosinventario movimientosinventario : nuevoMovimientoInventarios) {
+			if (movimientosinventario.getIdExistencia().equals(id)) {
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+
+		}
+
+		return resultado;
+	}
+
+	/****** Metodos de existencias ****/
+    public void auxPanel(int a){
+    	setAux(a);
+    	System.out.println("Este es el valor que trae: " + getAux());
+    }
+	
 	public void cargarExistencias() {
 
 		try {
@@ -485,19 +614,49 @@ public class MovimientoInventarioController implements Serializable {
 	public void seleccionarExistencia() {
 
 		try {
-			getNuevoMovimientoInventario().setIdExistencia(getSelectExistencia().getIdExistencia());
-			mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
-			System.out.println("este es el id de existencia: " + selectExistencia.getIdExistencia() + " "
-					+ getNuevoMovimientoInventario().getIdExistencia());
+			RequestContext context = RequestContext.getCurrentInstance();
 
-			setExistencia(selectExistencia);
+			if (buscarExistencia(selectExistencia.getIdExistencia()) == false) {
+				getNuevoMovimientoInventario().setIdExistencia(getSelectExistencia().getIdExistencia());
+				mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
+				System.out.println("este es el id de existencia: " + selectExistencia.getIdExistencia() + " "
+						+ getNuevoMovimientoInventario().getIdExistencia());
 
-			selectExistencia = new Existencia();
+				setExistencia(selectExistencia);
+				selectExistencia = new Existencia();
+
+				context.execute("PF('listadoEx').hide();");
+
+			} else {
+				mensajeError("La existencia (" + selectExistencia.getIdExistencia() + ") ya ha sido seleccionada");
+				selectExistencia = new Existencia();
+			}
 
 		} catch (Exception e) {
 			mensajeError("No se ha seleccionado ninguna Existencia");
 		}
 
+	}
+
+	public void cargarExistenciasTemp() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		if (existencia.getIdExistencia() == null) {
+			mensajeError("Debe seleccionar una existencia");
+		} else {
+			tempExistencias.clear();
+			tempExistencias.add(getExistencia());
+			System.out.println("Este es el id de existencia: " + getExistencia().getIdExistencia());
+			System.out.println("Este es el id de existencia: " + tempExistencias.size());
+			// PF('tblexis')
+			// context.execute("PF('tblexis')");
+			context.execute("PF('verEx').show();");
+
+		}
+
+	}
+
+	public void prueba() {
+		mensajeInfo("esto funca");
 	}
 
 	/****** Setear valos de combo para validacion ****/
@@ -738,6 +897,46 @@ public class MovimientoInventarioController implements Serializable {
 
 	public void setTemptipordeninvs(List<Tipordeninv> temptipordeninvs) {
 		this.temptipordeninvs = temptipordeninvs;
+	}
+
+	public List<Movimientosinventario> getTempMovimientoInventarios() {
+		return tempMovimientoInventarios;
+	}
+
+	public void setTempMovimientoInventarios(List<Movimientosinventario> tempMovimientoInventarios) {
+		this.tempMovimientoInventarios = tempMovimientoInventarios;
+	}
+
+	public List<Existencia> getTempExistencias() {
+		return tempExistencias;
+	}
+
+	public void setTempExistencias(List<Existencia> tempExistencias) {
+		this.tempExistencias = tempExistencias;
+	}
+
+	public Movimientosinventario getNuevoMovimientoInventarioAux() {
+		return nuevoMovimientoInventarioAux;
+	}
+
+	public void setNuevoMovimientoInventarioAux(Movimientosinventario nuevoMovimientoInventarioAux) {
+		this.nuevoMovimientoInventarioAux = nuevoMovimientoInventarioAux;
+	}
+
+	public Existencia getExistenciaAux() {
+		return existenciaAux;
+	}
+
+	public void setExistenciaAux(Existencia existenciaAux) {
+		this.existenciaAux = existenciaAux;
+	}
+
+	public int getAux() {
+		return aux;
+	}
+
+	public void setAux(int aux) {
+		this.aux = aux;
 	}
 
 }
