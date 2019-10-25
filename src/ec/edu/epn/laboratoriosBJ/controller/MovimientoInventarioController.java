@@ -593,7 +593,7 @@ public class MovimientoInventarioController implements Serializable {
 	/****** Metodos de existencias ****/
     public void auxPanel(int a){
     	setAux(a);
-    	System.out.println("Este es el valor que trae: " + getAux() + a);
+    	System.out.println("Este es el valor que trae: " + getAux());
     }
 	
 	public void cargarExistencias() {
