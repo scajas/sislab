@@ -271,7 +271,7 @@ public class MovimientoInventarioController implements Serializable {
 					System.out.println("Este es la nueva cantidad ajustada (Mov Inventario): "
 							+ existencia.getCantidadE().doubleValue());
 
-					// Añadir a la lista temporal de Existencias
+					// Añadir a la lista temporal de Existenciass
 					tempExistencias.add(getExistencia());
 
 					nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
