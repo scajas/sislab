@@ -2,6 +2,7 @@ package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ public class MovimientoInventarioController implements Serializable {
 
 	// id temporal
 	private String idTemporal;
-	
+
 	// Num Aux
 	private int aux;
 
@@ -164,7 +165,7 @@ public class MovimientoInventarioController implements Serializable {
 			nuevoOrdeninventario.setUnidad(unidadLabo);
 
 			// init id temporal
-			idTemporal = "";
+			idTemporal = "0";
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -173,7 +174,8 @@ public class MovimientoInventarioController implements Serializable {
 	}
 
 	/******
-	 * Agregar/Editar/Eliminar Movimiento de Inventario a lista temporal
+	 * Agregar/Editar/Eliminar Movimiento de Inventario/Existencias a lista
+	 * temporal
 	 ****/
 	public void holaMundo() {
 		System.out.println("Obligame malphite >:v");
@@ -227,6 +229,16 @@ public class MovimientoInventarioController implements Serializable {
 
 	}
 
+	public void limpiarMI() {
+		System.out.println("Esta entrando a la funcion MO");
+		/*
+		 * nuevoMovimientoInventario = new Movimientosinventario();
+		 * movimientosinventario = new Movimientosinventario();
+		 * nuevoMovimientoInventario.setSaldoE(new BigDecimal(0));
+		 * nuevoMovimientoInventarioAux.setSaldoE(new BigDecimal(0));
+		 */
+	}
+
 	public void cargarMI(String id) {
 		tempMovimientoInventarios.clear();
 		System.out.println("Lista de MI id: " + id);
@@ -238,11 +250,30 @@ public class MovimientoInventarioController implements Serializable {
 
 		try {
 
-			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
-				double saldoE = nuevoMovimientoInventario.getSaldoE().doubleValue();
-				double cantidadE = existencia.getCantidadE().doubleValue();
+			double resultado;
+			double cantidadMo = nuevoMovimientoInventario.getCantidadMov().doubleValue();
+			double cantidadE = existencia.getCantidadE().doubleValue();
 
-				if (saldoE <= cantidadE) {
+			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
+
+				if (cantidadMo <= cantidadE) {
+
+					// Ajuste negativo a la existencia/Mov
+					resultado = cantidadE - cantidadMo;
+
+					existencia.setCantidadE(new BigDecimal(resultado));
+					nuevoMovimientoInventario.setSaldoE(getExistencia().getCantidadE());
+					nuevoMovimientoInventario.setDism(new BigDecimal(cantidadMo));
+					nuevoMovimientoInventario.setIncrem(new BigDecimal(0));
+
+					System.out.println("Este es la nueva cantidad ajustada (Existencia): "
+							+ existencia.getCantidadE().doubleValue());
+					System.out.println("Este es la nueva cantidad ajustada (Mov Inventario): "
+							+ existencia.getCantidadE().doubleValue());
+
+					// Añadir a la lista temporal de Existencias
+					tempExistencias.add(getExistencia());
+
 					nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
 					setMovimientoInventarios(nuevoMovimientoInventarios);
 					mensajeInfo(
@@ -255,6 +286,21 @@ public class MovimientoInventarioController implements Serializable {
 					mensajeError("La cantidad es mayor que el saldo existente");
 				}
 			} else {
+				// Ajuste positivo a la existencia/Mov
+				resultado = cantidadMo + cantidadE;
+				existencia.setCantidadE(new BigDecimal(resultado));
+				nuevoMovimientoInventario.setSaldoE(getExistencia().getCantidadE());
+				nuevoMovimientoInventario.setIncrem(new BigDecimal(cantidadMo));
+				nuevoMovimientoInventario.setDism(new BigDecimal(0));
+
+				System.out.println(
+						"Este es la nueva cantidad ajustada (Existencia): " + existencia.getCantidadE().doubleValue());
+				System.out.println("Este es la nueva cantidad ajustada (Mov Inventario): "
+						+ existencia.getCantidadE().doubleValue());
+
+				// Añadir a la lista temporal de Existencias
+				tempExistencias.add(getExistencia());
+
 				nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
 				setMovimientoInventarios(nuevoMovimientoInventarios);
 
@@ -283,16 +329,29 @@ public class MovimientoInventarioController implements Serializable {
 
 		}
 	}
+	
+	/** Actualizar Existencias en la base de datos **/
+	public void actualizarExistencias() {
+		System.out.println(tempExistencias.size());
+		for (Existencia existencia : tempExistencias) {
+			try {
+				existenciasI.update(existencia);
+			} catch (Exception e) {
+				System.out.println(e);
+				// e.printStackTrace();
+			}
+
+		}
+	}
 
 	public void editarMovimiento() {
 
 		try {
+			double cantidadMo = nuevoMovimientoInventario.getCantidadMov().doubleValue();
+			double cantidadE = existencia.getCantidadE().doubleValue();
 			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
-				double saldoE = getMovimientosinventario().getSaldoE().doubleValue();
-				double cantidadE = cambiarDatosExistencia(getMovimientosinventario().getIdExistencia()).getCantidadE()
-						.doubleValue();
 
-				if (saldoE <= cantidadE) {
+				if (cantidadMo <= cantidadE) {
 					System.out.println("Entra a");
 					editarMovimientoTemporal();
 					// setMovimientoInventarios(nuevoMovimientoInventarios);
@@ -395,6 +454,7 @@ public class MovimientoInventarioController implements Serializable {
 			/** GUARDAR **/
 			ordenInventarioI.save(nuevoOrdeninventario);
 			guardarMovimientosInv();
+			actualizarExistencias();
 
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
@@ -495,7 +555,7 @@ public class MovimientoInventarioController implements Serializable {
 		for (Movimientosinventario movimientosinventario : movimientoInventarios) {
 
 			movimientosinventario.setOrdeninventario(ordeninventario);
-			movimientosinventario.setCantidadMov(movimientosinventario.getSaldoE());
+			movimientosinventario.setFechaMi(ordeninventario.getFechaingresoOi());
 			movimientosinventario.setCantidadDmt(0);
 
 			movimientoInventarios.set(i, movimientosinventario);
@@ -591,11 +651,11 @@ public class MovimientoInventarioController implements Serializable {
 	}
 
 	/****** Metodos de existencias ****/
-    public void auxPanel(int a){
-    	setAux(a);
-    	System.out.println("Este es el valor que trae: " + getAux());
-    }
-	
+	public void auxPanel(int a) {
+		setAux(a);
+		System.out.println("Este es el valor que trae: " + getAux());
+	}
+
 	public void cargarExistencias() {
 
 		try {
