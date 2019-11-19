@@ -15,14 +15,12 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.event.ActionEvent;
 
 import ec.edu.epn.laboratorioBJ.beans.PosgiroDAO;
-import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.laboratorioBJ.entities.Posgiro;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
-@ManagedBean(name = "PosgiroController")
+@ManagedBean(name = "posgiroController")
 @SessionScoped
 public class PosgiroController implements Serializable {
 
@@ -43,8 +41,8 @@ public class PosgiroController implements Serializable {
 	private Posgiro posgiro;
 	private List<Posgiro> listarPosgiros = new ArrayList<>();
 	private Posgiro nuevoPosgiro;
-	private String nombreTP;
-	
+	private String nombreP;
+	private List<Posgiro> filtrarPosgiros;
 
 	/** METODO INIT **/
 	@PostConstruct
@@ -58,98 +56,108 @@ public class PosgiroController implements Serializable {
 		}
 	}
 
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
 	/** METODO CREAR POSGIRO **/
-	public void agregarPosgiro(ActionEvent event) {
+	public void agregarPosgiro() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarPosgiro(nuevoPosgiro.getNombrePg()) == true) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-								"Ha ocurrido un error, Posgiro " + nuevoPosgiro.getNombrePg() + " ya existe."));
+				mensajeError("El Posgiro (" + nuevoPosgiro.getNombrePg() + ") ya existe.");
 
 			} else {
 				posgiroI.save(nuevoPosgiro);
 				listarPosgiros = posgiroI.getAll(Posgiro.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Posgiro almacenado exitosamente"));
+
+				mensajeInfo("El Posgiro (" + nuevoPosgiro.getNombrePg() + ") se ha almacenado exitosamente");
 				nuevoPosgiro = new Posgiro();
+				context.execute("PF('nuevoPosgiro').hide();");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 
 	}
 
-	/** METODO ELIMINAR POSGIRO **/
-	public void eliminarPosgiro(ActionEvent event) {
+	/****** Modificar ****/
+
+	public void modificarPosgiro() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-
-			posgiroI.delete(posgiro);
-			listarPosgiros = posgiroI.getAll(Posgiro.class);
-
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Posgiro Eliminado exitosamente"));
-		} catch (Exception e) {
-
-			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE HA PODIDO ELIMINAR EL REGISTRO",
-								"La tabla posgiro tiene una relacion con otra tabla"));
-			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
-			}
-
-		}
-	}
-
-	/** METODO EDITAR POSGIRO **/
-	public void editarPosgiro(ActionEvent event) {
-		try {
-			if (posgiro.getNombrePg().equals(getNombreTP())) {
+			if (posgiro.getNombrePg().equals(getNombreP())) {
 				posgiroI.update(posgiro);
 				listarPosgiros = posgiroI.getAll(Posgiro.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarPosgiro').hide();");
+				mensajeInfo("El Posgiro (" + posgiro.getNombrePg() + ") se ha actualizado exitosamente.");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Posgiro actualizado exitosamente"));
+				context.execute("PF('modificarPosgiro').hide();");
 
 			} else if (buscarPosgiro(posgiro.getNombrePg()) == false) {
 				posgiroI.update(posgiro);
 				listarPosgiros = posgiroI.getAll(Posgiro.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("El Posgiro (" + posgiro.getNombrePg() + ") se ha actualizado exitosamente.");
+
 				context.execute("PF('modificarPosgiro').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo de Proveedor actualizado exitosamente"));
 			} else {
 				listarPosgiros = posgiroI.getAll(Posgiro.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Estado Producto ya existe."));
+				mensajeError("El Posgiro (" + posgiro.getNombrePg() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 	}
 
-	/** METODO BUSCAR POSGIRO **/
+	/****** Eliminar ****/
+
+	public void eliminarPosgiro() {
+		try {
+
+			posgiroI.delete(posgiro);
+			listarPosgiros = posgiroI.getAll(Posgiro.class);
+
+			mensajeInfo("El Posgiro (" + posgiro.getNombrePg() + ") se ha eliminado exitosamente");
+		} catch (Exception e) {
+
+			if (e.getMessage() == "Transaction rolled back") {
+				mensajeError("La tabla posgiro (" + posgiro.getNombrePg() + ") tiene una relacion con otra tabla");
+			} else {
+				mensajeError("Ha ocurrido un error");
+			}
+
+		}
+	}
+
 	/****** Busqueda de Estado Producto ****/
 
 	private boolean buscarPosgiro(String valor) {
-		
+
 		try {
 			listarPosgiros = posgiroI.getAll(Posgiro.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		boolean resultado = false;
 		for (Posgiro tipo : listarPosgiros) {
 			if (tipo.getNombrePg().equals(valor)) {
@@ -159,15 +167,14 @@ public class PosgiroController implements Serializable {
 				resultado = false;
 			}
 		}
-		
+
 		return resultado;
 	}
-	
+
 	public void pasarNombre(String nombre) {
-		setNombreTP(nombre);
+		setNombreP(nombre);
 	}
 
-	
 	/** GET AND SET POSGIRO **/
 
 	public List<Posgiro> getListarPosgiros() {
@@ -194,12 +201,20 @@ public class PosgiroController implements Serializable {
 		this.posgiro = posgiro;
 	}
 
-	public String getNombreTP() {
-		return nombreTP;
+	public String getNombreP() {
+		return nombreP;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setNombreP(String nombreP) {
+		this.nombreP = nombreP;
+	}
+
+	public List<Posgiro> getFiltrarPosgiros() {
+		return filtrarPosgiros;
+	}
+
+	public void setFiltrarPosgiros(List<Posgiro> filtrarPosgiros) {
+		this.filtrarPosgiros = filtrarPosgiros;
 	}
 
 }

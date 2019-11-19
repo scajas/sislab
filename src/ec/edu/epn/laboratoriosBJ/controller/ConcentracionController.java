@@ -13,6 +13,9 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.primefaces.context.RequestContext;
+
 import ec.edu.epn.laboratorioBJ.beans.ConcentracionDAO;
 import ec.edu.epn.laboratorioBJ.entities.Concentracion;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
@@ -58,6 +61,7 @@ public class ConcentracionController implements Serializable {
 		}
 
 	}
+
 	/****** Mensajes Personalizados ****/
 	public void mensajeError(String mensaje) {
 
@@ -66,20 +70,22 @@ public class ConcentracionController implements Serializable {
 	}
 
 	public void mensajeInfo(String mensaje) {
-		
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
-	
+
 	/****** Agregar nueva Concentración ****/
 
 	public void agregarConcentracion() {
 
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarConcentracion(nuevaConcentracion.getNombreCon()) == true) {
 
-				mensajeError("La concentración ( " + nuevaConcentracion.getNombreCon()+ " ) ya existe.");
+				mensajeError("La concentración (" + nuevaConcentracion.getNombreCon() + ") ya existe.");
 
 				nuevaConcentracion = new Concentracion();
 			} else {
@@ -87,40 +93,48 @@ public class ConcentracionController implements Serializable {
 				concentracionI.save(nuevaConcentracion);
 				listaConcentracion = concentracionI.getAll(Concentracion.class);
 
-				mensajeInfo("La concentración ( " + nuevaConcentracion.getNombreCon()+ " ) se ha almacenado exitosamente.");
-				
+				mensajeInfo("La concentración (" + nuevaConcentracion.getNombreCon()
+						+ ") se ha almacenado exitosamente.");
+
 				nuevaConcentracion = new Concentracion();
+
+				context.execute("PF('nuevaConcentracion').hide();");
 			}
 
 		} catch (Exception e) {
-			
-				mensajeError("Ha ocurrido un error.");
+
+			mensajeError("Ha ocurrido un error.");
 		}
 
 	}
 
-	/****** Modificar Concentración****/
+	/****** Modificar Concentración ****/
 
 	public void modificarConcentracion() {
-		
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (concentracion.getNombreCon().equals(getNombreConcentracion())) {
 				concentracionI.update(concentracion);
 				listaConcentracion = concentracionI.getAll(Concentracion.class);
 
-				mensajeInfo(
-						"La Concentración ( " + concentracion.getNombreCon() + " ) se ha actualizado exitosamente.");
+				mensajeInfo("La Concentración (" + concentracion.getNombreCon() + ") se ha actualizado exitosamente.");
+
+				context.execute("PF('modificarConcentracion').hide();");
 
 			} else if (buscarConcentracion(concentracion.getNombreCon()) == false) {
 				concentracionI.update(concentracion);
 				listaConcentracion = concentracionI.getAll(Concentracion.class);
 
 				mensajeInfo(
-						"La Concentración ( " + concentracion.getNombreCon() + " ) se ha actualizado exitosamente.");
+						"La Concentración (" + concentracion.getNombreCon() + "" + ") se ha actualizado exitosamente.");
+
+				context.execute("PF('modificarConcentracion').hide();");
 
 			} else {
 				listaConcentracion = concentracionI.getAll(Concentracion.class);
-				mensajeError("La Concentración ( " + concentracion.getNombreCon() + " ) ya existe.");
+				mensajeError("La Concentración (" + concentracion.getNombreCon() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
@@ -138,18 +152,17 @@ public class ConcentracionController implements Serializable {
 
 			concentracionI.delete(concentracion);
 			listaConcentracion = concentracionI.getAll(Concentracion.class);
-			
-			mensajeInfo("La concentración ( "+ concentracion.getNombreCon() + " ) se ha eliminado correctamente.");
 
+			mensajeInfo("La concentración (" + concentracion.getNombreCon() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				
+
 				mensajeError("La tabla Concentración tiene relación con otra tabla.");
 
 			} else {
-				
+
 				mensajeError("Ha ocurrido un error.");
 
 			}
@@ -181,8 +194,7 @@ public class ConcentracionController implements Serializable {
 
 		return resultado;
 	}
-	
-	
+
 	public void pasarNombre(String nombre) {
 		setNombreConcentracion(nombre);
 	}
@@ -215,12 +227,15 @@ public class ConcentracionController implements Serializable {
 	public String getNombreConcentracion() {
 		return nombreConcentracion;
 	}
+
 	public void setNombreConcentracion(String nombreConcentracion) {
 		this.nombreConcentracion = nombreConcentracion;
 	}
+
 	public List<Concentracion> getFiltrarConcentraciones() {
 		return filtrarConcentraciones;
 	}
+
 	public void setFiltrarConcentraciones(List<Concentracion> filtrarConcentraciones) {
 		this.filtrarConcentraciones = filtrarConcentraciones;
 	}

@@ -330,7 +330,6 @@
 								<center>
 
 									<h:panelGrid columns="3">
-										<!-- **************************  Boton Guardar OI-MIs  *************************** -->
 										<p:commandLink
 											actionListener="#{movimientoInventarioController.agregarOrdenI()}"
 											oncomplete="PF('nuevoMI'); PF('filterMovInvTable').filter();"
@@ -347,7 +346,6 @@
 											</center>
 
 										</p:commandLink>
-										<!-- **************************  Boton limpiar campos   *************************** -->
 										<p:commandLink
 											actionListener="#{movimientoInventarioController.limpiarCampos}"
 											update="@this,@([id$=messagesForm]),formAgregarMI, formIngresarMI">
@@ -357,7 +355,7 @@
 											</p:graphicImage>
 
 										</p:commandLink>
-										<!-- **************************  Boton Atras   *************************** -->
+
 										<p:commandLink onclick="PF('nuevoMI').hide();" process="@none">
 
 											<p:graphicImage value="/images/archivos/atras.png" width="35"
@@ -542,7 +540,7 @@
 
 			<!-- **************************  Panel - Ingresar Movimiento Inventario - Transferencias  *************************** -->
 
-			
+
 
 			<!-- **************************  Panel -  Editar Movimiento Inventario   *************************** -->
 
@@ -794,7 +792,7 @@
 				</h:form>
 			</p:dialog>
 
-			
+
 
 			<!-- **************************  Panel - Ver Existencia *************************** -->
 
@@ -859,7 +857,7 @@
 				</h:form>
 			</p:dialog>
 
-			
+
 			<!-- **************************  Panel - Eliminar *************************** -->
 
 			<h:form id="eliminarMI">

@@ -37,33 +37,29 @@
 
 
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
+				<p:growl id="messagesForm" sticky="false" showDetail="true"
+					autoupdate="true" life="3000" />
 
 				<p:panel>
-					<p:fieldset legend="PRESENTACIÓN"
+					<p:fieldset legend="Presentación"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
+
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevaPresentacion').show()"
-							update=":formNuevaPresentación,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								onclick="PF('nuevaPresentacion').show()"
+								update=":formNuevaPresentacion,@this,@([id$=messagesForm])">
+							</p:commandButton>
+						</center>
 						<br />
 						<br />
 
@@ -76,21 +72,23 @@
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bottom">
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
 
-							<p:column headerText="Nombre" filterBy="#{presentacion.nombrePrs}"
-								filterMatchMode="contains">
+							<p:column headerText="Nombre"
+								filterBy="#{presentacion.nombrePrs}" filterMatchMode="contains">
 								<h:outputText value="#{presentacion.nombrePrs}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{presentacion.descrPrs}">
+							<p:column headerText="Descripción"
+								filterBy="#{presentacion.descrPrs}">
 								<h:outputText value="#{presentacion.descrPrs}" />
 							</p:column>
 
-							<!-- **************************  Boton Modificar   *************************** -->
-
 							<p:column headerText="Acciones">
 								<center>
+
+									<!-- Botón De Modificar  -->
 									<p:commandLink
 										action="#{presentacionController.pasarNombre(presentacion.nombrePrs)}"
 										update=":formModificarPresentacion,@this,@([id$=messagesForm])"
@@ -101,14 +99,13 @@
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
-
 										<f:setPropertyActionListener
 											target="#{presentacionController.presentacion}"
 											value="#{presentacion}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
-									<!-- **************************  Boton Eliminar   *************************** -->
+									<!-- Botón De Eliminar  -->
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
@@ -134,12 +131,88 @@
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
+			<!-- Panel de Nuevo	 -->
 
-			<p:dialog id="panelmodificarPresentacion" resizable="true"
-				widgetVar="modificarPresentacion" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Modificar Presentación">
+			<p:dialog id="panelnuevaPresentacion" resizable="false"
+				closable="false" draggable="false" widgetVar="nuevaPresentacion"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Nueva Presentación">
+
+
+				<h:form id="formNuevaPresentacion">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" size="30" />
+								<p:inputText id="nombre"
+									value="#{presentacionController.nuevoPresentacion.nombrePrs}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre de la Presentación"
+									size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{presentacionController.nuevoPresentacion.descrPrs}"
+									maxlength="100" rows="5" cols="30" />
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
+										actionListener="#{presentacionController.agregarPresentacion}"
+										oncomplete="PF('nuevaPresentacion'); PF('filterPresentacionTable').filter();"
+										process="@this,formNuevaPresentacion"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaPresentacion">
+
+									</p:commandButton>
+
+									<p:commandButton onclick="PF('nuevaPresentacion').hide();"
+										process="@none" style="width: 115px; margin: 5px"
+										value="Atrás " icon="fa fa-arrow-left">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelmodificarPresentacion" resizable="false"
+				closable="false" draggable="false" widgetVar="modificarPresentacion"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Modificar Presentación">
 
 
 				<h:form id="formModificarPresentacion">
@@ -158,26 +231,23 @@
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"/>
+									style="color:white!important" />
 								<p:inputText id="nombre"
 									value="#{presentacionController.presentacion.nombrePrs}"
 									required="true"
-									requiredMessage="Debe ingresar el nombre de la Presentación" size="30"
-									maxlength="60">
+									requiredMessage="Debe ingresar el nombre de la Presentación"
+									size="30" maxlength="60">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
 									value="#{presentacionController.presentacion.descrPrs}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
+									maxlength="100" rows="5" cols="30" />
 
 							</p:panelGrid>
 							<br /> <br />
@@ -187,31 +257,20 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{presentacionController.modificarPresentacion}"
 										oncomplete="PF('filterPresentacionTable').filter();"
-										process="@this,nombre,desc"
+										process="@this,formModificarPresentacion"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarPresentacion">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarPresentacion').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarPresentacion').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -221,102 +280,13 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 				</h:form>
 			</p:dialog>
 
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelnuevaPresentacion" resizable="true"
-				widgetVar="nuevaPresentacion" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Nueva Presentación">
-
-
-				<h:form id="formNuevaPresentación">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"  size="30"/>
-								<p:inputText id="nombre"
-									value="#{presentacionController.nuevoPresentacion.nombrePrs}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la Presentación" size="30"
-									maxlength="60">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{presentacionController.nuevoPresentacion.descrPrs}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{presentacionController.agregarPresentacion}"
-										oncomplete="PF('nuevaPresentacion'); PF('filterPresentacionTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaPresentación">
-
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevaPresentacion').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
 
 			<!-- Panel de Eliminar -->
 
 			<h:form id="eliminarPresentacion">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar esta Presentación"
-					header="Eliminar Presentación" severity="warn"
+					message="¿Esta seguro(a) que desea eliminar la Presentación seleccionada"
+					header="Eliminar Presentación" severity="info"
 					widgetVar="cdEliminarPresentacion">
 					<center>
 

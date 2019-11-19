@@ -34,12 +34,12 @@
 
 
 		<h:body>
-			<p:growl id="messagesForm" showDetail="true" sticky="false"
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
 			<h:form id="formPrincipal">
 				<p:panel>
-					<p:fieldset legend="LABORATORIO"
+					<p:fieldset legend="Laboratorio"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -50,18 +50,19 @@
 						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoLaboratorio').show()"
-							update=":formNuevoLaboratorio,@this">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+						<!-- Boton De Nuevo -->
+
+						<center>
+
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoLaboratorio').show()"
+								update=":formNuevoLaboratorio,@this">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
 
@@ -69,23 +70,37 @@
 							value="#{laboratorioController.listaLaboratorioLab}" var="lab"
 							widgetVar="tblLaboratorio"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{laboratorioController.filtrarLaboratorios}"
 							rows="10" paginator="true"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
-							filteredValue="#{laboratorioController.filtrarLaboratorios}">
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
 
 							<p:column headerText="Nombre" filterBy="#{lab.nombreL}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" style="width: 15% ">
 								<h:outputText value="#{lab.nombreL}" />
 							</p:column>
 
 							<p:column headerText="Unidad" filterBy="#{lab.unidad.nombreU}"
-								filterMatchMode="contains">
-
+								effect="fold" filterMatchMode="contains" style="width: 30% ">
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('tblLaboratorio').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="Seleccione..." itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{laboratorioController.unidades}"
+											var="uni" itemLabel="#{uni.nombreU}"
+											itemValue="#{uni.nombreU}">
+										</f:selectItems>
+									</p:selectOneMenu>
+								</f:facet>
 								<h:outputText value="#{lab.unidad.nombreU}" />
 							</p:column>
-							<p:column headerText="Centro de Costo" filterBy="#{lab.centrocostoL}"
-								filterMatchMode="contains">
+
+							<p:column headerText="Centro de Costo" style="width: 12%" 
+								filterBy="#{lab.centrocostoL}" filterMatchMode="contains" >
 								<h:outputText value="#{lab.centrocostoL}" />
 							</p:column>
 
@@ -97,7 +112,7 @@
 
 							<!-- **************************  Boton Modificar   *************************** -->
 
-							<p:column headerText="Acciones">
+							<p:column headerText="Acciones" style="width: 10%" >
 								<center>
 									<p:commandLink
 										action="#{laboratorioController.pasarNombre(lab.nombreL,lab.unidad)}"
@@ -120,7 +135,7 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarLaboratorio').show();">
+										onclick="PF('eliminarLaboratorio').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -135,18 +150,160 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
+			<!-- Panel de Nuevo -->
 
-			<p:dialog id="panelmodificarLaboratorio" resizable="true"
-				widgetVar="modificarLaboratorio" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Modificar Laboratorio">
+			<p:dialog id="panelNuevoLaboratorio" resizable="true"
+				closable="false" draggable="false" widgetVar="nuevoLaboratorio"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="65%"
+				header="Nuevo Laboratorio">
+
+
+				<h:form id="formNuevoLaboratorio">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+							<div class="ui-fluid">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs">
+
+									<p:outputLabel id="lblUnidad" for="unidad" value="Unidad: "
+										style="color:white!important" />
+
+									<p:selectOneMenu id="unidad" effect="fold"
+										value="#{laboratorioController.unidadSelect}">
+										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+										<f:selectItems value="#{laboratorioController.unidades}"
+											itemLabel="#{uni.nombreU}" itemValue="#{uni}" var="uni">
+
+										</f:selectItems>
+
+									</p:selectOneMenu>
+
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+
+									<p:inputText id="nombre"
+										value="#{laboratorioController.nuevoLaboratorioLab.nombreL}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Laboratorio"
+										size="30" maxlength="100">
+									</p:inputText>
+
+									<p:outputLabel id="lblCentroCosto" for="centrocosto"
+										value="Centro de Costo: " style="color:white!important" />
+
+									<p:inputText id="centrocosto"
+										value="#{laboratorioController.nuevoLaboratorioLab.centrocostoL}"
+										required="true"
+										requiredMessage="Debe ingresar el centro de costo" size="30"
+										maxlength="20">
+									</p:inputText>
+
+									<p:outputLabel id="lblResponsable" for="responsable"
+										value="Responsable: " style="color:white!important" />
+
+									<p:inputText id="responsable"
+										value="#{laboratorioController.nuevoLaboratorioLab.responsableL}"
+										maxlength="100" size="30">
+									</p:inputText>
+
+									<p:outputLabel id="lblEmail" for="email" value="Email: "
+										style="color:white!important" />
+
+									<p:inputText id="email"
+										value="#{laboratorioController.nuevoLaboratorioLab.emailL}"
+										maxlength="50" size="30">
+
+									</p:inputText>
+
+									<p:outputLabel id="lblDireccion" for="direccion"
+										value="Dirección: " style="color:white!important" />
+									<p:inputTextarea id="direccion"
+										value="#{laboratorioController.nuevoLaboratorioLab.direccionL}"
+										maxlength="100" rows="5" cols="30" />
+
+									<p:outputLabel id="lblTelefono" for="telefono"
+										value="Teléfono: " style="color:white!important" />
+
+									<p:inputMask id="telefono"
+										value="#{laboratorioController.nuevoLaboratorioLab.telefonoL}"
+										maxlength="15" size="30" mask="999-9999">
+									</p:inputMask>
+
+									<p:outputLabel id="lblFax" for="fax" value="Fax: "
+										style="color:white!important" />
+
+									<p:inputMask id="fax"
+										value="#{laboratorioController.nuevoLaboratorioLab.faxL}"
+										maxlength="15" size="30" mask="999-9999">
+									</p:inputMask>
+
+									<p:outputLabel id="lblLeyendaPro" for="leyendaPro"
+										value="Leyenda Proforma: " style="color:white!important" />
+
+									<p:inputTextarea id="leyendaPro"
+										value="#{laboratorioController.nuevoLaboratorioLab.leyendaprofL}"
+										maxlength="2000" rows="5" cols="30" />
+
+									<p:outputLabel id="lblLeyendaOrd" for="leyendaOrd"
+										value="Leyenda Orden T: " style="color:white!important" />
+
+									<p:inputTextarea id="leyendaOrd"
+										value="#{laboratorioController.nuevoLaboratorioLab.leyendaOtL}"
+										maxlength="2000" rows="5" cols="30" />
+
+								</p:panelGrid>
+							</div>
+							<br /> <br />
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
+										actionListener="#{laboratorioController.agregarLaboratorioLab}"
+										process="@this,formNuevoLaboratorio"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoLaboratorio"
+										oncomplete="PF('tblLaboratorio').filter()">
+
+									</p:commandButton>
+
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevoLaboratorio').hide();" process="@none">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelModificarLaboratorio" resizable="true"
+				closable="false" draggable="false" widgetVar="modificarLaboratorio"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" header="Modificar Laboratorio">
 
 
 				<h:form id="formModificarLaboratorio">
@@ -165,9 +322,6 @@
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
 									<p:outputLabel id="lblUnidad" for="uni" value="Unidad: "
@@ -224,37 +378,37 @@
 										value="Dirección: " style="color:white!important" />
 									<p:inputTextarea id="direccion"
 										value="#{laboratorioController.laboratorioLab.direccionL}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
+										maxlength="100" rows="5" cols="30" />
 
 									<p:outputLabel id="lblTelefono" for="telefono"
 										value="Teléfono: " style="color:white!important" />
 
-									<p:inputNumber id="telefono"
+									<p:inputMask id="telefono"
 										value="#{laboratorioController.laboratorioLab.telefonoL}"
-										maxlength="15" size="30">
-									</p:inputNumber>
+										maxlength="15" size="30" mask="999-9999">
+									</p:inputMask>
 
 									<p:outputLabel id="lblFax" for="fax" value="Fax: "
 										style="color:white!important" />
 
-									<p:inputNumber id="fax"
+									<p:inputMask id="fax"
 										value="#{laboratorioController.laboratorioLab.faxL}"
-										maxlength="15" size="30">
-									</p:inputNumber>
+										maxlength="15" size="30" mask="999-9999">
+									</p:inputMask>
 
 									<p:outputLabel id="lblLeyendaPro" for="leyendaPro"
 										value="Leyenda Proforma: " style="color:white!important" />
 
 									<p:inputTextarea id="leyendaPro"
 										value="#{laboratorioController.laboratorioLab.leyendaprofL}"
-										maxlength="2000" rows="5" cols="30" autoResize="false" />
+										maxlength="2000" rows="5" cols="30" />
 
 									<p:outputLabel id="lblLeyendaOrd" for="leyendaOrd"
 										value="Leyenda Orden T: " style="color:white!important" />
 
 									<p:inputTextarea id="leyendaOrd"
 										value="#{laboratorioController.laboratorioLab.leyendaOtL}"
-										maxlength="2000" rows="5" cols="30" autoResize="false" />
+										maxlength="2000" rows="5" cols="30" />
 
 								</p:panelGrid>
 							</div>
@@ -264,31 +418,20 @@
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{laboratorioController.modificarLaboratorioLab}"
-										process="@this,uni,nombre,centrocosto,responsable,email,direccion,telefono,fax,leyendaPro,leyendaOrd"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal])"
+										process="@this,formModificarLaboratorio"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarLaboratorio"
 										oncomplete="PF('tblLaboratorio').filter()">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarLaboratorio').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarLaboratorio').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -297,177 +440,25 @@
 				</h:form>
 			</p:dialog>
 
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelnuevoLaboratorio" resizable="true"
-				widgetVar="nuevoLaboratorio" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="65%"
-				header="Nuevo Laboratorio">
-
-
-				<h:form id="formNuevoLaboratorio">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-						<br />
-						<br />
-						<center>
-							<div class="ui-fluid">
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs">
-
-									<p:outputLabel id="lblUnidad" for="unidad" value="Unidad: "
-										style="color:white!important" />
-
-									<p:selectOneMenu id="unidad"
-										value="#{laboratorioController.unidadSelect}">
-										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems value="#{laboratorioController.unidades}"
-											itemLabel="#{uni.nombreU}" itemValue="#{uni}" var="uni">
-
-										</f:selectItems>
-
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-
-									<p:inputText id="nombre"
-										value="#{laboratorioController.nuevoLaboratorioLab.nombreL}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre del Laboratorio"
-										size="30" maxlength="100">
-									</p:inputText>
-
-									<p:outputLabel id="lblCentroCosto" for="centrocosto"
-										value="Centro de Costo: " style="color:white!important" />
-
-									<p:inputText id="centrocosto"
-										value="#{laboratorioController.nuevoLaboratorioLab.centrocostoL}"
-										required="true"
-										requiredMessage="Debe ingresar el centro de costo" size="30"
-										maxlength="20">
-									</p:inputText>
-
-									<p:outputLabel id="lblResponsable" for="responsable"
-										value="Responsable: " style="color:white!important" />
-
-									<p:inputText id="responsable"
-										value="#{laboratorioController.nuevoLaboratorioLab.responsableL}"
-										maxlength="100" size="30">
-									</p:inputText>
-
-									<p:outputLabel id="lblEmail" for="email" value="Email: "
-										style="color:white!important" />
-
-									<p:inputText id="email"
-										value="#{laboratorioController.nuevoLaboratorioLab.emailL}"
-										maxlength="50" size="30">
-									</p:inputText>
-
-									<p:outputLabel id="lblDireccion" for="direccion"
-										value="Dirección: " style="color:white!important" />
-									<p:inputTextarea id="direccion"
-										value="#{laboratorioController.nuevoLaboratorioLab.direccionL}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
-
-									<p:outputLabel id="lblTelefono" for="telefono"
-										value="Teléfono: " style="color:white!important" />
-
-									<p:inputNumber id="telefono"
-										value="#{laboratorioController.nuevoLaboratorioLab.telefonoL}"
-										maxlength="15" size="30">
-									</p:inputNumber>
-
-									<p:outputLabel id="lblFax" for="fax" value="Fax: "
-										style="color:white!important" />
-
-									<p:inputNumber id="fax"
-										value="#{laboratorioController.nuevoLaboratorioLab.faxL}"
-										maxlength="15" size="30">
-									</p:inputNumber>
-
-									<p:outputLabel id="lblLeyendaPro" for="leyendaPro"
-										value="Leyenda Proforma: " style="color:white!important" />
-
-									<p:inputTextarea id="leyendaPro"
-										value="#{laboratorioController.nuevoLaboratorioLab.leyendaprofL}"
-										maxlength="2000" rows="5" cols="30" autoResize="false" />
-
-									<p:outputLabel id="lblLeyendaOrd" for="leyendaOrd"
-										value="Leyenda Orden T: " style="color:white!important" />
-
-									<p:inputTextarea id="leyendaOrd"
-										value="#{laboratorioController.nuevoLaboratorioLab.leyendaOtL}"
-										maxlength="2000" rows="5" cols="30" autoResize="false" />
-
-
-								</p:panelGrid>
-							</div>
-							<br /> <br />
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{laboratorioController.agregarLaboratorioLab}"
-										process="@this,nombre,unidad,centrocosto,responsable,email,direccion,telefono,fax,leyendaPro,leyendaOrd"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoLaboratorio"
-										oncomplete="PF('tblLaboratorio').filter()">
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoLaboratorio').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
 
 			<!-- Panel de Eliminar -->
 
 			<h:form id="eliminarLaboratorio">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Laboratorio"
-					header="Eliminar Laboratorio" severity="warn"
-					widgetVar="cdEliminarLaboratorio">
+					message="¿Esta seguro(a) que desea eliminar el Laboratorio seleccionado?"
+					header="Eliminar Laboratorio" severity="info"
+					widgetVar="eliminarLaboratorio">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarLaboratorio').hide();"
+							onsuccess="PF('eliminarLaboratorio').hide();"
 							actionListener="#{laboratorioController.eliminarLaboratorioLab}"
-							update="@([id$=messagesForm],[id$=formPrincipal])" 
-							oncomplete="PF('tblLaboratorio').filter()"/>
+							update="@([id$=messagesForm],[id$=formPrincipal]),eliminarLaboratorio"
+							oncomplete="PF('tblLaboratorio').filter()" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarLaboratorio').hide();" type="button" />
+							onclick="PF('eliminarLaboratorio').hide();" type="button" />
 
 					</center>
 
@@ -487,7 +478,25 @@
 			PF('statusDialog').hide();
 			}
 
+			
+
 		</script>
+
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+
+.ui-selectonemenu {
+	width: 100% !important;
+}
+
+.ui-selectonemenu-label {
+	width: 100% !important;
+}
+</style>
 
 	</ui:define>
 </ui:composition>

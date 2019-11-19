@@ -11,7 +11,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,230 +19,210 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.GradoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Grado;
-
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "gradoController")
 @SessionScoped
 public class GradoController implements Serializable {
 
-	// ****************************************************************/
-		// ********************* VARIABLES MANEJO SESION **********************/
-		// ****************************************************************/
+	private static final long serialVersionUID = 1L;
+	FacesContext fc = FacesContext.getCurrentInstance();
+	HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+	HttpSession session = request.getSession();
+	SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
 
-		/**
-		* 
-		*/
-		private static final long serialVersionUID = 1L;
-		FacesContext fc = FacesContext.getCurrentInstance();
-		HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-		HttpSession session = request.getSession();
-		SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/GradoDAOImplement!ec.edu.epn.laboratorioBJ.beans.GradoDAO")
 
-		// ****************************************************************/
-		// ********************* DAOS **********************/
-		// ****************************************************************/
-		@EJB(lookup = "java:global/ServiciosSeguridadEPN/GradoDAOImplement!ec.edu.epn.laboratorioBJ.beans.GradoDAO")
-		
-		private GradoDAO gradoI;
+	private GradoDAO gradoI;
 
-		 
-	    // variables de la clase	    
-	    private Grado grado;
-	    private List<Grado> Grados = new ArrayList<>();	    
-	    private List<Grado> filtroGrado = new ArrayList<>();	    
-	    private Grado nuevoGrado;
-	    private String nombreTP;
-	 
-	    // Mpetodo Init
-	    @PostConstruct
-	    public void init() {
-	        try {	 	            
-	            	  
-	            Grados = gradoI.getAll(Grado.class);	            	
-	            grado = new Grado();	           
-	            nuevoGrado = new Grado();
-	          	 
-	 
-	        } catch (Exception e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
-	        }
-	    }
-	 
-	    /******* Método Guardar *******/
-	 
-	    public void agregarGrado(ActionEvent event) {
-	 
-	        try {
-	            if (buscarGrado(nuevoGrado.getNombreGr()) == true) {
-	                FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-	                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Grado ("
-	                                + nuevoGrado.getNombreGr() + ") ya existe."));            
-	                 nuevoGrado = new Grado();
-	 
-	 
-	            } else {       	                
-	                gradoI.save(nuevoGrado); 	              
-	                
-	                Grados = gradoI.getAll(Grado.class); 
-	 
-	                FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-	                        new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Grado almacenado exitosamente"));
-	 
-	                nuevoGrado = new Grado();               
-	 
-	            }
-	 
-	        } catch (Exception e) {
-	            FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-	                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
-	 
-	 
-	 
-	        }
-	 
-	    }
-	 
-	 
-	 
-	    /******* Método Modificar *******/
-	    
-	    public void modificarGrado(ActionEvent event) {
-	    	try {
-				if (grado.getNombreGr().equals(getNombreTP())) {
-					gradoI.update(grado);
-					Grados = gradoI.getAll(Grado.class);
+	// variables de la clase
+	private Grado grado;
+	private List<Grado> Grados = new ArrayList<>();
+	private List<Grado> filtroGrado = new ArrayList<>();
+	private Grado nuevoGrado;
+	private String nombreGrado;
 
-					RequestContext context = RequestContext.getCurrentInstance();
-					context.execute("PF('modificarGrado').hide();");
+	// Mpetodo Init
+	@PostConstruct
+	public void init() {
+		try {
 
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Grado actualizado exitosamente"));
+			Grados = gradoI.getAll(Grado.class);
+			grado = new Grado();
+			nuevoGrado = new Grado();
 
-				} else if (buscarGrado(grado.getNombreGr()) == false) {
-					gradoI.update(grado);
-					Grados = gradoI.getAll(Grado.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-					RequestContext context = RequestContext.getCurrentInstance();
-					context.execute("PF('modificarGrado').hide();");
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
 
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Grado actualizado exitosamente"));
-				} else {
-					Grados = gradoI.getAll(Grado.class);
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Grado ya existe."));
-				}
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
 
-			} catch (Exception e) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
-			}
-	    }
-	 
-	    
-		/******* Método Eliminar *******/
-	 
-	    public void eliminarGrado(ActionEvent event) {
-	        try {	 
-	            	 
-	            gradoI.delete(grado);	            
-	            Grados = gradoI.getAll(Grado.class);
-	 
-	            FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-	                    new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Grado eliminada exitosamente"));
-	 
-	        } catch (Exception e) {
-	 
-	            if (e.getMessage() == "Transaction rolled back") {
-	                FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-	                        new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-	                                "Ha ocurrido un error interno, comuniquese con el personal DGIP"));
-	            } else {
-	 
-	                FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-	                        new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
-	            }
-	 
-	        }
-	 
-	 
-	    }
-	 
-	 
-		/******* Validación  *******/
-	 
-	    private boolean buscarGrado(String valor) {
-			try {
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	/******* Método Guardar *******/
+
+	public void agregarGrado() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		try {
+			if (buscarGrado(nuevoGrado.getNombreGr()) == true) {
+				mensajeError("El Grado (" + nuevoGrado.getNombreGr() + ") ya existe.");
+				nuevoGrado = new Grado();
+
+			} else {
+
+				gradoI.save(nuevoGrado);
 				Grados = gradoI.getAll(Grado.class);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				mensajeInfo("El Grado (" + nuevoGrado.getNombreGr() + ") se ha almacenado exitosamente");
+				nuevoGrado = new Grado();
+				context.execute("PF('nuevoGrado').hide();");
+
 			}
-			
-			boolean resultado = false;
-			for (Grado tipo : Grados) {
-				if (tipo.getNombreGr().equals(valor)) {
-					resultado = true;
-					break;
-				} else {
-					resultado = false;
-				}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error");
+
+		}
+
+	}
+
+	/******* Método Modificar *******/
+
+	public void modificarGrado() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		try {
+			if (grado.getNombreGr().equals(getNombreGrado())) {
+				gradoI.update(grado);
+				Grados = gradoI.getAll(Grado.class);
+
+				mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha actualizado exitosamente.");
+
+				context.execute("PF('modificarGrado').hide();");
+
+			} else if (buscarGrado(grado.getNombreGr()) == false) {
+				gradoI.update(grado);
+				Grados = gradoI.getAll(Grado.class);
+
+				mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha actualizado exitosamente.");
+
+				context.execute("PF('modificarGrado').hide();");
+
+			} else {
+				Grados = gradoI.getAll(Grado.class);
+				mensajeError("El Grado (" + grado.getNombreGr() + ") ya existe.");
+
 			}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error");
+		}
+	}
+
+	/******* Método Eliminar *******/
+
+	public void eliminarGrado() {
+		try {
+
+			gradoI.delete(grado);
+			Grados = gradoI.getAll(Grado.class);
+
+			mensajeInfo("El Grado (" + grado.getNombreGr() +") se ha eliminado exitosamente");
+
+		} catch (Exception e) {
+
+			if (e.getMessage() == "Transaction rolled back") {
+				
+				mensajeError("La tabla Grado (" + grado.getNombreGr() + ") tiene relación con otra tabla.");
 			
-			return resultado;
-		}
-		
-		
-		public void pasarNombre(String nombre) {
-			setNombreTP(nombre);
+			} else {
+
+				mensajeError("Ha ocurrido un error");
+			}
+
 		}
 
-	  
-	    
-	    /******* GET and SET  *******/
-	    
-		public List<Grado> getFiltroGrado() {
-			return filtroGrado;
+	}
+
+	/******* Validación *******/
+
+	private boolean buscarGrado(String valor) {
+		try {
+			Grados = gradoI.getAll(Grado.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		public void setFiltroGrado(List<Grado> filtroGrado) {
-			this.filtroGrado = filtroGrado;
+		boolean resultado = false;
+		for (Grado tipo : Grados) {
+			if (tipo.getNombreGr().equals(valor)) {
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
 		}
 
-		public Grado getGrado() {
-			return grado;
-		}
+		return resultado;
+	}
 
-		public void setGrado(Grado grado) {
-			this.grado = grado;
-		}
+	public void pasarNombre(String nombre) {
+		setNombreGrado(nombre);
+	}
 
-		public List<Grado> getGrados() {
-			return Grados;
-		}
+	/******* GET and SET *******/
 
-		public void setGrados(List<Grado> grados) {
-			Grados = grados;
-		}
+	public List<Grado> getFiltroGrado() {
+		return filtroGrado;
+	}
 
-		public Grado getNuevoGrado() {
-			return nuevoGrado;
-		}
+	public void setFiltroGrado(List<Grado> filtroGrado) {
+		this.filtroGrado = filtroGrado;
+	}
 
-		public void setNuevoGrado(Grado nuevoGrado) {
-			this.nuevoGrado = nuevoGrado;
-		}
+	public Grado getGrado() {
+		return grado;
+	}
 
-		public String getNombreTP() {
-			return nombreTP;
-		}
+	public void setGrado(Grado grado) {
+		this.grado = grado;
+	}
 
-		public void setNombreTP(String nombreTP) {
-			this.nombreTP = nombreTP;
-		}
+	public List<Grado> getGrados() {
+		return Grados;
+	}
 
-		
+	public void setGrados(List<Grado> grados) {
+		Grados = grados;
+	}
+
+	public Grado getNuevoGrado() {
+		return nuevoGrado;
+	}
+
+	public void setNuevoGrado(Grado nuevoGrado) {
+		this.nuevoGrado = nuevoGrado;
+	}
+
+	public String getNombreGrado() {
+		return nombreGrado;
+	}
+
+	public void setNombreGrado(String nombreGrado) {
+		this.nombreGrado = nombreGrado;
+	}
 
 }

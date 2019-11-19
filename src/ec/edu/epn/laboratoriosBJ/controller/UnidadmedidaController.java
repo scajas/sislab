@@ -11,7 +11,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -42,123 +41,128 @@ public class UnidadmedidaController implements Serializable {
 
 	private List<Unidadmedida> listUnidadMedida = new ArrayList<Unidadmedida>();
 	private Unidadmedida nuevoUnidadMedida;
-	private Unidadmedida modificarUnidadMedida; // select
-	private String nombreTP;
-	
+	private Unidadmedida unidadMedida; // select
+	private String nombreUM;
+	private List<Unidadmedida> filtrarUM;
 
 	/** METODO INIT **/
 	@PostConstruct
 	public void init() {
-
 		try {
 
 			listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 			nuevoUnidadMedida = new Unidadmedida();
-			modificarUnidadMedida = new Unidadmedida();
-			
+			unidadMedida = new Unidadmedida();
 
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 		}
 	}
 
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
 	/****** Guardar ****/
-	public void agregarUnidadMedida(ActionEvent event) {
+	public void agregarUnidadMedida() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 
-			
 			if (buscarUnidadMedida(nuevoUnidadMedida.getMedidaUm()) == true) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "La unidad de medida ya existe."));
 
-				
+				mensajeError("La Unidad de Medida (" + nuevoUnidadMedida.getMedidaUm() + ") ya existe.");
+
 			} else {
-				
+
 				unidadMedidaI.save(nuevoUnidadMedida);
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "La unidad de medida se almacenado correctamente"));
+				mensajeInfo(
+						"La Unidad de Medida (" + nuevoUnidadMedida.getMedidaUm() + ") se ha almacenado exitosamente.");
 
 				nuevoUnidadMedida = new Unidadmedida();
+				context.execute("PF('nuevoUnidadMedida').hide();");
 
 			}
 
 		} catch (Exception e) {
-			
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+
+			mensajeError("Ha ocurrido un problema");
 
 		}
 
 	}
 
-	
-	
-	public void modificarUnidadMedida(ActionEvent event) {
+	public void modificarUnidadMedida() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-			if (modificarUnidadMedida.getMedidaUm().equals(getNombreTP())) {
-				unidadMedidaI.update(modificarUnidadMedida);
+			if (unidadMedida.getMedidaUm().equals(getNombreUM())) {
+				unidadMedidaI.update(unidadMedida);
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarUnidadMedida').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Unidad de Medida actualizado exitosamente"));
-
-			} else if (buscarUnidadMedida(modificarUnidadMedida.getMedidaUm()) == false) {
-				unidadMedidaI.update(modificarUnidadMedida);
+			} else if (buscarUnidadMedida(unidadMedida.getMedidaUm()) == false) {
+				unidadMedidaI.update(unidadMedida);
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
-				RequestContext context = RequestContext.getCurrentInstance();
+
+				mensajeInfo("La unidad de Medida (" + unidadMedida.getMedidaUm() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarUnidadMedida').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Unidad de Medida actualizado exitosamente"));
 			} else {
-				
+
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "La Unidad de Medida ya existe."));
+
+				mensajeError("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+
+			mensajeError("Ha ocurrido un error");
 		}
 	}
 
-	public void eliminarUnidadMedida(ActionEvent event) {
+	public void eliminarUnidadMedida() {
 		try {
 
-			unidadMedidaI.delete(modificarUnidadMedida);
+			unidadMedidaI.delete(unidadMedida);
 			listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "La unidad de medida se a eliminado correctamente"));
+			mensajeInfo("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ")  se ha eliminado correctamente");
 
 		} catch (Exception e) {
-			
-			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-								"La tabla Unidad de Medida tiene relación con otra tabla"));
-				
-			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
 
+			if (e.getMessage() == "Transaction rolled back") {
+
+				mensajeError("La tabla Unidad de Medida (" + unidadMedida.getMedidaUm()
+						+ ") tiene relación con otra tabla.");
+
+			} else {
+
+				mensajeError("Ha ocurrido un error");
 
 			}
-			
-			
-			
-			
+
 		}
 
 	}
-	
+
 	/****** Busqueda de Estado Producto ****/
 
 	private boolean buscarUnidadMedida(String valor) {
@@ -168,7 +172,7 @@ public class UnidadmedidaController implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		boolean resultado = false;
 		for (Unidadmedida tipo : listUnidadMedida) {
 			if (tipo.getMedidaUm().equals(valor)) {
@@ -178,16 +182,14 @@ public class UnidadmedidaController implements Serializable {
 				resultado = false;
 			}
 		}
-		
+
 		return resultado;
 	}
-	
-	
+
 	public void pasarNombre(String nombre) {
-		setNombreTP(nombre);
+		setNombreUM(nombre);
 	}
 
-	
 	/** GET AND SET **/
 
 	public List<Unidadmedida> getListUnidadMedida() {
@@ -206,24 +208,28 @@ public class UnidadmedidaController implements Serializable {
 		this.nuevoUnidadMedida = nuevoUnidadMedida;
 	}
 
-	public Unidadmedida getModificarUnidadMedida() {
-		return modificarUnidadMedida;
+	public String getNombreUM() {
+		return nombreUM;
 	}
 
-	public void setModificarUnidadMedida(Unidadmedida modificarUnidadMedida) {
-		this.modificarUnidadMedida = modificarUnidadMedida;
+	public void setNombreUM(String nombreUM) {
+		this.nombreUM = nombreUM;
 	}
 
-	public String getNombreTP() {
-		return nombreTP;
+	public List<Unidadmedida> getFiltrarUM() {
+		return filtrarUM;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setFiltrarUM(List<Unidadmedida> filtrarUM) {
+		this.filtrarUM = filtrarUM;
 	}
 
+	public Unidadmedida getUnidadMedida() {
+		return unidadMedida;
+	}
 
-
-
+	public void setUnidadMedida(Unidadmedida unidadMedida) {
+		this.unidadMedida = unidadMedida;
+	}
 
 }

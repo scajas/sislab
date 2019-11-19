@@ -35,14 +35,11 @@ import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Grado;
 import ec.edu.epn.laboratorioBJ.entities.Hidratacion;
-import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
-import ec.edu.epn.laboratorioBJ.entities.Metodo;
 import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Posgiro;
 import ec.edu.epn.laboratorioBJ.entities.Presentacion;
 import ec.edu.epn.laboratorioBJ.entities.ProductoLab;
 import ec.edu.epn.laboratorioBJ.entities.Pureza;
-import ec.edu.epn.laboratorioBJ.entities.Riesgoespecifico;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.laboratorioBJ.entities.Unidadmedida;
@@ -349,8 +346,7 @@ public class ExistenciasController implements Serializable {
 				existenciasI.save(nuevoExistencia);
 				existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 
-				mensajeInfo(
-						"La existencia ( " + nuevoExistencia.getIdExistencia() + " ) se ha almacenado exitosamente");
+				mensajeInfo("La existencia (" + nuevoExistencia.getIdExistencia() + ") se ha almacenado exitosamente");
 
 				nuevoExistencia = new Existencia();
 
@@ -374,7 +370,7 @@ public class ExistenciasController implements Serializable {
 			existenciasI.update(existencia);
 			existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 
-			mensajeInfo("La Existencia ( " + existencia.getIdExistencia() + " ) se ha actualizado exitosamente.");
+			mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha actualizado exitosamente.");
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un problema");
@@ -389,12 +385,12 @@ public class ExistenciasController implements Serializable {
 
 			existenciasI.delete(existencia);
 			existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-			mensajeInfo("La Existencia( " + existencia.getIdExistencia() + " ) se ha eliminado correctamente.");
+			mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("Este registro tiene relación con otra tabla.");
+				mensajeError("La Existencia (" + existencia.getIdExistencia() + ") tiene relación con otra tabla.");
 			} else {
 				mensajeError("Ha ocurrido un problema.");
 			}

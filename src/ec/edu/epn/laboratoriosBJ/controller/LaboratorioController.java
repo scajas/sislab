@@ -14,6 +14,8 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.context.RequestContext;
+
 import ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
@@ -47,11 +49,11 @@ public class LaboratorioController implements Serializable {
 	private List<LaboratorioLab> listaLaboratorioLab = new ArrayList<>();
 	private LaboratorioLab nuevoLaboratorioLab;
 	private LaboratorioLab LaboratorioLab;
-	private String nombreTP;
+	private String nombreL;
 	private UnidadLabo unidadSelect;
 	private List<UnidadLabo> unidades = new ArrayList<UnidadLabo>();
 	private UnidadLabo unidad;
-	
+
 	private List<LaboratorioLab> filtrarLaboratorios;
 	private List<UnidadLabo> filtrarUnidades;
 
@@ -79,7 +81,7 @@ public class LaboratorioController implements Serializable {
 	}
 
 	public void mensajeInfo(String mensaje) {
-		
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
@@ -89,11 +91,12 @@ public class LaboratorioController implements Serializable {
 
 	public void agregarLaboratorioLab() {
 
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarLaboratorioLab(nuevoLaboratorioLab.getNombreL()) == true) {
 
-				mensajeError(
-						"Ha ocurrido un error, El Laboratorio ( " + nuevoLaboratorioLab.getNombreL() + " ) ya existe.");
+				mensajeError("El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + " ) ya existe.");
 
 			} else {
 
@@ -101,10 +104,11 @@ public class LaboratorioController implements Serializable {
 				laboratorioI.save(nuevoLaboratorioLab);
 				listaLaboratorioLab = laboratorioI.getAll(LaboratorioLab.class);
 
-				mensajeInfo("El Laboratorio ( " + nuevoLaboratorioLab.getNombreL() + " ) se ha almacenado exitosamente");
+				mensajeInfo("El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") se ha almacenado exitosamente");
 
 				nuevoLaboratorioLab = new LaboratorioLab();
 				unidadSelect = new UnidadLabo();
+				context.execute("PF('nuevoLaboratorio').hide();");
 			}
 
 		} catch (Exception e) {
@@ -118,18 +122,25 @@ public class LaboratorioController implements Serializable {
 	/****** Modificar Laboratorio ****/
 
 	public void modificarLaboratorioLab() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-			if (LaboratorioLab.getNombreL().equals(getNombreTP())) {
+			if (LaboratorioLab.getNombreL().equals(getNombreL())) {
 
 				laboratorioI.update(LaboratorioLab);
 				listaLaboratorioLab = laboratorioI.getAll(LaboratorioLab.class);
-				mensajeInfo("Laboratorio ( " + LaboratorioLab.getNombreL() + " ) se actualizado exitosamente");
+				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente");
+
+				context.execute("PF('modificarLaboratorio').hide();");
 
 			} else if (buscarLaboratorioLab(LaboratorioLab.getNombreL()) == false) {
 
 				laboratorioI.update(LaboratorioLab);
 				listaLaboratorioLab = laboratorioI.getAll(LaboratorioLab.class);
-				mensajeInfo("Laboratorio ( " + LaboratorioLab.getNombreL() + " ) se actualizado exitosamente");
+				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente");
+
+				context.execute("PF('modificarLaboratorio').hide();");
 
 			} else {
 				listaLaboratorioLab = laboratorioI.getAll(LaboratorioLab.class);
@@ -139,7 +150,7 @@ public class LaboratorioController implements Serializable {
 
 		} catch (Exception e) {
 
-				mensajeError("Ha ocurrido un error");
+			mensajeError("Ha ocurrido un problema");
 
 		}
 	}
@@ -152,18 +163,18 @@ public class LaboratorioController implements Serializable {
 
 			laboratorioI.delete(LaboratorioLab);
 			listaLaboratorioLab = laboratorioI.getAll(LaboratorioLab.class);
-
-			mensajeInfo("El Laboratorio ( " + LaboratorioLab.getNombreL() + " ) se ha eliminado correctamente");
+			mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				
-				mensajeError("La tabla Laboratorio tiene relación con otra tabla");
+
+				mensajeError(
+						"La tabla Laboratorio (" + LaboratorioLab.getNombreL() + ") tiene relación con otra tabla");
 
 			} else {
-				
-				mensajeError("Ha ocurrido un error");;
+
+				mensajeError("Ha ocurrido un problema");
 
 			}
 
@@ -196,7 +207,7 @@ public class LaboratorioController implements Serializable {
 	}
 
 	public void pasarNombre(String nombre, UnidadLabo uni) {
-		setNombreTP(nombre);
+		setNombreL(nombre);
 		unidad = uni;
 	}
 
@@ -226,12 +237,12 @@ public class LaboratorioController implements Serializable {
 		this.LaboratorioLab = LaboratorioLab;
 	}
 
-	public String getNombreTP() {
-		return nombreTP;
+	public String getNombreL() {
+		return nombreL;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setNombreL(String nombreL) {
+		this.nombreL = nombreL;
 	}
 
 	public UnidadLabo getUnidadSelect() {

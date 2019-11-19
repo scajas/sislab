@@ -33,13 +33,13 @@
 		</h:head>
 		<h:body>
 
-			<p:growl id="messagesForm" showDetail="true" sticky="false"
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
 			<h:form id="formPrincipal">
 
 				<p:panel>
-					<p:fieldset legend="CONCENTRACIÓN"
+					<p:fieldset legend="Concentración"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -50,18 +50,17 @@
 						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevaConcentracion').show()"
-							update=":formNuevaConcentracion,@this">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+						<!-- Boton De Nuevo -->
+
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevaConcentracion').show()"
+								update=":formNuevaConcentracion,@this">
+
+							</p:commandButton>
+						</center>
 						<br />
 						<br />
 
@@ -95,14 +94,12 @@
 									<p:commandLink
 										action="#{concentracionController.pasarNombre(concentracion.nombreCon)}"
 										update=":formModificarConcentracion,@this"
-										process="@this,tblConcentracion" icon="ui-icon-check"
+										process="@this,tblConcentracion"
 										oncomplete="PF('modificarConcentracion').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
-
 										<f:setPropertyActionListener
 											target="#{concentracionController.concentracion}"
 											value="#{concentracion}">
@@ -113,7 +110,7 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarConcentracion').show();">
+										onclick="PF('eliminarConcentracion').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -129,108 +126,17 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
-
-			<p:dialog id="panelModificarConcentracion" resizable="true"
-				widgetVar="modificarConcentracion" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Modificar Concentración">
-
-
-				<h:form id="formModificarConcentracion">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-
-							<div class="ui-fluid">
-								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{concentracionController.concentracion.nombreCon}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre de la Concentración"
-										size="30" maxlength="60">
-									</p:inputText>
-
-									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-										style="color:white!important" />
-									<p:inputTextarea id="desc"
-										value="#{concentracionController.concentracion.descrCon}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
-
-								</p:panelGrid>
-
-							</div>
-							<br /> <br />
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{concentracionController.modificarConcentracion}"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarConcentracion"
-										oncomplete="PF('tblConcentracion').filter()">
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarConcentracion').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
+			<!-- Panel Nuevo-->
 
 			<p:dialog id="panelNuevaConcentracion" resizable="true"
-				widgetVar="nuevaConcentracion" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nueva Concentración">
+				closable="false" draggable="false" widgetVar="nuevaConcentracion"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" header="Nueva Concentración">
 
 
 				<h:form id="formNuevaConcentracion">
@@ -248,11 +154,7 @@
 						<br />
 						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -267,8 +169,7 @@
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
 									value="#{concentracionController.nuevaConcentracion.descrCon}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
+									maxlength="100" rows="5" cols="30" />
 
 							</p:panelGrid>
 						</div>
@@ -280,28 +181,99 @@
 
 							<h:panelGrid columns="2">
 
-								<p:commandLink
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
 									actionListener="#{concentracionController.agregarConcentracion}"
-									process="@this,nombre,desc"
+									process="@this,formNuevaConcentracion"
 									update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevaConcentracion"
 									oncomplete="PF('tblConcentracion').filter()">
 
-									<h:graphicImage value="/images/archivos/guardar.png"
-										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-										height="35" />
+								</p:commandButton>
 
-								</p:commandLink>
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevaConcentracion').hide();" process="@none">
 
-								<p:commandLink onclick="PF('nuevaConcentracion').hide();"
-									process="@none">
-
-									<p:graphicImage value="/images/archivos/atras.png" width="35"
-										height="36" title="Atrás">
-									</p:graphicImage>
-
-								</p:commandLink>
+								</p:commandButton>
 
 							</h:panelGrid>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+			<!-- Panel de Nuevo -->
+
+			<p:dialog id="panelModificarConcentracion" resizable="true"
+				closable="false" draggable="false"
+				widgetVar="modificarConcentracion" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Concentración">
+
+
+				<h:form id="formModificarConcentracion">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{concentracionController.concentracion.nombreCon}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre de la Concentración"
+										size="30" maxlength="60">
+									</p:inputText>
+
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{concentracionController.concentracion.descrCon}"
+										maxlength="100" rows="5" cols="30" />
+
+								</p:panelGrid>
+
+							</div>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
+										actionListener="#{concentracionController.modificarConcentracion}"
+										process="@this,formModificarConcentracion"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarConcentracion"
+										oncomplete="PF('tblConcentracion').filter()">
+
+									</p:commandButton>
+
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarConcentracion').hide();" process="@none">
+
+									</p:commandButton>
+								</h:panelGrid>
+
+							</center>
 
 						</center>
 					</p:fieldset>
@@ -312,19 +284,19 @@
 
 			<h:form id="eliminarConcentracion">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar esta Concentración"
-					header="Eliminar Concentración" severity="warn"
-					widgetVar="cdEliminarConcentracion">
+					message="¿Esta seguro(a) que desea eliminar la Concentración seleccionada"
+					header="Eliminar Concentración" severity="info"
+					widgetVar="eliminarConcentracion">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarConcentracion').hide();"
+							onsuccess="PF('eliminarConcentracion').hide();"
 							actionListener="#{concentracionController.eliminarConcentracion}"
 							update="@([id$=messagesForm],[id$=formPrincipal])"
 							oncomplete="PF('tblConcentracion').filter()" />
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarConcentracion').hide();" type="button" />
+							onclick="PF('eliminarConcentracion').hide();" type="button" />
 
 					</center>
 

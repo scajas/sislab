@@ -35,55 +35,53 @@
 
 		<h:body>
 
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="Grado"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoGrado').show()"
-							update=":formnuevoGrado,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoGrado').show()"
+								update=":formNuevoGrado,@this">
+
+							</p:commandButton>
+						</center>
 						<br />
 						<br />
 
-						<p:dataTable id="tblGrado"							
-							value="#{gradoController.grados}"
-							var="grado" widgetVar="filterGradoTable"
+						<p:dataTable id="tblGrado" value="#{gradoController.grados}"
+							var="grado" widgetVar="tblGrados"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{gradoController.filtroGrado}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bottom">
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
 
 							<p:column headerText="Nombre" filterBy="#{grado.nombreGr}"
 								filterMatchMode="contains">
 								<h:outputText value="#{grado.nombreGr}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{grado.descrGr}">
+							<p:column headerText="Descripción" filterBy="#{grado.descrGr}"
+								filterMatchMode="contains">
 								<h:outputText value="#{grado.descrGr}" />
 							</p:column>
 
@@ -91,10 +89,9 @@
 
 							<p:column headerText="Acciones">
 								<center>
-									<p:commandLink										
+									<p:commandLink
 										action="#{gradoController.pasarNombre(grado.nombreGr)}"
-										update=":formModificarGrado,@this,@([id$=messagesForm])"
-										process="@this,tblGrado" icon="ui-icon-check"
+										update=":formModificarGrado,@this" process="@this,tblGrado"
 										oncomplete="PF('modificarGrado').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
@@ -102,8 +99,7 @@
 											width="35" height="35" />
 
 
-										<f:setPropertyActionListener											
-											target="#{gradoController.grado}"
+										<f:setPropertyActionListener target="#{gradoController.grado}"
 											value="#{grado}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -112,15 +108,14 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarGrado').show();">
+										onclick="PF('eliminarGrado').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
 
 
-										<f:setPropertyActionListener											
-											target="#{gradoController.grado}"
+										<f:setPropertyActionListener target="#{gradoController.grado}"
 											value="#{grado}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -134,10 +129,79 @@
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
+			<!-- Panel de Nuevo	 -->
 
-			<p:dialog id="panelModificarGrado" resizable="true"
-				widgetVar="modificarGrado" modal="true"
+			<p:dialog id="panelNuevoGrado" resizable="false" closable="false"
+				draggable="false" widgetVar="nuevoGrado" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="35%" header="Nuevo Grado">
+
+
+				<h:form id="formNuevoGrado">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" size="30" />
+								<p:inputText id="nombre"
+									value="#{gradoController.nuevoGrado.nombreGr}" required="true"
+									requiredMessage="Debe ingresar el nombre de Grado" size="30"
+									maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{gradoController.nuevoGrado.descrGr}" maxlength="100"
+									rows="5" cols="30" />
+
+							</p:panelGrid>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
+										actionListener="#{gradoController.agregarGrado}"
+										oncomplete="PF('nuevoGrado'); PF('tblGrados').filter();"
+										process="@this,nombre,desc"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoGrado">
+
+									</p:commandButton>
+
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevoGrado').hide();" process="@none">
+
+									</p:commandButton>
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelModificarGrado" resizable="false" closable="false"
+				draggable="false" widgetVar="modificarGrado" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
 				dynamic="true" width="35%" header="Modificar Grado">
 
@@ -146,166 +210,59 @@
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"/>
-								<p:inputText id="nombre"									
-									value="#{gradoController.grado.nombreGr}"
-									required="true"
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{gradoController.grado.nombreGr}" required="true"
 									requiredMessage="Debe ingresar el nombre del Grado" size="30"
 									maxlength="60">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 									style="color:white!important" />
-								<p:inputTextarea id="desc"									
-									value="#{gradoController.grado.descrGr}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
+								<p:inputTextarea id="desc"
+									value="#{gradoController.grado.descrGr}" maxlength="100"
+									rows="5" cols="30" />
 
 							</p:panelGrid>
 							<br /> <br />
-
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink									
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{gradoController.modificarGrado}"
-										oncomplete="PF('filterGradoTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarGrado">
+										process="@this,formModificarGrado"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarGrado"
+										oncomplete="PF('tblGrados').filter();">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarGrado').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarGrado').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
+									</p:commandButton>
 
 								</h:panelGrid>
 
 							</center>
 
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelNuevoGrado" resizable="true"
-				widgetVar="nuevoGrado" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Nuevo Grado">
-
-
-				<h:form id="formnuevoGrado">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"  size="30"/>
-								<p:inputText id="nombre"									
-									value="#{gradoController.nuevoGrado.nombreGr}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de Grado" size="30"
-									maxlength="60">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"									
-									value="#{gradoController.nuevoGrado.descrGr}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink										
-										actionListener="#{gradoController.agregarGrado}"
-										oncomplete="PF('nuevoGrado'); PF('filterGradoTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoGrado">
-
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoGrado').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
 						</center>
 					</p:fieldset>
 				</h:form>
@@ -315,20 +272,19 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			<h:form id="eliminarGrado">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Grado"
-					header="Eliminar Grado" severity="warn"
-					widgetVar="cdEliminarGrado">
+					message="¿Esta seguro(a) que desea eliminar el Grado seleccionado"
+					header="Eliminar Grado" severity="info" widgetVar="eliminarGrado">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterGradoTable').filter();"
-							onsuccess="PF('cdEliminarGrado').hide();"							
+							oncomplete="PF('tblGrados').filter();"
+							onsuccess="PF('eliminarGrado').hide();"
 							actionListener="#{gradoController.eliminarGrado}"
-							update="@([id$=messagesForm],[id$=formprincipal])" />
+							update="@([id$=messagesForm],[id$=formprincipal],eliminarGrado)" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarGrado').hide();" type="button" />
+							onclick="PF('eliminarGrado').hide();" type="button" />
 
 					</center>
 

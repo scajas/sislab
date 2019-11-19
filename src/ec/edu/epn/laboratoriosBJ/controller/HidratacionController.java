@@ -10,7 +10,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -40,150 +39,153 @@ public class HidratacionController implements Serializable {
 
 	private Hidratacion hidratacion;
 	private List<Hidratacion> listaHidratacion = new ArrayList<Hidratacion>();
-	private Hidratacion nuevoHidratacion;
-	private String nombreTP;
+	private Hidratacion nuevaHidratacion;
+	private String nombreH;
+	private List<Hidratacion> filtrarHidratacion;
 
 	@PostConstruct
 	public void init() {
 		try {
 
 			setListaHidratacion(hidratacionI.getAll(Hidratacion.class));
-			setNuevoHidratacion(new Hidratacion());
+			setNuevaHidratacion(new Hidratacion());
 			hidratacion = new Hidratacion();
-			nuevoHidratacion = new Hidratacion();
-
+			nuevaHidratacion = new Hidratacion();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	//****** Modificar hidratacion ****//*
 
-	public void modificarHidratacion(ActionEvent event) {
-		
-			try {
-				if (hidratacion.getNombreHi().equals(getNombreTP())) {
-					hidratacionI.update(hidratacion);
-					listaHidratacion = hidratacionI.getAll(Hidratacion.class);
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
 
-					RequestContext context = RequestContext.getCurrentInstance();
-					context.execute("PF('modificarHidratacion').hide();");
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
 
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Hidratación actualizada exitosamente"));
+	public void mensajeInfo(String mensaje) {
 
-				} else if (buscarHidratacion(hidratacion.getNombreHi()) == false) {
-					hidratacionI.update(hidratacion);
-					listaHidratacion = hidratacionI.getAll(Hidratacion.class);
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
-					RequestContext context = RequestContext.getCurrentInstance();
-					context.execute("PF('modificarHidratacion').hide();");
+	}
 
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Hidratación actualizada exitosamente"));
-				} else {
-					
-					listaHidratacion = hidratacionI.getAll(Hidratacion.class);
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "La Hidratación ya existe."));
-				}
+	/****** Agregar Nuevo ****/
 
-			} catch (Exception e) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
-			}
-		}
-	
-	
-	//************Agregar Hidratación************//
-	
-	public void agregarHidratacion(ActionEvent event) {
+	public void agregarHidratacion() {
+		RequestContext context = RequestContext.getCurrentInstance();
 
 		try {
-			if (buscarHidratacion(nuevoHidratacion.getNombreHi()) == true) {
+			if (buscarHidratacion(nuevaHidratacion.getNombreHi()) == true) {
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "Esta Hidratación ya existe."));
-				
-				
+				mensajeError("La Hidratación (" + nuevaHidratacion.getNombreHi() + ") ya existe.");
 
 			} else {
-				hidratacionI.save(nuevoHidratacion);
+				hidratacionI.save(nuevaHidratacion);
 				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-								"La Hidratación se ha almacenado exitosamente"));
+				mensajeInfo("La Hidratación (" + nuevaHidratacion.getNombreHi() + ") se ha almacenado exitosamente.");
 
-				nuevoHidratacion = new Hidratacion();
+				nuevaHidratacion = new Hidratacion();
+
+				context.execute("PF('nuevaHidratacion').hide();");
+
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
+
+			mensajeError("Ha ocurrido un problema.");
 		}
-		
 
 	}
-	
-	
-	//****** Eliminar Hidratacion ****//*
 
-		public void eliminarHidratacion(ActionEvent event) {
+	/****** Modificar ****/
 
-			try {
+	public void modificarHidratacion() {
 
-				hidratacionI.delete(hidratacion);
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		try {
+			if (hidratacion.getNombreHi().equals(getNombreH())) {
+				hidratacionI.update(hidratacion);
 				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-								"La Hidratación se ha eliminado correctamente"));
+				mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha actualizado exitosamente.");
 
-			} catch (Exception e) {
+				context.execute("PF('modificarHidratacion').hide();");
 
-				if (e.getMessage() == "Transaction rolled back") {
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-									"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
-				} else {
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_FATAL, "ERROR!", ""));
-				}
-
-			}
-
-		}
-		
-		//****** Busqueda de Hidratacion ****//*
-
-		private boolean buscarHidratacion(String valor) {
-			try {
+			} else if (buscarHidratacion(hidratacion.getNombreHi()) == false) {
+				hidratacionI.update(hidratacion);
 				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+				mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha actualizado exitosamente.");
+
+				context.execute("PF('modificarHidratacion').hide();");
+			} else {
+
+				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
+				mensajeError("La Hidratación (" + hidratacion.getNombreHi() + ") ya existe.");
+
 			}
-			
-			boolean resultado = false;
-			for (Hidratacion tipo : listaHidratacion) {
-				if (tipo.getNombreHi().trim().equals(valor.trim())) {
-					resultado = true;
-					break;
-				} else {
-					resultado = false;
-				}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error");
+		}
+	}
+
+	/****** Eliminar ****/
+
+	public void eliminarHidratacion() {
+
+		try {
+
+			hidratacionI.delete(hidratacion);
+			listaHidratacion = hidratacionI.getAll(Hidratacion.class);
+
+			mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha eliminado correctamente.");
+
+		} catch (Exception e) {
+
+			if (e.getMessage() == "Transaction rolled back") {
+
+				mensajeError("La tabla Hidratación (" + hidratacion.getNombreHi() + ") tiene relación con otra tabla.");
+
+			} else {
+
+				mensajeError("Ha ocurrido un problema.");
 			}
-			
-			return resultado;
+
 		}
 
-		public void pasarNombre(String nombre) {
-			setNombreTP(nombre);
+	}
+
+	/****** Busqueda ****/
+
+	private boolean buscarHidratacion(String valor) {
+		try {
+			listaHidratacion = hidratacionI.getAll(Hidratacion.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		
+
+		boolean resultado = false;
+		for (Hidratacion tipo : listaHidratacion) {
+			if (tipo.getNombreHi().trim().equals(valor.trim())) {
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+		}
+
+		return resultado;
+	}
+
+	public void pasarNombre(String nombre) {
+		setNombreH(nombre);
+	}
 
 	public List<Hidratacion> getListaHidratacion() {
 		return listaHidratacion;
@@ -201,22 +203,28 @@ public class HidratacionController implements Serializable {
 		this.hidratacion = hidratacion;
 	}
 
-	public Hidratacion getNuevoHidratacion() {
-		return nuevoHidratacion;
+	public String getNombreH() {
+		return nombreH;
 	}
 
-	public void setNuevoHidratacion(Hidratacion nuevoHidratacion) {
-		this.nuevoHidratacion = nuevoHidratacion;
-	}
-	
-	
-
-	public String getNombreTP() {
-		return nombreTP;
+	public void setNombreH(String nombreH) {
+		this.nombreH = nombreH;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public List<Hidratacion> getFiltrarHidratacion() {
+		return filtrarHidratacion;
+	}
+
+	public void setFiltrarHidratacion(List<Hidratacion> filtrarHidratacion) {
+		this.filtrarHidratacion = filtrarHidratacion;
+	}
+
+	public Hidratacion getNuevaHidratacion() {
+		return nuevaHidratacion;
+	}
+
+	public void setNuevaHidratacion(Hidratacion nuevaHidratacion) {
+		this.nuevaHidratacion = nuevaHidratacion;
 	}
 
 }

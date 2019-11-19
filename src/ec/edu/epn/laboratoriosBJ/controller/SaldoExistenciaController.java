@@ -181,7 +181,7 @@ public class SaldoExistenciaController implements Serializable {
 	public void mensajeInfo(String mensaje) {
 		FacesContext context = FacesContext.getCurrentInstance();
 
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÃ“N", mensaje));
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 

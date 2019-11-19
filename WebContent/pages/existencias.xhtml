@@ -35,37 +35,34 @@
 
 		<h:body>
 
-			<p:growl id="messagesForm" showDetail="true" sticky="false"
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
 
-
 				<p:panel>
 					<p:fieldset legend="Existencias"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
-						<!-- **************************  Boton Nuevos   *************************** -->
 
-						<p:commandLink process="@this" onclick="PF('nuevoEx').show()"
-							update=":formNuevoEx,@this">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						<!-- Boton De Nuevo -->
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoEx').show()"
+								update=":formNuevoEx,@this">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
 
@@ -76,7 +73,7 @@
 							widgetVar="filterExistenciasTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							filteredValue="#{existenciasController.filtrarExistencias}"
-						    rows="10" paginator="true"
+							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
@@ -110,19 +107,21 @@
 							</p:column>
 
 							<p:column headerText="Producto"
-								filterBy="#{existencia.producto.nombrePr}">
+								filterBy="#{existencia.producto.nombrePr}"
+								filterMatchMode="contains">
 								<h:outputText value="#{existencia.producto.nombrePr}" />
 							</p:column>
 
 							<p:column headerText="Grado"
 								filterBy="#{existencia.grado.nombreGr}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" style="width: 8% ">
 								<h:outputText value="#{existencia.grado.nombreGr}" />
 							</p:column>
 
 							<p:column headerText="Concentración"
 								filterBy="#{existencia.concentracion.nombreCon}"
-								filterMatchMode="contains">
+								filterMatchMode="contains"
+								style="width: 10% ">
 								<h:outputText value="#{existencia.concentracion.nombreCon}" />
 							</p:column>
 
@@ -132,13 +131,13 @@
 							</p:column>
 
 							<p:column headerText="Saldo" filterBy="#{existencia.cantidadE}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" style="width: 6% ">
 								<h:outputText value="#{existencia.cantidadE}" />
 							</p:column>
 
 							<p:column headerText="U.M."
 								filterBy="#{existencia.unidadmedida.medidaUm}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" style="width: 6% ">
 								<h:outputText value="#{existencia.unidadmedida.siglaUm}" />
 							</p:column>
 
@@ -149,7 +148,7 @@
 							</p:column>
 							<!-- **************************  Boton Ver Movimiento Inventario   *************************** -->
 
-							<p:column headerText="Ver M.I.">
+							<p:column headerText="Ver M.I." style="width: 7% ">
 								<center>
 									<p:commandLink
 										action="#{existenciasController.listaMovimientoInventario(existencia.idExistencia)}"
@@ -172,7 +171,7 @@
 
 							<!-- **************************  Boton Modificar   *************************** -->
 
-							<p:column headerText="Acciones">
+							<p:column headerText="Acciones" style="width: 9% ">
 								<center>
 									<p:commandLink update=":formModificarEx,@this"
 										process="@this,tblExistencias" icon="ui-icon-check"
@@ -181,7 +180,6 @@
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
 
 										<f:setPropertyActionListener
 											target="#{existenciasController.existencia}"
@@ -193,7 +191,7 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarExistencia').show();">
+										onclick="PF('eliminarExistencia').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -209,7 +207,6 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
@@ -218,8 +215,9 @@
 			<!-- **************************  Panel Detalle Existencias   *************************** -->
 
 			<p:dialog id="panelVerDetalleExistencia" resizable="true"
-				widgetVar="verDetalleExistencia" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="50%"
+				closable="false" draggable="false" widgetVar="verDetalleExistencia"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="50%"
 				header="Detalles Existencia">
 
 
@@ -350,8 +348,6 @@
 
 									<h:panelGrid columns="1">
 
-
-
 										<p:commandLink onclick="PF('verDetalleExistencia').hide();"
 											process="@none">
 
@@ -374,33 +370,27 @@
 			<!-- **************************  Panel Movimientos Inventarios Relacionados   *************************** -->
 
 			<p:dialog id="panelMovimientosInventarios" resizable="true"
-				widgetVar="verMovimientoI" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="80%"
+				closable="false" draggable="false" widgetVar="verMovimientoI"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="80%"
 				header="Movimientos Inventarios Relacionados">
-
 
 				<h:form id="formMovimientoI">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<p:dataTable id="tblMInventario"
 							value="#{existenciasController.movimientosinventarios}"
 							var="movimiento"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
-							resizableColumns="true" rows="10" paginator="true"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15"
-							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-							paginatorPosition="bottom">
+							resizableColumns="true" rows="10">
 
 							<p:column headerText="ID Exi.">
 								<f:facet name="header">
@@ -421,7 +411,8 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								<f:facet name="header">
 									<h:outputText value="Nombre Producto" />
 								</f:facet>
-								<h:outputText value="#{existenciasController.producto(movimiento.idExistencia)}" />
+								<h:outputText
+									value="#{existenciasController.producto(movimiento.idExistencia)}" />
 							</p:column>
 
 							<p:column headerText="F. Ingreso">
@@ -468,25 +459,17 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							<center>
 
 								<br />
+								<h:panelGrid columns="1">
 
-								<center>
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('verMovimientoI').hide();" process="@none">
 
-									<h:panelGrid columns="1">
+									</p:commandButton>
+
+								</h:panelGrid>
 
 
-
-										<p:commandLink onclick="PF('verMovimientoI').hide();"
-											process="@none">
-
-											<p:graphicImage value="/images/archivos/atras.png" width="35"
-												height="36" title="Atrás">
-											</p:graphicImage>
-
-										</p:commandLink>
-
-									</h:panelGrid>
-
-								</center>
 
 							</center>
 						</div>
@@ -509,24 +492,24 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<!-- **************************  Sub-Panel - Buscar Producto   *************************** -->
 						<div class="ui-g">
 							<div class="ui-g-4">
 								<p:fieldset
 									style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+									-moz-border-radius: 10px 10px 10px 10px;
+									-webkit-border-radius: 10px 10px 10px 10px;
+									border: 0px solid #000000;
+									border-style: double;
+									border-width: 1px;
+									border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 									legend="Lista Productos">
 
 									<p:dataTable id="tblProducto"
@@ -612,12 +595,12 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									<!-- **************************  Sub-Panel - Informacion Tecnica   *************************** -->
 									<p:fieldset
 										style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+										-moz-border-radius: 10px 10px 10px 10px;
+										-webkit-border-radius: 10px 10px 10px 10px;
+										border: 0px solid #000000;
+										border-style: double;
+										border-width: 1px;
+										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 										legend="Informacion Tecnica">
 										<div class="ui-fluid">
 											<center>
@@ -752,16 +735,15 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									<!-- **************************  Sub-Panel - Informacion General   *************************** -->
 									<p:fieldset
 										style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+										-moz-border-radius: 10px 10px 10px 10px;
+										-webkit-border-radius: 10px 10px 10px 10px;
+										border: 0px solid #000000;
+										border-style: double;
+										border-width: 1px;
+										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 										legend="Informacion General">
+
 										<div class="ui-fluid">
-
-
 
 											<center>
 												<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
@@ -824,7 +806,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 														maxlength="100">
 													</p:inputText>
 
-
 												</p:panelGrid>
 											</center>
 											<br />
@@ -847,29 +828,19 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 							<h:panelGrid columns="2">
 
-								<p:commandLink
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
 									actionListener="#{existenciasController.agregarExistencia}"
 									process="@this,formNuevoEx"
 									oncomplete="PF('filterExistenciasTable').filter();"
 									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEx">
+								</p:commandButton>
 
-									<center>
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoEx').hide();" process="@none">
 
-										<h:graphicImage value="/images/archivos/guardar.png"
-											title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-											height="35" />
-
-									</center>
-
-								</p:commandLink>
-
-								<p:commandLink onclick="PF('nuevoEx').hide();" process="@none">
-
-									<p:graphicImage value="/images/archivos/atras.png" width="35"
-										height="36" title="Atrás">
-									</p:graphicImage>
-
-								</p:commandLink>
+								</p:commandButton>
 
 							</h:panelGrid>
 
@@ -902,7 +873,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 
-						<!-- **************************  Panel - Producto  *************************** -->
+						<!-- Panel de Nuevo  -->
 						<p:fieldset
 							style="border-radius: 10px 10px 10px 10px;
 	-moz-border-radius: 10px 10px 10px 10px;
@@ -1021,7 +992,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 										</p:selectOneMenu>
 
 										<p:outputLabel id="lblConcentracion" for="concentracion"
-											value="Concentración: " style="color:white!important" />
+											value="Concentración: " style="color:white!important;" />
 										<p:selectOneMenu id="concentracion"
 											value="#{existenciasController.existencia.concentracion.idConcentracion}">
 
@@ -1073,8 +1044,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 							legend="Informacion General">
 							<div class="ui-fluid">
-
-
 
 								<center>
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
@@ -1151,36 +1120,23 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{existenciasController.modificarExistencia}"
 										process="@this,formModificarEx"
 										oncomplete="PF('filterExistenciasTable').filter();"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEx">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarEx').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarEx').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
-
-
 
 						</center>
 					</p:fieldset>
@@ -1192,19 +1148,19 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 			<h:form id="formEliminarEx">
 				<p:confirmDialog
 					message="¿Esta seguro(a) que desea eliminar la existencia seleccionada"
-					header="Eliminar Existencia" severity="warn"
-					widgetVar="cdEliminarExistencia">
+					header="Eliminar Existencia" severity="info"
+					widgetVar="eliminarExistencia">
 					<center>
 
 						<p:commandButton value="Aceptar"
 							oncomplete="PF('filterExistenciasTable').filter();"
-							onsuccess="PF('cdEliminarExistencia').hide();"
+							onsuccess="PF('eliminarExistencia').hide();"
 							actionListener="#{existenciasController.eliminarExistencia}"
 							update="@([id$=messagesForm],[id$=formprincipal])" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarExistencia').hide();" type="button" />
+							onclick="PF('eliminarExistencia').hide();" type="button" />
 
 					</center>
 
@@ -1229,12 +1185,12 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 		<!-- **************************  Scroll en dialogo   *************************** -->
 		<style type="text/css">
-			.ui-dialog-content {
-				max-width: 1500px !important;
-				max-height: 500px !important;
-				margin-bottom: 5px !important;
-			}
-		</style>
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+</style>
 
 	</ui:define>
 </ui:composition>

@@ -10,7 +10,6 @@
 	xmlns:ps="http://primefaces.org/apark"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
-
 	<ui:define name="pageTitle">Saldo Existencia</ui:define>
 	<ui:define name="body">
 
@@ -33,16 +32,14 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
-
 
 			<h:form id="formprincipal">
 				<p:growl id="messagesForm" showDetail="true" autoupdate="true"
 					life="1000" />
 
 				<p:panel>
-					<p:fieldset legend="Saldo Existencia"
+					<p:fieldset legend="Saldo Existencia Mensual"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -65,8 +62,6 @@
 									</h:panelGrid>
 
 									<h:panelGrid columns="2" cellpadding="5" style="width: 30%; ">
-
-
 
 										<h:outputText for="selectmes" value="MES: "
 											style="font-weight:bold; float: center; " />
@@ -91,19 +86,13 @@
 
 										</p:selectOneMenu>
 
-
 									</h:panelGrid>
 
 									<p:separator />
 
-
-
-
-
 								</p:panel>
 							</center>
 						</h:form>
-
 
 						<br />
 						<br />
@@ -133,8 +122,6 @@
 							</p:outputLabel>
 						</div>
 
-
-
 						<br />
 						<br />
 						<div style="float: left;">
@@ -143,23 +130,15 @@
 								<f:convertDateTime pattern="MM/dd/yyyy" type="date" />
 							</h:outputText>
 						</div>
-
-
 						<br />
 						<br />
-
-
 						<p:separator />
-
-
 
 						<p:dataTable id="tblTipoProveedor"
 							value="#{saldoExistenciaController.existencias}" var="salExis"
 							widgetVar="filterSaldoExisTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							scrollable="true" scrollHeight="550">
-
-
 
 							<f:facet name="header">
             				Saldo Existencias            		
@@ -209,11 +188,6 @@
 									value="#{salExis.producto.tipoproducto.nombreTprod}" />
 							</p:column>
 
-
-
-
-
-
 						</p:dataTable>
 
 						<br />
@@ -224,8 +198,8 @@
 								<p:spacer width="60" height="10" />
 
 
-  
-								<p:commandLink id="excelExport" 
+
+								<p:commandLink id="excelExport"
 									onclick="PrimeFaces.monitorDownload(start, stop);">
 									<h:graphicImage value="/images/excel.png" width="35px"
 										height="35px" />
@@ -235,31 +209,14 @@
 										pageOnly="true" selectionOnly="false" orientation="Landscape"
 										datasetPadding="4" />
 								</p:commandLink>
-								
-           
-
 
 							</div>
-
-
-
-
-
-
 
 						</center>
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
-
-
-
-
-
-
-
-
 
 			<p:dialog modal="true" widgetVar="statusDialog" header="Descargando"
 				draggable="false" closable="false" resizable="false">
@@ -282,7 +239,6 @@
 							onclick="PF('cdGuardarSaldoE').hide();" type="button" />
 					</center>
 				</p:confirmDialog>
-
 
 			</h:form>
 

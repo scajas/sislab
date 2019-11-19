@@ -32,57 +32,60 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
 
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="Característica"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this" onclick="PF('nuevaCaracteristica').show()"
-							update=":formnuevaCaracteristica,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+						<!-- Boton De Nuevo -->
+
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevaCaracteristica').show()"
+								update=":formNuevaCaracteristica,@this">
+
+							</p:commandButton>
+						</center>
 						<br />
 						<br />
 
 						<p:dataTable id="tblCaracteristica"
-							value="#{CaracteristicaController.listarCaracteristicas}" var="tipoCaracteristica"
-							widgetVar="filterCaracteristicaTable"
+							value="#{caracteristicaController.listarCaracteristicas}"
+							var="tipoCaracteristica" widgetVar="filterCaracteristicaTable"
+							filteredValue="#{caracteristicaController.filtrarCaracteristicas}"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
-							<p:column headerText="Nombre" filterBy="#{tipoCaracteristica.nombreCr}"
+							<p:column headerText="Nombre"
+								filterBy="#{tipoCaracteristica.nombreCr}"
 								filterMatchMode="contains">
-								<h:outputText value="#{tipoCaracteristica.nombreCr}" />
+								<h:outputText value="#{tipoCaracteristica.nombreCr}"
+									filterMatchMode="contains" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{tipoCaracteristica.descrCr}">
+							<p:column headerText="Descripción"
+								filterBy="#{tipoCaracteristica.descrCr}">
 								<h:outputText value="#{tipoCaracteristica.descrCr}" />
 							</p:column>
 
@@ -91,9 +94,9 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 							<p:column headerText="Acciones">
 								<center>
 									<p:commandLink
-										action="#{CaracteristicaController.pasarNombre(tipoCaracteristica.nombreCr)}"
-										update=":formModificarCaracteristica,@this,@([id$=messagesForm])"
-										process="@this,tblCaracteristica" icon="ui-icon-check"
+										action="#{caracteristicaController.pasarNombre(tipoCaracteristica.nombreCr)}"
+										update=":formModificarCaracteristica,@this"
+										process="@this,tblCaracteristica"
 										oncomplete="PF('modificarCaracteristica').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
@@ -102,7 +105,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 
 										<f:setPropertyActionListener
-											target="#{CaracteristicaController.caracteristica}"
+											target="#{caracteristicaController.caracteristica}"
 											value="#{tipoCaracteristica}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -111,7 +114,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarCaracteristica').show();">
+										onclick="PF('eliminarCaracteristica').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -119,7 +122,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 
 										<f:setPropertyActionListener
-											target="#{CaracteristicaController.caracteristica}"
+											target="#{caracteristicaController.caracteristica}"
 											value="#{tipoCaracteristica}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -133,175 +136,150 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 			</h:form>
 
+			<!-- Panel Nuevo -->
+
+			<p:dialog id="panelnuevaCaracteristica" resizable="true"
+				closable="false" draggable="false" widgetVar="nuevaCaracteristica"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Nueva Característica">
+
+				<h:form id="formNuevaCaracteristica">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+
+							<div class="ui-fluid">
+
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{caracteristicaController.nuevaCaracteristica.nombreCr}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre de la Característica"
+										size="30" maxlength="60">
+									</p:inputText>
+
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{caracteristicaController.nuevaCaracteristica.descrCr}"
+										maxlength="100" rows="5" cols="30" />
+
+
+								</p:panelGrid>
+
+							</div>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
+										actionListener="#{caracteristicaController.agregarCaracteristica}"
+										oncomplete="PF('nuevaCaracteristica'); PF('filterCaracteristicaTable').filter();"
+										process="@this,formNuevaCaracteristica"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaCaracteristica">
+
+									</p:commandButton>
+
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevaCaracteristica').hide();" process="@none">
+
+									</p:commandButton>
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
 			<!-- Panel de Modificar -->
 
-			<p:dialog id="panelmodificarCaracteristica" resizable="true"
-				widgetVar="modificarCaracteristica" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Modificar Característica">
+			<p:dialog id="panelModificarCaracteristica" resizable="true"
+				closable="false" draggable="false"
+				widgetVar="modificarCaracteristica" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="35%" header="Modificar Característica">
 
 
 				<h:form id="formModificarCaracteristica">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{caracteristicaController.caracteristica.nombreCr}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre de la Característica"
+										size="30" maxlength="60">
+									</p:inputText>
+
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{caracteristicaController.caracteristica.descrCr}"
+										maxlength="100" rows="5" cols="30" />
 
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{CaracteristicaController.caracteristica.nombreCr}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la Característica" size="30" maxlength="60">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{CaracteristicaController.caracteristica.descrCr}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-
-							</p:panelGrid>
+								</p:panelGrid>
+							</div>
 							<br /> <br />
-
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
-										actionListener="#{CaracteristicaController.editarCaracteristica}"
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
+										actionListener="#{caracteristicaController.modificarCaracteristica}"
 										oncomplete="PF('filterCaracteristicaTable').filter();"
-										process="@this,nombre,desc"
+										process="@this,formModificarCaracteristica"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarCaracteristica">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarCaracteristica').hide();"
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarCaracteristica').hide();"
 										process="@none">
 
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-
-
-
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
-
-			<!-- Panel de registro Nuevo -->
-
-			<p:dialog id="panelnuevaCaracteristica" resizable="true" widgetVar="nuevaCaracteristica"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Nueva Característica">
-
-
-				<h:form id="formnuevaCaracteristica">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{CaracteristicaController.nuevaCaracteristica.nombreCr}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la Característica" size="30" maxlength="60">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{CaracteristicaController.nuevaCaracteristica.descrCr}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{CaracteristicaController.agregarCaracteristica}"
-										oncomplete="PF('nuevaCaracteristica'); PF('filterCaracteristicaTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevaCaracteristica">
-
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevaCaracteristica').hide();" process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -314,32 +292,27 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			<h:form id="eliminarCaracteristica">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar esta Característica"
-					header="Eliminar Característica" severity="warn"
-					widgetVar="cdEliminarCaracteristica">
+					message="¿Esta seguro(a) que desea eliminar La Característica seleccionada"
+					header="Eliminar Característica" severity="info"
+					widgetVar="eliminarCaracteristica">
 					<center>
 
 						<p:commandButton value="Aceptar"
 							oncomplete="PF('filterCaracteristicaTable').filter();"
-							onsuccess="PF('cdEliminarCaracteristica').hide();"
-							actionListener="#{CaracteristicaController.eliminarCaracteristica}"
+							onsuccess="PF('eliminarCaracteristica').hide();"
+							actionListener="#{caracteristicaController.eliminarCaracteristica}"
 							update="@([id$=messagesForm],[id$=formprincipal])" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarCaracteristica').hide();" type="button" />
+							onclick="PF('eliminarCaracteristica').hide();" type="button" />
 
 					</center>
 
 				</p:confirmDialog>
-
-
 			</h:form>
 
 		</h:body>
-
-
-
 		<script type="text/javascript">
 			function start(){
 			PF('statusDialog').show();

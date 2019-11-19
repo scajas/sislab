@@ -35,40 +35,32 @@
 
 
 		<h:body>
-
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formPrincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
-					<p:fieldset legend="PRODUCTO"
+					<p:fieldset legend="Producto"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoProducto').show()"
-							update=":formnuevoProducto,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
-						<br />
-						<br />
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoProducto').show()"
+								update=":formNuevoProducto,@this,@([id$=messagesForm])">
 
-
+							</p:commandButton>
+						</center>
+						<br />
 
 						<p:dataTable id="tblProducto"
 							value="#{productoController.listarProductos}" var="pro"
@@ -78,10 +70,9 @@
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
 							rowsPerPageTemplate="5,10,15,20,30,50,75,100"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
-
 
 							<f:facet name="header">
 								<p:outputPanel>
@@ -94,7 +85,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									</p:inputText>
 								</p:outputPanel>
 							</f:facet>
-
 
 							<p:column headerText="ID">
 								<f:facet name="header">
@@ -152,14 +142,13 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								<center>
 									<p:commandLink
 										action="#{productoController.pasarNombre(pro.nombrePr,pro.riesgoespecifico,pro.tipoproducto)}"
-										update=":formModificarProducto,@this,@([id$=messagesForm])"
-										process="@this,tblProducto" icon="ui-icon-check"
+										update=":formModificarProducto,@this"
+										process="@this,tblProducto"
 										oncomplete="PF('modificarProducto').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
 
 										<f:setPropertyActionListener
 											target="#{productoController.productoLab}" value="#{pro}">
@@ -170,7 +159,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarProducto').show();">
+										onclick="PF('eliminarProducto').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -187,11 +176,12 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 						<br />
 						<center>
 							<h3>Exportar Registros</h3>
+
 							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
 								<h:graphicImage value="/images/excel.png" width="35px"
 									height="35px" />
 								<pe:exporter type="xlsx" target="tblProducto"
-									fileName="Productos" tableTitle="PRODUCTOS"
+									fileName="Productos" tableTitle="Reporte de Productos"
 									selectionOnly="false" orientation="Landscape"
 									datasetPadding="4" />
 							</h:commandLink>
@@ -201,11 +191,147 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
+			<!-- 		Panel de registro que se abre en un dialogo	 -->
 
-			<p:dialog id="panelmodificarProducto" resizable="true"
-				widgetVar="modificarProducto" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="65%"
+			<p:dialog id="panelNuevoProducto" resizable="true" closable="false"
+				draggable="false" widgetVar="nuevoProducto" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Nuevo Producto">
+
+
+				<h:form id="formNuevoProducto">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+							<div class="ui-fluid">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{productoController.nuevoProducto.nombrePr}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Producto"
+										size="30" maxlength="100">
+									</p:inputText>
+
+									<p:outputLabel id="lblIUPAC" for="iupac" value="IUPAC: "
+										style="color:white!important" />
+									<p:inputText id="iupac"
+										value="#{productoController.nuevoProducto.iupacPr}"
+										required="false" size="30" maxlength="100">
+									</p:inputText>
+
+									<p:outputLabel id="lblRiesgoEspe" for="riesgoEspeci"
+										value="Riesgo Específico: " style="color:white!important" />
+									<p:selectOneMenu id="riesgoEspeci"
+										value="#{productoController.riesgoEspecificoSelect}"
+										required="true" requiredMessage="Debe selecionar una opción">
+										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+										<f:selectItems value="#{productoController.listarRiesgosEsp}"
+											itemLabel="#{riesgoEspeci.nombreRe}"
+											itemValue="#{riesgoEspeci}" var="riesgoEspeci">
+										</f:selectItems>
+									</p:selectOneMenu>
+
+
+									<p:outputLabel id="lblTipoPro" for="tipoPro"
+										value="Tipo Producto: " style="color:white!important" />
+									<p:selectOneMenu id="tipoPro"
+										value="#{productoController.tipoProductoSelect}"
+										required="true" requiredMessage="Debe selecionar una opción">
+										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+										<f:selectItems
+											value="#{productoController.listarTipoProducto}"
+											itemLabel="#{tipoPro.nombreTprod}" itemValue="#{tipoPro}"
+											var="tipoPro">
+										</f:selectItems>
+									</p:selectOneMenu>
+
+									<p:outputLabel id="lblDescripcion" for="descripcion"
+										value="Descripción: " style="color:white!important" />
+									<p:inputTextarea id="descripcion"
+										value="#{productoController.nuevoProducto.descrPr}"
+										maxlength="100" rows="5" cols="30" />
+
+									<p:outputLabel id="lblFormula" for="formula" value="Formula: "
+										style="color:white!important" />
+									<p:inputTextarea id="formula"
+										value="#{productoController.nuevoProducto.formulaPr}"
+										maxlength="100" rows="5" cols="30" />
+
+									<p:outputLabel id="lblRegSalud" for="regSalud"
+										value="Riesgo Salud: " style="color:white!important" />
+									<h:panelGrid columns="1" style="margin-bottom: 10px">
+										<p:inputText id="regSalud"
+											value="#{productoController.nuevoProducto.riesgosaludPr}" />
+										<p:slider for="regSalud" maxValue="4" minValue="0" />
+									</h:panelGrid>
+
+									<p:outputLabel id="lblRegInfla" for="regInfla"
+										value="Riesgo Inflamabilidad: " style="color:white!important" />
+									<h:panelGrid columns="1" style="margin-bottom: 10px">
+										<p:inputText id="regInfla"
+											value="#{productoController.nuevoProducto.riesgoinflamabilidadPr}" />
+										<p:slider for="regInfla" maxValue="4" minValue="0" />
+									</h:panelGrid>
+
+									<p:outputLabel id="lblRegRea" for="regReac"
+										value="Riesgo Reactividad: " style="color:white!important" />
+									<h:panelGrid columns="1" style="margin-bottom: 10px">
+										<p:inputText id="regReac"
+											value="#{productoController.nuevoProducto.riesgoreactividadPr}"
+											required="true"
+											requiredMessage="Debe selecionar el nivel de Reactividad" />
+										<p:slider for="regReac" maxValue="4" minValue="0" />
+									</h:panelGrid>
+
+								</p:panelGrid>
+							</div>
+							<br /> <br />
+
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
+										actionListener="#{productoController.agregarProducto}"
+										oncomplete="PF('nuevoProducto');"
+										process="@this,formNuevoProducto"
+										update="@([id$=messagesForm],[id$=formPrincipal]), formNuevoProducto">
+
+									</p:commandButton>
+
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevoProducto').hide();" process="@none">
+									</p:commandButton>
+								</h:panelGrid>
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelModificarProducto" resizable="true"
+				closable="false" draggable="false" widgetVar="modificarProducto"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="65%"
 				header="Modificar Producto">
 
 
@@ -225,9 +351,6 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
 									<p:outputLabel id="lblID" value="Código: "
@@ -281,13 +404,13 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 										value="Descripción: " style="color:white!important" />
 									<p:inputTextarea id="descripcion"
 										value="#{productoController.productoLab.descrPr}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
+										maxlength="100" rows="5" cols="30" />
 
 									<p:outputLabel id="lblFormula" for="formula" value="Formula: "
 										style="color:white!important" />
 									<p:inputTextarea id="formula"
 										value="#{productoController.productoLab.formulaPr}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
+										maxlength="100" rows="5" cols="30" />
 
 									<p:outputLabel id="lblRegSalud" for="regSalud"
 										value="Riesgo Salud: " style="color:white!important" />
@@ -322,26 +445,18 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{productoController.modificarProducto}"
-										process="@this,nombre,iupac,riesgoEspeci,descripcion,formula,tipoPro,regSalud,regInfla,regReac"
+										process="@this,formModificarProducto"
 										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarProducto">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-									<p:commandLink onclick="PF('modificarProducto').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarProducto').hide();" process="@none">
+									</p:commandButton>
 
 								</h:panelGrid>
 
@@ -352,166 +467,22 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 			</p:dialog>
 
 
-
-			<!-- 		Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelnuevoProducto" resizable="true"
-				widgetVar="nuevoProducto" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nuevo Producto">
-
-
-				<h:form id="formnuevoProducto">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-						<br />
-						<br />
-						<center>
-							<div class="ui-fluid">
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
-
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{productoController.nuevoProducto.nombrePr}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre del Producto"
-										size="30" maxlength="100">
-									</p:inputText>
-
-									<p:outputLabel id="lblIUPAC" for="iupac" value="IUPAC: "
-										style="color:white!important" />
-									<p:inputText id="iupac"
-										value="#{productoController.nuevoProducto.iupacPr}"
-										required="false" size="30" maxlength="100">
-									</p:inputText>
-
-									<p:outputLabel id="lblRiesgoEspe" for="riesgoEspeci"
-										value="Riesgo Específico: " style="color:white!important" />
-									<p:selectOneMenu id="riesgoEspeci"
-										value="#{productoController.riesgoEspecificoSelect}"
-										required="true" requiredMessage="Debe selecionar una opción">
-										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems value="#{productoController.listarRiesgosEsp}"
-											itemLabel="#{riesgoEspeci.nombreRe}"
-											itemValue="#{riesgoEspeci}" var="riesgoEspeci">
-										</f:selectItems>
-									</p:selectOneMenu>
-
-
-									<p:outputLabel id="lblTipoPro" for="tipoPro"
-										value="Tipo Producto: " style="color:white!important" />
-									<p:selectOneMenu id="tipoPro"
-										value="#{productoController.tipoProductoSelect}"
-										required="true" requiredMessage="Debe selecionar una opción">
-										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems
-											value="#{productoController.listarTipoProducto}"
-											itemLabel="#{tipoPro.nombreTprod}" itemValue="#{tipoPro}"
-											var="tipoPro">
-										</f:selectItems>
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblDescripcion" for="descripcion"
-										value="Descripción: " style="color:white!important" />
-									<p:inputTextarea id="descripcion"
-										value="#{productoController.nuevoProducto.descrPr}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
-
-									<p:outputLabel id="lblFormula" for="formula" value="Formula: "
-										style="color:white!important" />
-									<p:inputTextarea id="formula"
-										value="#{productoController.nuevoProducto.formulaPr}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
-
-									<p:outputLabel id="lblRegSalud" for="regSalud"
-										value="Riesgo Salud: " style="color:white!important" />
-									<h:panelGrid columns="1" style="margin-bottom: 10px">
-										<p:inputText id="regSalud"
-											value="#{productoController.nuevoProducto.riesgosaludPr}" />
-										<p:slider for="regSalud" maxValue="4" minValue="0" />
-									</h:panelGrid>
-
-									<p:outputLabel id="lblRegInfla" for="regInfla"
-										value="Riesgo Inflamabilidad: " style="color:white!important" />
-									<h:panelGrid columns="1" style="margin-bottom: 10px">
-										<p:inputText id="regInfla"
-											value="#{productoController.nuevoProducto.riesgoinflamabilidadPr}" />
-										<p:slider for="regInfla" maxValue="4" minValue="0" />
-									</h:panelGrid>
-
-									<p:outputLabel id="lblRegRea" for="regReac"
-										value="Riesgo Reactividad: " style="color:white!important" />
-									<h:panelGrid columns="1" style="margin-bottom: 10px">
-										<p:inputText id="regReac"
-											value="#{productoController.nuevoProducto.riesgoreactividadPr}"
-											required="true"
-											requiredMessage="Debe selecionar el nivel de Reactividad" />
-										<p:slider for="regReac" maxValue="4" minValue="0" />
-									</h:panelGrid>
-
-								</p:panelGrid>
-							</div>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{productoController.agregarProducto}"
-										oncomplete="PF('nuevoProducto');"
-										process="@this,nombre,iupac,riesgoEspeci,descripcion,formula,tipoPro,regSalud,regInfla,regReac"
-										update="@([id$=messagesForm],[id$=formPrincipal]), formnuevoProducto">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-										</center>
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoProducto').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
-
-								</h:panelGrid>
-							</center>
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
 
 			<!-- 	Panel de Eliminar -->
 
 			<h:form id="eliminarProducto">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Laboratorio"
-					header="Eliminar Laboratorio" severity="warn"
-					widgetVar="cdEliminarProducto">
+					message="¿Esta seguro(a) que desea eliminar el Laboratorio seleccionado?"
+					header="Eliminar Laboratorio" severity="info"
+					widgetVar="eliminarProducto">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarProducto').hide();"
+							onsuccess="PF('eliminarProducto').hide();"
 							actionListener="#{productoController.eliminarProducto}"
 							update="@([id$=messagesForm],[id$=formPrincipal])" />
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarProducto').hide();" type="button" />
+							onclick="PF('eliminarProducto').hide();" type="button" />
 
 					</center>
 
@@ -519,9 +490,15 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 
 			</h:form>
-			<p:dialog modal="true" widgetVar="statusDialog" header="Descargando!"
-				draggable="false" closable="false" resizable="false">
-				<p:graphicImage name="/images/archivos/cargando.gif" />
+
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="Exportando Archivo" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						title="Descargando" style="border:0px solid #CAD6E0;" width="50"
+						height="50" />
+				</center>
 			</p:dialog>
 
 		</h:body>

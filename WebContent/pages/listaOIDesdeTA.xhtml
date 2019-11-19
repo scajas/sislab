@@ -32,9 +32,7 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
-
 
 			<h:form id="formprincipal">
 				<p:growl id="messagesForm" showDetail="true" sticky="true"
@@ -43,13 +41,13 @@
 				<p:panel>
 					<p:fieldset legend="Lista OI desde OT"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
 
@@ -62,8 +60,8 @@
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
 							<p:column headerText="Id Orden"
@@ -150,21 +148,18 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-
-						<br />
 						<br />
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
-
 
 									<p:outputLabel id="lblIdOrdenTrabajo" for="idOrdenTrabajo"
 										value="Id Orden Trabajo: " style="color:white!important" />
@@ -216,32 +211,32 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 										value="#{ordenInventarioController.verOrdenInventario.tipordeninv.nombreToi}"
 										size="31" />
 
-
 								</p:panelGrid>
-								<br /> <br />
+								<br />
 								<p:accordionPanel>
 									<p:tab title="Existencias del Método">
 										<p:dataTable id="tblExistenciasMetodo"
 											value="#{ordenInventarioController.movimientoInventarios}"
-											var="listaOi" resizableColumns="true"
-											style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
+											var="listaOi" resizableColumns="true">
 
-											<p:column headerText="Existencia">
+											<p:column headerText="Existencia"
+												style="width: 10% !important;">
 												<h:outputText value="#{listaOi.idExistencia}" />
 											</p:column>
 
-											<p:column headerText="Producto">
+											<p:column headerText="Producto"
+												style="width: 23% !important;">
 												<h:outputText
 													value="#{ordenInventarioController.existencia(listaOi.idExistencia)}" />
 											</p:column>
 
-											<p:column headerText="Cant. Requerida">
+											<p:column headerText="Cant. Requerida"
+												style="width: 12% !important;">
 												<h:outputText value="#{listaOi.cantidadDmt}" />
 											</p:column>
 
-											<p:column headerText="Cant. Empleada">
+											<p:column headerText="Cant. Empleada"
+												style="width: 13% !important;">
 												<h:outputText value="#{listaOi.cantidadMov}" />
 											</p:column>
 
@@ -255,7 +250,7 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 									<br />
 								</p:accordionPanel>
 
-								<br /> <br />
+								<br />
 
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
@@ -274,34 +269,24 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 								</p:panelGrid>
 
-								<br /> <br />
+								<br />
 
 								<center>
 
-									<h:panelGrid columns="2">
+									<p:commandButton value="Aceptar"
+										style="width: 115px; margin: 5px"
+										onclick="PF('verOI').hide();" process="@none">
 
-										<p:commandLink onclick="PF('verOI').hide();" process="@none">
-
-											<p:graphicImage value="/images/archivos/atras.png" width="35"
-												height="36" title="Atrás">
-											</p:graphicImage>
-
-										</p:commandLink>
-
-									</h:panelGrid>
+									</p:commandButton>
 
 								</center>
-
 							</div>
-
 						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){
@@ -313,6 +298,15 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 			}
 
 		</script>
+
+		<!-- **************************  Scroll en dialogo   *************************** -->
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+</style>
 
 	</ui:define>
 </ui:composition>
