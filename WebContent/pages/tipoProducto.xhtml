@@ -33,13 +33,13 @@
 		</h:head>
 		<h:body>
 
-			<p:growl id="messagesForm" showDetail="true" sticky="false"
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
-				
+
 			<h:form id="formprincipal">
 
 				<p:panel>
-					<p:fieldset legend="TIPO PRODUCTO"
+					<p:fieldset legend="Tipo Producto"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -50,18 +50,16 @@
 						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoTipoProducto').show()"
-							update=":formNuevoTipoProducto,@this">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+						<!-- Boton De Nuevo -->
+
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoTipoProducto').show()"
+								update=":formNuevoTipoProducto,@this">
+							</p:commandButton>
+						</center>
 						<br />
 						<br />
 
@@ -78,13 +76,14 @@
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<p:column headerText="Nombre" filterBy="#{tipoProducto.nombreTprod}"
+							<p:column headerText="Nombre"
+								filterBy="#{tipoProducto.nombreTprod}"
 								filterMatchMode="contains">
 								<h:outputText value="#{tipoProducto.nombreTprod}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{tipoProducto.descrTprod}"
-								filterMatchMode="contains">
+							<p:column headerText="Descripción"
+								filterBy="#{tipoProducto.descrTprod}" filterMatchMode="contains">
 								<h:outputText value="#{tipoProducto.descrTprod}" />
 							</p:column>
 
@@ -133,12 +132,82 @@
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
+			<!-- Panel de Nuevo	 -->
 
-			<p:dialog id="panelModificarTipoProducto" resizable="true"
-				widgetVar="modificarTipoProducto" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Tipo Producto">
+			<p:dialog id="panelNuevoTipoProducto" resizable="false"
+				closable="false" draggable="false" widgetVar="nuevoTipoProducto"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" header="Nuevo Tipo Producto">
+
+
+				<h:form id="formNuevoTipoProducto">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<div class="ui-fluid">
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" size="30" />
+								<p:inputText id="nombre"
+									value="#{tipoProductoController.nuevoTipoProducto.nombreTprod}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Tipo de Producto"
+									size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{tipoProductoController.nuevoTipoProducto.descrTprod}"
+									maxlength="100" rows="5" cols="30" />
+
+							</p:panelGrid>
+						</div>
+						<br />
+						<br />
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{tipoProductoController.agregarTipoProducto}"
+									process="@this,formNuevoTipoProducto"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoTipoProducto"
+									oncomplete="PF('tblTipoProducto').filter()">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoTipoProducto').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelModificarTipoProducto" resizable="false"
+				closable="false" draggable="false" widgetVar="modificarTipoProducto"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" header="Modificar Tipo Producto">
 
 
 				<h:form id="formModificarTipoProducto">
@@ -158,9 +227,6 @@
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
 
@@ -177,41 +243,31 @@
 										style="color:white!important" />
 									<p:inputTextarea id="desc"
 										value="#{tipoProductoController.tipoProducto.descrTprod}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
+										maxlength="100" rows="5" cols="30" />
 
 								</p:panelGrid>
 
 							</div>
-							<br/> <br/>
+							<br /> <br />
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{tipoProductoController.modificarTipoProducto}"
-										process="@this,nombre,desc"
+										process="@this,formModificarTipoProducto"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTipoProducto"
 										oncomplete="PF('tblTipoProducto').filter()">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarTipoProducto').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarTipoProducto').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
+									</p:commandButton>
 
 								</h:panelGrid>
 
@@ -222,96 +278,12 @@
 				</h:form>
 			</p:dialog>
 
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelNuevoTipoProducto" resizable="true"
-				widgetVar="nuevoTipoProducto" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nuevo Tipo Producto">
-
-
-				<h:form id="formNuevoTipoProducto">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-						<br />
-						<br />
-						<div class="ui-fluid">
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" size="30" />
-								<p:inputText id="nombre"
-									value="#{tipoProductoController.nuevoTipoProducto.nombreTprod}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Tipo de Producto"
-									size="30" maxlength="60">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{tipoProductoController.nuevoTipoProducto.descrTprod}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-							</p:panelGrid>
-						</div>
-						<br />
-						<br />
-
-
-						<center>
-
-							<h:panelGrid columns="2">
-
-								<p:commandLink
-									actionListener="#{tipoProductoController.agregarTipoProducto}"
-									process="@this,nombre,desc"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoTipoProducto"
-									oncomplete="PF('tblTipoProducto').filter()">
-
-									<h:graphicImage value="/images/archivos/guardar.png"
-										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-										height="35" />
-
-								</p:commandLink>
-
-								<p:commandLink onclick="PF('nuevoTipoProducto').hide();"
-									process="@none">
-
-									<p:graphicImage value="/images/archivos/atras.png" width="35"
-										height="36" title="Atrás">
-									</p:graphicImage>
-
-								</p:commandLink>
-
-							</h:panelGrid>
-
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
 			<!-- Panel de Eliminar -->
 
 			<h:form id="eliminarTipoProducto">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Tipo de Producto"
-					header="Eliminar Tipo Producto" severity="warn"
+					message="¿Esta seguro(a) que desea eliminar el Tipo de Producto seleccionado?"
+					header="Eliminar Tipo Producto" severity="info"
 					widgetVar="cdEliminarTipoProducto">
 					<center>
 
@@ -327,7 +299,6 @@
 					</center>
 
 				</p:confirmDialog>
-
 
 			</h:form>
 

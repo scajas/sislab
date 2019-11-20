@@ -13,16 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-
 import javax.faces.application.FacesMessage;
-import javax.faces.event.ActionEvent;
 
 import ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Caracteristica;
-import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
-@ManagedBean(name = "CaracteristicaController")
+@ManagedBean(name = "caracteristicaController")
 @SessionScoped
 public class CaracteristicaController implements Serializable {
 
@@ -35,17 +32,18 @@ public class CaracteristicaController implements Serializable {
 
 	/****************************************************************************/
 
-	/** SERIVICIOS DAOS **/
+	/** SERVICIOS **/
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/CaracteristicaDAOImplement!ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO")
 	private CaracteristicaDAO caracteristicaI;
 
-	/** VARIABLES DE LA CLASE **/
+	/****************************************************************************/
+
 	private Caracteristica caracteristica;
 	private List<Caracteristica> listarCaracteristicas = new ArrayList<>();
 	private Caracteristica nuevaCaracteristica;
-	private String nombreTP;
+	private String nombreC;
+	private List<Caracteristica> filtrarCaracteristicas;
 
-	/** METODO INIT **/
 	@PostConstruct
 	public void init() {
 		try {
@@ -57,96 +55,108 @@ public class CaracteristicaController implements Serializable {
 		}
 
 	}
-	/** METODO CREAR CARACTERISTICA **/
-	public void agregarCaracteristica(ActionEvent event) {
+
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	/** Nuevo **/
+	public void agregarCaracteristica() {
+		RequestContext context = RequestContext.getCurrentInstance();
 		try {
 			if (buscarCaracteristica(nuevaCaracteristica.getNombreCr()) == true) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-								"Ha ocurrido un error, Característica " + nuevaCaracteristica.getNombreCr() + " ya existe."));
+				mensajeError("La Característica (" + nuevaCaracteristica.getNombreCr() + ") ya existe.");
 
 			} else {
 				caracteristicaI.save(nuevaCaracteristica);
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Característica almacenada exitosamente"));
+				mensajeInfo(
+						"La Característica (" + nuevaCaracteristica.getNombreCr() + ") se ha almacenado exitosamente");
 				nuevaCaracteristica = new Caracteristica();
+				context.execute("PF('nuevaCaracteristica').hide();");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 
 	}
 
+	/** Modificar **/
 
+	public void modificarCaracteristica() {
 
-	/** METODO ELIMINAR CARACTERISTICA **/
-	public void eliminarCaracteristica(ActionEvent event) {
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-			caracteristicaI.delete(caracteristica);
-			listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Característica Eliminada exitosamente"));
-		} catch (Exception e) {
-
-			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE HA PODIDO ELIMINAR LA CARACTERÍSTICA",
-								"La tabla característica tiene una relacion con otra tabla"));
-			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
-			}
-
-		}
-	}
-
-	/** METODO EDITAR CARACTERISTICA **/
-	public void editarCaracteristica(ActionEvent event) {
-		try {
-			if (caracteristica.getNombreCr().equals(getNombreTP())) {
+			if (caracteristica.getNombreCr().equals(getNombreC())) {
 				caracteristicaI.update(caracteristica);
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarCaracteristica').hide();");
+				mensajeInfo("La Caracteristica (" + caracteristica.getNombreCr() + ") se ha actualizado exitosamente");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Caracteristica actualizado exitosamente"));
+				context.execute("PF('modificarCaracteristica').hide();");
 
 			} else if (buscarCaracteristica(caracteristica.getNombreCr()) == false) {
 				caracteristicaI.update(caracteristica);
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("La Caracteristica (" + caracteristica.getNombreCr() + ") se ha actualizado exitosamente");
+
 				context.execute("PF('modificarCaracteristica').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Caracteristica actualizado exitosamente"));
 			} else {
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "La Caracteristica ya existe."));
+				mensajeError("La Caracteristica (" + caracteristica.getNombreCr() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un error");
+		}
+	}
+
+	/****** Eliminar ****/
+	
+	public void eliminarCaracteristica() {
+		try {
+			caracteristicaI.delete(caracteristica);
+			listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
+			mensajeInfo("La Característica (" + caracteristica.getNombreCr() + ") se ha eliminado exitosamente");
+		} 
+		
+		catch (Exception e) {
+
+			if (e.getMessage() == "Transaction rolled back") {
+
+				mensajeError("La tabla característica (" + caracteristica.getNombreCr()
+						+ ") tiene una relacion con otra tabla");
+			} else {
+				mensajeError("Ha ocurrido un error");
+			}
+
 		}
 	}
 
 	/** METODO BUSCAR CARACTERISTICA **/
 	private boolean buscarCaracteristica(String valor) {
-		
+
 		try {
 			listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		boolean resultado = false;
 		for (Caracteristica tipo : listarCaracteristicas) {
 			if (tipo.getNombreCr().equals(valor)) {
@@ -156,16 +166,14 @@ public class CaracteristicaController implements Serializable {
 				resultado = false;
 			}
 		}
-		
+
 		return resultado;
 	}
-	
-	
+
 	public void pasarNombre(String nombre) {
-		setNombreTP(nombre);
+		setNombreC(nombre);
 	}
 
-	
 	/** GET AND SET CARACTERISTICA **/
 
 	public List<Caracteristica> getListarCaracteristicas() {
@@ -191,11 +199,21 @@ public class CaracteristicaController implements Serializable {
 	public void setCaracteristica(Caracteristica caracteristica) {
 		this.caracteristica = caracteristica;
 	}
-	public String getNombreTP() {
-		return nombreTP;
+
+	public String getNombreC() {
+		return nombreC;
 	}
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+
+	public void setNombreC(String nombreC) {
+		this.nombreC = nombreC;
+	}
+
+	public List<Caracteristica> getFiltrarCaracteristicas() {
+		return filtrarCaracteristicas;
+	}
+
+	public void setFiltrarCaracteristicas(List<Caracteristica> filtrarCaracteristicas) {
+		this.filtrarCaracteristicas = filtrarCaracteristicas;
 	}
 
 }

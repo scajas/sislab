@@ -7,23 +7,20 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.primefaces.context.RequestContext;
-
 import ec.edu.epn.laboratorioBJ.beans.OrdenInventarioDAO;
+import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.Detallemetodo;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Metodo;
 import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Ordeninventario;
+import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "ordenInventarioController")
@@ -42,8 +39,10 @@ public class OrdenInventarioController implements Serializable {
 	/** SERIVICIOS **/
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/OrdenInventarioDAOImplement!ec.edu.epn.laboratorioBJ.beans.OrdenInventarioDAO")
-
 	private OrdenInventarioDAO ordenInventarioI;
+	
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
+	private UnidadDAO unidadI;
 
 	// variables de la clase
 	private Ordeninventario ordenInventario;
@@ -55,25 +54,27 @@ public class OrdenInventarioController implements Serializable {
 	private List<Movimientosinventario> movimientoInventarios = new ArrayList<>();
 	private List<String> listOrdenI;
 
+
 	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
-			//Long idUsuario = su.id_usuario_log;
+			// Long idUsuario = su.id_usuario_log;
 
-			ordenInventarios = ordenInventarioI.listaOI(su.UNIDAD_USUARIO_LOGEADO);
-			filterOrdenInventarios = ordenInventarioI.listaOI(su.UNIDAD_USUARIO_LOGEADO);
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			ordenInventarios = ordenInventarioI.getListOTById(uni.getCodigoU());
+		
+			filterOrdenInventarios = ordenInventarios;
 			ordenInventario = new Ordeninventario();
-
-			System.out.println("Orde de inventarios consultadas" + ordenInventarios.size());
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	//Settear valores dentro de tablas i formularios
+
+	// Settear valores dentro de tablas i formularios
 
 	public String metodo(String idMetodo) {
 		String nombre = "";
@@ -106,7 +107,7 @@ public class OrdenInventarioController implements Serializable {
 
 		return nombre;
 	}
-	
+
 	public String existencia(String idExistncia) {
 		String nombre = "";
 
@@ -125,7 +126,6 @@ public class OrdenInventarioController implements Serializable {
 
 	public void pasarDetalleMetodo(String id) {
 		setMovimientoInventarios(ordenInventarioI.listaMovimientoI(id));
-		System.out.println("registros :" + getMovimientoInventarios().size());
 	}
 
 	/*

@@ -31,19 +31,16 @@ document.body.innerHTML=originalContents;
 
 </script>
 		</h:head>
-
-
 		<h:body>
 
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
 
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="3000" />
-
 				<p:panel>
 
-					<p:fieldset legend="HIDRATACIÓN"
+					<p:fieldset legend="Hidratación"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -55,25 +52,24 @@ document.body.innerHTML=originalContents;
 
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoHidratacion').show()"
-							update=":formnuevoHidratacion,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						<center>
+
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevaHidratacion').show()"
+								update=":formNuevaHidratacion,@this">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
 
 						<p:dataTable id="tblHidratacion"
 							value="#{hidratacionController.listaHidratacion}"
-							var="hidratacion" widgetVar="filterHidratacion"
+							var="hidratacion" widgetVar="tblHidrataciones"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{hidratacionController.filtrarHidratacion}"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
@@ -96,8 +92,8 @@ document.body.innerHTML=originalContents;
 								<center>
 									<p:commandLink
 										action="#{hidratacionController.pasarNombre(hidratacion.nombreHi)}"
-										update=":formModificarHidratacion,@this,@([id$=messagesForm])"
-										process="@this,tblHidratacion" icon="ui-icon-check"
+										update=":formModificarHidratacion,@this"
+										process="@this,tblHidratacion"
 										oncomplete="PF('modificarHidratacion').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
@@ -113,7 +109,7 @@ document.body.innerHTML=originalContents;
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarHidratacion').show();">
+										onclick="PF('eliminarHidratacion').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -134,12 +130,12 @@ document.body.innerHTML=originalContents;
 
 			<!--***********Nuevo**************  -->
 
-			<p:dialog id="panelnuevoHidratacion" resizable="true"
-				widgetVar="nuevoHidratacion" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nuevo Hidratación">
+			<p:dialog id="panelNuevaHidratacion" resizable="false"
+				closable="false" draggable="false" widgetVar="nuevaHidratacion"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" header="Nuevo Hidratación">
 
-				<h:form id="formnuevoHidratacion">
+				<h:form id="formNuevaHidratacion">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -154,24 +150,20 @@ document.body.innerHTML=originalContents;
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
 								<p:inputText id="nombre"
-									value="#{hidratacionController.nuevoHidratacion.nombreHi}"
+									value="#{hidratacionController.nuevaHidratacion.nombreHi}"
 									maxlength="60" required="true"
-									requiredMessage="Debe ingresar una Hidratación" size="30">
+									requiredMessage="Debe ingresar una nombre" size="30">
 								</p:inputText>
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
-									value="#{hidratacionController.nuevoHidratacion.descrHi}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
+									value="#{hidratacionController.nuevaHidratacion.descrHi}"
+									maxlength="100" rows="5" cols="30" />
 
 							</p:panelGrid>
 							<br /> <br />
@@ -179,26 +171,20 @@ document.body.innerHTML=originalContents;
 							<center>
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
 										actionListener="#{hidratacionController.agregarHidratacion}"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formnuevoHidratacion"
-										onsuccess="PF('nuevoHidratacion').hide();"
-										oncomplete="PF('filterHidratacion').filter();">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-										</center>
+										process="@this,formNuevaHidratacion"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaHidratacion"
+										oncomplete="PF('tblHidrataciones').filter();">
 
-									</p:commandLink>
+									</p:commandButton>
 
-									<p:commandLink onclick="PF('nuevoHidratacion').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevaHidratacion').hide();" process="@none">
+
+									</p:commandButton>
 
 								</h:panelGrid>
 
@@ -211,9 +197,10 @@ document.body.innerHTML=originalContents;
 
 			<!--***************************************Modificar**************************************-->
 
-			<p:dialog id="panelmodificarHidratacion" resizable="true"
-				widgetVar="modificarHidratacion" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+			<p:dialog id="panelModificarHidratacion" resizable="false"
+				closable="false" draggable="false" widgetVar="modificarHidratacion"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
 				header="Modificar Hidratación">
 
 				<h:form id="formModificarHidratacion">
@@ -230,50 +217,42 @@ document.body.innerHTML=originalContents;
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{hidratacionController.hidratacion.nombreHi}"
-									maxlength="60" size="30">
-								</p:inputText>
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{hidratacionController.hidratacion.descrHi}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-							</p:panelGrid>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{hidratacionController.hidratacion.nombreHi}"
+										maxlength="60" size="30">
+									</p:inputText>
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{hidratacionController.hidratacion.descrHi}"
+										maxlength="100" rows="5" cols="30" />
+								</p:panelGrid>
+							</div>
 							<br /> <br />
 
 							<center>
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{hidratacionController.modificarHidratacion}"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarHidratacion"
-										onsuccess="PF('modificarHidratacion').hide();"
-										oncomplete="PF('filterHidratacion').filter();">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Modificar" style="border:0px solid #CAD6E0;"
-												width="36" height="35" />
-										</center>
+										process="@this,formModificarHidratacion"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarHidratacion"
+										oncomplete="PF('tblHidrataciones').filter();">
 
-									</p:commandLink>
+									</p:commandButton>
 
-									<p:commandLink onclick="PF('modificarHidratacion').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarHidratacion').hide();" process="@none">
 
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -286,19 +265,19 @@ document.body.innerHTML=originalContents;
 
 			<h:form id="eliminarHidratacion">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar esta Hidratación"
-					header="Eliminar Hidratación" severity="warn"
-					widgetVar="cdEliminarHidratacion">
+					message="¿Esta seguro(a) que desea eliminar La Hidratación seleccionada?"
+					header="Eliminar Hidratación" severity="info"
+					widgetVar="eliminarHidratacion">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarHidratacion').hide();"
+							onsuccess="PF('eliminarHidratacion').hide();"
 							actionListener="#{hidratacionController.eliminarHidratacion}"
-							update="@([id$=messagesForm],[id$=formPrincipal])"
-							oncomplete="PF('filterHidratacion').filter();" />
+							update="@([id$=messagesForm],[id$=formprincipal])"
+							oncomplete="PF('tblHidrataciones').filter();" />
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarHidratacion').hide();" type="button" />
+							onclick="PF('eliminarHidratacion').hide();" type="button" />
 
 					</center>
 

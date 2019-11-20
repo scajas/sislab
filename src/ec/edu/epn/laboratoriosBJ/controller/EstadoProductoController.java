@@ -14,6 +14,8 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.context.RequestContext;
+
 import ec.edu.epn.laboratorioBJ.beans.EstadoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
@@ -64,35 +66,36 @@ public class EstadoProductoController implements Serializable {
 	public void mensajeError(String mensaje) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
 	}
 
 	public void mensajeInfo(String mensaje) {
-		
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
-	/****** Agregar Estado Producto ****/
+	/****** Nuevo ****/
 
 	public void agregarEstadoProducto() {
+		RequestContext context = RequestContext.getCurrentInstance();
 
 		try {
 			if (buscarEstadoProducto(nuevoEstadoProducto.getNombreEstp()) == true) {
 
-				mensajeError("El Estado Producto ( "+ nuevoEstadoProducto.getNombreEstp()+" ) ya existe.");
-
-				nuevoEstadoProducto = new Estadoproducto();
+				mensajeError("El Estado Producto (" + nuevoEstadoProducto.getNombreEstp() + ") ya existe.");
 
 			} else {
 				estadoProductoI.save(nuevoEstadoProducto);
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
-				mensajeInfo("El Estado producto ( " + nuevoEstadoProducto.getNombreEstp()
-						+ " ) se ha almacenado exitosamente.");
+				mensajeInfo("El Estado producto (" + nuevoEstadoProducto.getNombreEstp()
+						+ ") se ha almacenado exitosamente.");
 
 				nuevoEstadoProducto = new Estadoproducto();
+
+				context.execute("PF('nuevoEstadoProducto').hide();");
 			}
 
 		} catch (Exception e) {
@@ -102,9 +105,11 @@ public class EstadoProductoController implements Serializable {
 
 	}
 
-	/****** Modificar Estado Producto ****/
+	/****** Modificar ****/
 
 	public void modificarEstadoProducto() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
 
 		try {
 			if (estadoproducto.getNombreEstp().equals(getNombreTP())) {
@@ -112,18 +117,20 @@ public class EstadoProductoController implements Serializable {
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
 				mensajeInfo(
-						"El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
+						"El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha actualizado exitosamente.");
+
+				context.execute("PF('modificarEstadoProducto').hide();");
 
 			} else if (buscarEstadoProducto(estadoproducto.getNombreEstp()) == false) {
 				estadoProductoI.update(estadoproducto);
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 
 				mensajeInfo(
-						"El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) se ha actualizado exitosamente.");
-
+						"El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha actualizado exitosamente.");
+				context.execute("PF('modificarEstadoProducto').hide();");
 			} else {
 				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
-				mensajeError("El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) ya existe.");
+				mensajeError("El Estado Producto (" + estadoproducto.getNombreEstp() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
@@ -133,7 +140,7 @@ public class EstadoProductoController implements Serializable {
 		}
 	}
 
-	/****** Eliminar Estado Producto ****/
+	/****** Eliminar ****/
 
 	public void eliminarEstadoProducto() {
 
@@ -141,15 +148,13 @@ public class EstadoProductoController implements Serializable {
 
 			estadoProductoI.delete(estadoproducto);
 			listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
-
-			mensajeInfo("El Estado Producto ( " + estadoproducto.getNombreEstp() + " ) se ha eliminado correctamente.");
-			
+			mensajeInfo("El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Estado Producto tiene relación con otra tabla.");
+				mensajeError("La tabla Estado Producto (" + estadoproducto.getNombreEstp()+ ") tiene relación con otra tabla.");
 
 			} else {
 
@@ -167,7 +172,7 @@ public class EstadoProductoController implements Serializable {
 		try {
 			listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 

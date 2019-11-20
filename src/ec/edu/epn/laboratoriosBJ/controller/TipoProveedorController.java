@@ -61,97 +61,110 @@ public class TipoProveedorController implements Serializable {
 		}
 	}
 
-	public void agregarTipoProveedor(ActionEvent event) {
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	public void agregarTipoProveedor() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarTipoProveedor(nuevoTipoProveedor.getNombreTpv()) == true) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error, el tipo de proveedor ("
-								+ nuevoTipoProveedor.getNombreTpv() + ") ya existe."));
+
+				mensajeError("Ha ocurrido un error, el tipo de proveedor (" + nuevoTipoProveedor.getNombreTpv()
+						+ ") ya existe.");
+
 				nuevoTipoProveedor = new Tipoproveedor();
 			} else {
 				tipoProveedorI.save(nuevoTipoProveedor);
 
 				tiposProveedor = tipoProveedorI.getAll(Tipoproveedor.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo de Proveedor almacenado exitosamente"));
+				mensajeInfo(
+						"El Tipo proveedor(" + nuevoTipoProveedor.getNombreTpv() + ") se ha almacenado exitosamente.");
 
 				nuevoTipoProveedor = new Tipoproveedor();
+
+				context.execute("PF('nuevoTP').hide();");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un error");
+
 		}
 
 	}
 
-	public void modificarTipoProveedor(ActionEvent event) {
+	public void modificarTipoProveedor() {
+		RequestContext context = RequestContext.getCurrentInstance();
 		try {
 			if (tipoproveedor.getNombreTpv().equals(getNombreTP())) {
 				tipoProveedorI.update(tipoproveedor);
 				tiposProveedor = tipoProveedorI.getAll(Tipoproveedor.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarTP').hide();");
+				mensajeInfo("El Tipo Proveedor (" + tipoproveedor.getNombreTpv() + ") se ha actualizado exitosamente.");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo de Proveedor actualizado exitosamente"));
+				context.execute("PF('modificarTP').hide();");
 
 			} else if (buscarTipoProveedor(tipoproveedor.getNombreTpv()) == false) {
 				tipoProveedorI.update(tipoproveedor);
 				tiposProveedor = tipoProveedorI.getAll(Tipoproveedor.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("El Tipo Proveedor (" + tipoproveedor.getNombreTpv() + ") se ha actualizado exitosamente.");
 				context.execute("PF('modificarTP').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo de Proveedor actualizado exitosamente"));
 			} else {
 				tiposProveedor = tipoProveedorI.getAll(Tipoproveedor.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El tipo de proveedor ("
-								+ tipoproveedor.getNombreTpv() + ") ya existe."));
+				mensajeError("El tipo de proveedor (" + tipoproveedor.getNombreTpv() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+
+			mensajeError("Ha ocurrido un error");
 		}
 	}
 
-	public void eliminarrTipoProveedor(ActionEvent event) {
+	public void eliminarTipoProveedor(ActionEvent event) {
 		try {
 
 			tipoProveedorI.delete(tipoproveedor);
 			tiposProveedor = tipoProveedorI.getAll(Tipoproveedor.class);
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo de Proveedor eliminado exitosamente"));
+			mensajeInfo("El Tipo Proveedor (" + tipoproveedor.getNombreTpv() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-								"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
+
+				mensajeError("La tabla Tipo Proveedor (" + tipoproveedor.getNombreTpv()
+						+ ") tiene relación con otra tabla.");
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
+				mensajeError("Ha ocurrido un error");
 			}
 
 		}
 	}
 
 	private boolean buscarTipoProveedor(String valor) {
-		
+
 		try {
 			tiposProveedor = tipoProveedorI.getAll(Tipoproveedor.class);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		boolean resultado = false;
 		for (Tipoproveedor tipo : tiposProveedor) {
 			if (tipo.getNombreTpv().equals(valor)) {
@@ -161,7 +174,7 @@ public class TipoProveedorController implements Serializable {
 				resultado = false;
 			}
 		}
-		
+
 		return resultado;
 	}
 

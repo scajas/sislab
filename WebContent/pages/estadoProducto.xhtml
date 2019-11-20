@@ -33,13 +33,13 @@
 		</h:head>
 		<h:body>
 
-			<p:growl id="messagesForm" showDetail="true" sticky="false"
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
-				
+
 			<h:form id="formprincipal">
 
 				<p:panel>
-					<p:fieldset legend="ESTADO PRODUCTO"
+					<p:fieldset legend="Estado Producto"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -48,21 +48,21 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
 						;width: '90%';">
+
 						<br />
-						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoEstadoProducto').show()"
-							update=":formNuevoEstadoProducto,@this">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
-						<br />
+
+						<!-- Boton De Nuevo -->
+
+						<center>
+
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoEstadoProducto').show()"
+								update=":formNuevoEstadoProducto,@this">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 
 						<p:dataTable id="tblEstadoProducto"
@@ -88,14 +88,14 @@
 								<h:outputText value="#{estado.descrEstp}" />
 							</p:column>
 
-							<!-- **************************  Boton Modificar   *************************** -->
+							<!-- Botón De Modificar  -->
 
 							<p:column headerText="Acciones">
 								<center>
 									<p:commandLink
 										action="#{estadoProductoController.pasarNombre(estado.nombreEstp)}"
 										update=":formModificarEstadoProducto,@this"
-										process="@this,tblEstadoProducto" icon="ui-icon-check"
+										process="@this,tblEstadoProducto"
 										oncomplete="PF('modificarEstadoProducto').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
@@ -107,8 +107,7 @@
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
-									<!-- **************************  Boton Eliminar   *************************** -->
-
+									<!-- Botón De Eliminar  -->
 
 									<p:commandLink process="@this" icon="ui-icon-check"
 										onclick="PF('cdEliminarEstadoProducto').show();">
@@ -116,7 +115,6 @@
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
-
 
 										<f:setPropertyActionListener
 											target="#{estadoProductoController.estadoproducto}"
@@ -133,13 +131,81 @@
 
 			</h:form>
 
-			<!-- Panel de actualizacion  -->
+			<!-- Panel de Nuevo  -->
+
+			<p:dialog id="panelNuevoEstadoProducto" resizable="true"
+				closable="false" draggable="false" widgetVar="nuevoEstadoProducto"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="false" header="Nuevo Estado Producto">
+
+				<h:form id="formNuevoEstadoProducto">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<div class="ui-fluid">
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" size="30" />
+								<p:inputText id="nombre"
+									value="#{estadoProductoController.nuevoEstadoProducto.nombreEstp}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Estado del Producto"
+									size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{estadoProductoController.nuevoEstadoProducto.descrEstp}"
+									maxlength="100" rows="5" cols="30" />
+
+							</p:panelGrid>
+						</div>
+						<br />
+						<br />
+
+						<center>
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{estadoProductoController.agregarEstadoProducto}"
+									process="@this,formNuevoEstadoProducto"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto"
+									oncomplete="PF('tblEstadoProducto').filter()">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoEstadoProducto').hide();" process="@none">
+
+								</p:commandButton>
+							</h:panelGrid>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+
+			<!-- Panel de Modificar  -->
 
 			<p:dialog id="panelModificarEstadoProducto" resizable="true"
+				closable="false" draggable="false"
 				widgetVar="modificarEstadoProducto" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
 				dynamic="true" header="Modificar Estado Producto">
-
 
 				<h:form id="formModificarEstadoProducto">
 
@@ -158,11 +224,7 @@
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -177,132 +239,33 @@
 										style="color:white!important" />
 									<p:inputTextarea id="desc"
 										value="#{estadoProductoController.estadoproducto.descrEstp}"
-										maxlength="100" rows="5" cols="30" autoResize="false" />
+										maxlength="100" rows="5" cols="30" />
 
 								</p:panelGrid>
 
 							</div>
-							<br/> <br/>
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{estadoProductoController.modificarEstadoProducto}"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEstadoProducto"
-										oncomplete="PF('tblEstadoProducto').filter()">
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarEstadoProducto').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-
 						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelNuevoEstadoProducto" resizable="true"
-				widgetVar="nuevoEstadoProducto" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nuevo Estado Producto">
-
-
-				<h:form id="formNuevoEstadoProducto">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
 						<br />
 						<br />
-						<div class="ui-fluid">
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" size="30" />
-								<p:inputText id="nombre"
-									value="#{estadoProductoController.nuevoEstadoProducto.nombreEstp}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Estado del Producto"
-									size="30" maxlength="60">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{estadoProductoController.nuevoEstadoProducto.descrEstp}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-
-							</p:panelGrid>
-						</div>
-						<br />
-						<br />
-
 
 						<center>
-
 							<h:panelGrid columns="2">
 
-								<p:commandLink
-									actionListener="#{estadoProductoController.agregarEstadoProducto}"
-									process="@this,nombre,desc"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto"
+								<p:commandButton value="Modificar" icon="fa fa-edit"
+									style="width: 115px; margin: 5px"
+									actionListener="#{estadoProductoController.modificarEstadoProducto}"
+									process="@this,formModificarEstadoProducto"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEstadoProducto"
 									oncomplete="PF('tblEstadoProducto').filter()">
 
-									<h:graphicImage value="/images/archivos/guardar.png"
-										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-										height="35" />
+								</p:commandButton>
 
-								</p:commandLink>
+								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+									style="width: 115px; margin: 5px"
+									onclick="PF('modificarEstadoProducto').hide();" process="@none">
 
-								<p:commandLink onclick="PF('nuevoEstadoProducto').hide();"
-									process="@none">
-
-									<p:graphicImage value="/images/archivos/atras.png" width="35"
-										height="36" title="Atrás">
-									</p:graphicImage>
-
-								</p:commandLink>
-
+								</p:commandButton>
 							</h:panelGrid>
-
 						</center>
 					</p:fieldset>
 				</h:form>
@@ -312,27 +275,23 @@
 
 			<h:form id="eliminarEstadoProducto">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Estado Producto"
-					header="Eliminar Estado Producto" severity="warn"
+					message="¿Esta seguro(a) que desea eliminar el Estado Producto seleccionado?"
+					header="Eliminar Estado Producto" severity="info" closable="false"
 					widgetVar="cdEliminarEstadoProducto">
 					<center>
 
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdEliminarEstadoProducto').hide();"
 							actionListener="#{estadoProductoController.eliminarEstadoProducto}"
-							update="@([id$=messagesForm],[id$=formprincipal])"
-							oncomplete="PF('tblEstadoProducto').filter()" />
+							oncomplete="PF('tblEstadoProducto').filter()"
+							update="@([id$=messagesForm],[id$=formprincipal],cdEliminarEstadoProducto)" />
 
 						<p:commandButton value="Cancelar"
 							onclick="PF('cdEliminarEstadoProducto').hide();" type="button" />
 
 					</center>
-
 				</p:confirmDialog>
-
-
 			</h:form>
-
 		</h:body>
 
 		<script type="text/javascript">
@@ -345,6 +304,5 @@
 			}
 
 		</script>
-
 	</ui:define>
 </ui:composition>

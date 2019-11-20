@@ -34,7 +34,7 @@
 
 
 		<h:body>
-			<p:growl id="messagesForm" showDetail="true" sticky="false"
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
@@ -51,24 +51,22 @@
 						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this" onclick="PF('nuevoTP').show()"
-							update=":formnuevoTP,@this">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						<center>
+							<p:commandButton process="@this" onclick="PF('nuevoTP').show()"
+								update=":formnuevoTP,@this" value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
 
 						<p:dataTable id="tblTipoProveedor"
 							value="#{tipoProveedorController.tiposProveedor}" var="tipoPro"
-							widgetVar="filterBodegaTable"
+							widgetVar="tblTipoProveedor"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{tipoProveedorController.filtroTiposProveedor}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
@@ -93,13 +91,12 @@
 									<p:commandLink
 										action="#{tipoProveedorController.pasarNombre(tipoPro.nombreTpv)}"
 										update=":formModificarTP,@this"
-										process="@this,tblTipoProveedor" icon="ui-icon-check"
+										process="@this,tblTipoProveedor"
 										oncomplete="PF('modificarTP').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
 
 										<f:setPropertyActionListener
 											target="#{tipoProveedorController.tipoproveedor}"
@@ -135,11 +132,10 @@
 
 			<!-- Panel de registro que se abre en un dialogo	 -->
 
-			<p:dialog id="panelnuevoTP" resizable="true" widgetVar="nuevoTP"
+			<p:dialog id="panelnuevoTP" resizable="false" widgetVar="nuevoTP"
 				modal="true" showEffect="explode" hideEffect="fade"
 				responsive="true" dynamic="true" width="35%"
-				header="Nuevo Tipo Proveedor">
-
+				header="Nuevo Tipo Proveedor" closable="false" draggable="false">
 
 				<h:form id="formnuevoTP">
 
@@ -152,20 +148,18 @@
 	border-width: 1px;
 	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-
 						<br />
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
 								<p:inputText id="nombre"
 									value="#{tipoProveedorController.nuevoTipoProveedor.nombreTpv}"
 									required="true"
-									requiredMessage="Debe ingresar el nombre de la bodega"
+									requiredMessage="Debe ingresar el nombre del Tipo de Proveedor"
 									size="30" maxlength="50">
 								</p:inputText>
 
@@ -173,44 +167,30 @@
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
 									value="#{tipoProveedorController.nuevoTipoProveedor.descrTpv}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
-
+									maxlength="200" rows="5" cols="30" />
 
 							</p:panelGrid>
 							<br /> <br />
-
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 5px"
 										actionListener="#{tipoProveedorController.agregarTipoProveedor}"
-										oncomplete="PF('nuevoTP'); PF('filterBodegaTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoTP">
+										process="@this,formnuevoTP"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoTP"
+										oncomplete="PF('tblTipoProveedor').filter();">
 
+									</p:commandButton>
 
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoTP').hide();" process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
+									<p:commandButton onclick="PF('nuevoTP').hide();"
+										process="@none" style="width: 115px; margin: 5px"
+										value="Atrás " icon="fa fa-arrow-left">
+									</p:commandButton>
 
 								</h:panelGrid>
-
 							</center>
 						</center>
 					</p:fieldset>
@@ -219,11 +199,10 @@
 
 			<!-- Panel de actualizacion que se abre en un dialogo -->
 
-			<p:dialog id="panelmodificarTP" resizable="true"
+			<p:dialog id="panelmodificarTP" resizable="false"
 				widgetVar="modificarTP" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Modificar Tipo Proveedor">
-
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Tipo Proveedor" closable="false" draggable="false">
 
 				<h:form id="formModificarTP">
 
@@ -240,59 +219,49 @@
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{tipoProveedorController.tipoproveedor.nombreTpv}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la bodega"
-									size="30" maxlength="50">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{tipoProveedorController.tipoproveedor.nombreTpv}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Tipo de Proveedor"
+										size="30" maxlength="60">
+									</p:inputText>
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{tipoProveedorController.tipoproveedor.descrTpv}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{tipoProveedorController.tipoproveedor.descrTpv}"
+										maxlength="100" rows="5" cols="30" />
 
+								</p:panelGrid>
 
-							</p:panelGrid>
+							</div>
+
 							<br /> <br />
-
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
 										actionListener="#{tipoProveedorController.modificarTipoProveedor}"
-										oncomplete="PF('filterBodegaTable').filter();"
-										process="@this,nombre,desc"
+										oncomplete="PF('tblTipoProveedor').filter();"
+										process="@this,formModificarTP"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTP">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value ="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarTP').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarTP').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
+										</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -308,15 +277,15 @@
 
 			<h:form id="eliminarBodega">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este tipo de proveedor"
-					header="Eliminar Proveedor" severity="warn"
+					message="¿Esta seguro(a) que desea eliminar el Tipo Proveedor seleccionado?"
+					header="Eliminar Proveedor" severity="info"
 					widgetVar="cdEliminarTipoProveedor">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterBodegaTable').filter();"
+							oncomplete="PF('tblTipoProveedor').filter();"
 							onsuccess="PF('cdEliminarTipoProveedor').hide();"
-							actionListener="#{tipoProveedorController.eliminarrTipoProveedor}"
+							actionListener="#{tipoProveedorController.eliminarTipoProveedor}"
 							update="@([id$=messagesForm],[id$=formprincipal])" />
 
 
@@ -329,10 +298,7 @@
 
 
 			</h:form>
-
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){

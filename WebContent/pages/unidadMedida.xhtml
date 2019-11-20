@@ -35,35 +35,36 @@
 
 		<h:body>
 
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="Unidad Medida"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoUnidadMedida').show()"
-							update=":formNuevoUnidadMedida,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+						<!-- Boton De Nuevo -->
+
+						<center>
+
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoUnidadMedida').show()"
+								update=":formNuevoUnidadMedida,@this">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
 
@@ -71,6 +72,7 @@
 							value="#{unidadMedidaController.listUnidadMedida}" var="unidad"
 							widgetVar="filterUnidadMedidaTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{unidadMedidaController.filtrarUM}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
@@ -84,11 +86,13 @@
 								<h:outputText value="#{unidad.medidaUm}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{unidad.descrUm}">
+							<p:column headerText="Descripción" filterBy="#{unidad.descrUm}"
+								filterMatchMode="contains">
 								<h:outputText value="#{unidad.descrUm}" />
 							</p:column>
 
-							<p:column headerText="Sigla" filterBy="#{unidad.siglaUm}">
+							<p:column headerText="Sigla" filterBy="#{unidad.siglaUm}"
+								filterMatchMode="contains">
 								<h:outputText value="#{unidad.siglaUm}" />
 							</p:column>
 
@@ -98,17 +102,16 @@
 								<center>
 									<p:commandLink
 										action="#{unidadMedidaController.pasarNombre(unidad.medidaUm)}"
-										update=":formUnidadMedida,@this,@([id$=messagesForm])"
-										process="@this,tblUnidadMedida" icon="ui-icon-check"
+										update=":formUnidadMedida,@this"
+										process="@this,tblUnidadMedida"
 										oncomplete="PF('modificarUnidadMedida').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
-
 										<f:setPropertyActionListener
-											target="#{unidadMedidaController.modificarUnidadMedida}"
+											target="#{unidadMedidaController.unidadMedida}"
 											value="#{unidad}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -117,7 +120,7 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarUnidadMedida').show();">
+										onclick="PF('eliminarUnidadMedida').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -125,7 +128,7 @@
 
 
 										<f:setPropertyActionListener
-											target="#{unidadMedidaController.modificarUnidadMedida}"
+											target="#{unidadMedidaController.unidadMedida}"
 											value="#{unidad}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -133,17 +136,99 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
 
+			<!-- Panel de Nuevo	 -->
+
+			<p:dialog id="panelNuevoUnidadMedida" resizable="true"
+				closable="false" draggable="false" widgetVar="nuevoUnidadMedida"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Nuevo Unidad de Medida">
+
+				<h:form id="formNuevoUnidadMedida">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+
+						<div class="ui-fluid">
+
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" size="30" />
+								<p:inputText id="nombre"
+									value="#{unidadMedidaController.nuevoUnidadMedida.medidaUm}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre de la Unidad de Medida"
+									size="30" maxlength="50">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{unidadMedidaController.nuevoUnidadMedida.descrUm}"
+									maxlength="200" rows="5" cols="30" />
+
+								<p:outputLabel id="lblSigla" for="sigla" value="Sigla: "
+									style="color:white!important" size="30" />
+								<p:inputText id="sigla"
+									value="#{unidadMedidaController.nuevoUnidadMedida.siglaUm}"
+									size="30" maxlength="20">
+								</p:inputText>
+
+							</p:panelGrid>
+
+						</div>
+						<br />
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{unidadMedidaController.agregarUnidadMedida}"
+									oncomplete="PF('nuevoUnidadMedida'); PF('filterUnidadMedidaTable').filter();"
+									process="@this,formNuevoUnidadMedida"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoUnidadMedida">
+
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoUnidadMedida').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
 			<!-- Panel de actualizacion que se abre en un dialogo -->
 
 			<p:dialog id="panelmodificarUnidadMedida" resizable="true"
-				widgetVar="modificarUnidadMedida" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				closable="false" draggable="false" widgetVar="modificarUnidadMedida"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
 				header="Modificar Unidad Medida">
 
 
@@ -161,166 +246,60 @@
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{unidadMedidaController.modificarUnidadMedida.medidaUm}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la Unidad de Medida"
-									size="30" maxlength="50">
-								</p:inputText>
+							<div class="ui-fluid">
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{unidadMedidaController.modificarUnidadMedida.descrUm}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-								<p:outputLabel id="lblSigla" for="sigla" value="Sigla: "
-									style="color:white!important" />
-								<p:inputText id="sigla"
-									value="#{unidadMedidaController.modificarUnidadMedida.siglaUm}"
-									size="30" maxlength="20">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{unidadMedidaController.unidadMedida.medidaUm}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre de la Unidad de Medida"
+										size="30" maxlength="50">
+									</p:inputText>
 
-							</p:panelGrid>
-							<br /> <br />
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{unidadMedidaController.unidadMedida.descrUm}"
+										maxlength="200" rows="5" cols="30"/>
 
+									<p:outputLabel id="lblSigla" for="sigla" value="Sigla: "
+										style="color:white!important" />
+									<p:inputText id="sigla"
+										value="#{unidadMedidaController.unidadMedida.siglaUm}"
+										size="30" maxlength="20">
+									</p:inputText>
+
+								</p:panelGrid>
+
+							</div>
 							<center>
+								<br /> <br />
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{unidadMedidaController.modificarUnidadMedida}"
 										oncomplete="PF('filterUnidadMedidaTable').filter();"
-										process="@this,nombre,desc,sigla"
+										process="@this,formUnidadMedida"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formUnidadMedida">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarUnidadMedida').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarUnidadMedida').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
 
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelNuevoUnidadMedida" resizable="true"
-				widgetVar="nuevoUnidadMedida" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Nuevo Unidad de Medida">
-
-
-				<h:form id="formNuevoUnidadMedida">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" size="30" />
-								<p:inputText id="nombre"
-									value="#{unidadMedidaController.nuevoUnidadMedida.medidaUm}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre de la Unidad de Medida"
-									size="30" maxlength="50">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{unidadMedidaController.nuevoUnidadMedida.descrUm}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
-
-								<p:outputLabel id="lblSigla" for="sigla" value="Sigla: "
-									style="color:white!important" size="30" />
-								<p:inputText id="sigla"
-									value="#{unidadMedidaController.nuevoUnidadMedida.siglaUm}"
-									size="30" maxlength="20">
-								</p:inputText>
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{unidadMedidaController.agregarUnidadMedida}"
-										oncomplete="PF('nuevoUnidadMedida'); PF('filterUnidadMedidaTable').filter();"
-										process="@this,nombre,desc,sigla"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoUnidadMedida">
-
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoUnidadMedida').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
 						</center>
 					</p:fieldset>
 				</h:form>
@@ -330,20 +309,20 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			<h:form id="eliminarUnidadMedida">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar esta Unidad de Medida"
-					header="Eliminar Unidad de Medida" severity="warn"
-					widgetVar="cdEliminarUnidadMedida">
+					message="¿Esta seguro(a) que desea eliminar la Unidad de Medida seleccionada?"
+					header="Eliminar Unidad de Medida" severity="info"
+					widgetVar="eliminarUnidadMedida">
 					<center>
 
 						<p:commandButton value="Aceptar"
 							oncomplete="PF('filterUnidadMedidaTable').filter();"
-							onsuccess="PF('cdEliminarUnidadMedida').hide();"
+							onsuccess="PF('eliminarUnidadMedida').hide();"
 							actionListener="#{unidadMedidaController.eliminarUnidadMedida}"
-							update="@([id$=messagesForm],[id$=formprincipal])" />
+							update="@([id$=messagesForm],[id$=formprincipal],eliminarUnidadMedida)" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarUnidadMedida').hide();" type="button" />
+							onclick="PF('eliminarUnidadMedida').hide();" type="button" />
 
 					</center>
 

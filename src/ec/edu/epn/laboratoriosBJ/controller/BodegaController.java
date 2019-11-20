@@ -2,7 +2,6 @@ package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -46,7 +45,7 @@ public class BodegaController implements Serializable {
 	private List<Bodega> bodegas = new ArrayList<>();
 	private List<Bodega> filtroBodegas = new ArrayList<>();
 	private Bodega nuevoBodega;
-	private String nombreTP;
+	private String nombreB;
 
 	// Metodo Init
 	@PostConstruct
@@ -62,69 +61,76 @@ public class BodegaController implements Serializable {
 		}
 	}
 
-	public void agregarBodega(ActionEvent event) {
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	/****** Nuevo ****/
+
+	public void agregarBodega() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-			if (buscarBoega(nuevoBodega.getNombreBg()) == true) {
-				FacesContext.getCurrentInstance()
-						.addMessage(event.getComponent().getClientId(), new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								"", "Ha ocurrido un error, esta bodega (" + nuevoBodega.getNombreBg()
-										+ ") ya existe."));
-				nuevoBodega = new Bodega();
+			if (buscarBodega(nuevoBodega.getNombreBg()) == true) {
+				mensajeError("La Bodega (" + nuevoBodega.getNombreBg() + ") ya existe.");
+
 			} else {
 				// seteo de las campos
 				nuevoBodega.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
 				Long iduser = su.id_usuario_log;
 				nuevoBodega.setIdUsuario(iduser.intValue());
-
 				bodegaI.save(nuevoBodega);
-
 				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Bodega registrada exitosamente"));
-
+				mensajeInfo("La Bodega (" + nuevoBodega.getNombreBg() + ") registrada exitosamente");
 				nuevoBodega = new Bodega();
+
+				context.execute("PF('nuevoB').hide();");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+
+			mensajeError("Ha ocurrido un error");
 		}
 
 	}
 
 	public void modificarBodega(ActionEvent event) {
+
+		RequestContext context = RequestContext.getCurrentInstance();
 		try {
 
-			if (bodega.getNombreBg().equals(getNombreTP())) {
+			if (bodega.getNombreBg().equals(getNombreB())) {
 				bodegaI.update(bodega);
 				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Bodega actualizada exitosamente"));
-
-			} else if (buscarBoega(bodega.getNombreBg()) == false) {
+			} else if (buscarBodega(bodega.getNombreBg()) == false) {
 				bodegaI.update(bodega);
 				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Bodega actualizada exitosamente"));
 			} else {
 				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error",
-								"La Bodega (" + bodega.getNombreBg() + ") ya existe."));
+				mensajeError("La Bodega (" + bodega.getNombreBg() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -134,24 +140,20 @@ public class BodegaController implements Serializable {
 			bodegaI.delete(bodega);
 			bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Bodega eliminada exitosamente"));
+			mensajeInfo("La Bodega (" + bodega.getNombreBg() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-								"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
+				mensajeError("La Tabla Bodega (" + bodega.getNombreBg() + ") tiene relación con otra tabla");
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
+				mensajeError("Ha ocurrido un problema");
 			}
 
 		}
 	}
 
-	private boolean buscarBoega(String valor) {
+	private boolean buscarBodega(String valor) {
 		try {
 			bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
 		} catch (Exception e) {
@@ -171,7 +173,7 @@ public class BodegaController implements Serializable {
 	}
 
 	public void pasarNombre(String nombre) {
-		setNombreTP(nombre);
+		setNombreB(nombre);
 	}
 
 	/*
@@ -210,12 +212,12 @@ public class BodegaController implements Serializable {
 		this.nuevoBodega = nuevoBodega;
 	}
 
-	public String getNombreTP() {
-		return nombreTP;
+	public String getNombreB() {
+		return nombreB;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setNombreB(String nombreB) {
+		this.nombreB = nombreB;
 	}
 
 }

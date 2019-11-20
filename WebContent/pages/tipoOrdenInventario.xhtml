@@ -35,55 +35,55 @@
 
 		<h:body>
 
-
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
+				<p:growl id="messagesForm" sticky="false" showDetail="true"
+					autoupdate="true" life="3000" />
 
 				<p:panel>
-					<p:fieldset legend="TIPO ORDEN INVENTARIO"
+					<p:fieldset legend="Tipo Orden Inventario"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoTipoOrdenInventario').show()"
-							update=":formNuevoTipoOrdenInventario,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+						<!-- Boton De Nuevo -->
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoTOI').show()"
+								update=":formNuevoTOI,@this">
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
 
 						<p:dataTable id="tblTipoOrdenInventario"
 							value="#{tipoOrdenInventarioController.listTipoInventario}"
-							var="tipo" widgetVar="filterTipoOrdenInventarioTable"
+							var="tipo" widgetVar="tblTipoOrdenInventario"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{tipoOrdenInventarioController.filtrarTOI}"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bottom">
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
 
 							<p:column headerText="Nombre" filterBy="#{tipo.nombreToi}"
 								filterMatchMode="contains">
 								<h:outputText value="#{tipo.nombreToi}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{tipo.descrToi}">
+							<p:column headerText="Descripción" filterBy="#{tipo.descrToi}"
+								filterMatchMode="contains">
 								<h:outputText value="#{tipo.descrToi}" />
 							</p:column>
 
@@ -93,36 +93,33 @@
 								<center>
 									<p:commandLink
 										action="#{tipoOrdenInventarioController.pasarNombre(tipo.nombreToi)}"
-										update=":formModificarTipoOrdenInventario,@this,@([id$=messagesForm])"
-										process="@this,tblTipoOrdenInventario" icon="ui-icon-check"
-										oncomplete="PF('modificarTipoOrdenInventario').show();">
+										update=":formModificarTOI,@this"
+										process="@this,tblTipoOrdenInventario"
+										oncomplete="PF('modificarTOI').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
-
 										<f:setPropertyActionListener
-											target="#{tipoOrdenInventarioController.modificarTipoInventario}"
+											target="#{tipoOrdenInventarioController.tipoOrdenInv}"
 											value="#{tipo}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
 									<!-- **************************  Boton Eliminar   *************************** -->
-
-
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdeliminarTipoOrdenInventario').show();">
+										onclick="PF('eliminarTOI').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
 
-
 										<f:setPropertyActionListener
-											target="#{tipoOrdenInventarioController.modificarTipoInventario}"
+											target="#{tipoOrdenInventarioController.tipoOrdenInv}"
 											value="#{tipo}">
 										</f:setPropertyActionListener>
+
 									</p:commandLink>
 								</center>
 							</p:column>
@@ -134,176 +131,141 @@
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
+			<!-- Panel de Nuevo -->
 
-			<p:dialog id="panelmodificarTipoOrdenInventario" resizable="true"
-				widgetVar="modificarTipoOrdenInventario" modal="true"
+			<p:dialog id="panelNuevoTOI" resizable="false" closable="false"
+				draggable="false" widgetVar="nuevoTOI" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Modificar Tipo Orden de Inventario">
+				dynamic="true" width="35%" header="Nuevo Tipo Orden de Inventario">
 
 
-				<h:form id="formModificarTipoOrdenInventario">
+				<h:form id="formNuevoTOI">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"/>
-								<p:inputText id="nombre"
-									value="#{tipoOrdenInventarioController.modificarTipoInventario.nombreToi}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Tipo Orden de Inventario" size="30" maxlength="50">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{tipoOrdenInventarioController.modificarTipoInventario.descrToi}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink
-										actionListener="#{tipoOrdenInventarioController.modificarTipoInventario}"
-										oncomplete="PF('filterTipoOrdenInventarioTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTipoOrdenInventario">
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarTipoOrdenInventario').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
-
-			<p:dialog id="panelNuevoTipoOrdenInventario" resizable="true"
-				widgetVar="nuevoTipoOrdenInventario" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Nuevo Tipo Orden de Inventario">
-
-
-				<h:form id="formNuevoTipoOrdenInventario">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"  size="30"/>
+									style="color:white!important" size="30" />
 								<p:inputText id="nombre"
 									value="#{tipoOrdenInventarioController.nuevoTipoInventario.nombreToi}"
 									required="true"
-									requiredMessage="Debe ingresar el nombre del tipo de Orden de inventario" size="30" maxlength="50">
+									requiredMessage="Debe ingresar el nombre del tipo de Orden de inventario"
+									size="30" maxlength="50">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
 									value="#{tipoOrdenInventarioController.nuevoTipoInventario.descrToi}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
-
-
+									maxlength="200" rows="5" cols="30" />
 							</p:panelGrid>
-							<br /> <br />
 
+							<br /> <br />
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
 										actionListener="#{tipoOrdenInventarioController.agregarTipoInventario}"
-										oncomplete="PF('nuevoTipoOrdenInventario'); PF('filterTipoOrdenInventarioTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoTipoOrdenInventario">
+										oncomplete="PF('tblTipoOrdenInventario').filter();"
+										process="@this,formNuevoTOI"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoTOI">
 
+									</p:commandButton>
 
-										<center>
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevoTOI').hide();" process="@none">
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoTipoOrdenInventario').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
+									</p:commandButton>
 
 								</h:panelGrid>
 
 							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelModificarTOI" resizable="false" closable="false"
+				draggable="false" widgetVar="modificarTOI" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="35%"
+				header="Modificar Tipo Orden de Inventario">
+
+
+				<h:form id="formModificarTOI">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{tipoOrdenInventarioController.tipoOrdenInv.nombreToi}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Tipo Orden de Inventario"
+									size="30" maxlength="50">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{tipoOrdenInventarioController.tipoOrdenInv.descrToi}"
+									maxlength="200" rows="5" cols="30" />
+
+							</p:panelGrid>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
+										actionListener="#{tipoOrdenInventarioController.modificarTipoInventario}"
+										process="@this,formModificarTOI"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTOI"
+										oncomplete="PF('tblTipoOrdenInventario').filter();">
+									</p:commandButton>
+
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarTOI').hide();" process="@none">
+
+									</p:commandButton>
+								</h:panelGrid>
+
+							</center>
+
 						</center>
 					</p:fieldset>
 				</h:form>
@@ -313,31 +275,24 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			<h:form id="eliminarTipoOrdenInventario">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Tipo Orden de Inventario"
-					header="Eliminar Tipo Orden de Inventario" severity="warn"
-					widgetVar="cdeliminarTipoOrdenInventario">
+					message="¿Esta seguro(a) que desea eliminar el Tipo Orden de Inventario seleccionado?"
+					header="Eliminar Tipo Orden de Inventario" severity="info"
+					closable="false" widgetVar="eliminarTOI">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterTipoOrdenInventarioTable').filter();"
-							onsuccess="PF('cdeliminarTipoOrdenInventario').hide();"
+							onsuccess="PF('eliminarTOI').hide();"
 							actionListener="#{tipoOrdenInventarioController.eliminarTipoInventario}"
-							update="@([id$=messagesForm],[id$=formprincipal])" />
-
+							oncomplete="PF('tblTipoOrdenInventario').filter();"
+							update="@([id$=messagesForm],[id$=formprincipal], eliminarTOI)" />
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdeliminarTipoOrdenInventario').hide();" type="button" />
+							onclick="PF('eliminarTOI').hide();" type="button" />
 
 					</center>
-
 				</p:confirmDialog>
-
-
 			</h:form>
-
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){
