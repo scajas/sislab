@@ -91,12 +91,26 @@
 							</p:column>
 
 							<p:column headerText="Tipo O.I."
-								filterBy="#{ordenI.tipordeninv.nombreToi}">
+								filterBy="#{ordenI.tipordeninv.nombreToi}"
+								filterMatchMode="contains">
 								<h:outputText value="#{ordenI.tipordeninv.nombreToi}" />
 							</p:column>
 
 							<p:column headerText="Fecha de Ingreso"
-								filterBy="#{ordenI.fechaingresoOi}">
+								filterBy="#{ordenI.fechaingresoOi}" filterMatchMode="contains">
+
+
+
+								<f:facet name="filter">
+
+									<p:calendar id="fecha" pattern="yyyy/MM/dd" locale="es"
+										showOn="button" styleClass="custom-filter"
+										onkeyup="PF('filterOrdenInventarios').filter()">
+										<p:ajax event="dateSelect"
+											oncomplete="PF('filterOrdenInventarios').filter()" />
+									</p:calendar>
+
+								</f:facet>
 								<h:outputText value="#{ordenI.fechaingresoOi}" />
 							</p:column>
 
@@ -170,7 +184,8 @@
 
 										<p:outputLabel id="lblFecha" for="fecha"
 											value="Fecha de Ingreso: " style="color:white!important" />
-										<p:calendar id="fecha" pattern="dd/MM/yyyy" locale="es"
+										<p:calendar id="fecha" pattern="yyyy/MM/dd" locale="es"
+											requiredMessage="Ingrese la fecha"
 											value="#{movimientoInventarioController.nuevoOrdeninventario.fechaingresoOi}"
 											showOn="button" maxlength="100" size="30" />
 
@@ -187,7 +202,8 @@
 											value="Tipo Orden de Inventario "
 											style="color:white!important" />
 										<p:selectOneMenu id="tipoO" size="30" maxlength="100"
-											value="#{movimientoInventarioController.tipoOrdenSelect}">
+											value="#{movimientoInventarioController.tipoOrdenSelect}"
+											disabled="#{movimientoInventarioController.disabledSelectItem() != true}">
 											<p:ajax
 												listener="#{movimientoInventarioController.cambiarCombo(movimientoInventarioController.tipoOrdenSelect.idTipordeninv)}" />
 											<f:selectItems
@@ -225,9 +241,10 @@
 										<h:panelGrid styleClass="ui-panelgrid-blank">
 
 											<p:commandButton process="@this,formAgregarMI"
-												icon="ui-icon-add"
+												icon="fa fa-plus"
 												actionListener="#{movimientoInventarioController.cambiarPanel}"
-												value="Agregar" update="@([id$=messagesForm])">
+												value="Agregar"
+												update="@([id$=messagesForm]),formIngresarMI,formIngresarMITrans">
 											</p:commandButton>
 
 										</h:panelGrid>
@@ -277,8 +294,8 @@
 												<center>
 
 													<!-- **************************  Boton Editar   *************************** -->
-													<p:commandLink process="@this,tblExistenciasMI"
-														update="formEditarMI,@this" icon="ui-icon-check"
+													<p:commandLink process="tblExistenciasMI"
+														update="formEditarMI" icon="ui-icon-check"
 														oncomplete="PF('editarMI').show();">
 
 														<h:graphicImage value="/images/archivos/editar.png"
@@ -287,7 +304,7 @@
 
 
 														<f:setPropertyActionListener
-															target="#{movimientoInventarioController.movimientosinventario}"
+															target="#{movimientoInventarioController.movInventario}"
 															value="#{movimientoI}">
 														</f:setPropertyActionListener>
 
@@ -305,7 +322,7 @@
 
 
 														<f:setPropertyActionListener
-															target="#{movimientoInventarioController.movimientosinventario}"
+															target="#{movimientoInventarioController.movInventario}"
 															value="#{movimientoI}">
 														</f:setPropertyActionListener>
 
@@ -319,54 +336,34 @@
 
 								</div>
 
-
 							</p:fieldset>
 
 							<center>
 
 								<br /> <br />
 
+								<h:panelGrid columns="3">
 
-								<center>
+									<p:commandButton style="width: 150px; margin: 10px" value="Guardar" icon="fa fa-save"
+										actionListener="#{movimientoInventarioController.agregarOrdenI}"
+										oncomplete="PF('nuevoMI'); PF('filterOrdenInventarios').filter();"
+										process="@this,formAgregarMI"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarMI,formIngresarMI,formIngresarMITrans">
 
-									<h:panelGrid columns="3">
-										<p:commandLink
-											actionListener="#{movimientoInventarioController.agregarOrdenI()}"
-											oncomplete="PF('nuevoMI'); PF('filterMovInvTable').filter();"
-											process="@this,formAgregarMI"
-											update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarMI">
+									</p:commandButton>
 
+									<p:commandButton style="width: 150px; margin: 10px" icon="fa fa-bitbucket" value="Limpiar"
+										actionListener="#{movimientoInventarioController.limpiarCampos}"
+										update="@this,@([id$=messagesForm]),formAgregarMI,formIngresarMI,formIngresarMITrans">
+									</p:commandButton>
 
-											<center>
+									<p:commandButton style="width: 150px; margin: 10px" icon=" fa fa-arrow-left"
+										onclick="PF('nuevoMI').hide();" process="@none" value="Atras">
 
-												<h:graphicImage value="/images/archivos/guardar.png"
-													title="Guardar" style="border:0px solid #CAD6E0;"
-													width="35" height="35" />
+									</p:commandButton>
 
-											</center>
+								</h:panelGrid>
 
-										</p:commandLink>
-										<p:commandLink
-											actionListener="#{movimientoInventarioController.limpiarCampos}"
-											update="@this,@([id$=messagesForm]),formAgregarMI, formIngresarMI">
-
-											<p:graphicImage value="/images/archivos/limpiar.png"
-												width="35" height="35" title="Limpiar">
-											</p:graphicImage>
-
-										</p:commandLink>
-
-										<p:commandLink onclick="PF('nuevoMI').hide();" process="@none">
-
-											<p:graphicImage value="/images/archivos/atras.png" width="35"
-												height="35" title="Atrás">
-											</p:graphicImage>
-
-										</p:commandLink>
-
-									</h:panelGrid>
-
-								</center>
 							</center>
 						</p:fieldset>
 					</div>
@@ -399,59 +396,48 @@
 						<br />
 						<center>
 							<center>
-								<h:panelGrid columns="3">
+								<h:panelGrid columns="2">
 
-									<p:commandLink
-										action="#{movimientoInventarioController.auxPanel(1)}"
+									<p:commandButton icon="fa fa-search-plus"
+										style="width: 150px; margin: 10px" value="Cargar Existencias"
 										onclick="PF('listadoEx').show();" update="formListadoEx">
 
-										<p:graphicImage value="/images/archivos/busqueda.png"
-											width="35" height="36" title="Buscar Existencia">
-										</p:graphicImage>
+									</p:commandButton>
 
-									</p:commandLink>
-
-									<p:commandLink
+									<p:commandButton icon="fa fa-eye"
+										style="width: 150px; margin: 10px" value="ver Existencia"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formVerEx"
-										icon="ui-icon-check"
 										action="#{movimientoInventarioController.cargarExistenciasTemp}"
 										process="@this,formIngresarMI">
 
-										<h:graphicImage value="/images/archivos/verMas.png"
-											title="Ver Detalles" style="border:0px solid #CAD6E0;"
-											width="35" height="35" />
-
-									</p:commandLink>
-
+									</p:commandButton>
 
 								</h:panelGrid>
+							</center>
+
+							<center>
+
 
 								<br />
 
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
-
-									<p:outputLabel id="lblIdExistencia" for="idExistencia"
-										value="Id Existencia: " style="color:white!important" />
-									<p:inputText id="idExistencia"
-										value="#{movimientoInventarioController.existencia.idExistencia}"
-										size="24" disabled="true" />
-
-									<p:outputLabel id="lblNombrePro" for="nombrePro"
-										value="Nombre: " style="color:white!important" />
-									<p:inputText id="nombrePro"
-										value="#{movimientoInventarioController.existencia.producto.nombrePr}"
-										size="24" disabled="true" />
-
-
-								</p:panelGrid>
-
-								<br />
+								
 
 								<div class="ui-fluid">
 									<center>
 										<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+											<p:outputLabel id="lblIdExistencia" for="idExistencia"
+												value="Id Existencia: " style="color:white!important" />
+											<p:inputText id="idExistencia"
+												value="#{movimientoInventarioController.existencia.idExistencia}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblNombrePro" for="nombrePro"
+												value="Nombre: " style="color:white!important" />
+											<p:inputText id="nombrePro"
+												value="#{movimientoInventarioController.existencia.producto.nombrePr}"
+												size="24" disabled="true" />
 
 											<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
 												value="Saldo Neto: " style="color:white!important" />
@@ -501,31 +487,21 @@
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
 										actionListener="#{movimientoInventarioController.agregarMovimiento}"
 										process="@this,formIngresarMI"
-										update="@this,@([id$=messagesForm]),formAgregarMI,formIngresarMI "
-										onsuccess="PF('ingresarMI').hide();">
+										update="@this,@([id$=messagesForm]),formAgregarMI,formIngresarMI">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('ingresarMI').hide();"
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('ingresarMI').hide();"
 										action="#{movimientoInventarioController.limpiarMI}"
 										process="@none">
 
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
+									</p:commandButton>
 
 								</h:panelGrid>
 
@@ -540,6 +516,247 @@
 
 			<!-- **************************  Panel - Ingresar Movimiento Inventario - Transferencias  *************************** -->
 
+			<p:dialog id="panelIngresarMITrans" resizable="true"
+				widgetVar="ingresarMITrans" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="57%"
+				header="Ingresar Movimiento Inventario / Transferencia">
+
+
+				<h:form id="formIngresarMITrans">
+
+					<p:fieldset legend="Bodega de Origen"
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+
+						<center>
+							<h:panelGrid columns="2">
+
+								<p:commandButton icon="fa fa-search-plus"
+									style="width: 150px; margin: 10px" value="Cargar Existencias"
+									action="#{movimientoInventarioController.auxPanel(1)}"
+									onclick="PF('listadoExTransf').show();"
+									update="formListadoExTransf">
+
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-eye"
+									style="width: 150px; margin: 10px" value="ver Existencia"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formVerEx"
+									action="#{movimientoInventarioController.cargarExistenciasTemp}"
+									process="@this,formIngresarMITrans">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+						</center>
+
+
+						<br />
+
+						<div class="ui-fluid">
+							<center>
+
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel id="lblIdExistencia" for="idExistencia"
+										value="Id Existencia: " style="color:white!important" />
+
+									<p:inputText id="idExistencia"
+										value="#{movimientoInventarioController.existencia.idExistencia}"
+										size="24" disabled="true" />
+
+									<p:outputLabel id="lblNombrePro" for="nombrePro"
+										value="Nombre: " style="color:white!important" />
+
+									<p:inputText id="nombrePro"
+										value="#{movimientoInventarioController.existencia.producto.nombrePr}"
+										size="24" disabled="true" />
+
+									<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
+										value="Saldo Neto: " style="color:white!important" />
+									<p:inputText id="saldoNeto"
+										value="#{movimientoInventarioController.existencia.cantidadE}"
+										size="24" disabled="true" />
+
+									<p:outputLabel id="lblUnidadM" for="unidadM"
+										value="Unidad de Medida: " style="color:white!important" />
+									<p:inputText id="unidadM"
+										value="#{movimientoInventarioController.existencia.unidadmedida.siglaUm}"
+										size="24" disabled="true" />
+
+									<p:outputLabel id="lblCantidad" for="cantidad"
+										value="Cantidad (-): " style="color:white!important" />
+									<p:inputNumber id="cantidad"
+										value="#{movimientoInventarioController.nuevoMovimientoInventario.cantidadMov}"
+										size="24" required="true"
+										requiredMessage="Debe Agregar la Cantidad" />
+
+									<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
+										style="color:white!important" />
+									<p:inputText id="bodega"
+										value="#{movimientoInventarioController.existencia.bodega.nombreBg}"
+										size="24" disabled="true" />
+
+									<p:outputLabel id="lblCantidad3" for="cantidad3"
+										value="Cantidad de Transf.: " style="color:white!important" />
+									<p:inputNumber id="cantidad3"
+										value="#{movimientoInventarioController.nuevoMovimientoInventarioAux.cantidadMov}"
+										size="24" required="true"
+										requiredMessage="Debe Agregar la Cantidad" />
+
+									<p:outputLabel id="lblUnidadM3" for="unidadM"
+										value="UM de Transf.: " style="color:white!important" />
+									<p:inputText id="unidadM3"
+										value="#{movimientoInventarioController.existenciaAux.unidadmedida.siglaUm}"
+										size="24" disabled="true" />
+
+									<p:outputLabel id="lblObservaciones" for="observaciones"
+										value="Observaciones: " style="color:white!important " />
+									<p:inputTextarea id="observaciones"
+										value="#{movimientoInventarioController.nuevoMovimientoInventario.observacionesMov}"
+										size="100" />
+
+								</p:panelGrid>
+							</center>
+
+						</div>
+
+						<br />
+
+					</p:fieldset>
+
+					<br />
+
+					<!-- ***** Bodega de Destino ****-->
+
+					<p:fieldset legend="Bodega de Destino"
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+
+							<center>
+								<h:panelGrid columns="2">
+
+									<p:commandButton icon="fa fa-search-plus"
+										style="width: 150px; margin: 10px" value="Cargar Existencias"
+										action="#{movimientoInventarioController.auxPanel(2)}"
+										onclick="PF('listadoExTransf').show();"
+										update="formListadoExTransf">
+
+									</p:commandButton>
+
+									<p:commandButton icon="fa fa-eye"
+										style="width: 150px; margin: 10px" value="ver Existencia"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formVerEx"
+										action="#{movimientoInventarioController.cargarExistenciasTemp}"
+										process="@this,formIngresarMITrans">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+							</center>
+
+							<center>
+
+
+								<br />
+
+								<div class="ui-fluid">
+									<center>
+										<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+											<p:outputLabel id="lblIdExistencia2" for="idExistencia2"
+												value="Id Existencia: " style="color:white!important" />
+											<p:inputText id="idExistencia2"
+												value="#{movimientoInventarioController.existenciaAux.idExistencia}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblNombrePro2" for="nombrePro2"
+												value="Nombre: " style="color:white!important" />
+											<p:inputText id="nombrePro2"
+												value="#{movimientoInventarioController.existenciaAux.producto.nombrePr}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblSaldoNeto2" for="saldoNeto2"
+												value="Saldo Neto: " style="color:white!important" />
+											<p:inputText id="saldoNeto2"
+												value="#{movimientoInventarioController.existenciaAux.cantidadE}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblUnidadM2" for="unidadM2"
+												value="Unidad de Medida: " style="color:white!important" />
+											<p:inputText id="unidadM2"
+												value="#{movimientoInventarioController.existenciaAux.unidadmedida.siglaUm}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblBodega2" for="bodega2" value="Bodega: "
+												style="color:white!important" />
+											<p:inputText id="bodega2"
+												value="#{movimientoInventarioController.existenciaAux.bodega.nombreBg}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblObservaciones2" for="observaciones2"
+												value="Observaciones: " style="color:white!important" />
+											<p:inputTextarea id="observaciones2"
+												value="#{movimientoInventarioController.nuevoMovimientoInventarioAux.observacionesMov}"
+												size="24" />
+
+										</p:panelGrid>
+										<br />
+									</center>
+								</div>
+							</center>
+
+						</center>
+					</p:fieldset>
+
+					<br />
+					<br />
+
+					<center>
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Guardar" icon="fa fa-save"
+								style="width: 115px; margin: 10px"
+								actionListener="#{movimientoInventarioController.agregarMovimientoTransf}"
+								process="@this,formIngresarMITrans"
+								update="@this,@([id$=messagesForm]),formAgregarMI,formIngresarMITrans ">
+
+							</p:commandButton>
+
+							<p:commandButton value="Atrás " style="width: 115px; margin: 5px"
+								icon="fa fa-arrow-left" onclick="PF('ingresarMITrans').hide();"
+								process="@none">
+
+							</p:commandButton>
+
+						</h:panelGrid>
+
+					</center>
+
+				</h:form>
+			</p:dialog>
 
 
 			<!-- **************************  Panel -  Editar Movimiento Inventario   *************************** -->
@@ -576,13 +793,13 @@
 									<p:outputLabel id="lblIdExistencia" for="idExistencia"
 										value="Id Existencia: " style="color:white!important" />
 									<p:inputText id="idExistencia"
-										value="#{movimientoInventarioController.movimientosinventario.idExistencia}"
+										value="#{movimientoInventarioController.movInventario.idExistencia}"
 										size="24" disabled="true" />
 
 									<p:outputLabel id="lblNombrePro" for="nombrePro"
 										value="Nombre: " style="color:white!important" />
 									<p:inputText id="nombrePro"
-										value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movimientosinventario.idExistencia).producto.nombrePr}"
+										value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movInventario.idExistencia).producto.nombrePr}"
 										size="24" disabled="true" />
 
 
@@ -598,38 +815,38 @@
 											<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
 												value="Saldo Neto: " style="color:white!important" />
 											<p:inputText id="saldoNeto"
-												value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movimientosinventario.idExistencia).cantidadE}"
+												value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movInventario.idExistencia).cantidadE}"
 												size="24" disabled="true" />
 
 											<p:outputLabel id="lblUnidadM" for="unidadM"
 												value="Unidad de Medida: " style="color:white!important" />
 											<p:inputText id="unidadM"
-												value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movimientosinventario.idExistencia).unidadmedida.siglaUm}"
+												value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movInventario.idExistencia).unidadmedida.siglaUm}"
 												size="24" disabled="true" />
 
 											<p:outputLabel id="lblCantidad" for="cantidad"
 												value="Cantidad: " style="color:white!important" />
 											<p:inputNumber id="cantidad"
-												value="#{movimientoInventarioController.movimientosinventario.cantidadMov}"
+												value="#{movimientoInventarioController.movInventario.cantidadMov}"
 												size="24" required="true"
 												requiredMessage="Debe Agregar la Cantidad" />
 
 											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
 												style="color:white!important" />
 											<p:inputText id="bodega"
-												value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movimientosinventario.idExistencia).bodega.nombreBg}"
+												value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movInventario.idExistencia).bodega.nombreBg}"
 												size="24" disabled="true" />
 
 											<p:outputLabel id="lblEnvase" for="envase" value="Envase: "
 												style="color:white!important" />
 											<p:inputText id="envase"
-												value="#{movimientoInventarioController.movimientosinventario.envaseMov}"
+												value="#{movimientoInventarioController.movInventario.envaseMov}"
 												size="24" />
 
 											<p:outputLabel id="lblObservaciones" for="observaciones"
 												value="Observaciones: " style="color:white!important" />
 											<p:inputTextarea id="observaciones"
-												value="#{movimientoInventarioController.movimientosinventario.observacionesMov}"
+												value="#{movimientoInventarioController.movInventario.observacionesMov}"
 												size="24" />
 
 										</p:panelGrid>
@@ -643,10 +860,7 @@
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
-										actionListener="#{movimientoInventarioController.buscar()}"
-										process="@this,formEditarMI"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarMI">
+									<p:commandLink update="@this,@([id$=messagesForm])">
 
 										<center>
 
@@ -658,7 +872,7 @@
 
 									</p:commandLink>
 
-									<p:commandLink onclick="PF('editarMI').hide();" process="@none">
+									<p:commandLink onclick="PF('editarMI').hide();">
 
 										<p:graphicImage value="/images/archivos/atras.png" width="35"
 											height="36" title="Atrás">
@@ -668,6 +882,45 @@
 
 								</h:panelGrid>
 
+							</center>
+
+							<br />
+
+							<center>
+
+								<h:panelGrid columns="1">
+
+									<p:commandLink
+										action="#{movimientoInventarioController.holaMundo()}"
+										update="@this,@([id$=messagesForm])">
+
+										<center>
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
+												height="35" />
+
+										</center>
+
+									</p:commandLink>
+
+
+
+								</h:panelGrid>
+
+							</center>
+
+							<center>
+								<h:panelGrid styleClass="ui-panelgrid-blank">
+
+									<p:commandButton icon="ui-icon-add"
+										actionListener="#{movimientoInventarioController.holaMundo}"
+										value="Agregar" update="@([id$=messagesForm])">
+									</p:commandButton>
+
+								</h:panelGrid>
+
+								<br />
 							</center>
 
 
@@ -722,6 +975,10 @@
 									selection="#{movimientoInventarioController.selectExistencia}"
 									selectionMode="single">
 
+									<p:column headerText="ID-Producto"
+										filterBy="#{existencia.producto.idProducto}">
+										<h:outputText value="#{existencia.producto.idProducto}" />
+									</p:column>
 
 									<p:column headerText="ID-Existencia"
 										filterBy="#{existencia.idExistencia}"
@@ -792,6 +1049,145 @@
 				</h:form>
 			</p:dialog>
 
+			<!-- ****************************************************  Panel - Listado Existencias Transferencia ***************************************************** -->
+
+			<p:dialog id="panelListadoExTrasf" resizable="true"
+				widgetVar="listadoExTransf" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="80%"
+				header="Listado de Existencias / Transferencia">
+
+
+				<h:form id="formListadoExTransf">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border: 0px solid #000000;
+	border-style: double;
+	border-width: 1px;
+	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+
+							<p:commandButton process="@this" icon="ui-icon-add"
+								value="Cargar Existencas" update="@this, tblExistenciasTransf"
+								oncomplete="PF('filterExistenciasTableTransf').filter();">
+							</p:commandButton>
+
+							<br /> <br />
+
+							<div class="ui-fluid" align="center">
+
+								<p:dataTable id="tblExistenciasTransf"
+									value="#{movimientoInventarioController.transExistencias}"
+									var="existencia" widgetVar="filterExistenciasTableTransf"
+									emptyMessage="No se pudo encontrar ninguna coincidencia"
+									filteredValue="#{movimientoInventarioController.filtrarTransExistencias}"
+									rows="7" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+									rowKey="#{existencia.idExistencia}"
+									selection="#{movimientoInventarioController.selectExistencia}"
+									selectionMode="single">
+
+									<p:column headerText="ID-Producto"
+										filterBy="#{existencia.producto.idProducto}">
+										<h:outputText value="#{existencia.producto.idProducto}" />
+									</p:column>
+
+									<p:column headerText="ID-Existencia"
+										filterBy="#{existencia.idExistencia}"
+										filterMatchMode="contains">
+										<h:outputText value="#{existencia.idExistencia}" />
+									</p:column>
+
+									<p:column headerText="Producto"
+										filterBy="#{existencia.producto.nombrePr}">
+										<h:outputText value="#{existencia.producto.nombrePr}" />
+									</p:column>
+
+									<p:column headerText="Grado"
+										filterBy="#{existencia.grado.nombreGr}"
+										filterMatchMode="contains">
+										<h:outputText value="#{existencia.grado.nombreGr}" />
+									</p:column>
+
+									<p:column headerText="Concentración"
+										filterBy="#{existencia.concentracion.nombreCon}"
+										filterMatchMode="contains">
+										<h:outputText value="#{existencia.concentracion.nombreCon}" />
+									</p:column>
+
+									<p:column headerText="Bodega"
+										filterBy="#{existencia.bodega.nombreBg}">
+										<h:outputText value="#{existencia.bodega.nombreBg}" />
+									</p:column>
+
+									<p:column headerText="Saldo" filterBy="#{existencia.cantidadE}"
+										filterMatchMode="contains">
+										<h:outputText value="#{existencia.cantidadE}" />
+									</p:column>
+
+									<p:column headerText="U.M."
+										filterBy="#{existencia.unidadmedida.siglaUm}"
+										filterMatchMode="contains">
+										<h:outputText value="#{existencia.unidadmedida.siglaUm}" />
+									</p:column>
+
+									<p:column headerText="Tipo Producto"
+										filterBy="#{existencia.producto.tipoproducto.nombreTprod}">
+										<h:outputText
+											value="#{existencia.producto.tipoproducto.nombreTprod}" />
+									</p:column>
+
+									<p:column headerText="Estado Producto"
+										filterBy="#{existencia.estadoproducto.nombreEstp}">
+										<h:outputText value="#{existencia.estadoproducto.nombreEstp}" />
+									</p:column>
+
+									<p:column headerText="Presentación"
+										filterBy="#{existencia.presentacion.nombrePrs}">
+										<h:outputText value="#{existencia.presentacion.nombrePrs}" />
+									</p:column>
+
+									<p:column headerText="Hidratación"
+										filterBy="#{existencia.idHidratacion}">
+										<h:outputText value="#{existencia.idHidratacion}" />
+									</p:column>
+
+									<p:column headerText="Pos. Giro"
+										filterBy="#{existencia.posgiro.nombrePg}">
+										<h:outputText value="#{existencia.posgiro.nombrePg}" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+							<br /> <br />
+
+							<center>
+								<h:panelGrid columns="1">
+
+									<p:commandLink process="@this,tblExistenciasTransf"
+										action="#{movimientoInventarioController.seleccionarExistencia}"
+										update="@([id$=messagesForm],[id$=formIngresarMITrans])"
+										oncomplete="PF('filterExistenciasTableTransf').filter();">
+
+										<p:graphicImage value="/images/archivos/aceptar.png"
+											width="35" height="36" title="Seleccionar">
+										</p:graphicImage>
+									</p:commandLink>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
 
 
 			<!-- **************************  Panel - Ver Existencia *************************** -->
