@@ -56,18 +56,17 @@
 	;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this"
-							actionListener="#{movimientoInventarioController.validarPanelRegistro}"
-							update=":formAgregarMI,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" title="Nuevo Registro"
+								actionListener="#{movimientoInventarioController.validarPanelRegistro}"
+								update=":formAgregarMI,@this,@([id$=messagesForm])">
+
+							</p:commandButton>
+						</center>
 						<br />
 						<br />
 
@@ -99,15 +98,15 @@
 							<p:column headerText="Fecha de Ingreso"
 								filterBy="#{ordenI.fechaingresoOi}" filterMatchMode="contains">
 
-
-
 								<f:facet name="filter">
 
-									<p:calendar id="fecha" pattern="yyyy/MM/dd" locale="es"
-										showOn="button" styleClass="custom-filter"
-										onkeyup="PF('filterOrdenInventarios').filter()">
+									<p:calendar id="cal1" pattern="yyyy-MM-dd" locale="es">
 										<p:ajax event="dateSelect"
-											oncomplete="PF('filterOrdenInventarios').filter()" />
+											oncomplete="PF('filterOrdenInventarios').filter()"
+											update="tblOrdenI" />
+										<p:ajax event="change" execute="@this"
+											oncomplete="PF('filterOrdenInventarios').filter()"
+											update="tblOrdenI" />
 									</p:calendar>
 
 								</f:facet>
@@ -184,19 +183,17 @@
 
 										<p:outputLabel id="lblFecha" for="fecha"
 											value="Fecha de Ingreso: " style="color:white!important" />
-										<p:calendar id="fecha" pattern="yyyy/MM/dd" locale="es"
+										<p:calendar id="fecha" pattern="yyyy-MM-dd" locale="es"
 											requiredMessage="Ingrese la fecha"
 											value="#{movimientoInventarioController.nuevoOrdeninventario.fechaingresoOi}"
 											showOn="button" maxlength="100" size="30" />
 
 										<p:outputLabel id="lblResponsable" for="responsable"
 											value="Responsable: " style="color:white!important" />
-										<p:inputText id="responsable"
+										<p:outputLabel id="responsable"
 											value="#{movimientoInventarioController.cambiarResponsable(sesionUsuario.usuario.nombreUsuario)}"
-											disabled="true" required="true"
-											requiredMessage="Debe ingresar la ubicación" size="30"
-											maxlength="100">
-										</p:inputText>
+											size="30" maxlength="100">
+										</p:outputLabel>
 
 										<p:outputLabel id="lblTipoOrden" for="tipoO"
 											value="Tipo Orden de Inventario "
@@ -344,7 +341,8 @@
 
 								<h:panelGrid columns="3">
 
-									<p:commandButton style="width: 150px; margin: 10px" value="Guardar" icon="fa fa-save"
+									<p:commandButton style="width: 150px; margin: 10px"
+										value="Guardar" icon="fa fa-save"
 										actionListener="#{movimientoInventarioController.agregarOrdenI}"
 										oncomplete="PF('nuevoMI'); PF('filterOrdenInventarios').filter();"
 										process="@this,formAgregarMI"
@@ -352,13 +350,15 @@
 
 									</p:commandButton>
 
-									<p:commandButton style="width: 150px; margin: 10px" icon="fa fa-bitbucket" value="Limpiar"
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon="fa fa-bitbucket" value="Limpiar"
 										actionListener="#{movimientoInventarioController.limpiarCampos}"
 										update="@this,@([id$=messagesForm]),formAgregarMI,formIngresarMI,formIngresarMITrans">
 									</p:commandButton>
 
-									<p:commandButton style="width: 150px; margin: 10px" icon=" fa fa-arrow-left"
-										onclick="PF('nuevoMI').hide();" process="@none" value="Atras">
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon=" fa fa-arrow-left" onclick="PF('nuevoMI').hide();"
+										process="@none" value="Atras">
 
 									</p:commandButton>
 
@@ -420,7 +420,7 @@
 
 								<br />
 
-								
+
 
 								<div class="ui-fluid">
 									<center>
@@ -429,27 +429,27 @@
 
 											<p:outputLabel id="lblIdExistencia" for="idExistencia"
 												value="Id Existencia: " style="color:white!important" />
-											<p:inputText id="idExistencia"
+											<p:outputLabel id="idExistencia"
 												value="#{movimientoInventarioController.existencia.idExistencia}"
-												size="24" disabled="true" />
+												size="24" />
 
 											<p:outputLabel id="lblNombrePro" for="nombrePro"
 												value="Nombre: " style="color:white!important" />
-											<p:inputText id="nombrePro"
+											<p:outputLabel id="nombrePro"
 												value="#{movimientoInventarioController.existencia.producto.nombrePr}"
-												size="24" disabled="true" />
+												size="24" />
 
 											<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
 												value="Saldo Neto: " style="color:white!important" />
-											<p:inputText id="saldoNeto"
+											<p:outputLabel id="saldoNeto"
 												value="#{movimientoInventarioController.existencia.cantidadE}"
-												size="24" disabled="true" />
+												size="24" />
 
 											<p:outputLabel id="lblUnidadM" for="unidadM"
 												value="Unidad de Medida: " style="color:white!important" />
-											<p:inputText id="unidadM"
+											<p:outputLabel id="unidadM"
 												value="#{movimientoInventarioController.existencia.unidadmedida.siglaUm}"
-												size="24" disabled="true" />
+												size="24" />
 
 											<p:outputLabel id="lblCantidad" for="cantidad"
 												value="Cantidad: " style="color:white!important" />
@@ -460,9 +460,9 @@
 
 											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
 												style="color:white!important" />
-											<p:inputText id="bodega"
+											<p:outputLabel id="bodega"
 												value="#{movimientoInventarioController.existencia.bodega.nombreBg}"
-												size="24" disabled="true" />
+												size="24" />
 
 											<p:outputLabel id="lblEnvase" for="envase" value="Envase: "
 												style="color:white!important" />
@@ -506,9 +506,6 @@
 								</h:panelGrid>
 
 							</center>
-
-
-
 						</center>
 					</p:fieldset>
 				</h:form>
@@ -518,7 +515,7 @@
 
 			<p:dialog id="panelIngresarMITrans" resizable="true"
 				widgetVar="ingresarMITrans" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="57%"
+				hideEffect="fade" responsive="true" dynamic="true" width="55%"
 				header="Ingresar Movimiento Inventario / Transferencia">
 
 
@@ -763,7 +760,7 @@
 
 			<p:dialog id="panelEditarMI" resizable="true" widgetVar="editarMI"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="80%"
+				responsive="true" dynamic="true" width="55%"
 				header="Editar Movimiento Inventario">
 
 
@@ -784,33 +781,24 @@
 						<center>
 							<center>
 
-
-								<br />
-
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
-
-									<p:outputLabel id="lblIdExistencia" for="idExistencia"
-										value="Id Existencia: " style="color:white!important" />
-									<p:inputText id="idExistencia"
-										value="#{movimientoInventarioController.movInventario.idExistencia}"
-										size="24" disabled="true" />
-
-									<p:outputLabel id="lblNombrePro" for="nombrePro"
-										value="Nombre: " style="color:white!important" />
-									<p:inputText id="nombrePro"
-										value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movInventario.idExistencia).producto.nombrePr}"
-										size="24" disabled="true" />
-
-
-								</p:panelGrid>
-
 								<br />
 
 								<div class="ui-fluid">
 									<center>
 										<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+											<p:outputLabel id="lblIdExistencia" for="idExistencia"
+												value="Id Existencia: " style="color:white!important" />
+											<p:inputText id="idExistencia"
+												value="#{movimientoInventarioController.movInventario.idExistencia}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblNombrePro" for="nombrePro"
+												value="Nombre: " style="color:white!important" />
+											<p:inputText id="nombrePro"
+												value="#{movimientoInventarioController.cambiarDatosExistencia(movimientoInventarioController.movInventario.idExistencia).producto.nombrePr}"
+												size="24" disabled="true" />
 
 											<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
 												value="Saldo Neto: " style="color:white!important" />
@@ -829,7 +817,8 @@
 											<p:inputNumber id="cantidad"
 												value="#{movimientoInventarioController.movInventario.cantidadMov}"
 												size="24" required="true"
-												requiredMessage="Debe Agregar la Cantidad" />
+												requiredMessage="Debe Agregar la Cantidad"
+												validator="#{movimientoInventarioController.validarSaldoEdit}" />
 
 											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
 												style="color:white!important" />
@@ -853,77 +842,28 @@
 									</center>
 								</div>
 							</center>
-							<br /> <br />
-
+							<br /> <br /> <br />
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink update="@this,@([id$=messagesForm])">
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('editarMI').hide();">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-
-							<br />
-
-							<center>
-
-								<h:panelGrid columns="1">
-
-									<p:commandLink
-										action="#{movimientoInventarioController.holaMundo()}"
-										update="@this,@([id$=messagesForm])">
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-
-
-								</h:panelGrid>
-
-							</center>
-
-							<center>
-								<h:panelGrid styleClass="ui-panelgrid-blank">
-
-									<p:commandButton icon="ui-icon-add"
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
 										actionListener="#{movimientoInventarioController.holaMundo}"
-										value="Agregar" update="@([id$=messagesForm])">
+										process="@form" update="@([id$=messagesForm]), formAgregarMI">
+
+									</p:commandButton>
+
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('editarMI').hide();" process="@none">
+
 									</p:commandButton>
 
 								</h:panelGrid>
 
-								<br />
 							</center>
-
-
 
 						</center>
 					</p:fieldset>
@@ -954,7 +894,7 @@
 						<br />
 						<center>
 
-							<p:commandButton process="@this" icon="ui-icon-add"
+							<p:commandButton process="@this" icon="fa fa-refresh"
 								value="Cargar Existencas" update="@this, tblExistencias"
 								oncomplete="PF('filterExistenciasTable').filter();">
 							</p:commandButton>
@@ -1030,16 +970,15 @@
 							<br /> <br />
 
 							<center>
+
 								<h:panelGrid columns="1">
 
-									<p:commandLink process="@this,tblExistencias"
+									<p:commandButton icon="fa fa-save" value="Seleccionar"
+										process="@this,tblExistencias"
 										action="#{movimientoInventarioController.seleccionarExistencia}"
 										update="@([id$=messagesForm],[id$=formIngresarMI])">
 
-										<p:graphicImage value="/images/archivos/aceptar.png"
-											width="35" height="36" title="Seleccionar">
-										</p:graphicImage>
-									</p:commandLink>
+									</p:commandButton>
 
 								</h:panelGrid>
 
@@ -1073,7 +1012,7 @@
 						<br />
 						<center>
 
-							<p:commandButton process="@this" icon="ui-icon-add"
+							<p:commandButton process="@this" icon="fa fa-refresh"
 								value="Cargar Existencas" update="@this, tblExistenciasTransf"
 								oncomplete="PF('filterExistenciasTableTransf').filter();">
 							</p:commandButton>
@@ -1169,17 +1108,16 @@
 							<br /> <br />
 
 							<center>
+
 								<h:panelGrid columns="1">
 
-									<p:commandLink process="@this,tblExistenciasTransf"
+									<p:commandButton icon="fa fa-save" value="Seleccionar"
+										process="@this,tblExistenciasTransf"
 										action="#{movimientoInventarioController.seleccionarExistencia}"
 										update="@([id$=messagesForm],[id$=formIngresarMITrans])"
 										oncomplete="PF('filterExistenciasTableTransf').filter();">
 
-										<p:graphicImage value="/images/archivos/aceptar.png"
-											width="35" height="36" title="Seleccionar">
-										</p:graphicImage>
-									</p:commandLink>
+									</p:commandButton>
 
 								</h:panelGrid>
 
@@ -1313,33 +1251,29 @@
 
 									<p:outputLabel id="lblFecha" for="fecha"
 										value="Fecha de Ingreso: " style="color:white!important" />
-									<p:calendar id="fecha" disabled="true"
-										value="#{movimientoInventarioController.ordeninventario.fechaingresoOi}"
-										showOn="button" maxlength="100" size="30" />
+									<p:outputLabel id="fecha"
+										value="#{movimientoInventarioController.ordeninventario.fechaingresoOi}" />
 
 									<p:outputLabel id="lblResponsable" for="responsable"
 										value="Responsable: " style="color:white!important" />
-									<p:inputText id="responsable"
-										value="#{movimientoInventarioController.ordeninventario.responsableOi}"
-										disabled="true" required="true">
-									</p:inputText>
+									<p:outputLabel id="responsable"
+										value="#{movimientoInventarioController.ordeninventario.responsableOi}">
+									</p:outputLabel>
 
 									<p:outputLabel id="lblTipoOrden" for="tipoO"
 										value="Tipo Orden de Inventario "
 										style="color:white!important" />
-									<p:inputText id="tipoO"
+									<p:outputLabel id="tipoO"
 										value="#{movimientoInventarioController.ordeninventario.tipordeninv.nombreToi}"
-										disabled="true" size="30" maxlength="100">
-									</p:inputText>
+										size="30" maxlength="100">
+									</p:outputLabel>
 
 									<p:outputLabel id="lblDescripcion" for="descripcion"
 										value="Descripción: " style="color:white!important" />
-									<p:inputText id="descripcion"
+									<p:outputLabel id="descripcion"
 										value="#{movimientoInventarioController.ordeninventario.descrOi}"
-										disabled="true" required="true"
-										requiredMessage="Debe ingresar la ubicación" size="30"
-										maxlength="100">
-									</p:inputText>
+										size="30" maxlength="100">
+									</p:outputLabel>
 
 								</p:panelGrid>
 							</center>
