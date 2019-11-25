@@ -17,10 +17,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
+import javax.faces.component.UIComponent;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
@@ -170,7 +173,8 @@ public class MovimientoInventarioController implements Serializable {
 
 			// init de Saldo Existencia
 			saldoExistencia = new SaldoExistencia();
-			saldoExistencias = saldoExistenciaI.getAll(SaldoExistencia.class);
+			saldoExistencias = saldoExistenciaI.listaSaldoExistenciaAñoActual();
+			System.out.println("Saldo Existencias consultadas: " + saldoExistencias.size());
 
 			// init Unidad
 			unidadLabo = ordenInventarioI.obtenerUnidad(su.UNIDAD_USUARIO_LOGEADO);
@@ -194,7 +198,90 @@ public class MovimientoInventarioController implements Serializable {
 	 ****/
 
 	public void holaMundo() {
-		System.out.println("Hola Mundo");
+		RequestContext context = RequestContext.getCurrentInstance();
+		for (Movimientosinventario m : nuevoMovimientoInventarios) {
+			if (m.getIdExistencia().equals(movInventario.getIdExistencia())) {
+				
+				System.out.println("Obeservaciones: " + m.getObservacionesMov());
+				System.out.println("Envases: " + m.getEnvaseMov());
+				System.out.println("Este es el editar: " + movInventario.getEnvaseMov());
+				
+				context.execute("PF('editarMI').hide();");
+	
+				break;
+			} else {
+
+			}
+
+		}
+
+	}
+
+	public void validarSaldoEdit(FacesContext ctx, UIComponent component, BigDecimal value) throws ValidatorException {
+		// String prueba = value.toString();
+		Existencia e = cambiarDatosExistencia(movInventario.getIdExistencia());
+		double resultado;
+		double cantidadMo = value.doubleValue();
+		double cantidadE = e.getCantidadE().doubleValue();
+
+		if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
+
+			if (cantidadMo <= cantidadE) {
+				// Ajuste negativo a la existencia/Mov
+				resultado = cantidadE - cantidadMo;
+
+				e.setCantidadE(BigDecimal.valueOf(resultado));
+
+				movInventario.setSaldoE(e.getCantidadE());
+				movInventario.setDism(BigDecimal.valueOf(cantidadMo));
+				movInventario.setIncrem(new BigDecimal(0));
+
+				editarExistenciaTemporal(e);
+				return;
+
+			} else {
+				// mensajeError("La cantidad es mayor que el saldo existente");
+				throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error",
+						"La cantidad es mayor que el saldo existente"));
+			}
+
+		} else {
+
+			resultado = cantidadE + cantidadMo;
+
+			e.setCantidadE(BigDecimal.valueOf(resultado));
+
+			movInventario.setSaldoE(e.getCantidadE());
+			movInventario.setIncrem(BigDecimal.valueOf(cantidadMo));
+			movInventario.setDism(new BigDecimal(0));
+
+			editarExistenciaTemporal(e);
+
+			return;
+
+		}
+
+	}
+
+	public void editarExistenciaTemporal(Existencia value) {
+		int i = 0;
+		for (Existencia e : tempExistencias) {
+			if (e.getIdExistencia().equals(value.getIdExistencia())) {
+
+				// System.out.println("este es el saldo existencia sin editar: "
+				// + e.getCantidadE().doubleValue());
+				//
+				// System.out.println("este es la saldo modificado existencia: "
+				// + value.getCantidadE().doubleValue());
+
+				tempExistencias.set(i, value);
+
+				break;
+			} else {
+				i++;
+			}
+
+		}
 	}
 
 	public void limpiarCampos() {
@@ -360,12 +447,12 @@ public class MovimientoInventarioController implements Serializable {
 		double cantidadMoAux = nuevoMovimientoInventarioAux.getCantidadMov().doubleValue();
 		double cantidadE = existencia.getCantidadE().doubleValue();
 		double cantidadEAux = existenciaAux.getCantidadE().doubleValue();
-		
-		if(existencia.getUnidadmedida().getIdUmedida() == existenciaAux.getUnidadmedida().getIdUmedida()){
+
+		if (existencia.getUnidadmedida().getIdUmedida() == existenciaAux.getUnidadmedida().getIdUmedida()) {
 			System.out.println("Entra a la validacion");
-			 cantidadMoAux = nuevoMovimientoInventario.getCantidadMov().doubleValue();
-			 nuevoMovimientoInventarioAux.setCantidadMov(nuevoMovimientoInventario.getCantidadMov());
-			 
+			cantidadMoAux = nuevoMovimientoInventario.getCantidadMov().doubleValue();
+			nuevoMovimientoInventarioAux.setCantidadMov(nuevoMovimientoInventario.getCantidadMov());
+
 		}
 
 		resultado = cantidadE - cantidadMo;
@@ -411,9 +498,9 @@ public class MovimientoInventarioController implements Serializable {
 
 	/** Guarda MI en la base de datos **/
 	public void guardarMovimientosInv() {
-		for (Movimientosinventario movimientosInventario : movimientoInventarios) {
+		for (Movimientosinventario m : nuevoMovimientoInventarios) {
 			try {
-				movimientoInventarioI.save(movimientosInventario);
+				movimientoInventarioI.save(m);
 			} catch (Exception e) {
 				System.out.println(e);
 				// e.printStackTrace();
@@ -440,7 +527,7 @@ public class MovimientoInventarioController implements Serializable {
 
 		try {
 			double cantidadMo = movInventario.getCantidadMov().doubleValue();
-			double cantidadE = cambiarDatosExistencia(movInventario.getIdExistencia()).getCantidadE().doubleValue();  
+			double cantidadE = cambiarDatosExistencia(movInventario.getIdExistencia()).getCantidadE().doubleValue();
 			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
 
 				if (cantidadMo <= cantidadE) {
@@ -477,7 +564,7 @@ public class MovimientoInventarioController implements Serializable {
 				setMovInventario(new Movimientosinventario());
 
 				context.execute("PF('editarMI').hide();");
-				//context.update("formAgregarMI");
+				// context.update("formAgregarMI");
 				break;
 			} else {
 				i++;
@@ -490,8 +577,7 @@ public class MovimientoInventarioController implements Serializable {
 		try {
 			nuevoMovimientoInventarios.remove(movInventario);
 			setMovimientoInventarios(nuevoMovimientoInventarios);
-			mensajeInfo(
-					"Se ha eliminado el movimiento de Inventario (" + movInventario.getIdExistencia() + ")");
+			mensajeInfo("Se ha eliminado el movimiento de Inventario (" + movInventario.getIdExistencia() + ")");
 		} catch (Exception e) {
 			e.printStackTrace();
 			mensajeError("Ha ocurrido un error interno.");
@@ -660,13 +746,14 @@ public class MovimientoInventarioController implements Serializable {
 	/****** Cambiar Id de Movimientos Inventarios ****/
 	public void cambiarIdMov(Ordeninventario ordeninventario) {
 		int i = 0;
-		for (Movimientosinventario movimientosinventario : movimientoInventarios) {
+		for (Movimientosinventario movimientosinventario : nuevoMovimientoInventarios) {
 
 			movimientosinventario.setOrdeninventario(ordeninventario);
 			movimientosinventario.setFechaMi(ordeninventario.getFechaingresoOi());
 			movimientosinventario.setCantidadDmt(0);
 
-			movimientoInventarios.set(i, movimientosinventario);
+			nuevoMovimientoInventarios.set(i, movimientosinventario);
+			// movimientoInventarios = nuevoMovimientoInventarios;
 
 			i++;
 		}
@@ -759,8 +846,8 @@ public class MovimientoInventarioController implements Serializable {
 
 		return resultado;
 	}
-	
-	public boolean buscarMovInv(){
+
+	public boolean buscarMovInv() {
 		return true;
 	}
 
@@ -971,14 +1058,6 @@ public class MovimientoInventarioController implements Serializable {
 
 	private boolean buscarFechaSaldoEx(String anio, String mes) {
 
-		/*
-		 * try { saldoExistencias =
-		 * saldoExistenciaI.getAll(SaldoExistencia.class); } catch (Exception e)
-		 * {
-		 * 
-		 * e.printStackTrace(); }
-		 */
-
 		boolean resultado = false;
 
 		int a = Integer.parseInt(anio);
@@ -1003,6 +1082,20 @@ public class MovimientoInventarioController implements Serializable {
 		setFechaFiltro(fecha);
 		System.out.println("Esta es la fecha del filtro: " + fecha);
 	}
+	
+
+    public boolean filterByDate(Object value, Object filter, Locale locale) {
+
+        if( filter == null ) {
+            return true;
+        }
+
+        if( value == null ) {
+            return false;
+        }
+
+        return DateUtils.truncatedEquals((Date) filter, (Date) value, Calendar.DATE);
+    }
 
 	public boolean disabledSelectItem() {
 		if (nuevoMovimientoInventarios.size() == 0) {
