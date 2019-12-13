@@ -48,6 +48,7 @@ public class EstadoProductoController implements Serializable {
 	private String nombreTP;
 	private List<Estadoproducto> filtrarEstados;
 
+	private List<Estadoproducto> selectEP;
 	// Método init
 	@PostConstruct
 	public void init() {
@@ -154,7 +155,8 @@ public class EstadoProductoController implements Serializable {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Estado Producto (" + estadoproducto.getNombreEstp()+ ") tiene relación con otra tabla.");
+				mensajeError("La tabla Estado Producto (" + estadoproducto.getNombreEstp()
+						+ ") tiene relación con otra tabla.");
 
 			} else {
 
@@ -233,6 +235,14 @@ public class EstadoProductoController implements Serializable {
 
 	public void setFiltrarEstados(List<Estadoproducto> filtrarEstados) {
 		this.filtrarEstados = filtrarEstados;
+	}
+
+	public List<Estadoproducto> getSelectEP() {
+		return selectEP;
+	}
+
+	public void setSelectEP(List<Estadoproducto> selectEP) {
+		this.selectEP = selectEP;
 	}
 
 }

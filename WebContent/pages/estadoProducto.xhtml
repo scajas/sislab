@@ -110,7 +110,7 @@
 									<!-- Botón De Eliminar  -->
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarEstadoProducto').show();">
+										onclick="PF('eliminarEP').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -134,9 +134,9 @@
 			<!-- Panel de Nuevo  -->
 
 			<p:dialog id="panelNuevoEstadoProducto" resizable="true"
-				closable="false" draggable="false" widgetVar="nuevoEstadoProducto"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="false" header="Nuevo Estado Producto">
+				draggable="false" widgetVar="nuevoEstadoProducto" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="false" header="Nuevo Estado Producto" width="40%">
 
 				<h:form id="formNuevoEstadoProducto">
 
@@ -153,7 +153,11 @@
 						<br />
 						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -161,7 +165,7 @@
 									value="#{estadoProductoController.nuevoEstadoProducto.nombreEstp}"
 									required="true"
 									requiredMessage="Debe ingresar el nombre del Estado del Producto"
-									size="30" maxlength="60">
+									maxlength="60">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
@@ -198,12 +202,10 @@
 				</h:form>
 			</p:dialog>
 
-
 			<!-- Panel de Modificar  -->
 
 			<p:dialog id="panelModificarEstadoProducto" resizable="true"
-				closable="false" draggable="false"
-				widgetVar="modificarEstadoProducto" modal="true"
+				draggable="false" widgetVar="modificarEstadoProducto" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
 				dynamic="true" header="Modificar Estado Producto">
 
@@ -224,7 +226,11 @@
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -232,7 +238,7 @@
 										value="#{estadoProductoController.estadoproducto.nombreEstp}"
 										required="true"
 										requiredMessage="Debe ingresar el nombre del Estado del producto"
-										size="30" maxlength="60">
+										maxlength="60">
 									</p:inputText>
 
 									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
@@ -277,17 +283,17 @@
 				<p:confirmDialog
 					message="¿Esta seguro(a) que desea eliminar el Estado Producto seleccionado?"
 					header="Eliminar Estado Producto" severity="info" closable="false"
-					widgetVar="cdEliminarEstadoProducto">
+					widgetVar="eliminarEP">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarEstadoProducto').hide();"
+							onsuccess="PF('eliminarEP').hide();"
 							actionListener="#{estadoProductoController.eliminarEstadoProducto}"
 							oncomplete="PF('tblEstadoProducto').filter()"
-							update="@([id$=messagesForm],[id$=formprincipal],cdEliminarEstadoProducto)" />
+							update="@([id$=messagesForm],[id$=formprincipal],eliminarEP)" />
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarEstadoProducto').hide();" type="button" />
+							onclick="PF('eliminarEP').hide();" type="button" />
 
 					</center>
 				</p:confirmDialog>

@@ -36,54 +36,53 @@
 		<h:body>
 
 
-			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
+			<h:form id="formPrincipal">
+				<p:growl id="messagesForm" sticky="false" showDetail="true"
+					autoupdate="true" life="3000" />
 
 				<p:panel>
-					<p:fieldset legend="TIPO SERVICIO"
+					<p:fieldset legend="Tipo Servicio"
 						style="border-radius: 5px 5px 5px 5px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-	;width: '90%';">
-						<br />
-						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoTipoServicio').show()"
-							update=":formNuevoTipoServicio,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
 						<br />
 						<br />
 
-						<p:dataTable id="tblTipoServicio"							
-							value="#{tipoServicioController.tiposservicio}"
-							var="tipoSer" widgetVar="filterTipoServicioTable"
+						<!-- Boton De Nuevo -->
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoTipoServicio').show()"
+								update=":formNuevoTipoServicio,@this,@([id$=messagesForm])">
+
+							</p:commandButton>
+						</center>
+						<br />
+						<br />
+
+						<p:dataTable id="tblTipoServicio"
+							value="#{tipoServicioController.tipoServicios}" var="tipoSer"
+							widgetVar="filterTipoServicio"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
-							resizableColumns="true" rows="10" paginator="true"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;" paginatorPosition="bottom">
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
 
 							<p:column headerText="Nombre" filterBy="#{tipoSer.nombreTs}"
 								filterMatchMode="contains">
 								<h:outputText value="#{tipoSer.nombreTs}" />
 							</p:column>
 
-							<p:column headerText="Descripción" filterBy="#{tipoSer.descrTs}">
+							<p:column headerText="Descripción" filterBy="#{tipoSer.descrTs}"
+								filterMatchMode="contains">
 								<h:outputText value="#{tipoSer.descrTs}" />
 							</p:column>
 
@@ -91,9 +90,9 @@
 
 							<p:column headerText="Acciones">
 								<center>
-									<p:commandLink										
+									<p:commandLink
 										action="#{tipoServicioController.pasarNombre(tipoSer.nombreTs)}"
-										update=":formModificarTipoServicio,@this,@([id$=messagesForm])"
+										update=":formModificarTipoServicio,@this"
 										process="@this,tblTipoServicio" icon="ui-icon-check"
 										oncomplete="PF('modificarTipoServicio').show();">
 
@@ -101,9 +100,8 @@
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
-
-										<f:setPropertyActionListener											
-											target="#{tipoServicioController.tiposervicio}"
+										<f:setPropertyActionListener
+											target="#{tipoServicioController.tipoServicio}"
 											value="#{tipoSer}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -112,15 +110,14 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarTipoServicio').show();">
+										onclick="PF('eliminarTipoServicio').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
 
-
-										<f:setPropertyActionListener											
-											target="#{tipoServicioController.tiposervicio}"
+										<f:setPropertyActionListener
+											target="#{tipoServicioController.tipoServicio}"
 											value="#{tipoSer}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -128,106 +125,17 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
 
-			<!-- Panel de actualizacion que se abre en un dialogo -->
-
-			<p:dialog id="panelmodificarTipoServicio" resizable="true"
-				widgetVar="modificarTipoServicio" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Modificar Tipo Servicio">
-
-
-				<h:form id="formModificarTipoServicio">
-
-					<p:fieldset
-						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-
-						<br />
-						<br />
-						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
-
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"/>
-								<p:inputText id="nombre"									
-									value="#{tipoServicioController.tiposervicio.nombreTs}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Tipo de Servicio" size="30"
-									maxlength="60">
-								</p:inputText>
-
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"									
-									value="#{tipoServicioController.tiposervicio.descrTs}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-							</p:panelGrid>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandLink										
-										actionListener="#{tipoServicioController.modificarTipoServicio}"
-										oncomplete="PF('filterTipoServicioTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTipoServicio">
-
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarTipoServicio').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
-								</h:panelGrid>
-
-							</center>
-
-						</center>
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
-
-			<!-- Panel de registro que se abre en un dialogo	 -->
+			<!-- Panel de Nuevo	 -->
 
 			<p:dialog id="panelnuevoTipoServicio" resizable="true"
-				widgetVar="nuevoTipoServicio" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
+				closable="false" draggable="false" widgetVar="nuevoTipoServicio"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
 				header="Nuevo Tipo Servicio">
 
 
@@ -235,77 +143,127 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
 						<center>
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
--moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important"  size="30"/>
-								<p:inputText id="nombre"									
+									style="color:white!important" size="30" />
+								<p:inputText id="nombre"
 									value="#{tipoServicioController.nuevoTipoServicio.nombreTs}"
 									required="true"
-									requiredMessage="Debe ingresar el nombre del Tipo de Servicio" size="30"
-									maxlength="60">
+									requiredMessage="Debe ingresar el nombre del Tipo de Servicio"
+									size="30" maxlength="60">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 									style="color:white!important" />
-								<p:inputTextarea id="desc"									
+								<p:inputTextarea id="desc"
 									value="#{tipoServicioController.nuevoTipoServicio.descrTs}"
-									maxlength="100" rows="5" cols="30" autoResize="false" />
-
-
+									maxlength="100" rows="5" cols="30" />
 							</p:panelGrid>
 							<br /> <br />
-
 
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink										
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
 										actionListener="#{tipoServicioController.agregarTipoServicio}"
-										oncomplete="PF('nuevoTipoServicio'); PF('filterTipoServicioTable').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoTipoServicio">
+										process="@this,formNuevoTipoServicio"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoTipoServicio"
+										oncomplete="PF('filterTipoServicio').filter();">
 
+									</p:commandButton>
 
-										<center>
-
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('nuevoTipoServicio').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevoTipoServicio').hide();" process="@none">
+									</p:commandButton>
 
 								</h:panelGrid>
 
 							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- Panel de Modificar -->
+
+			<p:dialog id="panelModificarTipoServicio" resizable="true"
+				closable="false" draggable="false" widgetVar="modificarTipoServicio"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="35%"
+				header="Modificar Tipo Servicio">
+
+
+				<h:form id="formModificarTipoServicio">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{tipoServicioController.tipoServicio.nombreTs}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Tipo de Servicio"
+									size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{tipoServicioController.tipoServicio.descrTs}"
+									maxlength="100" rows="5" cols="30" />
+
+							</p:panelGrid>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
+										actionListener="#{tipoServicioController.modificarTipoServicio}"
+										oncomplete="PF('filterTipoServicio').filter();"
+										process="@this,formModificarTipoServicio"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarTipoServicio">
+									</p:commandButton>
+
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarTipoServicio').hide();" process="@none">
+
+									</p:commandButton>
+								</h:panelGrid>
+
+							</center>
+
 						</center>
 					</p:fieldset>
 				</h:form>
@@ -315,20 +273,20 @@ box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 
 			<h:form id="eliminarTipoServicio">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Tipo de Servicio"
-					header="Eliminar Tipo de Servicio" severity="warn"
-					widgetVar="cdEliminarTipoServicio">
+					message="¿Esta seguro(a) que desea eliminar el Tipo de Servicio seleccionado?"
+					header="Eliminar Tipo de Servicio" severity="info"
+					widgetVar="eliminarTipoServicio">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterTipoServicioTable').filter();"
-							onsuccess="PF('cdEliminarTipoServicio').hide();"							
+							onsuccess="PF('eliminarTipoServicio').hide();"
 							actionListener="#{tipoServicioController.eliminarTipoServicio}"
-							update="@([id$=messagesForm],[id$=formprincipal])" />
+							update="@([id$=messagesForm],[id$=formPrincipal]),eliminarTipoServicio"
+							oncomplete="PF('filterTipoServicio').filter();" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarTipoServicio').hide();" type="button" />
+							onclick="PF('eliminarTipoServicio').hide();" type="button" />
 
 					</center>
 

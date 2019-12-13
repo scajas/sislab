@@ -56,9 +56,6 @@ public class UnidadLabController implements Serializable {
 			unidad = new UnidadLabo();
 			nuevoUnidad = new UnidadLabo();
 		    
-		    
-
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -17,17 +17,17 @@
 
 			<script type="text/javascript">
 
-//<![CDATA[
-function printDiv(divName){
-var f =new Date();
-var printContents =document.getElementById(divName).innerHTML;
-var originalContents =document.body.innerHTML;
-document.body.innerHTML=printContents;
-window.print();
-document.body.innerHTML=originalContents;
-}
+			//<![CDATA[
+			function printDiv(divName){
+				var f =new Date();
+				var printContents =document.getElementById(divName).innerHTML;
+				var originalContents =document.body.innerHTML;
+				document.body.innerHTML=printContents;
+				window.print();
+				document.body.innerHTML=originalContents;
+			}
 
-//]]>
+			//]]>
 
 </script>
 		</h:head>
@@ -131,9 +131,9 @@ document.body.innerHTML=originalContents;
 			<!--***********Nuevo**************  -->
 
 			<p:dialog id="panelNuevaHidratacion" resizable="false"
-				closable="false" draggable="false" widgetVar="nuevaHidratacion"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" header="Nuevo Hidratación">
+				draggable="false" widgetVar="nuevaHidratacion" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Nuevo Hidratación" width="40%">
 
 				<h:form id="formNuevaHidratacion">
 
@@ -148,9 +148,13 @@ document.body.innerHTML=originalContents;
 
 						<br />
 						<br />
-						<center>
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -166,31 +170,32 @@ document.body.innerHTML=originalContents;
 									maxlength="100" rows="5" cols="30" />
 
 							</p:panelGrid>
-							<br /> <br />
+						</div>
+						<br />
+						<br />
 
-							<center>
-								<h:panelGrid columns="2">
+						<center>
+							<h:panelGrid columns="2">
 
-									<p:commandButton value="Guardar" icon="fa fa-save"
-										style="width: 115px; margin: 10px"
-										actionListener="#{hidratacionController.agregarHidratacion}"
-										process="@this,formNuevaHidratacion"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaHidratacion"
-										oncomplete="PF('tblHidrataciones').filter();">
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{hidratacionController.agregarHidratacion}"
+									process="@this,formNuevaHidratacion"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaHidratacion"
+									oncomplete="PF('tblHidrataciones').filter();">
 
-									</p:commandButton>
+								</p:commandButton>
 
-									<p:commandButton value="Atrás "
-										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-										onclick="PF('nuevaHidratacion').hide();" process="@none">
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevaHidratacion').hide();" process="@none">
 
-									</p:commandButton>
+								</p:commandButton>
 
-								</h:panelGrid>
-
-							</center>
+							</h:panelGrid>
 
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
@@ -198,10 +203,9 @@ document.body.innerHTML=originalContents;
 			<!--***************************************Modificar**************************************-->
 
 			<p:dialog id="panelModificarHidratacion" resizable="false"
-				closable="false" draggable="false" widgetVar="modificarHidratacion"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Modificar Hidratación">
+				draggable="false" widgetVar="modificarHidratacion" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="40%" header="Modificar Hidratación">
 
 				<h:form id="formModificarHidratacion">
 
@@ -219,7 +223,11 @@ document.body.innerHTML=originalContents;
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />

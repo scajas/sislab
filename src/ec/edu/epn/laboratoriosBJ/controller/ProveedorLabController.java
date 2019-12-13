@@ -10,7 +10,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -18,7 +17,6 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.ProveedorLabDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoProveedorDAO;
-import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
 import ec.edu.epn.laboratorioBJ.entities.ProveedorLab;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproveedor;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
@@ -40,247 +38,248 @@ public class ProveedorLabController implements Serializable {
 	/** SERIVICIOS **/
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ProveedorLabDAOImplement!ec.edu.epn.laboratorioBJ.beans.ProveedorLabDAO")
 	private ProveedorLabDAO proveedorI;// I (interface)
-	
+
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/TipoProveedorDAOImplement!ec.edu.epn.laboratorioBJ.beans.TipoProveedorDAO")
 	private TipoProveedorDAO tipoProveedorI;// I (interface)
 
+	/** VARIABLES **/
 	private ProveedorLab proveedor;
 	private List<ProveedorLab> listaProveedorLab = new ArrayList<ProveedorLab>();
 	private ProveedorLab nuevoProveedor;
-	private String nombreTP;
+	private String nombreP;
+
 	private Tipoproveedor tipoProveedorSelect;
-	private List<Tipoproveedor> tipo= new ArrayList<Tipoproveedor>();
-	private List<ProveedorLabController> filtroProveedor;
+	private List<Tipoproveedor> tipoProveedores = new ArrayList<Tipoproveedor>();
+	private Tipoproveedor tipoProveedor;
+
+	private List<ProveedorLab> filtroProveedor;
+	private List<Tipoproveedor> filtroTipoProveedor;
 
 	@PostConstruct
 	public void init() {
 		try {
-			
-			setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
-			setNuevoProveedor(new ProveedorLab());
-		    proveedor = new ProveedorLab();
-		    nuevoProveedor = new ProveedorLab();
-		    setTipo(tipoProveedorI.getAll(Tipoproveedor.class));
-		    
 
+			setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+			// listaProveedorLab= proveedorI.getListProveedor();
+			nuevoProveedor = new ProveedorLab();
+			proveedor = new ProveedorLab();
+
+			// tipoProveedores = tipoProveedorI.getAll(Tipoproveedor.class);
+			// tipoProveedor= new Tipoproveedor();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	//****** Modificar Proveedor ****//*
 
-	public void modificarProveedor(ActionEvent event) {
-		try {
-			if (proveedor.getNombrePv().equals(getNombreTP())) {
-				
-				proveedor.setTipoproveedor(tipoProveedorSelect);
-				proveedorI.update(proveedor);
-				listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
 
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarProveedor').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Proveedor actualizado exitosamente"));
-
-			} else if (buscarProveedor(proveedor.getNombrePv()) == false) {
-				
-				proveedor.setTipoproveedor(tipoProveedorSelect);
-				proveedorI.update(proveedor);
-				listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
-
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarProveedor').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Proveedor actualizado exitosamente"));
-			} else {
-				listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Proveedor ya existe."));
-			}
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
-		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
 	}
 
-	//************Agregar Proveedor************//
-	
-	public void agregarProveedor(ActionEvent event) {
-		
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	/****** Agregar Proveedor ****/
+
+	public void agregarProveedor() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-			System.out.println("aiudaaa");
-			if(buscarProveedor(nuevoProveedor.getNombrePv())==true){
-				System.out.println("pasa por aqui");
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-				new FacesMessage(FacesMessage.SEVERITY_ERROR,"ERROR!","Este Proveedor ya existe."));
-				
-				nuevoProveedor=new ProveedorLab();
-				
-				
-			}else{
-				
+			if (buscarProveedor(nuevoProveedor.getNombrePv()) == true) {
+
+				mensajeError("El Proveedor (" + nuevoProveedor.getNombrePv() + ") ya existe.");
+
+			} else {
+
 				nuevoProveedor.setTipoproveedor(tipoProveedorSelect);
 				proveedorI.save(nuevoProveedor);
-				listaProveedorLab=proveedorI.getAll(ProveedorLab.class);
-				
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO,"", "El Proveedor se ha almacenado exitosamente"));
-				
-				//nuevoProveedor = new ProveedorLab();
-				//tipoProveedorSelect = new Tipoproveedor();
+				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+
+				mensajeInfo("El Proveedor (" + nuevoProveedor.getNombrePv() + ") se ha almacenado exitosamente");
+
+				nuevoProveedor = new ProveedorLab();
+				tipoProveedorSelect = new Tipoproveedor();
+				context.execute("PF('nuevoProveedor').hide();");
+
 			}
-			
+
 		} catch (Exception e) {
-			System.out.println ("El error es: " + nuevoProveedor.getNombrePv() + tipoProveedorSelect.getNombreTpv() );
-		    e.printStackTrace();
-			// TODO: handle exception
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-				new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR", ""));	
-			e.printStackTrace(System.out);
-			
+
+			mensajeError("Ha ocurrido un problema");
+			e.printStackTrace();
 		}
 	}
-	
-	//****** Eliminar Proveedor ****//*
 
-		public void eliminarProveedorLab(ActionEvent event) {
+	// ****** Modificar Proveedor ****//*
 
-			try {
+	public void modificarProveedor() {
 
-				proveedorI.delete(proveedor);
-				listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
+		RequestContext context = RequestContext.getCurrentInstance();
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-								"El Proveedor se ha eliminado correctamente"));
+		try {
+			if (proveedor.getNombrePv().equals(getNombreP())) {
 
-			} catch (Exception e) {
+				proveedorI.update(proveedor);
+				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
 
-				if (e.getMessage() == "Transaction rolled back") {
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-									"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
-				} else {
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_FATAL, "ERROR!", ""));
-				}
+				mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
 
+				context.execute("PF('modificarProveedor').hide();");
+
+			} else if (buscarProveedor(proveedor.getNombrePv()) == false) {
+
+				proveedorI.update(proveedor);
+				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+
+				mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
+
+				context.execute("PF('modificarProveedor').hide();");
+
+			} else {
+				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+				mensajeError("El Proveedor (" + proveedor.getNombrePv() + ") ya existe.");
+			}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un problema");
+			e.printStackTrace();
+		}
+	}
+
+	// ****** Eliminar Proveedor ****//*
+
+	public void eliminarProveedorLab() {
+
+		try {
+
+			proveedorI.delete(proveedor);
+			setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+			mensajeError("El Proveedor (" + proveedor.getNombrePv() + ") se ha eliminado correctamente");
+
+		} catch (Exception e) {
+
+			if (e.getMessage() == "Transaction rolled back") {
+				mensajeError("La tabla Proveedor (" + proveedor.getNombrePv() + ") tiene relación con otra tabla");
+			} else {
+				mensajeError("Ha ocurrido un problema");
 			}
 
 		}
 
-	
-	//****** Busqueda Proveedor ****//*
+	}
 
-		private boolean buscarProveedor(String valor) {
-			
-			try {
-				listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
-				System.out.println("Esta obteniendo la lista : " + listaProveedorLab.size());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				System.out.println ("El error es: " + e.getMessage());
-			    e.printStackTrace();
-			}
-			
-			boolean resultado = false;
-			
-			System.out.println(valor); 
-			
-			for (ProveedorLab proveedorLab : listaProveedorLab) {
-				if (proveedorLab.getNombrePv().equals(valor)) {
-					resultado = true;
-					break;
-				} else {
-					resultado = false;
-				}
-			}
-			
-			System.out.println("Este es el resultado: " +resultado); 
+	// ****** Busqueda Proveedor ****//*
 
-			return resultado;
+	private boolean buscarProveedor(String valor) {
+
+		try {
+			listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
+		} catch (Exception e) {
+
+			e.printStackTrace();
 		}
 
-		public void pasarNombre(String nombre) {
-			setNombreTP(nombre);
+		boolean resultado = false;
+
+		for (ProveedorLab proveedorLab : listaProveedorLab) {
+			if (proveedorLab.getNombrePv().equals(valor)) {
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
 		}
-			
-			
-			
-			
-	//****** Getter y Setters ****//*
 
-			
+		System.out.println("Este es el resultado: " + resultado);
 
-			public List<ProveedorLab> getListaProveedorLab() {
-				return listaProveedorLab;
-			}
+		return resultado;
+	}
 
-			
+	public void pasarNombre(String nombre, Tipoproveedor tp) {
+		setNombreP(nombre);
+		tipoProveedor = tp;
+	}
 
-			public ProveedorLab getProveedor() {
-				return proveedor;
-			}
+	// ****** Getter y Setters ****//*
 
-			public void setProveedor(ProveedorLab proveedor) {
-				this.proveedor = proveedor;
-			}
+	public List<ProveedorLab> getListaProveedorLab() {
+		return listaProveedorLab;
+	}
 
-			public void setListaProveedorLab(List<ProveedorLab> listaProveedorLab) {
-				this.listaProveedorLab = listaProveedorLab;
-			}
+	public ProveedorLab getProveedor() {
+		return proveedor;
+	}
 
-			public ProveedorLab getNuevoProveedor() {
-				return nuevoProveedor;
-			}
+	public void setProveedor(ProveedorLab proveedor) {
+		this.proveedor = proveedor;
+	}
 
-			public void setNuevoProveedor(ProveedorLab nuevoProveedor) {
-				this.nuevoProveedor = nuevoProveedor;
-			}
+	public void setListaProveedorLab(List<ProveedorLab> listaProveedorLab) {
+		this.listaProveedorLab = listaProveedorLab;
+	}
 
-			
-			public String getNombreTP() {
-				return nombreTP;
-			}
+	public ProveedorLab getNuevoProveedor() {
+		return nuevoProveedor;
+	}
 
-			public void setNombreTP(String nombreTP) {
-				this.nombreTP = nombreTP;
-			}
+	public void setNuevoProveedor(ProveedorLab nuevoProveedor) {
+		this.nuevoProveedor = nuevoProveedor;
+	}
 
+	public String getNombreP() {
+		return nombreP;
+	}
 
-			public Tipoproveedor getTipoProveedorSelect() {
-				return tipoProveedorSelect;
-			}
+	public void setNombreP(String nombreP) {
+		this.nombreP = nombreP;
+	}
 
-			public void setTipoProveedorSelect(Tipoproveedor tipoProveedorSelect) {
-				this.tipoProveedorSelect = tipoProveedorSelect;
-			}
+	public Tipoproveedor getTipoProveedorSelect() {
+		return tipoProveedorSelect;
+	}
 
-			public List<Tipoproveedor> getTipo() {
-				return tipo;
-			}
+	public void setTipoProveedorSelect(Tipoproveedor tipoProveedorSelect) {
+		this.tipoProveedorSelect = tipoProveedorSelect;
+	}
 
-			public void setTipo(List<Tipoproveedor> tipo) {
-				this.tipo = tipo;
-			}
+	public List<Tipoproveedor> getTipoProveedores() {
+		return tipoProveedores;
+	}
 
-			public List<ProveedorLabController> getFiltroProveedor() {
-				return filtroProveedor;
-			}
+	public void setTipoProveedores(List<Tipoproveedor> tipoProveedores) {
+		this.tipoProveedores = tipoProveedores;
+	}
 
-			public void setFiltroProveedor(List<ProveedorLabController> filtroProveedor) {
-				this.filtroProveedor = filtroProveedor;
-			}
+	public Tipoproveedor getTipoProveedor() {
+		return tipoProveedor;
+	}
 
-			
+	public void setTipoProveedor(Tipoproveedor tipoProveedor) {
+		this.tipoProveedor = tipoProveedor;
+	}
 
-			
+	public List<ProveedorLab> getFiltroProveedor() {
+		return filtroProveedor;
+	}
 
-			
-	
+	public void setFiltroProveedor(List<ProveedorLab> filtroProveedor) {
+		this.filtroProveedor = filtroProveedor;
+	}
+
+	public List<Tipoproveedor> getFiltroTipoProveedor() {
+		return filtroTipoProveedor;
+	}
+
+	public void setFiltroTipoProveedor(List<Tipoproveedor> filtroTipoProveedor) {
+		this.filtroTipoProveedor = filtroTipoProveedor;
+	}
+
 }

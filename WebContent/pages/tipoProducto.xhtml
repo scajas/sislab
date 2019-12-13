@@ -68,7 +68,7 @@
 							var="tipoProducto" widgetVar="tblTipoProducto"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							filteredValue="#{tipoProductoController.filtrarTipoProducto}"
-							resizableColumns="true" rows="10" paginator="true"
+							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
@@ -110,7 +110,7 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarTipoProducto').show();">
+										onclick="PF('eliminarTP').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -135,9 +135,9 @@
 			<!-- Panel de Nuevo	 -->
 
 			<p:dialog id="panelNuevoTipoProducto" resizable="false"
-				closable="false" draggable="false" widgetVar="nuevoTipoProducto"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" header="Nuevo Tipo Producto">
+				draggable="false" widgetVar="nuevoTipoProducto" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Nuevo Tipo Producto">
 
 
 				<h:form id="formNuevoTipoProducto">
@@ -155,7 +155,11 @@
 						<br />
 						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
@@ -205,9 +209,9 @@
 			<!-- Panel de Modificar -->
 
 			<p:dialog id="panelModificarTipoProducto" resizable="false"
-				closable="false" draggable="false" widgetVar="modificarTipoProducto"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" header="Modificar Tipo Producto">
+				draggable="false" widgetVar="modificarTipoProducto" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Modificar Tipo Producto">
 
 
 				<h:form id="formModificarTipoProducto">
@@ -227,8 +231,11 @@
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
-
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -284,17 +291,17 @@
 				<p:confirmDialog
 					message="¿Esta seguro(a) que desea eliminar el Tipo de Producto seleccionado?"
 					header="Eliminar Tipo Producto" severity="info"
-					widgetVar="cdEliminarTipoProducto">
+					widgetVar="eliminarTP">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarTipoProducto').hide();"
+							onsuccess="PF('eliminarTP').hide();"
 							actionListener="#{tipoProductoController.eliminarTipoProducto}"
 							update="@([id$=messagesForm],[id$=formprincipal])"
 							oncomplete="PF('tblTipoProducto').filter()" />
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarTipoProducto').hide();" type="button" />
+							onclick="PF('eliminarTP').hide();" type="button" />
 
 					</center>
 

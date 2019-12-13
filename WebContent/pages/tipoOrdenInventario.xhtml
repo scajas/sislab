@@ -133,11 +133,10 @@
 
 			<!-- Panel de Nuevo -->
 
-			<p:dialog id="panelNuevoTOI" resizable="false" closable="false"
-				draggable="false" widgetVar="nuevoTOI" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Nuevo Tipo Orden de Inventario">
-
+			<p:dialog id="panelNuevoTOI" resizable="false" draggable="false"
+				widgetVar="nuevoTOI" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="40%"
+				header="Nuevo Tipo Orden de Inventario">
 
 				<h:form id="formNuevoTOI">
 
@@ -152,17 +151,21 @@
 
 						<br />
 						<br />
-						<center>
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" size="30" />
+									style="color:white!important" />
 								<p:inputText id="nombre"
 									value="#{tipoOrdenInventarioController.nuevoTipoInventario.nombreToi}"
 									required="true"
 									requiredMessage="Debe ingresar el nombre del tipo de Orden de inventario"
-									size="30" maxlength="50">
+									maxlength="50">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
@@ -171,42 +174,42 @@
 									value="#{tipoOrdenInventarioController.nuevoTipoInventario.descrToi}"
 									maxlength="200" rows="5" cols="30" />
 							</p:panelGrid>
+						</div>
+						<br />
+						<br />
 
-							<br /> <br />
+						<center>
 
-							<center>
+							<h:panelGrid columns="2">
 
-								<h:panelGrid columns="2">
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{tipoOrdenInventarioController.agregarTipoInventario}"
+									oncomplete="PF('tblTipoOrdenInventario').filter();"
+									process="@this,formNuevoTOI"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoTOI">
 
-									<p:commandButton value="Guardar" icon="fa fa-save"
-										style="width: 115px; margin: 10px"
-										actionListener="#{tipoOrdenInventarioController.agregarTipoInventario}"
-										oncomplete="PF('tblTipoOrdenInventario').filter();"
-										process="@this,formNuevoTOI"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoTOI">
+								</p:commandButton>
 
-									</p:commandButton>
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoTOI').hide();" process="@none">
 
-									<p:commandButton value="Atrás "
-										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-										onclick="PF('nuevoTOI').hide();" process="@none">
+								</p:commandButton>
 
-									</p:commandButton>
+							</h:panelGrid>
 
-								</h:panelGrid>
-
-							</center>
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
 			<!-- Panel de Modificar -->
 
-			<p:dialog id="panelModificarTOI" resizable="false" closable="false"
-				draggable="false" widgetVar="modificarTOI" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%"
+			<p:dialog id="panelModificarTOI" resizable="false" draggable="false"
+				widgetVar="modificarTOI" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="40%"
 				header="Modificar Tipo Orden de Inventario">
 
 
@@ -223,9 +226,14 @@
 
 						<br />
 						<br />
-						<center>
+
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+							-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+							box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -233,7 +241,7 @@
 									value="#{tipoOrdenInventarioController.tipoOrdenInv.nombreToi}"
 									required="true"
 									requiredMessage="Debe ingresar el nombre del Tipo Orden de Inventario"
-									size="30" maxlength="50">
+									maxlength="50">
 								</p:inputText>
 
 								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
@@ -243,30 +251,32 @@
 									maxlength="200" rows="5" cols="30" />
 
 							</p:panelGrid>
-							<br /> <br />
+						</div>
 
-							<center>
+						<br />
+						<br />
 
-								<h:panelGrid columns="2">
+						<center>
 
-									<p:commandButton value="Modificar" icon="fa fa-edit"
-										style="width: 115px; margin: 5px"
-										actionListener="#{tipoOrdenInventarioController.modificarTipoInventario}"
-										process="@this,formModificarTOI"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTOI"
-										oncomplete="PF('tblTipoOrdenInventario').filter();">
-									</p:commandButton>
+							<h:panelGrid columns="2">
 
-									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
-										style="width: 115px; margin: 5px"
-										onclick="PF('modificarTOI').hide();" process="@none">
+								<p:commandButton value="Modificar" icon="fa fa-edit"
+									style="width: 115px; margin: 5px"
+									actionListener="#{tipoOrdenInventarioController.modificarTipoInventario}"
+									process="@this,formModificarTOI"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarTOI"
+									oncomplete="PF('tblTipoOrdenInventario').filter();">
+								</p:commandButton>
 
-									</p:commandButton>
-								</h:panelGrid>
+								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+									style="width: 115px; margin: 5px"
+									onclick="PF('modificarTOI').hide();" process="@none">
 
-							</center>
+								</p:commandButton>
+							</h:panelGrid>
 
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>

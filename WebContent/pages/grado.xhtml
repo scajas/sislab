@@ -108,7 +108,7 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('eliminarGrado').show();">
+										onclick="PF('eliminarG').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -131,10 +131,10 @@
 
 			<!-- Panel de Nuevo	 -->
 
-			<p:dialog id="panelNuevoGrado" resizable="false" closable="false"
-				draggable="false" widgetVar="nuevoGrado" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Nuevo Grado">
+			<p:dialog id="panelNuevoGrado" resizable="false" draggable="false"
+				widgetVar="nuevoGrado" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="40%"
+				header="Nuevo Grado">
 
 
 				<h:form id="formNuevoGrado">
@@ -150,15 +150,20 @@
 
 						<br />
 						<br />
-						<center>
+
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
 								<p:inputText id="nombre"
 									value="#{gradoController.nuevoGrado.nombreGr}" required="true"
-									requiredMessage="Debe ingresar el nombre de Grado" size="30"
+									requiredMessage="Debe ingresar el nombre de Grado"
 									maxlength="60">
 								</p:inputText>
 
@@ -169,41 +174,43 @@
 									rows="5" cols="30" />
 
 							</p:panelGrid>
-							<br /> <br />
+						</div>
+						<br />
+						<br />
 
 
-							<center>
+						<center>
 
-								<h:panelGrid columns="2">
+							<h:panelGrid columns="2">
 
-									<p:commandButton value="Guardar" icon="fa fa-save"
-										style="width: 115px; margin: 10px"
-										actionListener="#{gradoController.agregarGrado}"
-										oncomplete="PF('nuevoGrado'); PF('tblGrados').filter();"
-										process="@this,nombre,desc"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoGrado">
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{gradoController.agregarGrado}"
+									oncomplete="PF('nuevoGrado'); PF('tblGrados').filter();"
+									process="@this,nombre,desc"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoGrado">
 
-									</p:commandButton>
+								</p:commandButton>
 
-									<p:commandButton value="Atrás "
-										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-										onclick="PF('nuevoGrado').hide();" process="@none">
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoGrado').hide();" process="@none">
 
-									</p:commandButton>
-								</h:panelGrid>
+								</p:commandButton>
+							</h:panelGrid>
 
-							</center>
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
 			<!-- Panel de Modificar -->
 
-			<p:dialog id="panelModificarGrado" resizable="false" closable="false"
+			<p:dialog id="panelModificarGrado" resizable="false"
 				draggable="false" widgetVar="modificarGrado" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Modificar Grado">
+				dynamic="true" width="40%" header="Modificar Grado">
 
 
 				<h:form id="formModificarGrado">
@@ -219,9 +226,13 @@
 
 						<br />
 						<br />
-						<center>
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -238,53 +249,54 @@
 									rows="5" cols="30" />
 
 							</p:panelGrid>
-							<br /> <br />
+						</div>
+						<br />
+						<br />
 
-							<center>
+						<center>
 
-								<h:panelGrid columns="2">
+							<h:panelGrid columns="2">
 
-									<p:commandButton value="Modificar" icon="fa fa-edit"
-										style="width: 115px; margin: 5px"
-										actionListener="#{gradoController.modificarGrado}"
-										process="@this,formModificarGrado"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarGrado"
-										oncomplete="PF('tblGrados').filter();">
+								<p:commandButton value="Modificar" icon="fa fa-edit"
+									style="width: 115px; margin: 5px"
+									actionListener="#{gradoController.modificarGrado}"
+									process="@this,formModificarGrado"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarGrado"
+									oncomplete="PF('tblGrados').filter();">
 
-									</p:commandButton>
+								</p:commandButton>
 
-									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
-										style="width: 115px; margin: 5px"
-										onclick="PF('modificarGrado').hide();" process="@none">
+								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+									style="width: 115px; margin: 5px"
+									onclick="PF('modificarGrado').hide();" process="@none">
 
-									</p:commandButton>
+								</p:commandButton>
 
-								</h:panelGrid>
-
-							</center>
+							</h:panelGrid>
 
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
 			<!-- Panel de Eliminar -->
 
-			<h:form id="eliminarGrado">
+			<h:form id="eliminarG">
 				<p:confirmDialog
 					message="¿Esta seguro(a) que desea eliminar el Grado seleccionado"
-					header="Eliminar Grado" severity="info" widgetVar="eliminarGrado">
+					header="Eliminar Grado" severity="info" widgetVar="eliminarG">
 					<center>
 
 						<p:commandButton value="Aceptar"
 							oncomplete="PF('tblGrados').filter();"
-							onsuccess="PF('eliminarGrado').hide();"
+							onsuccess="PF('eliminarG').hide();"
 							actionListener="#{gradoController.eliminarGrado}"
-							update="@([id$=messagesForm],[id$=formprincipal],eliminarGrado)" />
+							update="@([id$=messagesForm],[id$=formprincipal],eliminarG)" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('eliminarGrado').hide();" type="button" />
+							onclick="PF('eliminarG').hide();" type="button" />
 
 					</center>
 

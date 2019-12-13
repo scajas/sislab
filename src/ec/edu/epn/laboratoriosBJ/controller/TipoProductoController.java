@@ -146,7 +146,7 @@ public class TipoProductoController implements Serializable {
 			tipoProductoI.delete(tipoProducto);
 			listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 
-			mensajeInfo("El Tipo Producto ( " + tipoProducto.getNombreTprod() + " ) se ha eliminado correctamente");
+			mensajeInfo("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 

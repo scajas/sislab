@@ -144,10 +144,9 @@
 			<!-- Panel de Nuevo	 -->
 
 			<p:dialog id="panelNuevoUnidadMedida" resizable="true"
-				closable="false" draggable="false" widgetVar="nuevoUnidadMedida"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Nuevo Unidad de Medida">
+				draggable="false" widgetVar="nuevoUnidadMedida" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="40%" header="Nuevo Unidad de Medida">
 
 				<h:form id="formNuevoUnidadMedida">
 
@@ -166,7 +165,11 @@
 						<div class="ui-fluid">
 
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -226,10 +229,9 @@
 			<!-- Panel de actualizacion que se abre en un dialogo -->
 
 			<p:dialog id="panelmodificarUnidadMedida" resizable="true"
-				closable="false" draggable="false" widgetVar="modificarUnidadMedida"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Modificar Unidad Medida">
+				draggable="false" widgetVar="modificarUnidadMedida" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="40%" header="Modificar Unidad Medida">
 
 
 				<h:form id="formUnidadMedida">
@@ -250,7 +252,11 @@
 							<div class="ui-fluid">
 
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -265,7 +271,7 @@
 										style="color:white!important" />
 									<p:inputTextarea id="desc"
 										value="#{unidadMedidaController.unidadMedida.descrUm}"
-										maxlength="200" rows="5" cols="30"/>
+										maxlength="200" rows="5" cols="30" />
 
 									<p:outputLabel id="lblSigla" for="sigla" value="Sigla: "
 										style="color:white!important" />

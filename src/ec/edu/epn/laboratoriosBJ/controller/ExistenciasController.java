@@ -1,6 +1,7 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,10 +10,15 @@ import javax.ejb.EJB;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-
+import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.primefaces.component.wizard.Wizard;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FlowEvent;
 
 import ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO;
 import ec.edu.epn.laboratorioBJ.beans.ConcentracionDAO;
@@ -158,6 +164,7 @@ public class ExistenciasController implements Serializable {
 	private Tipoproducto tipoproductoSelect;
 	private List<Tipoproducto> tipoproductos = new ArrayList<Tipoproducto>();
 	private Tipoproducto tipoproducto;
+	private Tipoproducto tempTipoproducto;
 
 	// select de Pureza
 	private Pureza purezaSelect;
@@ -173,14 +180,18 @@ public class ExistenciasController implements Serializable {
 	private Unidadmedida unidadmedida2Select;
 	private List<Unidadmedida> unidadmedidas = new ArrayList<Unidadmedida>();
 	private Unidadmedida unidadmedida;
+	private Unidadmedida tempUnidadMedida;
 
 	/** METODO Init **/
 	@PostConstruct
 	public void init() {
 		try {
 			/** Existencia **/
-			existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-			filtrarExistencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			existencias = existenciasI.getListExByTP(uni.getCodigoU());
+
+			filtrarExistencias = existencias;
 
 			existencia = new Existencia();
 			nuevoExistencia = new Existencia();
@@ -217,6 +228,9 @@ public class ExistenciasController implements Serializable {
 			tipoproductos = tipoProductoI.getAll(Tipoproducto.class);
 			tipoproducto = new Tipoproducto();
 
+			tempTipoproducto = existenciasI.tempTipoPro();
+			tempTipoproducto.setIdTipoprod(99999);
+
 			// init de Pureza
 			purezas = purezaI.getAll(Pureza.class);
 			pureza = existenciasI.reemplazarNullPureza();
@@ -229,10 +243,23 @@ public class ExistenciasController implements Serializable {
 			unidadmedidas = unidadMedidaI.getAll(Unidadmedida.class);
 			unidadmedida = new Unidadmedida();
 
+			tempUnidadMedida = existenciasI.tempUnidadMedida();
+			tempUnidadMedida.setIdUmedida(99999);
+
 		} catch (Exception e) {
 
 		}
 
+	}
+
+	public void updateTable() {
+		try {
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			existencias = existenciasI.getListExByTP(uni.getCodigoU());
+		} catch (Exception e) {
+
+		}
 	}
 
 	/****** Mensajes Personalizados ****/
@@ -287,11 +314,13 @@ public class ExistenciasController implements Serializable {
 	/****** Agregar Estado Producto ****/
 
 	public void agregarExistencia() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarExistencia(nuevoExistencia.getIdExistencia()) == true) {
 
-				mensajeError(
-						"Ha ocurrido un error, La Muestra ( " + nuevoExistencia.getIdExistencia() + " ) ya existe.");
+				mensajeError("Ha ocurrido un error, La Muestra (" + nuevoExistencia.getIdExistencia() + ") ya existe.");
 
 				nuevoExistencia = new Existencia();
 
@@ -300,14 +329,10 @@ public class ExistenciasController implements Serializable {
 				/** Creacion del IdExistencia **/
 
 				String codigoAux = existenciasI.maxIdServ(su.UNIDAD_USUARIO_LOGEADO);
-				System.out.println("Este es el id que trae: " + codigoAux);
-
 				String codigoCortado = codigoAux.substring(5, 10);
-				System.out.println("Este es el id convertido en numero: " + codigoCortado);
 
 				Integer codigo = Integer.parseInt(codigoCortado);
 				codigo = codigo + 1;
-				System.out.println("Este es el id oficial: " + codigo);
 
 				String codigoExistencia = codigo.toString();
 				nuevoExistencia.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
@@ -336,25 +361,23 @@ public class ExistenciasController implements Serializable {
 					break;
 				}
 
-				System.out.println("Este es el nuevo id: " + nuevoExistencia.getIdExistencia());
-
-				setNuevaExistenciaSelect(); // setea todos los valores del
-											// Select
-
-				/** GUARDAR **/
-
 				existenciasI.save(nuevoExistencia);
-				existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 
 				mensajeInfo("La existencia (" + nuevoExistencia.getIdExistencia() + ") se ha almacenado exitosamente");
 
+				updateTable();
+
 				nuevoExistencia = new Existencia();
+
+				productos.clear();
+
+				context.execute("PF('nuevoEx').hide();");
 
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			mensajeError("Ha ocurrido un problema");
 
 			e.printStackTrace();
 
@@ -362,13 +385,13 @@ public class ExistenciasController implements Serializable {
 
 	}
 
-	/****** Modificar Estado Producto ****/
+	/****** Modificar Existencia ****/
 
 	public void modificarExistencia() {
 		try {
 
 			existenciasI.update(existencia);
-			existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			updateTable();
 
 			mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha actualizado exitosamente.");
 
@@ -377,14 +400,14 @@ public class ExistenciasController implements Serializable {
 		}
 	}
 
-	/****** Eliminar Estado Producto ****/
+	/****** Eliminar Existencia ****/
 
 	public void eliminarExistencia() {
 
 		try {
 
 			existenciasI.delete(existencia);
-			existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			updateTable();
 			mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
@@ -400,9 +423,71 @@ public class ExistenciasController implements Serializable {
 	}
 
 	/****** Busqueda de Producto ****/
-	public void busquedaGloblal() {
+	public void busquedaGlobal() {
 
 		setProductos(existenciasI.filtrarLista(getNombrePro()));
+	}
+
+	public String onFlowProcess(FlowEvent event) {
+
+		String resultado = event.getNewStep();
+
+		switch (event.getOldStep()) {
+		case "infoTecni":
+
+			if (tipoproductoSelect == null) {
+				resultado = event.getNewStep();
+			} else {
+				if (tipoproductoSelect.getIdTipoprod() == 99999) {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Seleccione el Tipo de Producto.",
+							null);
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					resultado = event.getOldStep();
+				} else {
+
+					resultado = event.getNewStep();
+				}
+			}
+
+			break;
+
+		case "infoGeneral":
+
+			if (unidadmedida2Select.getIdUmedida() == 0) {
+				resultado = event.getNewStep();
+			} else {
+				if (unidadmedida2Select.getIdUmedida() == 99999) {
+
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Seleccione la Unidad de Medida.",
+							null);
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					resultado = event.getOldStep();
+				} else {
+
+					if (nuevoExistencia.getCantidadE().intValue() == 0) {
+
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingrese el Saldo.", null);
+						FacesContext.getCurrentInstance().addMessage(null, msg);
+						resultado = event.getOldStep();
+
+					} else {
+
+						resultado = event.getNewStep();
+					}
+
+				}
+
+			}
+
+			break;
+
+		default:
+
+			break;
+		}
+
+		return resultado;
+
 	}
 
 	/****** Busqueda de ID Existencia ****/
@@ -431,16 +516,12 @@ public class ExistenciasController implements Serializable {
 
 	public void listaMovimientoInventario(String idExistencia) {
 		try {
-			System.out.println("ESTE ES EL ID QUE RECIBE: " + idExistencia);
+
 			setMovimientosinventarios(existenciasI.listarMovimientoById(idExistencia));
-			System.out.println("Numero de Registros traido: " + getMovimientosinventarios().size());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void changeEmpty() {
-		System.out.println("ESTE ES EL VALOR QUE TRAE: " + presentacionSelect.getNombrePrs());
 	}
 
 	/****** Reemplazar valores de la tabla o formulario ****/
@@ -473,8 +554,6 @@ public class ExistenciasController implements Serializable {
 		} else {
 			nombre = hidratacionN.getNombreHi();
 		}
-
-		System.out.println("Esteeeeeeeeeeeeeeeeeeeeeeeeee: " + hidratacionN.getNombreHi());
 
 		return nombre;
 	}
@@ -831,6 +910,22 @@ public class ExistenciasController implements Serializable {
 
 	public void setMovimientosinventarios(List<Movimientosinventario> movimientosinventarios) {
 		this.movimientosinventarios = movimientosinventarios;
+	}
+
+	public Tipoproducto getTempTipoproducto() {
+		return tempTipoproducto;
+	}
+
+	public void setTempTipoproducto(Tipoproducto tempTipoproducto) {
+		this.tempTipoproducto = tempTipoproducto;
+	}
+
+	public Unidadmedida getTempUnidadMedida() {
+		return tempUnidadMedida;
+	}
+
+	public void setTempUnidadMedida(Unidadmedida tempUnidadMedida) {
+		this.tempUnidadMedida = tempUnidadMedida;
 	}
 
 }

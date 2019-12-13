@@ -67,12 +67,12 @@
 
 						<p:dataTable id="tblPosgiro"
 							value="#{posgiroController.listarPosgiros}" var="tipoPosgiro"
-							widgetVar="filterPosgiroTable"
+							widgetVar="filterPosgiro"
 							filteredValue="#{posgiroController.filtrarPosgiros}"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
@@ -133,10 +133,10 @@
 
 			<!-- Panel de Nuevo -->
 
-			<p:dialog id="panelNuevoPosgiro" resizable="true" closable="false"
-				draggable="false" widgetVar="nuevoPosgiro" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Nueva Posgiro">
+			<p:dialog id="panelNuevoPosgiro" resizable="true" draggable="false"
+				widgetVar="nuevoPosgiro" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="40%"
+				header="Nueva Posgiro">
 
 
 				<h:form id="formNuevoPosgiro">
@@ -156,7 +156,11 @@
 							<div class="ui-fluid">
 
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -184,7 +188,7 @@
 									<p:commandButton value="Guardar" icon="fa fa-save"
 										style="width: 115px; margin: 10px"
 										actionListener="#{posgiroController.agregarPosgiro}"
-										oncomplete="PF('nuevoPosgiro'); PF('filterPosgiroTable').filter();"
+										oncomplete="PF('nuevoPosgiro'); PF('filterPosgiro').filter();"
 										process="@this,formNuevoPosgiro"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoPosgiro">
 
@@ -204,10 +208,10 @@
 
 			<!-- Panel de Modificar -->
 
-			<p:dialog id="panelModificarPosgiro" resizable="true" closable="false"
+			<p:dialog id="panelModificarPosgiro" resizable="true"
 				draggable="false" widgetVar="modificarPosgiro" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Nueva Posgiro">
+				dynamic="true" width="40%" header="Nueva Posgiro">
 
 				<h:form id="formModificarPosgiro">
 
@@ -222,9 +226,13 @@
 
 						<br />
 						<br />
-						<center>
+						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
@@ -242,31 +250,32 @@
 									rows="5" cols="30" />
 
 							</p:panelGrid>
-							<br /> <br />
+						</div>
+						<br />
+						<br />
 
-							<center>
+						<center>
 
-								<h:panelGrid columns="2">
+							<h:panelGrid columns="2">
 
-									<p:commandButton value="Modificar" icon="fa fa-edit"
-										style="width: 115px; margin: 5px"
-										actionListener="#{posgiroController.modificarPosgiro}"
-										oncomplete="PF('filterPosgiroTable').filter();"
-										process="@this,formModificarPosgiro"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarPosgiro">
+								<p:commandButton value="Modificar" icon="fa fa-edit"
+									style="width: 115px; margin: 5px"
+									actionListener="#{posgiroController.modificarPosgiro}"
+									oncomplete="PF('filterPosgiro').filter();"
+									process="@this,formModificarPosgiro"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarPosgiro">
 
-									</p:commandButton>
+								</p:commandButton>
 
-									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
-										style="width: 115px; margin: 5px"
-										onclick="PF('modificarPosgiro').hide();" process="@none">
+								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+									style="width: 115px; margin: 5px"
+									onclick="PF('modificarPosgiro').hide();" process="@none">
 
-									</p:commandButton>
-								</h:panelGrid>
-
-							</center>
+								</p:commandButton>
+							</h:panelGrid>
 
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
@@ -283,7 +292,7 @@
 					<center>
 
 						<p:commandButton value="Aceptar"
-							oncomplete="PF('filterPosgiroTable').filter();"
+							oncomplete="PF('filterPosgiro').filter();"
 							onsuccess="PF('eliminarPosgiro').hide();"
 							actionListener="#{posgiroController.eliminarPosgiro}"
 							update="@([id$=messagesForm],[id$=formprincipal],eliminarPosgiro)" />

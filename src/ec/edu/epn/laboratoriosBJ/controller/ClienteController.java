@@ -46,119 +46,130 @@ public class ClienteController implements Serializable {
 	private Cliente cliente;
 	private List<Cliente> listaCliente = new ArrayList<Cliente>();
 	private Cliente nuevoCliente;
-	private String nombreTP;
+
 	private Tipocliente tipoClienteSelect;
-	private List<Tipocliente> tipo = new ArrayList<Tipocliente>();
+	private Tipocliente tipoCliente;
+	private List<Tipocliente> tipoClientes = new ArrayList<Tipocliente>();
+
 	private List<Cliente> filtroCliente;
+
+	private String nombreC;
 
 	@PostConstruct
 	public void init() {
 		try {
 
-			setListaCliente(clienteI.getAll(Cliente.class));
-			setNuevoCliente(new Cliente());
+			listaCliente = clienteI.ListCliente();
 			cliente = new Cliente();
 			nuevoCliente = new Cliente();
-			setTipo(tipoClienteI.getAll(Tipocliente.class));
+
+			tipoCliente = new Tipocliente();
+			tipoClientes = tipoClienteI.getAll(Tipocliente.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	// ****** Modificar Cliente ****//*
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
 
-	public void modificarCliente(ActionEvent event) {
-		try {
-			if (cliente.getNombreCl().equals(getNombreTP())) {
-				
-				cliente.setTipocliente(tipoClienteSelect);
-				clienteI.update(cliente);
-				listaCliente = clienteI.getAll(Cliente.class);
-
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarCliente').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Cliente actualizado exitosamente"));
-
-			} else if (buscarCliente(cliente.getNombreCl()) == false) {
-				cliente.setTipocliente(tipoClienteSelect);
-				clienteI.update(cliente);
-				listaCliente = clienteI.getAll(Cliente.class);
-
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('modificarCliente').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Cliente actualizado exitosamente"));
-			} else {
-
-				listaCliente = clienteI.getAll(Cliente.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Cliente ya existe."));
-			}
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
-		}
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
 	}
 
-	// ************Agregar Cliente************//
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	/****** Agregar Cliente ****/
 
 	public void agregarCliente(ActionEvent event) {
 
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-			if (buscarCliente(nuevoCliente.getNombreCl()) == true) {		
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "Este Cliente ya existe."));
+			if (buscarCliente(nuevoCliente.getNombreCl()) == true) {
 
-				nuevoCliente = new Cliente();
-				
+				mensajeError("El Cliente (" + nuevoCliente.getNombreCl() + ") ya existe.");
+
 			} else {
-				
-				
-				nuevoCliente.setTipocliente(tipoClienteSelect);
-				
-				clienteI.save(nuevoCliente);
-				listaCliente = clienteI.getAll(Cliente.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "El Cliente se ha almacenado exitosamente"));
+				nuevoCliente.setTipocliente(tipoClienteSelect);
+				clienteI.save(nuevoCliente);
+				listaCliente = clienteI.ListCliente();
+
+				mensajeInfo("El Cliente (" + nuevoCliente.getNombreCl() + ") se ha almacenado exitosamente");
 
 				nuevoCliente = new Cliente();
+				tipoCliente = new Tipocliente();
+				tipoClienteSelect = new Tipocliente();
+
+				context.execute("PF('nuevoCliente').hide();");
+
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
-			
+			mensajeError("Ha ocurrido un error");
+
 		}
 
+	}
+
+	// ****** Modificar Cliente ****//*
+
+	public void modificarCliente() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		try {
+			if (cliente.getNombreCl().equals(getNombreC())) {
+
+				clienteI.update(cliente);
+				listaCliente = clienteI.ListCliente();
+
+				mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha actualizado exitosamente");
+				context.execute("PF('modificarCliente').hide();");
+
+			} else if (buscarCliente(cliente.getNombreCl()) == false) {
+
+				clienteI.update(cliente);
+				listaCliente = clienteI.ListCliente();
+
+				mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha actualizado exitosamente");
+				context.execute("PF('modificarCliente').hide();");
+
+			} else {
+
+				listaCliente = clienteI.ListCliente();
+				mensajeError("El Cliente (" + cliente.getNombreCl() + ") ya existe.");
+			}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un problema");
+		}
 	}
 
 	// ****** Eliminar Cliente ****//*
 
-	public void eliminarCliente(ActionEvent event) {
+	public void eliminarCliente() {
 
 		try {
 
 			clienteI.delete(cliente);
-			listaCliente = clienteI.getAll(Cliente.class);
+			listaCliente = clienteI.ListCliente();
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "El Cliente se ha eliminado correctamente"));
+			mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-								"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
+				mensajeError("La tabla Cliente (" + cliente.getNombreCl() + ") tiene relación con otra tabla.");
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "ERROR!", ""));
+				mensajeError("Ha ocurrido un error");
 			}
 
 		}
@@ -189,7 +200,7 @@ public class ClienteController implements Serializable {
 	}
 
 	public void pasarNombre(String nombre) {
-		setNombreTP(nombre);
+		setNombreC(nombre);
 	}
 
 	// ****** Getter y Setters ****//*
@@ -218,12 +229,12 @@ public class ClienteController implements Serializable {
 		this.nuevoCliente = nuevoCliente;
 	}
 
-	public String getNombreTP() {
-		return nombreTP;
+	public String getNombreC() {
+		return nombreC;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setNombreC(String nombreC) {
+		this.nombreC = nombreC;
 	}
 
 	public Tipocliente getTipoClienteSelect() {
@@ -234,21 +245,28 @@ public class ClienteController implements Serializable {
 		this.tipoClienteSelect = tipoClienteSelect;
 	}
 
-
-	public List<Tipocliente> getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(List<Tipocliente> tipo) {
-		this.tipo = tipo;
-	}
-
 	public List<Cliente> getFiltroCliente() {
 		return filtroCliente;
 	}
 
 	public void setFiltroCliente(List<Cliente> filtroCliente) {
 		this.filtroCliente = filtroCliente;
+	}
+
+	public List<Tipocliente> getTipoClientes() {
+		return tipoClientes;
+	}
+
+	public void setTipoClientes(List<Tipocliente> tipoClientes) {
+		this.tipoClientes = tipoClientes;
+	}
+
+	public Tipocliente getTipoCliente() {
+		return tipoCliente;
+	}
+
+	public void setTipoCliente(Tipocliente tipoCliente) {
+		this.tipoCliente = tipoCliente;
 	}
 
 }

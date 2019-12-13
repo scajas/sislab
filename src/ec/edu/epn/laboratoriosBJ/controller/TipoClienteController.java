@@ -23,7 +23,7 @@ import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "tipoClienteController")
 @SessionScoped
-public class TipoClienteController implements Serializable{
+public class TipoClienteController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 1L;
@@ -42,14 +42,15 @@ public class TipoClienteController implements Serializable{
 	private Tipocliente tipoCliente;
 	private List<Tipocliente> listarTipoClientes = new ArrayList<>();
 	private Tipocliente nuevoTipoCliente;
-	private String nombreTP;
-	
+	private String nombreTC;
+
+	private List<Tipocliente> filtrarTC;
 
 	/** METODO INIT **/
 	@PostConstruct
 	public void init() {
 		try {
-			listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
+			listarTipoClientes = tipoClienteI.getLisTC();
 			nuevoTipoCliente = new Tipocliente();
 			tipoCliente = new Tipocliente();
 		} catch (Exception e) {
@@ -57,97 +58,102 @@ public class TipoClienteController implements Serializable{
 		}
 	}
 
-	/** METODO CREAR POSGIRO **/
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	/****** Agregar Tipo Cliente ****/
+
 	public void agregarTipoCliente(ActionEvent event) {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarTipoCliente(nuevoTipoCliente.getTipoTcl()) == true) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-								"Ha ocurrido un error, Tipo Cliente " + nuevoTipoCliente.getTipoTcl() + " ya existe."));
+				mensajeInfo("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") ya existe.");
 
 			} else {
 				tipoClienteI.save(nuevoTipoCliente);
-				listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo Cliente almacenado exitosamente"));
+				listarTipoClientes = tipoClienteI.getLisTC();
+				mensajeInfo("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") se ha almacenado exitosamente");
 				nuevoTipoCliente = new Tipocliente();
+				context.execute("PF('nuevoTipoCliente').hide();");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 
 	}
 
-	/** METODO ELIMINAR POSGIRO **/
+	/****** Editar Tipo Cliente ****/
+
 	public void eliminarTipoCliente(ActionEvent event) {
 		try {
 
 			tipoClienteI.delete(tipoCliente);
-			listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
-
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo Cliente Eliminado exitosamente"));
+			listarTipoClientes = tipoClienteI.getLisTC();
+			mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha eliminado exitosamente");
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE HA PODIDO ELIMINAR EL REGISTRO",
-								"La tabla Tipo Cliente tiene una relacion con otra tabla"));
+				mensajeError(
+						"La tabla Tipo Cliente (" + tipoCliente.getTipoTcl() + ") tiene una relación con otra tabla");
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
+				mensajeError("Ha ocurrido un problema");
 			}
 
 		}
 	}
 
 	/** METODO EDITAR POSGIRO **/
-	public void editarTipoCliente(ActionEvent event) {
+	public void modificarTipoCliente(ActionEvent event) {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
-			if (tipoCliente.getTipoTcl().equals(getNombreTP())) {
+			if (tipoCliente.getTipoTcl().equals(getNombreTC())) {
 				tipoClienteI.update(tipoCliente);
-				listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
-
-				RequestContext context = RequestContext.getCurrentInstance();
+				listarTipoClientes = tipoClienteI.getLisTC();
+				mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarTipoCliente').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo Cliente actualizado exitosamente"));
 
 			} else if (buscarTipoCliente(tipoCliente.getTipoTcl()) == false) {
 				tipoClienteI.update(tipoCliente);
-				listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
-
-				RequestContext context = RequestContext.getCurrentInstance();
+				listarTipoClientes = tipoClienteI.getLisTC();
+				mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarTipoCliente').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Tipo Cliente actualizado exitosamente"));
 			} else {
-				listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "El Tipo Cliente ya existe."));
+				listarTipoClientes = tipoClienteI.getLisTC();
+				mensajeError("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 	}
 
-	/** METODO BUSCAR POSGIRO **/
-	/****** Busqueda de Estado Producto ****/
+	/****** Busqueda de tipo Cliente ****/
 
 	private boolean buscarTipoCliente(String valor) {
-		
+
 		try {
 			listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		boolean resultado = false;
 		for (Tipocliente tipo : listarTipoClientes) {
 			if (tipo.getTipoTcl().equals(valor)) {
@@ -157,24 +163,22 @@ public class TipoClienteController implements Serializable{
 				resultado = false;
 			}
 		}
-		
+
 		return resultado;
 	}
 
 	public void pasarNombre(String nombre) {
-		setNombreTP(nombre);
+		setNombreTC(nombre);
 	}
 
-	/*
-	 * get and set
-	 */
-	
-	public String getNombreTP() {
-		return nombreTP;
+	/****** Getter y Setter de Tipo Cliente ****/
+
+	public String getNombreTC() {
+		return nombreTC;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setNombreTC(String nombreTC) {
+		this.nombreTC = nombreTC;
 	}
 
 	public Tipocliente getTipoCliente() {
@@ -199,6 +203,14 @@ public class TipoClienteController implements Serializable{
 
 	public void setListarTipoClientes(List<Tipocliente> listarTipoClientes) {
 		this.listarTipoClientes = listarTipoClientes;
+	}
+
+	public List<Tipocliente> getFiltrarTC() {
+		return filtrarTC;
+	}
+
+	public void setFiltrarTC(List<Tipocliente> filtrarTC) {
+		this.filtrarTC = filtrarTC;
 	}
 
 }

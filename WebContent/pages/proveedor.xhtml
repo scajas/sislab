@@ -7,7 +7,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:v="http://validators.epn.edu.ec.com"
-	xmlns:ps="http://primefaces.org/spark">
+	xmlns:ps="http://primefaces.org/apark">
 
 
 	<ui:define name="pageTitle">Proveedor</ui:define>
@@ -16,34 +16,30 @@
 		<h:head>
 
 			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
 
-//<![CDATA[
-function printDiv(divName){
-var f =new Date();
-var printContents =document.getElementById(divName).innerHTML;
-var originalContents =document.body.innerHTML;
-document.body.innerHTML=printContents;
-window.print();
-document.body.innerHTML=originalContents;
-}
+		//]]>
 
-//]]>
-
-</script>
+	</script>
 		</h:head>
 
 
 		<h:body>
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
 
-
-			<h:form id="formprincipal">
-
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="3000" />
-
+			<h:form id="formPrincipal">
 				<p:panel>
-
-					<p:fieldset legend="PROVEEDOR"
+					<p:fieldset legend="Proveedor"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -52,86 +48,87 @@ document.body.innerHTML=originalContents;
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
 						;width: '90%';">
+						<br />
+						<br />
 
-						<br />
-						<br />
-						<p:commandLink process="@this"
-							onclick="PF('nuevoProveedor').show()"
-							update="formnuevoProveedor,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						<!-- Boton De Nuevo -->
+
+						<center>
+
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoProveedor').show()"
+								update=":formNuevoProveedor,@this">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
 
 						<p:dataTable id="tblProveedor"
 							value="#{proveedorController.listaProveedorLab}" var="proveedor"
-							widgetVar="filterProveedor"
-							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{proveedorController.filtroProveedor}"
+							widgetVar="tblProveedor"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{proveedorController.filtroProveedor}" rows="10"
+							paginator="true" resizableColumns="true"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
 
-
-
-
-
-
-							<p:column headerText="Nombre" filterBy="#{proveedor.nombrePv}">
+							<p:column headerText="Nombre" filterBy="#{proveedor.nombrePv}"
+								filterMatchMode="contains">
 								<h:outputText value="#{proveedor.nombrePv}" />
-								
 							</p:column>
 
-							<p:column headerText="Tipo"
-								filterBy="#{proveedor.tipoproveedor.idTipoproveedor}">
-								<h:outputText value="#{proveedor.tipoproveedor.idTipoproveedor}" />
-
+							<p:column headerText="Tipo de Proveedor"
+								filterBy="#{proveedor.tipoproveedor.nombreTpv}" effect="fold"
+								filterMatchMode="contains">
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('tblProveedor').filter()"
+										styleClass="custom-filter">
+										<f:selectItem itemLabel="Seleccione..." itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{proveedorController.tipoProveedores}"
+											var="tp" itemLabel="#{tp.nombreTpv}"
+											itemValue="#{tp.nombreTpv}">
+										</f:selectItems>
+									</p:selectOneMenu>
+								</f:facet>
+								<h:outputText value="#{proveedor.tipoproveedor.nombreTpv}" />
 							</p:column>
 
 
-							<p:column headerText="RUC" filterBy="#{proveedor.rucPv}">
+							<p:column headerText="RUC" filterBy="#{proveedor.rucPv}"
+								filterMatchMode="contains">
 								<h:outputText value="#{proveedor.rucPv}" />
-
 							</p:column>
-
 
 							<p:column headerText="Dirección"
-								filterBy="#{proveedor.direccionPv}">
+								filterBy="#{proveedor.direccionPv}" filterMatchMode="contains">
 								<h:outputText value="#{proveedor.direccionPv}" />
-
 							</p:column>
-
 
 							<p:column headerText="Teléfono"
-								filterBy="#{proveedor.telefonoPv}">
+								filterBy="#{proveedor.telefonoPv}" filterMatchMode="contains">
 								<h:outputText value="#{proveedor.telefonoPv}" />
-
 							</p:column>
-
-
 
 							<p:column headerText="Descripción"
-								filterBy="#{proveedor.descrPv}">
+								filterBy="#{proveedor.descrPv}" filterMatchMode="contains">
 								<h:outputText value="#{proveedor.descrPv}" />
-
 							</p:column>
 
-							<!-- ************************************** Botones de Acciones ************************************ -->
-							<p:column headerText="Acciones">
 
+							<!-- **************************  Boton Modificar   *************************** -->
+
+							<p:column headerText="Acciones" style="width: 10%">
 								<center>
 									<p:commandLink
-										action="#{proveedorController.pasarNombre(proveedor.nombrePv)}"
-										update=":formModificarProveedor,@this,@([id$=messagesForm])"
+										action="#{proveedorController.pasarNombre(proveedor.nombrePv,proveedor.tipoproveedor)}"
+										update=":formModificarProveedor,@this"
 										process="@this,tblProveedor" icon="ui-icon-check"
 										oncomplete="PF('modificarProveedor').show();">
 
@@ -146,11 +143,11 @@ document.body.innerHTML=originalContents;
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
-									<!--**************************Botón Eliminar******************************  -->
+									<!-- **************************  Boton Eliminar   *************************** -->
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarProveedor').show();">
+										onclick="PF('eliminarProveedor').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -160,23 +157,24 @@ document.body.innerHTML=originalContents;
 											target="#{proveedorController.proveedor}"
 											value="#{proveedor}">
 										</f:setPropertyActionListener>
-
 									</p:commandLink>
 								</center>
 							</p:column>
+
 						</p:dataTable>
 					</p:fieldset>
 				</p:panel>
+
 			</h:form>
 
-			<!--***********Nuevo**************  -->
+			<!-- Panel de Nuevo -->
 
-			<p:dialog id="panelnuevoProveedor" resizable="true"
+			<p:dialog id="panelNuevoProveedor" resizable="true" draggable="false"
 				widgetVar="nuevoProveedor" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
+				hideEffect="fade" responsive="true" dynamic="true" width="60%"
 				header="Nuevo Proveedor">
 
-				<h:form id="formnuevoProveedor">
+				<h:form id="formNuevoProveedor">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -191,37 +189,36 @@ document.body.innerHTML=originalContents;
 						<br />
 						<center>
 							<div class="ui-fluid">
-
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs, pnlGridFondoFilas">
-
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
+
 									<p:inputText id="nombre"
 										value="#{proveedorController.nuevoProveedor.nombrePv}"
-										maxlength="50" required="true"
-										requiredMessage="Debe ingresar un Proveedor">
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Proveedor"
+										size="30" maxlength="100">
 									</p:inputText>
 
+									<p:outputLabel id="lblTipoProveedor" for="tipoProveedor"
+										value="Tipo de Proveedor: " style="color:white!important" />
 
-									<p:outputLabel id="lblproveedor" for="provee" value="Tipo: "
-										style="color:white!important" />
-									<p:selectOneMenu id="provee"
-										value="#{proveedorController.tipoProveedorSelect.nombreTpv}"
-										maxlength="10" required="true"
-										requiredMessage="Debe ingresar un Tipo Proveedor">
+									<p:selectOneMenu id="tipoProveedor" effect="fold"
+										value="#{proveedorController.tipoProveedorSelect}">
 										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems value="#{proveedorController.tipo}"
-											itemLabel="#{prov.nombreTpv}" itemValue="#{prov.nombreTpv}" var="prov">
+										<f:selectItems value="#{proveedorController.tipoProveedores}"
+											itemLabel="#{tp.nombreTpv}" itemValue="#{tp.idTipoproveedor}"
+											var="tp">
 
 										</f:selectItems>
 
 									</p:selectOneMenu>
-
 
 									<p:outputLabel id="lblRUC" for="ruc" value="RUC: "
 										style="color:white!important" />
@@ -231,8 +228,6 @@ document.body.innerHTML=originalContents;
 										<p:keyFilter for="ruc" mask="num" />
 									</p:inputText>
 
-
-
 									<p:outputLabel id="lblTlf" for="tlf" value="Teléfono: "
 										style="color:white!important" />
 
@@ -240,23 +235,19 @@ document.body.innerHTML=originalContents;
 										value="#{proveedorController.nuevoProveedor.telefonoPv}"
 										maxlength="15" size="30" mask="999-9999" />
 
-
 									<p:outputLabel id="lblDireccion" for="direccion"
 										value="Direccion: " style="color:white!important" />
-									<p:inputText id="direccion"
+									<p:inputTextarea id="direccion"
 										value="#{proveedorController.nuevoProveedor.direccionPv}"
-										maxlength="100">
-									</p:inputText>
-
+										maxlength="100" rows="5" cols="30">
+									</p:inputTextarea>
 
 									<p:outputLabel id="lblEmail" for="email" value="Email: "
 										style="color:white!important" />
 									<p:inputText id="email"
 										value="#{proveedorController.nuevoProveedor.emailPv}"
-										 maxlength="50">
-										
+										maxlength="50">
 									</p:inputText>
-
 
 									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 										style="color:white!important" />
@@ -265,49 +256,41 @@ document.body.innerHTML=originalContents;
 									</p:inputTextarea>
 								</p:panelGrid>
 							</div>
-
-
 							<br /> <br />
-
 							<center>
+
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
 										actionListener="#{proveedorController.agregarProveedor}"
-										process="@this,formnuevoProveedor"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formnuevoProveedor"
-										onsuccess="PF('nuevoProveedor').hide();"
-										oncomplete="PF('filterCliente').filter();">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-										</center>
+										process="@this,formNuevoProveedor"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoProveedor"
+										oncomplete="PF('tblProveedor').filter()">
 
-									</p:commandLink>
+									</p:commandButton>
 
-									<p:commandLink onclick="PF('nuevoProveedor').hide();"
-										process="@none">
-										<h:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</h:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevoProveedor').hide();" process="@none">
+
+									</p:commandButton>
 
 								</h:panelGrid>
 
 							</center>
-
 						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
-			<!--***************************************Modificar**************************************-->
+			<!-- Panel de Modificar -->
 
-			<p:dialog id="panelmodificarProveedor" resizable="true"
-				widgetVar="modificarProveedor" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="35%"
-				header="Modificar Proveedor">
+			<p:dialog id="panelModificarProveedor" resizable="true"
+				closable="false" draggable="false" widgetVar="modificarProveedor"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" header="Modificar Proveedor">
+
 
 				<h:form id="formModificarProveedor">
 
@@ -324,31 +307,26 @@ document.body.innerHTML=originalContents;
 						<br />
 						<center>
 							<div class="ui-fluid">
-								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs,">
 
-
-									<p:outputLabel id="lblNombre" for="nom" value="Nombre: "
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
-									<p:inputText id="nom"
+									<p:inputText id="nombre"
 										value="#{proveedorController.proveedor.nombrePv}"
 										maxlength="50" required="true"
 										requiredMessage="Debe ingresar un Proveedor">
-
 									</p:inputText>
 
-									<p:outputLabel id="lblproveedor" for="provee" value="Tipo: "
-										style="color:white!important" />
-									<p:selectOneMenu id="provee"
-										value="#{proveedorController.tipoProveedorSelect}"
-										maxlength="10" required="true"
-										requiredMessage="Debe ingresar un Tipo Proveedor">
+									<p:outputLabel id="lblTipoProveedor" for="tp"
+										value="Tipo de Proveedor: " style="color:white!important" />
+
+									<p:selectOneMenu id="tp" effect="fold"
+										value="#{proveedorController.tipoProveedorSelect}">
 										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems value="#{proveedorController.tipo}"
-											itemLabel="#{prov.nombreTpv}" itemValue="#{prov}" var="prov">
+										<f:selectItems value="#{proveedorController.tipoProveedores}"
+											itemLabel="#{tp.nombreTpv}" itemValue="#{tp.idTipoproveedor}"
+											var="tp">
 
 										</f:selectItems>
 
@@ -360,7 +338,6 @@ document.body.innerHTML=originalContents;
 										value="#{proveedorController.proveedor.rucPv}" maxlength="13">
 										<p:keyFilter for="ruc" mask="num" />
 									</p:inputText>
-
 
 									<p:outputLabel id="lblTelefono" for="telef" value="Teléfono: "
 										style="color:white!important" />
@@ -377,7 +354,6 @@ document.body.innerHTML=originalContents;
 										maxlength="100">
 									</p:inputText>
 
-
 									<p:outputLabel id="lblEmail" for="email" value="Email: "
 										style="color:white!important" />
 									<p:inputText id="email"
@@ -386,85 +362,73 @@ document.body.innerHTML=originalContents;
 
 									</p:inputText>
 
-
 									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
 										style="color:white!important" />
 									<p:inputTextarea id="desc" rows="5" cols="30" maxlength="100"
-										value="#{proveedorController.proveedor.descrPv}"
-										autoResize="false">
+										value="#{proveedorController.proveedor.descrPv}">
 									</p:inputTextarea>
+
 								</p:panelGrid>
 							</div>
 							<br /> <br />
 
 							<center>
+
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{proveedorController.modificarProveedor}"
-										process="@this,nom,provee,ruc,telef,dire,email,desc"
+										process="@this,formModificarProveedor"
 										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarProveedor"
-										onsuccess="PF('modificarProveedor').hide();">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Modificar" style="border:0px solid #CAD6E0;"
-												width="36" height="35" />
-										</center>
+										oncomplete="PF('tblProveedor').filter()">
 
-									</p:commandLink>
+									</p:commandButton>
 
-									<p:commandLink onclick="PF('modificarProveedor').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarProveedor').hide();" process="@none">
 
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
-
 						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
-			<!--*******************Eliminar**********************************-->
 
-			<h:form id="eliminarProveedor">
-				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Prooveedor"
-					header="Eliminar Proveedor" severity="warn"
-					widgetVar="cdEliminarProveedor">
-					<center>
 
-						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarProveedor').hide();"
-							actionListener="#{proveedorController.eliminarProveedorLab}"
-							update="@([id$=messagesForm],[id$=formPrincipal])"
-							oncomplete="PF('filterCliente').filter();" />
-
-						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarProveedor').hide();" type="button" />
-
-					</center>
-
-				</p:confirmDialog>
-
-			</h:form>
 		</h:body>
 
-
-
 		<script type="text/javascript">
-function start(){
-PF('statusDialog').show();
-} 
+			function start(){
+			PF('statusDialog').show();
+			} 
 
-function stop(){
-PF('statusDialog').hide();
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+			
+
+		</script>
+
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
 }
 
-</script>
+.ui-selectonemenu {
+	width: 50% !important;
+}
+
+.ui-selectonemenu-label {
+	width: 50% !important;
+}
+</style>
 
 	</ui:define>
 </ui:composition>

@@ -108,7 +108,7 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarTipoProveedor').show();">
+										onclick="PF('eliminarTP').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -134,42 +134,49 @@
 
 			<p:dialog id="panelnuevoTP" resizable="false" widgetVar="nuevoTP"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Nuevo Tipo Proveedor" closable="false" draggable="false">
+				responsive="true" dynamic="true" width="40%"
+				header="Nuevo Tipo Proveedor" draggable="false">
 
 				<h:form id="formnuevoTP">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{tipoProveedorController.nuevoTipoProveedor.nombreTpv}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Tipo de Proveedor"
-									size="30" maxlength="50">
-								</p:inputText>
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{tipoProveedorController.nuevoTipoProveedor.descrTpv}"
-									maxlength="200" rows="5" cols="30" />
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{tipoProveedorController.nuevoTipoProveedor.nombreTpv}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Tipo de Proveedor"
+										maxlength="50">
+									</p:inputText>
 
-							</p:panelGrid>
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{tipoProveedorController.nuevoTipoProveedor.descrTpv}"
+										maxlength="200" rows="5" cols="30" />
+
+								</p:panelGrid>
+							</div>
 							<br /> <br />
 
 							<center>
@@ -202,18 +209,18 @@
 			<p:dialog id="panelmodificarTP" resizable="false"
 				widgetVar="modificarTP" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true"
-				header="Modificar Tipo Proveedor" closable="false" draggable="false">
+				header="Modificar Tipo Proveedor" draggable="false" width="40%">
 
 				<h:form id="formModificarTP">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 
 						<br />
@@ -222,7 +229,11 @@
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -230,7 +241,7 @@
 										value="#{tipoProveedorController.tipoproveedor.nombreTpv}"
 										required="true"
 										requiredMessage="Debe ingresar el nombre del Tipo de Proveedor"
-										size="30" maxlength="60">
+										maxlength="60">
 									</p:inputText>
 
 									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
@@ -257,11 +268,11 @@
 
 									</p:commandButton>
 
-									<p:commandButton value ="Atrás " icon="fa fa-arrow-left"
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
 										style="width: 115px; margin: 5px"
 										onclick="PF('modificarTP').hide();" process="@none">
 
-										</p:commandButton>
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -278,19 +289,18 @@
 			<h:form id="eliminarBodega">
 				<p:confirmDialog
 					message="¿Esta seguro(a) que desea eliminar el Tipo Proveedor seleccionado?"
-					header="Eliminar Proveedor" severity="info"
-					widgetVar="cdEliminarTipoProveedor">
+					header="Eliminar Proveedor" severity="info" widgetVar="eliminarTP">
 					<center>
 
 						<p:commandButton value="Aceptar"
 							oncomplete="PF('tblTipoProveedor').filter();"
-							onsuccess="PF('cdEliminarTipoProveedor').hide();"
+							onsuccess="PF('eliminarTP').hide();"
 							actionListener="#{tipoProveedorController.eliminarTipoProveedor}"
 							update="@([id$=messagesForm],[id$=formprincipal])" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarTipoProveedor').hide();" type="button" />
+							onclick="PF('eliminarTP').hide();" type="button" />
 
 					</center>
 
