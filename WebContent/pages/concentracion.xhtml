@@ -134,10 +134,9 @@
 			<!-- Panel Nuevo-->
 
 			<p:dialog id="panelNuevaConcentracion" resizable="true"
-				closable="false" draggable="false" widgetVar="nuevaConcentracion"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" header="Nueva Concentración">
-
+				draggable="false" widgetVar="nuevaConcentracion" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Nueva Concentración">
 
 				<h:form id="formNuevaConcentracion">
 
@@ -154,7 +153,11 @@
 						<br />
 						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -207,10 +210,9 @@
 			<!-- Panel de Nuevo -->
 
 			<p:dialog id="panelModificarConcentracion" resizable="true"
-				closable="false" draggable="false"
-				widgetVar="modificarConcentracion" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Modificar Concentración">
+				draggable="false" widgetVar="modificarConcentracion" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Modificar Concentración">
 
 
 				<h:form id="formModificarConcentracion">
@@ -226,56 +228,58 @@
 
 						<br />
 						<br />
+
+						<div class="ui-fluid">
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{concentracionController.concentracion.nombreCon}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre de la Concentración"
+									size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{concentracionController.concentracion.descrCon}"
+									maxlength="100" rows="5" cols="30" />
+
+							</p:panelGrid>
+
+						</div>
+						<br />
+						<br />
+
 						<center>
 
-							<div class="ui-fluid">
-								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+							<h:panelGrid columns="2">
 
+								<p:commandButton value="Modificar" icon="fa fa-edit"
+									style="width: 115px; margin: 5px"
+									actionListener="#{concentracionController.modificarConcentracion}"
+									process="@this,formModificarConcentracion"
+									update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarConcentracion"
+									oncomplete="PF('tblConcentracion').filter()">
 
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{concentracionController.concentracion.nombreCon}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre de la Concentración"
-										size="30" maxlength="60">
-									</p:inputText>
+								</p:commandButton>
 
-									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-										style="color:white!important" />
-									<p:inputTextarea id="desc"
-										value="#{concentracionController.concentracion.descrCon}"
-										maxlength="100" rows="5" cols="30" />
+								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+									style="width: 115px; margin: 5px"
+									onclick="PF('modificarConcentracion').hide();" process="@none">
 
-								</p:panelGrid>
-
-							</div>
-							<br /> <br />
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandButton value="Modificar" icon="fa fa-edit"
-										style="width: 115px; margin: 5px"
-										actionListener="#{concentracionController.modificarConcentracion}"
-										process="@this,formModificarConcentracion"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarConcentracion"
-										oncomplete="PF('tblConcentracion').filter()">
-
-									</p:commandButton>
-
-									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
-										style="width: 115px; margin: 5px"
-										onclick="PF('modificarConcentracion').hide();" process="@none">
-
-									</p:commandButton>
-								</h:panelGrid>
-
-							</center>
+								</p:commandButton>
+							</h:panelGrid>
 
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>

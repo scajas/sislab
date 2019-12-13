@@ -78,7 +78,6 @@ public class GradoController implements Serializable {
 		try {
 			if (buscarGrado(nuevoGrado.getNombreGr()) == true) {
 				mensajeError("El Grado (" + nuevoGrado.getNombreGr() + ") ya existe.");
-				nuevoGrado = new Grado();
 
 			} else {
 
@@ -139,14 +138,14 @@ public class GradoController implements Serializable {
 			gradoI.delete(grado);
 			Grados = gradoI.getAll(Grado.class);
 
-			mensajeInfo("El Grado (" + grado.getNombreGr() +") se ha eliminado exitosamente");
+			mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				
+
 				mensajeError("La tabla Grado (" + grado.getNombreGr() + ") tiene relación con otra tabla.");
-			
+
 			} else {
 
 				mensajeError("Ha ocurrido un error");

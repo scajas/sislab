@@ -72,7 +72,7 @@
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							resizableColumns="true" rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,15"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
@@ -139,10 +139,9 @@
 			<!-- Panel Nuevo -->
 
 			<p:dialog id="panelnuevaCaracteristica" resizable="true"
-				closable="false" draggable="false" widgetVar="nuevaCaracteristica"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
-				header="Nueva Característica">
+				draggable="false" widgetVar="nuevaCaracteristica" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="35%" header="Nueva Característica">
 
 				<h:form id="formNuevaCaracteristica">
 
@@ -157,58 +156,60 @@
 
 						<br />
 						<br />
+
+						<div class="ui-fluid">
+
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{caracteristicaController.nuevaCaracteristica.nombreCr}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre de la Característica"
+									size="30" maxlength="60">
+								</p:inputText>
+
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{caracteristicaController.nuevaCaracteristica.descrCr}"
+									maxlength="100" rows="5" cols="30" />
+
+							</p:panelGrid>
+
+						</div>
+						<br />
+						<br />
+
+
 						<center>
 
-							<div class="ui-fluid">
+							<h:panelGrid columns="2">
 
-								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{caracteristicaController.agregarCaracteristica}"
+									oncomplete="PF('nuevaCaracteristica'); PF('filterCaracteristicaTable').filter();"
+									process="@this,formNuevaCaracteristica"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaCaracteristica">
 
+								</p:commandButton>
 
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{caracteristicaController.nuevaCaracteristica.nombreCr}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre de la Característica"
-										size="30" maxlength="60">
-									</p:inputText>
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevaCaracteristica').hide();" process="@none">
 
-									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-										style="color:white!important" />
-									<p:inputTextarea id="desc"
-										value="#{caracteristicaController.nuevaCaracteristica.descrCr}"
-										maxlength="100" rows="5" cols="30" />
+								</p:commandButton>
+							</h:panelGrid>
 
-
-								</p:panelGrid>
-
-							</div>
-							<br /> <br />
-
-
-							<center>
-
-								<h:panelGrid columns="2">
-
-									<p:commandButton value="Guardar" icon="fa fa-save"
-										style="width: 115px; margin: 10px"
-										actionListener="#{caracteristicaController.agregarCaracteristica}"
-										oncomplete="PF('nuevaCaracteristica'); PF('filterCaracteristicaTable').filter();"
-										process="@this,formNuevaCaracteristica"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaCaracteristica">
-
-									</p:commandButton>
-
-									<p:commandButton value="Atrás "
-										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-										onclick="PF('nuevaCaracteristica').hide();" process="@none">
-
-									</p:commandButton>
-								</h:panelGrid>
-
-							</center>
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
@@ -216,8 +217,7 @@
 			<!-- Panel de Modificar -->
 
 			<p:dialog id="panelModificarCaracteristica" resizable="true"
-				closable="false" draggable="false"
-				widgetVar="modificarCaracteristica" modal="true"
+				draggable="false" widgetVar="modificarCaracteristica" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
 				dynamic="true" width="35%" header="Modificar Característica">
 
@@ -239,7 +239,11 @@
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -255,7 +259,6 @@
 									<p:inputTextarea id="desc"
 										value="#{caracteristicaController.caracteristica.descrCr}"
 										maxlength="100" rows="5" cols="30" />
-
 
 								</p:panelGrid>
 							</div>

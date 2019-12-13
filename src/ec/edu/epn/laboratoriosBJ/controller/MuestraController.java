@@ -15,6 +15,8 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.context.RequestContext;
+
 import ec.edu.epn.facturacion.entities.EstadoFactura;
 import ec.edu.epn.facturacion.entities.Factura;
 import ec.edu.epn.laboratorioBJ.beans.MuestraDAO;
@@ -62,7 +64,12 @@ public class MuestraController implements Serializable {
 	@PostConstruct
 	public void init() {
 		try {
-			setListaMuestra(muestraI.getAll(Muestra.class));
+
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			listaMuestra = muestraI.ListaMFById(uni.getCodigoU());
+
+			// setListaMuestra(muestraI.getAll(Muestra.class));
 			setNuevaMuestra(new Muestra());
 			muestra = new Muestra();
 
@@ -72,23 +79,8 @@ public class MuestraController implements Serializable {
 
 	}
 
-	/****** Metodo de Busqueda de Facturas ****/
-	public List<Factura> buscarFacturas() { //
-		try {
-
-			Long idUsuario = su.id_usuario_log;
-			listaFactura = muestraI.getListaFacturas(idUsuario.intValue(), su.UNIDAD_USUARIO_LOGEADO);
-			System.out.println("Facturas consultadas" + listaFactura.size());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return listaFactura;
-
-	}
-
 	/****** Mensajes Personalizados ****/
-	
+
 	public void mensajeError(String mensaje) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -96,7 +88,7 @@ public class MuestraController implements Serializable {
 	}
 
 	public void mensajeInfo(String mensaje) {
-		
+
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
@@ -106,11 +98,12 @@ public class MuestraController implements Serializable {
 
 	public void agregarMuestra() {
 
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarMuesta(nuevaMuestra.getCodigoMCliente()) == true) {
 
-				mensajeError(
-						"Ha ocurrido un error, La Muestra ( " + nuevaMuestra.getCodigoMCliente() + " ) ya existe.");
+				mensajeError("La Muestra (" + nuevaMuestra.getCodigoMCliente() + " ) ya existe.");
 			} else {
 
 				Integer idMuestra = muestraI.generarId("Muestra", "auxMuestra");
@@ -143,15 +136,16 @@ public class MuestraController implements Serializable {
 				muestraI.save(nuevaMuestra);
 				listaMuestra = muestraI.getAll(Muestra.class);
 
-				mensajeInfo("La muestra ( " + nuevaMuestra.getCodigoMCliente() + " ) se ha almacenado exitosamente");
+				mensajeInfo("La muestra (" + nuevaMuestra.getCodigoMCliente() + ") se ha almacenado exitosamente");
 
 				nuevaMuestra = new Muestra();
+				context.execute("PF('nuevaMuestra').hide();");
 
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			mensajeError("Ha ocurrido un problema");
 
 		}
 
@@ -161,27 +155,33 @@ public class MuestraController implements Serializable {
 
 	public void modificarMuestra() {
 
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (muestra.getCodigoMCliente().equals(getNombreMuestra())) {
 				muestraI.update(muestra);
 				listaMuestra = muestraI.getAll(Muestra.class);
 
-				mensajeInfo("La Muestra ( " + muestra.getCodigoMCliente() + " ) se ha actualizado exitosamente");
+				mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
+
+				context.execute("PF('modificarMuestra').hide();");
 
 			} else if (buscarMuesta(muestra.getCodigoMCliente()) == false) {
 				muestraI.update(muestra);
 				listaMuestra = muestraI.getAll(Muestra.class);
 
-				mensajeInfo("La Muestra ( " + muestra.getCodigoMCliente() + " ) se ha actualizado exitosamente");
+				mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
+
+				context.execute("PF('modificarMuestra').hide();");
 
 			} else {
-				mensajeError("La Muestra ( " + muestra.getCodigoMCliente() + " ) ya existe");
+				mensajeError("La Muestra (" + muestra.getCodigoMCliente() + ") ya existe");
 
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -194,21 +194,35 @@ public class MuestraController implements Serializable {
 			muestraI.delete(muestra);
 			listaMuestra = muestraI.getAll(Muestra.class);
 
-			mensajeInfo("La Muestra ( " + muestra.getCodigoMCliente() + " ) se ha eliminado correctamente");
+			mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Muestra tiene relación con otra tabla");
+				mensajeError("La tabla Muestra (" + muestra.getCodigoMCliente() + ") tiene relación con otra tabla");
 
 			} else {
 
-				mensajeError("Ha ocurrido un error");
+				mensajeError("Ha ocurrido un problema");
 
 			}
 
 		}
+
+	}
+
+	/****** Metodo de Busqueda de Facturas ****/
+	public List<Factura> buscarFacturas() { //
+		try {
+
+			Long idUsuario = su.id_usuario_log;
+			listaFactura = muestraI.getListaFacturas(idUsuario.intValue(), su.UNIDAD_USUARIO_LOGEADO);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return listaFactura;
 
 	}
 
@@ -242,17 +256,14 @@ public class MuestraController implements Serializable {
 	}
 
 	/****** Selección de Facturas ****/
-	
+
 	public void seleccionarFactura() {
 
 		try {
 			getNuevaMuestra().setIdFactura(selectFactura.getIdFactura());
 			mensajeInfo("Se seleccionó la Factura (" + selectFactura.getIdFactura());
-			System.out.println(
-					"este es el id de factura: " + selectFactura.getIdFactura() + getNuevaMuestra().getIdFactura());
-			
-			selectFactura= new Factura();
-			
+			selectFactura = new Factura();
+
 		} catch (Exception e) {
 			mensajeError("No se ha seleccionado ninguna factura");
 		}
@@ -260,7 +271,7 @@ public class MuestraController implements Serializable {
 	}
 
 	/****** Metodo de Obtener Facturas ****/
-	
+
 	public String metodo(String idEstadoFactura) {
 		String nombre = "";
 

@@ -69,29 +69,26 @@ public class ServicioController implements Serializable {
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
 	private UnidadDAO unidadI;
 
+	// Tipo servicio
+
 	private Servicio servicio;
-	private List<Servicio> listServicio = new ArrayList<Servicio>();
+	private List<Servicio> servicios = new ArrayList<Servicio>();
+	private Servicio nuevoServicio;
+	private List<Servicio> filtroServicios;
 
-	// Select UnidadLAb
-	private UnidadLabo tipoUnidadSelect;
-	private List<UnidadLabo> listUnidadLabo = new ArrayList<UnidadLabo>();
-	private UnidadLabo tipoUnidad;
-
-	// select Tipo servicio
+	// Tipo servicio
 
 	private Tiposervicio tipoServicioSelect;
-	private List<Tiposervicio> listarTipoServicio = new ArrayList<Tiposervicio>();
-	private Tiposervicio tiposerv;
+	private List<Tiposervicio> tipoServicios = new ArrayList<Tiposervicio>();
+	private Tiposervicio tiposervicio;
 
-	// select Laboratorio
+	// Laboratorio
 	private LaboratorioLab laboratorioLabSelect;
-	private List<LaboratorioLab> listarLaboratoriosLab = new ArrayList<LaboratorioLab>();
+	private List<LaboratorioLab> laboratorios = new ArrayList<LaboratorioLab>(); // unidad
 	private LaboratorioLab laboratorioLab;
 
-	private List<Servicio> filtroServicio = new ArrayList<>();
-	private Servicio nuevoServicio;
 	private String nombreS;
-
+	private String idTipoS;
 	private StreamedContent streamFile = null;
 
 	// Metodo Init
@@ -99,48 +96,60 @@ public class ServicioController implements Serializable {
 	public void init() {
 		try {
 
-			listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			setNuevoServicio(new Servicio());
+			// uni = (UnidadLabo) unidadI.getById(UnidadLabo.class,
+			// su.UNIDAD_USUARIO_LOGEADO);
+			servicios = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+
 			servicio = new Servicio();
 			nuevoServicio = new Servicio();
 
-			setListarLaboratoriosLab(servicioI.listaLaboratorioUnidad(su.UNIDAD_USUARIO_LOGEADO));
-			System.out.println("numero de lista lab: " + getListarLaboratoriosLab().size());
-			setListarTipoServicio(tipoServicioI.getAll(Tiposervicio.class));
-
 			// tipo servicio
-			listarTipoServicio = tipoServicioI.getAll(Tiposervicio.class);
-			tiposerv = new Tiposervicio();
+			setTipoServicios(tipoServicioI.getAll(Tiposervicio.class));
+			setTiposervicio(new Tiposervicio());
 
 			// Laboratorio
-			listarLaboratoriosLab = servicioI.listaLaboratorioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			laboratorios = servicioI.listaLaboratorioUnidad(su.UNIDAD_USUARIO_LOGEADO);
 			laboratorioLab = new LaboratorioLab();
-
-			listUnidadLabo = unidadI.getAll(UnidadLabo.class);
-			tipoUnidad = new UnidadLabo();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void agregarServicio(ActionEvent event) {
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	public void updateTable() {
+		try {
+			servicios = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+		} catch (Exception e) {
+
+		}
+	}
+
+	public void createIdExistencia() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
 
 		try {
 
 			String codigoAux = servicioI.maxIdServ(su.UNIDAD_USUARIO_LOGEADO);
-			System.out.println("Este es el id que trae: " + codigoAux);
-			
 			String codigoCortado = codigoAux.substring(4, 8);
-			System.out.println("Este es el id convertido en numero: " + codigoCortado);
-			
 			Integer codigo = Integer.parseInt(codigoCortado);
 			codigo = codigo + 1;
-			System.out.println("Este es el id oficial: " + codigo);
-			
+
 			String codigoFinal = codigo.toString();
-			
-			System.out.println("Este es el id oficialdddddddddddddddddddddddddddddddddddddddddddd: " + codigoFinal);
 
 			UnidadLabo uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 
@@ -155,111 +164,113 @@ public class ServicioController implements Serializable {
 			case 3:
 				nuevoServicio.setIdServicio(uni.getCodigoU() + "-S" + "0" + codigoFinal);
 				break;
-				
+
 			case 4:
 				nuevoServicio.setIdServicio(uni.getCodigoU() + "-S" + codigoFinal);
 				break;
-		
 
 			default:
 				break;
 			}
-			
-			System.out.println("Este se almacenaa: " + nuevoServicio.getIdServicio());
 
-			nuevoServicio.setTiposervicio(tipoServicioSelect);
 			nuevoServicio.setLaboratorio(laboratorioLabSelect);
+			nuevoServicio.setTiposervicio(tipoServicioSelect);
 
 			servicioI.save(nuevoServicio);
-			listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			mensajeInfo("El Servicio (" + nuevoServicio.getNombreS() + ") se ha almacenado exitosamente");
 
-			if (nuevoServicio.getTiposervicio().getNombreTs().equals("Analisis Interno")) {
-				if (nuevoServicio.getPrecioS() == 0) {
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(), new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, "", "El análisis interno no puede registrar un precio (0)"));
-				} else {
-					servicioI.save(nuevoServicio);
-					listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			updateTable();
+			nuevoServicio = new Servicio();
+			tipoServicioSelect = new Tiposervicio();
+			laboratorioLabSelect = new LaboratorioLab();
 
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(), new FacesMessage(
-							FacesMessage.SEVERITY_INFO, "", "El Servicio se ha almacenado exitosamente"));
-
-					nuevoServicio = new Servicio();
-					tipoServicioSelect = new Tiposervicio();
-					laboratorioLabSelect = new LaboratorioLab();
-				}
-			} else {
-				servicioI.save(nuevoServicio);
-				listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "El Servicio se ha almacenado exitosamente"));
-
-				nuevoServicio = new Servicio();
-				tipoServicioSelect = new Tiposervicio();
-				laboratorioLabSelect = new LaboratorioLab();
-			}
+			context.execute("PF('nuevoS').hide();");
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "Consulte por ayuda "));
+			e.printStackTrace();
 		}
 
 	}
 
-	public void modificarServivio(ActionEvent event) {
+	public void agregarServicio() {
+
+		try {
+
+			if (buscarServicio(nuevoServicio.getNombreS()) == true) {
+
+				mensajeError("El Servicio (" + nuevoServicio.getNombreS() + ") ya existe.");
+
+			} else if (tipoServicioSelect.getIdTiposerv() == 5) {
+
+				System.out.println("Entro a la validación de Analisis Interno");
+				createIdExistencia();
+
+			} else if (nuevoServicio.getPrecioS() == 0) {
+
+				System.out.println("Entro a la validación del Precio");
+
+				mensajeError("El Precio tiene que ser mayor a cero");
+
+			} else {
+				createIdExistencia();
+			}
+
+		} catch (Exception e) {
+			mensajeError("ha ocurrido un problema");
+			e.printStackTrace();
+		}
+
+	}
+
+	public void modificarServicio() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 
 			if (servicio.getNombreS().equals(getNombreS())) {
+
 				servicioI.update(servicio);
-				listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+				updateTable();
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha actualizado exitosamente");
+
 				context.execute("PF('modificarS').hide();");
-
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Servicio actualizado exitosamente"));
 
 			} else if (buscarServicio(servicio.getNombreS()) == false) {
+
 				servicioI.update(servicio);
-				listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+				updateTable();
 
-				RequestContext context = RequestContext.getCurrentInstance();
+				mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha actualizado exitosamente");
+
 				context.execute("PF('modificarS').hide();");
+			}
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Servicio actualizado exitosamente"));
-			} else {
-				listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error",
-								"La Bodega (" + nuevoServicio.getNombreS() + ") ya existe."));
+			else {
+
+				mensajeError("El Servicio (" + nuevoServicio.getNombreS() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 	}
 
-	public void eliminarServicio(ActionEvent event) {
+	public void eliminarServicio() {
 		try {
 
 			servicioI.delete(servicio);
-			listServicio = servicioI.listaServicioUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			updateTable();
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Servicio eliminada exitosamente"));
+			mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-								"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
+				mensajeError("La tabla Servicio (" + servicio.getNombreS() + ") tiene relación con otra tabla");
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
+				mensajeError("Ha ocurrido un problema");
 			}
 
 		}
@@ -269,21 +280,17 @@ public class ServicioController implements Serializable {
 
 		nuevoServicio.setTiposervicio(tipoServicioSelect);
 
-		listServicio = servicioI.getparametrosTipoServicio(nuevoServicio.getTiposervicio().getNombreTs());
+		servicios = servicioI.getparametrosTipoServicio(nuevoServicio.getTiposervicio().getNombreTs());
 
-		System.out.print("Numero de servicios obtenidos: " + listServicio.size());
-
-		tiposerv = new Tiposervicio();
+		tiposervicio = new Tiposervicio();
 	}
 
 	public void buscarTipoServicio() {
 
 		try {
 
-			listarTipoServicio = tipoServicioI.getAll(Tiposervicio.class);
-			// System.out.println("misdatos:"+aplicacion.getId());
+			tipoServicios = tipoServicioI.getAll(Tiposervicio.class);
 
-			System.out.println("Tipo Servicio Seleccionado" + tiposerv.getNombreTs());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -291,12 +298,12 @@ public class ServicioController implements Serializable {
 
 	private boolean buscarServicio(String valor) {
 		try {
-			listServicio = servicioI.getAll(Servicio.class);
+			servicios = servicioI.getAll(Servicio.class);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		boolean resultado = false;
-		for (Servicio tipo : listServicio) {
+		for (Servicio tipo : servicios) {
 			if (tipo.getNombreS().equals(valor)) {
 				resultado = true;
 				break;
@@ -309,15 +316,15 @@ public class ServicioController implements Serializable {
 
 	public void buscarServicioReporte() {
 		try {
-			listServicio = servicioI.listaServicioXTipo(tipoServicioSelect.getIdTiposerv());
+			servicios = servicioI.listaServicioXTipo(tipoServicioSelect.getIdTiposerv());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	public void pasarNombre(Tiposervicio tipoServicio) {
-		this.tipoServicioSelect = tipoServicio;
+	public void pasarNombre(String nombre) {
+		setNombreS(nombre);
 	}
 
 	public void generarPDF(ActionEvent event) throws Exception {
@@ -336,23 +343,6 @@ public class ServicioController implements Serializable {
 			} else {
 				direccion = direccion + "/";
 			}
-
-			/** DIRECCION IMAGENES */
-			/*
-			 * String direccionImagenes=
-			 * FacesContext.getCurrentInstance().getExternalContext().
-			 * getRealPath("images/logoSII/");
-			 * 
-			 * 
-			 * if(direccionImagenes.toUpperCase().contains("C:") ||
-			 * direccionImagenes.toUpperCase().contains("D:") ||
-			 * direccionImagenes.toUpperCase().contains("E:") ||
-			 * direccionImagenes.toUpperCase().contains("F:")){
-			 * direccionImagenes= direccionImagenes + "\\"; }else{
-			 * direccionImagenes= direccionImagenes + "/"; }
-			 * 
-			 * parametros.put("imagesDir", direccionImagenes);
-			 */
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
 					.getRealPath("/reportes/ReporteServicio1.jrxml");
@@ -394,23 +384,6 @@ public class ServicioController implements Serializable {
 			} else {
 				direccion = direccion + "/";
 			}
-
-			/** DIRECCION IMAGENES */
-			/*
-			 * String direccionImagenes=
-			 * FacesContext.getCurrentInstance().getExternalContext().
-			 * getRealPath("images/logoSII/");
-			 * 
-			 * 
-			 * if(direccionImagenes.toUpperCase().contains("C:") ||
-			 * direccionImagenes.toUpperCase().contains("D:") ||
-			 * direccionImagenes.toUpperCase().contains("E:") ||
-			 * direccionImagenes.toUpperCase().contains("F:")){
-			 * direccionImagenes= direccionImagenes + "\\"; }else{
-			 * direccionImagenes= direccionImagenes + "/"; }
-			 * 
-			 * parametros.put("imagesDir", direccionImagenes);
-			 */
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
 					.getRealPath("/reportes/ReporteServicio1.jrxml");
@@ -479,22 +452,6 @@ public class ServicioController implements Serializable {
 		this.nombreS = nombreS;
 	}
 
-	public List<Servicio> getListServicio() {
-		return listServicio;
-	}
-
-	public void setListServicio(List<Servicio> listServicio) {
-		this.listServicio = listServicio;
-	}
-
-	public List<Servicio> getFiltroServicio() {
-		return filtroServicio;
-	}
-
-	public void setFiltroServicio(List<Servicio> filtroServicio) {
-		this.filtroServicio = filtroServicio;
-	}
-
 	public Tiposervicio getTipoServicioSelect() {
 		return tipoServicioSelect;
 	}
@@ -503,60 +460,12 @@ public class ServicioController implements Serializable {
 		this.tipoServicioSelect = tipoServicioSelect;
 	}
 
-	public List<UnidadLabo> getListUnidadLabo() {
-		return listUnidadLabo;
-	}
-
-	public void setListUnidadLabo(List<UnidadLabo> listUnidadLabo) {
-		this.listUnidadLabo = listUnidadLabo;
-	}
-
-	public UnidadLabo getTipoUnidadSelect() {
-		return tipoUnidadSelect;
-	}
-
-	public void setTipoUnidadSelect(UnidadLabo tipoUnidadSelect) {
-		this.tipoUnidadSelect = tipoUnidadSelect;
-	}
-
-	public UnidadLabo getTipoUnidad() {
-		return tipoUnidad;
-	}
-
-	public void setTipoUnidad(UnidadLabo tipoUnidad) {
-		this.tipoUnidad = tipoUnidad;
-	}
-
-	public List<Tiposervicio> getListarTipoServicio() {
-		return listarTipoServicio;
-	}
-
-	public void setListarTipoServicio(List<Tiposervicio> listarTipoServicio) {
-		this.listarTipoServicio = listarTipoServicio;
-	}
-
-	public Tiposervicio getTiposerv() {
-		return tiposerv;
-	}
-
-	public void setTiposerv(Tiposervicio tiposerv) {
-		this.tiposerv = tiposerv;
-	}
-
 	public LaboratorioLab getLaboratorioLabSelect() {
 		return laboratorioLabSelect;
 	}
 
 	public void setLaboratorioLabSelect(LaboratorioLab laboratorioLabSelect) {
 		this.laboratorioLabSelect = laboratorioLabSelect;
-	}
-
-	public List<LaboratorioLab> getListarLaboratoriosLab() {
-		return listarLaboratoriosLab;
-	}
-
-	public void setListarLaboratoriosLab(List<LaboratorioLab> listarLaboratoriosLab) {
-		this.listarLaboratoriosLab = listarLaboratoriosLab;
 	}
 
 	public LaboratorioLab getLaboratorioLab() {
@@ -577,6 +486,54 @@ public class ServicioController implements Serializable {
 
 	public StreamedContent getStreamFile() {
 		return streamFile;
+	}
+
+	public List<LaboratorioLab> getLaboratorios() {
+		return laboratorios;
+	}
+
+	public void setLaboratorios(List<LaboratorioLab> laboratorios) {
+		this.laboratorios = laboratorios;
+	}
+
+	public Tiposervicio getTiposervicio() {
+		return tiposervicio;
+	}
+
+	public void setTiposervicio(Tiposervicio tiposervicio) {
+		this.tiposervicio = tiposervicio;
+	}
+
+	public List<Tiposervicio> getTipoServicios() {
+		return tipoServicios;
+	}
+
+	public void setTipoServicios(List<Tiposervicio> tipoServicios) {
+		this.tipoServicios = tipoServicios;
+	}
+
+	public List<Servicio> getServicios() {
+		return servicios;
+	}
+
+	public void setServicios(List<Servicio> servicios) {
+		this.servicios = servicios;
+	}
+
+	public List<Servicio> getFiltroServicios() {
+		return filtroServicios;
+	}
+
+	public void setFiltroServicios(List<Servicio> filtroServicios) {
+		this.filtroServicios = filtroServicios;
+	}
+
+	public String getIdTipoS() {
+		return idTipoS;
+	}
+
+	public void setIdTipoS(String idTipoS) {
+		this.idTipoS = idTipoS;
 	}
 
 }

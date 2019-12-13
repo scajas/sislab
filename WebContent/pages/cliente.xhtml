@@ -32,18 +32,15 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
 
-
-			<h:form id="formprincipal">
-
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="3000" />
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
+			<h:form id="formPrincipal">
 
 				<p:panel>
 
-					<p:fieldset legend="CLIENTE"
+					<p:fieldset legend="Cliente"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -55,26 +52,25 @@
 
 						<br />
 						<br />
+						<!-- Boton De Nuevo -->
 
-						<p:commandLink process="@this" onclick="PF('nuevoCliente').show()"
-							update="formnuevoCliente,@this,@([id$=messagesForm])">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevoCliente').show()"
+								update="formNuevoCliente,@this">
+
+							</p:commandButton>
+
+						</center>
 						<br />
 						<br />
-
 
 						<p:dataTable id="tblCliente"
 							value="#{clienteController.listaCliente}" var="cliente"
 							widgetVar="filterCliente"
-							emptyMessage="No se pudo encontrar ninguna coincidencia" filteredValue="#{clienteController.filtroCliente}"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{clienteController.filtroCliente}"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
@@ -83,23 +79,39 @@
 							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
 
 
-							<p:column headerText="Nombre" filterBy="#{cliente.nombreCl}">
+							<p:column headerText="Nombre" filterBy="#{cliente.nombreCl}"
+								filterMatchMode="contains">
 								<h:outputText value="#{cliente.nombreCl}" />
 							</p:column>
 
-							<p:column headerText="Tipo" filterBy="#{cliente.tipocliente}">
+							<p:column headerText="Tipo de Cliente"
+								filterBy="#{cliente.tipocliente.tipoTcl}" effect="fold"
+								filterMatchMode="contains" style="width: 20%">
+								<f:facet name="filter">
+									<p:selectOneMenu onchange="PF('filterCliente').filter()"
+										styleClass="custom-filter" autoWidth="false">
+										<f:selectItem itemLabel="Seleccione..." itemValue="#{null}"
+											noSelectionOption="true" />
+										<f:selectItems value="#{clienteController.tipoClientes}"
+											var="tc" itemLabel="#{tc.tipoTcl}" itemValue="#{tc.tipoTcl}">
+										</f:selectItems>
+									</p:selectOneMenu>
+								</f:facet>
 								<h:outputText value="#{cliente.tipocliente.tipoTcl}" />
 							</p:column>
 
-							<p:column headerText="Cédula" filterBy="#{cliente.cedula}">
+							<p:column headerText="Cédula" filterBy="#{cliente.cedula}"
+								filterMatchMode="contains">
 								<h:outputText value="#{cliente.cedula}" />
 							</p:column>
 
-							<p:column headerText="RUC" filterBy="#{cliente.rucCl}">
+							<p:column headerText="RUC" filterBy="#{cliente.rucCl}"
+								filterMatchMode="contains">
 								<h:outputText value="#{cliente.rucCl}" />
 							</p:column>
 
-							<p:column headerText="Dirección" filterBy="#{cliente.nombreCl}">
+							<p:column headerText="Dirección" filterBy="#{cliente.nombreCl}"
+								filterMatchMode="contains">
 								<h:outputText value="#{cliente.direccionCl}" />
 
 							</p:column>
@@ -112,23 +124,22 @@
 								<center>
 									<p:commandLink
 										action="#{clienteController.pasarNombre(cliente.nombreCl)}"
-										update=":formModificarCliente,@this,@([id$=messagesForm])"
+										update=":formModificarCliente,@this"
 										process="@this,tblCliente" icon="ui-icon-check"
 										oncomplete="PF('modificarCliente').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
-
 										<f:setPropertyActionListener
 											target="#{clienteController.cliente}" value="#{cliente}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
+									<!-- **************************  Boton Eliminar   *************************** -->
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarCliente').show();">
+										onclick="PF('eliminarCliente').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
@@ -148,12 +159,12 @@
 
 			<!--***********Nuevo**************  -->
 
-			<p:dialog id="panelnuevoCliente" resizable="true"
-				widgetVar="nuevoCliente" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="65%"
+			<p:dialog id="panelNuevoCliente" resizable="true" draggable="false"
+				widgetVar="nuevoCliente" responsive="true" modal="true"
+				showEffect="explode" hideEffect="fade" dynamic="true" width="65%"
 				header="Nuevo Cliente">
 
-				<h:form id="formnuevoCliente">
+				<h:form id="formNuevoCliente">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -167,94 +178,95 @@
 						<br />
 						<br />
 						<center>
+
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs, pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;"
+									layout="grid">
 
 									<p:outputLabel id="lblCliente" for="cliente" value="Tipo: "
 										style="color:white!important" />
-									<p:selectOneMenu id="cliente"
-										value="#{clienteController.tipoClienteSelect}" maxlength="10"
-										requiredMessage="Debe ingresar un Tipo Cliente">
+									<p:selectOneMenu id="cliente" autoWidth="false" effect="fold"
+										styleClass="custom-filter"
+										value="#{clienteController.tipoClienteSelect}" required="true"
+										requiredMessage="Debe ingresar un Tipo Cliente" filter="true"
+										filterMatchMode="contains">
 										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems value="#{clienteController.tipo}"
+										<f:selectItems value="#{clienteController.tipoClientes}"
 											itemLabel="#{cli.tipoTcl}" itemValue="#{cli}" var="cli">
-
 										</f:selectItems>
 
 									</p:selectOneMenu>
 
 									<p:outputLabel id="lblCedula" for="cedu" value="Cédula: "
 										style="color:white!important" />
-									<p:inputText id="cedu"
+
+									<p:inputMask id="cedu"
 										value="#{clienteController.nuevoCliente.cedula}"
-										maxlength="10" required="true">
-										<p:keyFilter for="cedu" mask="num"/>
-									</p:inputText>
+										maxlength="10" required="true" mask="9999999999">
+									</p:inputMask>
 
 									<p:outputLabel id="lblRUC" for="ruc" value="RUC: "
 										style="color:white!important" />
-									<p:inputText id="ruc"
-										value="#{clienteController.nuevoCliente.rucCl}" maxlength="13">
-										<p:keyFilter for="ruc" mask="num" />
-									</p:inputText>
+									<p:inputMask id="ruc"
+										value="#{clienteController.nuevoCliente.rucCl}" maxlength="13"
+										mask="9999999999999">
 
+									</p:inputMask>
 
 									<p:outputLabel id="lblNombre" for="nom" value="Nombre: "
 										style="color:white!important" />
 									<p:inputText id="nom"
 										value="#{clienteController.nuevoCliente.nombreCl}"
 										maxlength="200" required="true"
-										requiredMessage="Debe ingresar un Cliente">
+										requiredMessage="Debe ingresar el nombre del Cliente">
 									</p:inputText>
-									
+
 									<p:outputLabel id="lblDeesc" for="desc" value="Dirección "
 										style="color:white!important" />
-									<p:inputText id="desc"
+
+									<p:inputTextarea id="desc"
 										value="#{clienteController.nuevoCliente.direccionCl}"
-										maxlength="100" autoResize="false">
-									</p:inputText>
+										maxlength="100" rows="5" cols="30">
+									</p:inputTextarea>
 
 									<p:outputLabel id="lblTlfConv" for="tlfcon" value="Telf Conv: "
 										style="color:white!important" />
-										
+
 									<p:inputMask id="tlfcon"
 										value="#{clienteController.nuevoCliente.telefonoCl}"
-										maxlength="15" size="30" mask="999-9999" />
-									
+										maxlength="15" size="30" mask="9999999" />
 
 									<p:outputLabel id="lblTlfcel" for="tlfcel" value="Celular: "
 										style="color:white!important" />
-									<p:inputText id="tlfcel"
+									<p:inputMask id="tlfcel"
 										value="#{clienteController.nuevoCliente.celularCl}"
-										maxlength="15">
-										<p:keyFilter for="tlfcel" mask="num" />
-									</p:inputText>
+										maxlength="15" mask="9999999999">
+									</p:inputMask>
 
 									<p:outputLabel id="lblTlfotro" for="tlfotro"
 										value="Telf Otro: " style="color:white!important" />
 									<p:inputMask id="tlfotro"
 										value="#{clienteController.nuevoCliente.otrofonoCl}"
-										maxlength="15" size="30" mask="999-9999" />
+										maxlength="15" size="30" mask="9999999" />
 
 									<p:outputLabel id="lblFAX" for="fax" value="Fax: "
 										style="color:white!important" />
 									<p:inputMask id="fax"
-										value="#{clienteController.nuevoCliente.faxCl}"
-										maxlength="15" size="30" mask="999-9999" />
+										value="#{clienteController.nuevoCliente.faxCl}" maxlength="15"
+										size="30" mask="9999999" />
 
-									<p:outputLabel id="lblEmail" for="email" value="Email: "
+									<p:outputLabel id="lblEmail" for="email" value="Emails: "
 										style="color:white!important" />
 									<p:inputText id="email"
 										value="#{clienteController.nuevoCliente.emailCl}"
-										validatorMessage="Email no válido" maxlength="50">
+										validatorMessage="Formato de correo no válido" maxlength="50">
 										<f:validateRegex
 											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 									</p:inputText>
-
 
 									<p:outputLabel id="lblContacto" for="cont" value="Contacto: "
 										style="color:white!important" />
@@ -269,31 +281,23 @@
 							<center>
 								<h:panelGrid columns="2">
 
-									<h:commandLink
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px"
 										actionListener="#{clienteController.agregarCliente}"
-										process="@this,cliente,cedu,ruc,nom,desc,tlfcon,tlfcel,tlfotro,fax,email,cont"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formnuevoCliente"
-										onsuccess="PF('nuevoCliente').hide();"
+										process="@this,formNuevoCliente"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoCliente"
 										oncomplete="PF('filterCliente').filter();">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
-										</center>
 
-									</h:commandLink>
+									</p:commandButton>
 
-									<p:commandLink onclick="PF('nuevoCliente').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('nuevoCliente').hide();" process="@none">
 
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
-
 						</center>
 					</p:fieldset>
 				</h:form>
@@ -302,10 +306,10 @@
 			<!--***************************************Modificar**************************************-->
 
 
-			<p:dialog id="panelmodificarCliente" resizable="true"
-				widgetVar="modificarCliente" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="65%"
-				header="Modificar Cliente">
+			<p:dialog id="panelModificarCliente" resizable="true"
+				draggable="false" widgetVar="modificarCliente" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="65%" header="Modificar Cliente">
 
 				<h:form id="formModificarCliente">
 
@@ -323,95 +327,101 @@
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs, pnlGridFondoFilas,pnlGridAjusteDivs">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;"
+									layout="grid">
 
 									<p:outputLabel id="lblCliente" for="cliente" value="Tipo: "
 										style="color:white!important" />
-									<p:selectOneMenu id="cliente"
-										value="#{clienteController.tipoClienteSelect}"
-										maxlength="10">
+									<p:selectOneMenu id="cliente" autoWidth="false"
+										styleClass="custom-filter"
+										value="#{clienteController.cliente.tipocliente.idTipocliente}"
+										required="true"
+										requiredMessage="Debe ingresar un Tipo Cliente">
 										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems value="#{clienteController.tipo}"
-											itemLabel="#{cli.tipoTcl}" itemValue="#{cli}" var="cli">
-
+										<f:selectItems value="#{clienteController.tipoClientes}"
+											itemLabel="#{cli.tipoTcl}" itemValue="#{cli.idTipocliente}"
+											var="cli">
 										</f:selectItems>
 
 									</p:selectOneMenu>
 
-									<p:outputLabel id="lblCedula" for="cedula" value="Cédula: "
+									<p:outputLabel id="lblCedula" for="cedu" value="Cédula: "
 										style="color:white!important" />
-									<p:inputNumber id="cedula"
+
+									<p:inputMask id="cedu"
 										value="#{clienteController.cliente.cedula}" maxlength="10"
-										required="true">
-										<p:keyFilter for="cedula" mask="num"/>
-									</p:inputNumber>
+										required="true" mask="9999999999">
+									</p:inputMask>
 
 									<p:outputLabel id="lblRUC" for="ruc" value="RUC: "
 										style="color:white!important" />
-									<p:inputNumber id="ruc"
-										value="#{clienteController.cliente.rucCl}" maxlength="13">
-										<p:keyFilter for="ruc" mask="num"/>
-									</p:inputNumber>
+									<p:inputMask id="ruc"
+										value="#{clienteController.cliente.rucCl}" maxlength="13"
+										mask="9999999999999">
 
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									</p:inputMask>
+
+									<p:outputLabel id="lblNombre" for="nom" value="Nombre: "
 										style="color:white!important" />
-									<p:inputText id="nombre"
+									<p:inputText id="nom"
 										value="#{clienteController.cliente.nombreCl}" maxlength="200"
-										required="true" requiredMessage="Debe ingresar un Cliente">
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Cliente">
 									</p:inputText>
+
 									<p:outputLabel id="lblDeesc" for="desc" value="Dirección "
 										style="color:white!important" />
-									<p:inputText id="desc"
-										value="#{clienteController.cliente.direccionCl}"
-										maxlength="100" autoResize="false">
-									</p:inputText>
 
-									<p:outputLabel id="lblTlfcon" for="tlfcon" value="Teléfono: "
+									<p:inputTextarea id="desc"
+										value="#{clienteController.cliente.direccionCl}"
+										maxlength="100" rows="5" cols="30">
+									</p:inputTextarea>
+
+									<p:outputLabel id="lblTlfConv" for="tlfcon" value="Telf Conv: "
 										style="color:white!important" />
 
 									<p:inputMask id="tlfcon"
-										value="#{clienteController.cliente.telefonoCl}"
-										maxlength="15" size="30" mask="999-9999" />
+										value="#{clienteController.cliente.telefonoCl}" maxlength="15"
+										size="30" mask="9999999" />
 
 									<p:outputLabel id="lblTlfcel" for="tlfcel" value="Celular: "
 										style="color:white!important" />
-									<p:inputNumber id="tlfcel"
-										value="#{clienteController.cliente.celularCl}" maxlength="15">
-										<p:keyFilter for="tlfcel" mask="num" />
-									</p:inputNumber>
+									<p:inputMask id="tlfcel"
+										value="#{clienteController.cliente.celularCl}" maxlength="15"
+										mask="9999999999">
+									</p:inputMask>
 
 									<p:outputLabel id="lblTlfotro" for="tlfotro"
 										value="Telf Otro: " style="color:white!important" />
-									<p:inputNumber id="tlfotro"
-										value="#{clienteController.cliente.otrofonoCl}" maxlength="15">
-									</p:inputNumber>
+									<p:inputMask id="tlfotro"
+										value="#{clienteController.cliente.otrofonoCl}" maxlength="15"
+										size="30" mask="9999999" />
 
 									<p:outputLabel id="lblFAX" for="fax" value="Fax: "
 										style="color:white!important" />
-
 									<p:inputMask id="fax"
-										value="#{clienteController.cliente.faxCl}"
-										maxlength="15" size="30" mask="999-9999" />
+										value="#{clienteController.cliente.faxCl}" maxlength="15"
+										size="30" mask="9999999" />
 
 									<p:outputLabel id="lblEmail" for="email" value="Email: "
 										style="color:white!important" />
 									<p:inputText id="email"
-										value="#{clienteController.cliente.emailCl}" 
-										validatorMessage="Email no válido"
-										maxlength="50">
+										value="#{clienteController.cliente.emailCl}"
+										validatorMessage="Formato de correo no válido" maxlength="50">
 										<f:validateRegex
 											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 									</p:inputText>
 
-
 									<p:outputLabel id="lblContacto" for="cont" value="Contacto: "
 										style="color:white!important" />
 									<p:inputText id="cont"
-										value="#{clienteController.cliente.contactoCl}" maxlength="100">
+										value="#{clienteController.cliente.contactoCl}"
+										maxlength="100">
 									</p:inputText>
+
 								</p:panelGrid>
 							</div>
 							<br /> <br />
@@ -419,27 +429,20 @@
 							<center>
 								<h:panelGrid columns="2">
 
-									<h:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{clienteController.modificarCliente}"
-										process="@this,cliente,cedula,ruc,nombre,desc,tlfcon,tlfcel,tlfotro,fax,email,cont"
+										process="@this,formModificarCliente"
 										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarCliente"
-										onsuccess="PF('modificarCliente').hide();"
-										oncomplete="PF('modificarCliente').show();">
-										<center>
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Modificar" style="border:0px solid #CAD6E0;"
-												width="36" height="35" />
-										</center>
+										oncomplete="PF('filterCliente').filter()">
 
-									</h:commandLink>
+									</p:commandButton>
 
-									<p:commandLink onclick="PF('modificarCliente').hide();"
-										process="@none">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarCliente').hide();" process="@none">
 
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -453,19 +456,19 @@
 
 			<h:form id="eliminarCliente">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar este Cliente"
-					header="Eliminar Cliente" severity="warn"
-					widgetVar="cdEliminarCliente">
+					message="¿Esta seguro(a) que desea eliminar el Cliente seleccionado?"
+					header="Eliminar Cliente" severity="info"
+					widgetVar="eliminarCliente">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarCliente').hide();"
+							onsuccess="PF('eliminarCliente').hide();"
 							actionListener="#{clienteController.eliminarCliente}"
-							update="@([id$=messagesForm],[id$=formPrincipal])"
-							oncomplete="PF('filterEliminar').filter();" />
+							update="@([id$=messagesForm],[id$=formPrincipal]),eliminarCliente"
+							oncomplete="PF('filterCliente').filter();" />
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarCliente').hide();" type="button" />
+							onclick="PF('eliminarCliente').hide();" type="button" />
 
 					</center>
 
@@ -474,8 +477,6 @@
 			</h:form>
 
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){

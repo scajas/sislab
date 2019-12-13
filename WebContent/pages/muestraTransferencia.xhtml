@@ -9,7 +9,6 @@
 	xmlns:v="http://validators.epn.edu.ec.com"
 	xmlns:ps="http://primefaces.org/apark">
 
-
 	<ui:define name="pageTitle">Muestra Transferencia</ui:define>
 	<ui:define name="body">
 
@@ -33,13 +32,13 @@
 		</h:head>
 		<h:body>
 
-			<p:growl id="messagesForm" showDetail="true" sticky="false"
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
-			<h:form id="formprincipal">
+			<h:form id="formPrincipal">
 
 				<p:panel>
-					<p:fieldset legend="MUESTRA TRANSFERENCIA"
+					<p:fieldset legend="Muestra Transferencia"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -50,26 +49,25 @@
 						;width: '90%';">
 						<br />
 						<br />
-						<p:commandLink process="@this" onclick="PF('nuevaMuestra').show()"
-							update=":formNuevaMuestra,@this">
-							<center>
-								<h:graphicImage value="/images/archivos/agregar.png"
-									title="Agregar" style="border:0px solid #CAD6E0;" width="36"
-									height="35" />
-							</center>
-							<center>
-								<h:outputText value="Agregar Nuevo" />
-							</center>
-						</p:commandLink>
+
+						<!-- Boton De Nuevo -->
+						<center>
+							<p:commandButton value="Nuevo" icon="fa fa-file"
+								style="width: 125px; border-radius: 3px 3px 3px 3px;"
+								process="@this" onclick="PF('nuevaMuestra').show()"
+								update=":formNuevaMuestra,@this">
+
+							</p:commandButton>
+						</center>
 						<br />
 						<br />
 
 						<p:dataTable id="tblMuestra"
 							value="#{muestraTransferenciaController.listaMuestra}"
-							var="muestra" widgetVar="tblMuestra"
+							var="muestra" widgetVar="filterMuestra"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							filteredValue="#{muestraTransferenciaController.filtrarMuestras}"
-							resizableColumns="true" rows="10" paginator="true"
+							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
@@ -78,12 +76,12 @@
 							paginatorPosition="bottom">
 
 							<p:column headerText="ID" filterBy="#{muestra.idMuestra}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" style="width: 12%">
 								<h:outputText value="#{muestra.idMuestra}" />
 							</p:column>
 
-							<p:column headerText="Transferencia" filterBy="#{muestra.idTi}"
-								filterMatchMode="contains">
+							<p:column headerText="Facturas" filterBy="#{muestra.idTi}"
+								filterMatchMode="contains" style="width: 12%">
 								<h:outputText value="#{muestra.idTi}" />
 							</p:column>
 
@@ -98,7 +96,8 @@
 							</p:column>
 
 							<p:column headerText="Fecha de Toma"
-								filterBy="#{muestra.fechaTomaM}" filterMatchMode="contains">
+								filterBy="#{muestra.fechaTomaM}" filterMatchMode="contains"
+								style="width: 12%">
 								<h:outputText value="#{muestra.fechaTomaM}" />
 							</p:column>
 
@@ -110,7 +109,7 @@
 
 							<!-- ************************************** Ver Muestra ************************************ -->
 
-							<p:column headerText="Ver Muestra">
+							<p:column headerText="Ver Muestra" style="width: 7%">
 
 								<center>
 									<p:commandLink onclick="PF('verMuestra').show();"
@@ -121,7 +120,8 @@
 											height="35" />
 
 										<f:setPropertyActionListener
-											target="#{muestraTransferenciaController.muestra}" value="#{muestra}">
+											target="#{muestraTransferenciaController.muestra}"
+											value="#{muestra}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
@@ -130,7 +130,7 @@
 
 							<!-- **************************  Boton Modificar   *************************** -->
 
-							<p:column headerText="Acciones">
+							<p:column headerText="Acciones" style="width: 9%">
 								<center>
 									<p:commandLink
 										action="#{muestraTransferenciaController.pasarNombre(muestra.codigoMCliente)}"
@@ -142,7 +142,8 @@
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 										<f:setPropertyActionListener
-											target="#{muestraTransferenciaController.muestra}" value="#{muestra}">
+											target="#{muestraTransferenciaController.muestra}"
+											value="#{muestra}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
@@ -150,22 +151,21 @@
 
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('cdEliminarMuestra').show();">
+										onclick="PF('eliminarMuestra').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
 
-
 										<f:setPropertyActionListener
-											target="#{muestraTransferenciaController.muestra}" value="#{muestra}">
+											target="#{muestraTransferenciaController.muestra}"
+											value="#{muestra}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 								</center>
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
@@ -173,11 +173,10 @@
 
 			<!-- Panel de registro 	 -->
 
-			<p:dialog id="panelNuevaMuestra" resizable="true"
+			<p:dialog id="panelNuevaMuestra" resizable="true" draggable="false"
 				widgetVar="nuevaMuestra" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nueva Muestra">
-
+				header="Nueva Muestra" width="65%">
 
 				<h:form id="formNuevaMuestra">
 
@@ -198,9 +197,9 @@
 
 									<p:commandButton onclick="PF('verTransferencia').show();"
 										update=":formVerTransferencia,@this" process="@this"
-										icon="ui-icon-search"
+										icon="fa fa-plus"
 										actionListener="#{muestraTransferenciaController.buscarTransferencias}"
-										value="Listado de Transferencias">
+										value="Agregar">
 									</p:commandButton>
 
 								</h:panelGrid>
@@ -208,19 +207,20 @@
 							<br /> <br />
 
 							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-								style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-									<p:outputLabel id="lblTransferencia" for="transferencia"
-										value="Transferencia: " style="color:white!important" />
-									<p:inputText id="transferencia"
-										value="#{muestraTransferenciaController.nuevaMuestra.idTi}"
-										required="true"
-										requiredMessage="Debe Seleccionar una Transferencia" size="30"
-										disabled="true">
-									</p:inputText>
+								<p:outputLabel id="lblTransferencia" for="transferencia"
+									value="Transferencia: " style="color:white!important" />
+								<p:inputText id="transferencia"
+									value="#{muestraTransferenciaController.nuevaMuestra.idTi}"
+									required="true"
+									requiredMessage="Debe Seleccionar una Transferencia" size="30"
+									disabled="true">
+								</p:inputText>
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -247,7 +247,8 @@
 								<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
 									value="Tipo de Muestra: " style="color:white!important" />
 								<p:selectOneMenu id="tipoMuestra"
-									value="#{muestraTransferenciaController.nuevaMuestra.tipoM}" size="30">
+									value="#{muestraTransferenciaController.nuevaMuestra.tipoM}"
+									size="30">
 									<f:selectItem itemLabel="Seleccione..." itemValue="" />
 									<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
 									<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
@@ -256,7 +257,8 @@
 								<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
 									value="Tipo de Envase: " style="color:white!important" />
 								<p:selectOneMenu id="tipoEnvase"
-									value="#{muestraTransferenciaController.nuevaMuestra.tipoenvaseM}" size="30">
+									value="#{muestraTransferenciaController.nuevaMuestra.tipoenvaseM}"
+									size="30">
 									<f:selectItem itemLabel="Seleccione..." itemValue="" />
 									<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
 									<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
@@ -287,43 +289,35 @@
 									style="color:white!important" />
 								<p:inputTextarea id="desc"
 									value="#{muestraTransferenciaController.nuevaMuestra.descrM}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
+									maxlength="200" rows="5" cols="30" />
 
 								<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
 									style="color:white!important" />
 								<p:inputTextarea id="origen"
 									value="#{muestraTransferenciaController.nuevaMuestra.origenM}"
-									maxlength="200" rows="5" cols="30" autoResize="false" />
+									maxlength="200" rows="5" cols="30" />
 							</p:panelGrid>
 						</div>
 						<br />
 						<br />
 
-
 						<center>
 
 							<h:panelGrid columns="2">
 
-								<p:commandLink
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
 									actionListener="#{muestraTransferenciaController.agregarMuestra}"
-									process="@this,nombre,desc,fecha,tipoMuestra,origen,tipoEnvase,preservante,tipoPreservante,refrigeracion"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaMuestra,formVerTransferencia"
-									oncomplete="PF('tblMuestra').filter()">
+									process="@this,formNuevaMuestra"
+									update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevaMuestra,formVerTransferencia"
+									oncomplete="PF('filterMuestra').filter()">
 
-									<h:graphicImage value="/images/archivos/guardar.png"
-										title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-										height="35" />
+								</p:commandButton>
 
-								</p:commandLink>
-
-								<p:commandLink onclick="PF('nuevaMuestra').hide();"
+								<p:commandButton value="Atrás" style="width: 115px; margin: 5px"
+									icon="fa fa-arrow-left" onclick="PF('nuevaMuestra').hide();"
 									process="@none">
-
-									<p:graphicImage value="/images/archivos/atras.png" width="35"
-										height="36" title="Atrás">
-									</p:graphicImage>
-
-								</p:commandLink>
+								</p:commandButton>
 
 							</h:panelGrid>
 
@@ -335,9 +329,9 @@
 			<!-- Dialogo de Listado de Transferencias -->
 
 			<p:dialog id="panelVerTransferencia" resizable="false"
-				widgetVar="verTransferencia" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Listado de Transferencias" width="65%">
+				draggable="false" widgetVar="verTransferencia" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Listado de Transferencias" width="65%">
 
 				<h:form id="formVerTransferencia">
 
@@ -351,60 +345,53 @@
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
-						<br />
 						<center>
 
-							<div class="ui-fluid" align="center">
-								<p:dataTable value="#{muestraTransferenciaController.listaTransferencia}"
-									id="tblTransferencia" widgetVar="tblTransferencia" var="transferencia"
-									style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									rows="7" paginator="true"
-									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-									rowsPerPageTemplate="5,10,15"
-									emptyMessage="No se han encontrado coinicidencias"
-									filteredValue="#{muestraTransferenciaController.filtrarTransferenciaInterna}"
-									paginatorPosition="bottom" rowKey="#{transferencia.idTi}"
-									selection="#{muestraTransferenciaController.selectTransferenciaInterna}"
-									selectionMode="single">
+							<p:dataTable
+								value="#{muestraTransferenciaController.listaTransferencia}"
+								id="tblTransferencia" widgetVar="tblTransferencia"
+								var="transferencia" rows="7" paginator="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15"
+								emptyMessage="No se han encontrado coinicidencias"
+								filteredValue="#{muestraTransferenciaController.filtrarTransferenciaInterna}"
+								paginatorPosition="bottom" rowKey="#{transferencia.idTi}"
+								selection="#{muestraTransferenciaController.selectTransferenciaInterna}"
+								selectionMode="single">
 
-									<p:column headerText="ID Transferencia">
-										<h:outputText value="#{transferencia.idTi}" />
-									</p:column>
+								<p:column headerText="ID Transferencia">
+									<h:outputText value="#{transferencia.idTi}" />
+								</p:column>
 
-									<p:column headerText="ID Proforma">
-										<h:outputText value="#{transferencia.idProforma}" />
-									</p:column>
+								<p:column headerText="ID Proforma">
+									<h:outputText value="#{transferencia.idProforma}" />
+								</p:column>
 
-									<p:column headerText="Costo Total">
-										<h:outputText value="#{transferencia.totalTi}" />
-									</p:column>
+								<p:column headerText="Costo Total">
+									<h:outputText value="#{transferencia.totalTi}" />
+								</p:column>
 
-									<p:column headerText="Punto de Fact">
-										<h:outputText value="#{transferencia.idPuntoFacturacion}" />
-									</p:column>
+								<p:column headerText="Punto de Fact">
+									<h:outputText value="#{transferencia.idPuntoFacturacion}" />
+								</p:column>
 
-									<p:column headerText="Estado">
-										<h:outputText value="#{transferencia.estadoTi}" />
-									</p:column>
+								<p:column headerText="Estado">
+									<h:outputText value="#{transferencia.estadoTi}" />
+								</p:column>
 
-								</p:dataTable>
-							</div>
-							<br /> <br />
+							</p:dataTable>
+							<br />
 
 							<center>
 								<h:panelGrid columns="1">
 
-									<p:commandLink process="@this,tblTransferencia"
+									<p:commandButton icon="fa fa-hand-o-up" value="Seleccionar"
+										process="@this,tblTransferencia"
 										action="#{muestraTransferenciaController.seleccionarTransferencia}"
 										update="@([id$=messagesForm],[id$=formNuevaMuestra])"
 										onclick="PF('verTransferencia').hide();">
 
-										<p:graphicImage value="/images/archivos/aceptar.png"
-											width="35" height="36" title="Seleccionar">
-										</p:graphicImage>
-									</p:commandLink>
+									</p:commandButton>
 
 								</h:panelGrid>
 
@@ -417,66 +404,76 @@
 			<!-- Dialogo de Ver muestra   -->
 
 			<center>
-				<p:dialog id="panelVerMuestra" resizable="true"
+				<p:dialog id="panelVerMuestra" resizable="true" draggable="false"
 					widgetVar="verMuestra" modal="true" showEffect="explode"
 					hideEffect="fade" responsive="true" dynamic="true" header="Muestra"
-					width="45%">
+					width="60%">
 
 					<h:form id="formVerMuestra">
 
 						<p:fieldset
 							style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 							<br />
 							<br />
 
 							<div class="ui-fluid">
-								<p:panelGrid columns="4"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-									<p:outputLabel value="ID: " style="color:white!important" />
-									<p:outputLabel value="#{muestraTransferenciaController.muestra.idMuestra}" />
+									<p:outputLabel value="ID:" style="color:white!important" />
+									<p:outputLabel
+										value="#{muestraTransferenciaController.muestra.idMuestra}" />
 
-									<p:outputLabel value="Nombre: " style="color:white!important" />
+									<p:outputLabel value="Nombre:" style="color:white!important" />
 									<p:outputLabel
 										value="#{muestraTransferenciaController.muestra.codigoMCliente}" />
 
-									<p:outputLabel value="Descripción: "
+									<p:outputLabel value="Descripción:"
 										style="color:white!important" />
-									<p:outputLabel value="#{muestraTransferenciaController.muestra.descrM}" />
+									<p:outputLabel
+										value="#{muestraTransferenciaController.muestra.descrM}" />
 
-									<p:outputLabel id="lblFecha" value="Fecha: "
+									<p:outputLabel id="lblFecha" value="Fecha:"
 										style="color:white!important" />
-									<p:outputLabel value="#{muestraTransferenciaController.muestra.fechaTomaM}" />
+									<p:outputLabel
+										value="#{muestraTransferenciaController.muestra.fechaTomaM}" />
 
-									<p:outputLabel value="Tipo de Muestra: "
+									<p:outputLabel value="Tipo de Muestra:"
 										style="color:white!important" />
-									<p:outputLabel value="#{muestraTransferenciaController.muestra.tipoM}" />
+									<p:outputLabel
+										value="#{muestraTransferenciaController.muestra.tipoM}" />
 
-									<p:outputLabel value="Origen: " style="color:white!important" />
-									<p:outputLabel value="#{muestraTransferenciaController.muestra.origenM}" />
+									<p:outputLabel value="Origen:" style="color:white!important" />
+									<p:outputLabel
+										value="#{muestraTransferenciaController.muestra.origenM}" />
 
-									<p:outputLabel value="Tipo de Envase: "
+									<p:outputLabel value="Tipo de Envase:"
 										style="color:white!important" />
-									<p:outputLabel value="#{muestraTransferenciaController.muestra.tipoenvaseM}" />
+									<p:outputLabel
+										value="#{muestraTransferenciaController.muestra.tipoenvaseM}" />
 
-									<p:outputLabel value="Preservante: "
+									<p:outputLabel value="Preservante:"
 										style="color:white!important" />
 									<p:outputLabel
 										value="#{muestraTransferenciaController.muestra.preservanteM}" />
 
-									<p:outputLabel value="Tipo de Preservante: "
+									<p:outputLabel value="Tipo de Preservante:"
 										style="color:white!important" />
 									<p:outputLabel
 										value="#{muestraTransferenciaController.muestra.tipopreservanteM}" />
 
-									<p:outputLabel value="Refrigeración: "
+									<p:outputLabel value="Refrigeración:"
 										style="color:white!important" />
 									<p:outputLabel
 										value="#{muestraTransferenciaController.muestra.refrigeracionM}" />
@@ -489,15 +486,13 @@
 							<center>
 								<h:panelGrid columns="1">
 
-									<p:commandLink onclick="PF('verMuestra').hide();"
-										process="@this"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formVerTransferencia"
-										oncomplete="PF('tblMuestra').filter()">
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-									</p:commandLink>
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('verMuestra').hide();" process="@this"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formVerTransferencia"
+										oncomplete="PF('filterMuestra').filter()">
 
+									</p:commandButton>
 								</h:panelGrid>
 
 
@@ -510,9 +505,9 @@
 			<!-- Panel de actualizacion  -->
 
 			<p:dialog id="panelModificarMuestra" resizable="true"
-				widgetVar="modificarMuestra" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Modificar Muestra">
+				draggable="false" widgetVar="modificarMuestra" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" header="Modificar Muestra" width="65%">
 
 
 				<h:form id="formModificarMuestra">
@@ -527,29 +522,29 @@
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
-						<br />
 						<center>
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-									box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-									<p:outputLabel id="lblID" for="id" value="ID: "
+									<p:outputLabel id="lblID" for="id" value="ID:"
 										style="color:white!important" />
 									<p:outputLabel id="id"
 										value="#{muestraTransferenciaController.muestra.idMuestra}">
 									</p:outputLabel>
 
 									<p:outputLabel id="lblTransferencia" for="transferencia"
-										value="Transferencia: " style="color:white!important" />
+										value="Transferencia:" style="color:white!important" />
 									<p:outputLabel id="transferencia"
 										value="#{muestraTransferenciaController.muestra.idTi}">
 									</p:outputLabel>
 
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre:"
 										style="color:white!important" />
 									<p:inputText id="nombre"
 										value="#{muestraTransferenciaController.muestra.codigoMCliente}"
@@ -558,33 +553,34 @@
 										maxlength="50" size="30">
 									</p:inputText>
 
-									<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
+									<p:outputLabel id="lblFecha" for="fecha" value="Fecha:"
 										style="color:white!important" />
 									<p:calendar id="fecha"
-										value="#{muestraTransferenciaController.muestra.fechaTomaM}" effect="fold"
-										size="30" />
+										value="#{muestraTransferenciaController.muestra.fechaTomaM}"
+										effect="fold" size="30" />
 
 									<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
-										value="Tipo de Preservante: " style="color:white!important" />
+										value="Tipo de Preservante:" style="color:white!important" />
 									<p:inputText id="tipoPreservante"
 										value="#{muestraTransferenciaController.muestra.tipopreservanteM}"
 										maxlength="50" size="30">
 									</p:inputText>
 
-
 									<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
-										value="Tipo de Muestra: " style="color:white!important" />
+										value="Tipo de Muestra:" style="color:white!important" />
 									<p:selectOneMenu id="tipoMuestra"
-										value="#{muestraTransferenciaController.muestra.tipoM}" size="30">
+										value="#{muestraTransferenciaController.muestra.tipoM}"
+										size="30" styleClass="selectbox">
 										<f:selectItem itemLabel="Seleccione..." itemValue="" />
 										<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
 										<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
 									</p:selectOneMenu>
 
 									<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
-										value="Tipo de Envase: " style="color:white!important" />
+										value="Tipo de Envase:" style="color:white!important" />
 									<p:selectOneMenu id="tipoEnvase"
-										value="#{muestraTransferenciaController.muestra.tipoenvaseM}" size="30">
+										value="#{muestraTransferenciaController.muestra.tipoenvaseM}"
+										size="30" styleClass="selectbox">
 										<f:selectItem itemLabel="Seleccione..." itemValue="" />
 										<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
 										<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
@@ -592,18 +588,20 @@
 									</p:selectOneMenu>
 
 									<p:outputLabel id="lblPreservante" for="preservante"
-										value="Preservante: " style="color:white!important" />
+										value="Preservante:" style="color:white!important" />
 									<p:selectOneMenu id="preservante"
-										value="#{muestraTransferenciaController.muestra.preservanteM}">
+										value="#{muestraTransferenciaController.muestra.preservanteM}"
+										styleClass="selectbox">
 										<f:selectItem itemLabel="Seleccione..." itemValue="" />
 										<f:selectItem itemLabel="Si" itemValue="Si" />
 										<f:selectItem itemLabel="No" itemValue="No" />
 									</p:selectOneMenu>
 
 									<p:outputLabel id="lblRefrigeración" for="refrigeracion"
-										value="Refrigeración: " style="color:white!important" />
+										value="Refrigeración:" style="color:white!important" />
 									<p:selectOneMenu id="refrigeracion"
-										value="#{muestraTransferenciaController.muestra.refrigeracionM}">
+										value="#{muestraTransferenciaController.muestra.refrigeracionM}"
+										styleClass="selectbox">
 										<f:selectItem itemLabel="Seleccione..." itemValue="" />
 										<f:selectItem itemLabel="Si" itemValue="Si" />
 										<f:selectItem itemLabel="No" itemValue="No" />
@@ -614,53 +612,41 @@
 									<p:outputLabel>
 									</p:outputLabel>
 
-									<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción:"
 										style="color:white!important" />
 									<p:inputTextarea id="desc"
-										value="#{muestraTransferenciaController.muestra.descrM}" maxlength="200"
-										rows="5" cols="30" autoResize="false" />
+										value="#{muestraTransferenciaController.muestra.descrM}"
+										maxlength="200" rows="5" cols="30" />
 
-									<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
+									<p:outputLabel id="lblOrigen" for="origen" value="Origen:"
 										style="color:white!important" />
 									<p:inputTextarea id="origen"
-										value="#{muestraTransferenciaController.muestra.origenM}" maxlength="200"
-										rows="5" cols="30" autoResize="false" />
+										value="#{muestraTransferenciaController.muestra.origenM}"
+										maxlength="200" rows="5" cols="30" />
 
 								</p:panelGrid>
 
 							</div>
 							<br /> <br />
 
-
 							<center>
 
 								<h:panelGrid columns="2">
 
-									<p:commandLink
+									<p:commandButton value="Modificar" icon="fa fa-edit"
+										style="width: 115px; margin: 5px"
 										actionListener="#{muestraTransferenciaController.modificarMuestra}"
-										process="@this,id,transferencia,nombre,desc,fecha,tipoMuestra,origen,tipoEnvase,preservante,tipoPreservante,refrigeracion"
-										update="@this,@([id$=messagesForm],[id$=formprincipal],[id$=formVerMuestra]),formModificarMuestra"
-										oncomplete="PF('tblMuestra').filter()">
+										process="@this,formModificarMuestra"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal],[id$=formVerMuestra]),formModificarMuestra"
+										oncomplete="PF('filterMuestra').filter()">
 
-										<center>
+									</p:commandButton>
 
-											<h:graphicImage value="/images/archivos/guardar.png"
-												title="Guardar" style="border:0px solid #CAD6E0;" width="36"
-												height="35" />
+									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+										style="width: 115px; margin: 5px"
+										onclick="PF('modificarMuestra').hide();" process="@none">
 
-										</center>
-
-									</p:commandLink>
-
-									<p:commandLink onclick="PF('modificarMuestra').hide();"
-										process="@none">
-
-										<p:graphicImage value="/images/archivos/atras.png" width="35"
-											height="36" title="Atrás">
-										</p:graphicImage>
-
-									</p:commandLink>
-
+									</p:commandButton>
 								</h:panelGrid>
 
 							</center>
@@ -670,24 +656,23 @@
 				</h:form>
 			</p:dialog>
 
-
 			<!-- Panel de Eliminar -->
 
 			<h:form id="eliminarMuestra">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar esta Muestra"
-					header="Eliminar Muestra" severity="warn"
-					widgetVar="cdEliminarMuestra">
+					message="¿Esta seguro(a) que desea eliminar la muestra seleccionada?"
+					header="Eliminar Muestra" severity="info"
+					widgetVar="eliminarMuestra">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarMuestra').hide();"
+							onsuccess="PF('eliminarMuestra').hide();"
 							actionListener="#{muestraTransferenciaController.eliminarMuestra}"
-							update="@([id$=messagesForm],[id$=formprincipal])"
-							oncomplete="PF('tblMuestra').filter()" />
+							update="@([id$=messagesForm],[id$=formPrincipal]),eliminarMuestra"
+							oncomplete="PF('filterMuestra').filter()" />
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarMuestra').hide();" type="button" />
+							onclick="PF('eliminarMuestra').hide();" type="button" />
 
 					</center>
 

@@ -38,7 +38,7 @@
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
-			<h:form id="formprincipal">
+			<h:form id="formPrincipal">
 
 				<p:panel>
 					<p:fieldset legend="Existencias"
@@ -81,7 +81,7 @@
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<p:column headerText="ID-Producto"
+							<p:column headerText="ID Producto"
 								filterBy="#{existencia.producto.idProducto}"
 								filterMatchMode="contains">
 
@@ -101,7 +101,7 @@
 
 							</p:column>
 
-							<p:column headerText="ID-Existencia"
+							<p:column headerText="ID Existencia"
 								filterBy="#{existencia.idExistencia}" filterMatchMode="contains">
 								<h:outputText value="#{existencia.idExistencia}" />
 							</p:column>
@@ -120,8 +120,7 @@
 
 							<p:column headerText="Concentración"
 								filterBy="#{existencia.concentracion.nombreCon}"
-								filterMatchMode="contains"
-								style="width: 10% ">
+								filterMatchMode="contains" style="width: 10% ">
 								<h:outputText value="#{existencia.concentracion.nombreCon}" />
 							</p:column>
 
@@ -215,22 +214,21 @@
 			<!-- **************************  Panel Detalle Existencias   *************************** -->
 
 			<p:dialog id="panelVerDetalleExistencia" resizable="true"
-				closable="false" draggable="false" widgetVar="verDetalleExistencia"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="50%"
-				header="Detalles Existencia">
+				draggable="false" widgetVar="verDetalleExistencia" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="50%" header="Detalles Existencia">
 
 
 				<h:form id="formDetalleExistencia">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 
 						<div class="ui-fluid">
@@ -243,10 +241,13 @@
 							</p:panel>
 							<p:panel id="detalles" header="Detalles"
 								style="margin-bottom:20px">
-								<center>
+								<div class="ui-fluid">
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
-
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										layout="grid"
+										style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 										<p:outputLabel id="lblPresentacion" for="presentacion"
 											value="Presentación: " style="color:white!important" />
@@ -338,7 +339,8 @@
 											size="31" />
 
 									</p:panelGrid>
-								</center>
+								</div>
+
 							</p:panel>
 							<center>
 
@@ -478,18 +480,14 @@
 			</p:dialog>
 
 
-
-
 			<!-- **************************  Panel - Dialogo de Registrar Nuevo   *************************** -->
 
 			<p:dialog id="panelNuevoEx" resizable="true" widgetVar="nuevoEx"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="90%"
+				responsive="true" dynamic="true" width="65%"
 				header="Nueva Existencia">
 
-
 				<h:form id="formNuevoEx">
-
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
@@ -499,354 +497,335 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
+
 						<!-- **************************  Sub-Panel - Buscar Producto   *************************** -->
-						<div class="ui-g">
-							<div class="ui-g-4">
-								<p:fieldset
-									style="border-radius: 10px 10px 10px 10px;
-									-moz-border-radius: 10px 10px 10px 10px;
-									-webkit-border-radius: 10px 10px 10px 10px;
-									border: 0px solid #000000;
-									border-style: double;
-									border-width: 1px;
-									border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-									legend="Lista Productos">
+						<p:wizard flowListener="#{existenciasController.onFlowProcess}"
+							widgetVar="wiz">
 
-									<p:dataTable id="tblProducto"
-										value="#{existenciasController.productos}" var="pro"
-										emptyMessage="No se pudo encontrar ninguna coincidencia"
-										rows="10" paginator="true"
-										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
-										rowsPerPageTemplate="5,10,15,20,30,50,75,100"
-										paginatorPosition="bottom" rowKey="#{pro.idProducto}"
-										selection="#{existenciasController.nuevoExistencia.producto}"
-										selectionMode="single">
-										<p:ajax event="rowSelect" update=":formNuevoEx" />
+							<p:tab id="listaProducto" title="Lista de Productos"
+								titleStyle="color: black! Important; " icon="fa fa-save">
 
-										<f:facet name="header">
-											<p:outputPanel>
-												<h:outputText value="Búsqueda por nombre: " />
-												<p:inputText id="globalFilter"
-													value="#{existenciasController.nombrePro}"
-													style="width:150px" placeholder="Busqueda">
-													<p:ajax event="keyup" update="tblProducto"
-														listener="#{existenciasController.busquedaGloblal()}" />
-												</p:inputText>
-											</p:outputPanel>
-										</f:facet>
+								<p:messages />
+								<br />
+								<p:dataTable id="tblProducto"
+									value="#{existenciasController.productos}" var="pro"
+									emptyMessage="No se pudo encontrar ninguna coincidencia"
+									rows="8" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+									rowsPerPageTemplate="5,10,15,20,30,50,75,100"
+									paginatorPosition="bottom" rowKey="#{pro.idProducto}"
+									selection="#{existenciasController.nuevoExistencia.producto}"
+									selectionMode="single">
+									<p:ajax event="rowSelect" update=":formNuevoEx" />
 
-										<p:column headerText="ID">
-											<f:facet name="header">
-												<h:outputText value="ID" />
-											</f:facet>
-											<h:outputText value="#{pro.idProducto}" />
-										</p:column>
+									<f:facet name="header">
+										<p:outputPanel>
+											<h:outputText value="Búsqueda por nombre: " />
+											<p:inputText id="globalFilter"
+												value="#{existenciasController.nombrePro}"
+												style="width:150px" placeholder="Busqueda" required="true"
+												requiredMessage="Seleccione un producto">
+												<p:ajax event="keyup" update="tblProducto"
+													listener="#{existenciasController.busquedaGlobal()}" />
+											</p:inputText>
+										</p:outputPanel>
+									</f:facet>
 
-										<p:column headerText="Nombre">
-											<f:facet name="header">
-												<h:outputText value="NOMBRE" />
-											</f:facet>
-											<h:outputText value="#{pro.nombrePr}" />
-										</p:column>
+									<p:column headerText="ID Producto">
+										<h:outputText value="#{pro.idProducto}" />
+									</p:column>
 
-									</p:dataTable>
+									<p:column headerText="Nombre">
+										<h:outputText value="#{pro.nombrePr}" />
+									</p:column>
 
-								</p:fieldset>
-							</div>
+								</p:dataTable>
+								<br />
+							</p:tab>
 
-							<!-- **************************  Sub-Panel - Registro General  *************************** -->
+							<!-- **************************  Sub-Panel - Producto  *************************** -->
+							<p:tab id="infoTecni" title="Información Técnica"
+								titleStyle="color:black! Important;">
+								<p:messages />
 
-							<div class="ui-g-8 ui-g-nopad">
-								<div class="ui-g-12">
-									<!-- **************************  Sub-Panel - Producto  *************************** -->
-									<p:fieldset
-										style="border-radius: 10px 10px 10px 10px;
-										-moz-border-radius: 10px 10px 10px 10px;
-										-webkit-border-radius: 10px 10px 10px 10px;
-										border: 0px solid #000000;
-										border-style: double;
-										border-width: 1px;
-										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-										legend="Producto">
-										<center>
-											<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-												columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+								<br />
+								<div class="ui-fluid">
 
-												<p:outputLabel id="lblIdProducto" for="idProducto"
-													value="Id Producto: " style="color:white!important" />
-												<p:inputText id="idProducto"
-													value="#{existenciasController.nuevoExistencia.producto.idProducto}"
-													size="24" disabled="true" required="true"
-													requiredMessage="Debe seleccionar un Producto de la tabla" />
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										layout="grid"
+										style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-												<p:outputLabel id="lblNombrePro" for="nombrePro"
-													value="Nombre: " style="color:white!important" />
-												<p:inputText id="nombrePro"
-													value="#{existenciasController.nuevoExistencia.producto.nombrePr}"
-													size="24" disabled="true" required="true"
-													requiredMessage="Debe seleccionar un Producto de la tabla" />
+										<p:outputLabel id="lblIdProducto" for="idProducto"
+											value="ID Producto: " style="color:white!important" />
+										<p:outputLabel id="idProducto"
+											value="#{existenciasController.nuevoExistencia.producto.idProducto}"
+											size="24" disabled="true" />
 
+										<p:outputLabel id="lblNombrePro" for="nombrePro"
+											value="Nombre: " style="color:white!important" />
+										<p:outputLabel id="nombrePro"
+											value="#{existenciasController.nuevoExistencia.producto.nombrePr}"
+											size="24" disabled="true" />
 
-											</p:panelGrid>
-										</center>
-									</p:fieldset>
-									<br />
+									</p:panelGrid>
+								</div>
 
-									<!-- **************************  Sub-Panel - Informacion Tecnica   *************************** -->
-									<p:fieldset
-										style="border-radius: 10px 10px 10px 10px;
-										-moz-border-radius: 10px 10px 10px 10px;
-										-webkit-border-radius: 10px 10px 10px 10px;
-										border: 0px solid #000000;
-										border-style: double;
-										border-width: 1px;
-										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-										legend="Informacion Tecnica">
-										<div class="ui-fluid">
-											<center>
-												<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+								<br />
+								<br />
 
-													<p:outputLabel id="lblPresentacion" for="presentacion"
-														value="Presentación: " style="color:white!important" />
-													<p:selectOneMenu id="presentacion"
-														value="#{existenciasController.presentacionSelect}">
-														<p:ajax listener="#{existenciasController.changeEmpty}" />
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.presentacion}" />
-														<f:selectItems
-															value="#{existenciasController.presentaciones}"
-															itemLabel="#{presentacion.nombrePrs}"
-															itemValue="#{presentacion}" var="presentacion">
-														</f:selectItems>
-													</p:selectOneMenu>
+								<!-- **************************  Sub-Panel - Informacion Tecnica   *************************** -->
 
-													<p:outputLabel id="lblEstadoPro" for="estadoPro"
-														value="Estado Producto: " style="color:white!important" />
-													<p:selectOneMenu id="estadoPro"
-														value="#{existenciasController.estadoProSelect}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.estadoproducto}" />
-														<f:selectItems
-															value="#{existenciasController.estadoproductos}"
-															itemLabel="#{estadoPro.nombreEstp}"
-															itemValue="#{estadoPro}" var="estadoPro">
-														</f:selectItems>
-													</p:selectOneMenu>
+								<div class="ui-fluid">
 
-													<p:outputLabel id="lblGrado" for="grado" value="Grado: "
-														style="color:white!important" />
-													<p:selectOneMenu id="grado"
-														value="#{existenciasController.gradoSelect}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.grado}" />
-														<f:selectItems value="#{existenciasController.grados}"
-															itemLabel="#{grado.nombreGr}" itemValue="#{grado}"
-															var="grado">
-														</f:selectItems>
-													</p:selectOneMenu>
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										layout="grid"
+										style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-													<p:outputLabel id="lblPosicionGiro" for="posicionGiro"
-														value="Posición Giro: " style="color:white!important" />
-													<p:selectOneMenu id="posicionGiro"
-														value="#{existenciasController.posGiroSelect}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.posgiro}" />
-														<f:selectItems value="#{existenciasController.posgiros}"
-															itemLabel="#{posgiro.nombrePg}" itemValue="#{posgiro}"
-															var="posgiro">
-														</f:selectItems>
-													</p:selectOneMenu>
+										<p:outputLabel id="lblPresentacion" for="presentacion"
+											value="Presentación: " style="color:white!important" />
+										<p:selectOneMenu id="presentacion"
+											value="#{existenciasController.presentacionSelect}">
 
-													<p:outputLabel id="lblHidratacion" for="hidratacion"
-														value="Hidratación: " style="color:white!important" />
-													<p:selectOneMenu id="hidratacion"
-														value="#{existenciasController.hidratacionSelect}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.hidratacion}" />
-														<f:selectItems
-															value="#{existenciasController.hidrataciones}"
-															itemLabel="#{hidratacion.nombreHi}"
-															itemValue="#{hidratacion}" var="hidratacion">
-														</f:selectItems>
-													</p:selectOneMenu>
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.presentacion}" />
+											<f:selectItems
+												value="#{existenciasController.presentaciones}"
+												itemLabel="#{presentacion.nombrePrs}"
+												itemValue="#{presentacion}" var="presentacion">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-													<p:outputLabel id="lblCaracteristica" for="caracteristica"
-														value="Característica: " style="color:white!important" />
-													<p:selectOneMenu id="caracteristica"
-														value="#{existenciasController.caracteristicaSelect}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.caracteristica}" />
-														<f:selectItems
-															value="#{existenciasController.caracteristicas}"
-															itemLabel="#{caracteristica.nombreCr}"
-															itemValue="#{caracteristica}" var="caracteristica">
-														</f:selectItems>
-													</p:selectOneMenu>
+										<p:outputLabel id="lblEstadoPro" for="estadoPro"
+											value="Estado Producto: " style="color:white!important" />
+										<p:selectOneMenu id="estadoPro"
+											value="#{existenciasController.estadoProSelect}">
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.estadoproducto}" />
+											<f:selectItems
+												value="#{existenciasController.estadoproductos}"
+												itemLabel="#{estadoPro.nombreEstp}" itemValue="#{estadoPro}"
+												var="estadoPro">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-													<p:outputLabel id="lblConcentracion" for="concentracion"
-														value="Concentración: " style="color:white!important" />
-													<p:selectOneMenu id="concentracion"
-														value="#{existenciasController.concentracionSelect}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.concentracion}" />
-														<f:selectItems
-															value="#{existenciasController.concentracions}"
-															itemLabel="#{concentracion.nombreCon}"
-															itemValue="#{concentracion}" var="concentracion">
-														</f:selectItems>
-													</p:selectOneMenu>
+										<p:outputLabel id="lblGrado" for="grado" value="Grado: "
+											style="color:white!important" />
+										<p:selectOneMenu id="grado"
+											value="#{existenciasController.gradoSelect}">
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.grado}" />
+											<f:selectItems value="#{existenciasController.grados}"
+												itemLabel="#{grado.nombreGr}" itemValue="#{grado}"
+												var="grado">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-													<p:outputLabel id="lblTipo" for="tipo" value="Tipo: "
-														style="color:white!important" />
-													<p:selectOneMenu id="tipo"
-														value="#{existenciasController.tipoproductoSelect}"
-														required="true"
-														requiredMessage="Debe selecionar una opción">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
-														<f:selectItems
-															value="#{existenciasController.tipoproductos}"
-															itemLabel="#{tipoPro.nombreTprod}" itemValue="#{tipoPro}"
-															var="tipoPro">
-														</f:selectItems>
-													</p:selectOneMenu>
+										<p:outputLabel id="lblPosicionGiro" for="posicionGiro"
+											value="Posición Giro: " style="color:white!important" />
+										<p:selectOneMenu id="posicionGiro"
+											value="#{existenciasController.posGiroSelect}">
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.posgiro}" />
+											<f:selectItems value="#{existenciasController.posgiros}"
+												itemLabel="#{posgiro.nombrePg}" itemValue="#{posgiro}"
+												var="posgiro">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-													<p:outputLabel id="lblPureza" for="pureza" value="Puerza: "
-														style="color:white!important" />
-													<p:selectOneMenu id="pureza"
-														value="#{existenciasController.purezaSelect}"
-														required="true"
-														requiredMessage="Debe selecionar una opción">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
-														<f:selectItems value="#{existenciasController.purezas}"
-															itemLabel="#{pureza.nombrePureza}" itemValue="#{pureza}"
-															var="pureza">
-														</f:selectItems>
-													</p:selectOneMenu>
+										<p:outputLabel id="lblHidratacion" for="hidratacion"
+											value="Hidratación: " style="color:white!important" />
+										<p:selectOneMenu id="hidratacion"
+											value="#{existenciasController.hidratacionSelect}"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.hidratacion}" />
+											<f:selectItems value="#{existenciasController.hidrataciones}"
+												itemLabel="#{hidratacion.nombreHi}"
+												itemValue="#{hidratacion}" var="hidratacion">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-												</p:panelGrid>
-											</center>
-										</div>
-									</p:fieldset>
-									<br />
+										<p:outputLabel id="lblCaracteristica" for="caracteristica"
+											value="Característica: " style="color:white!important" />
+										<p:selectOneMenu id="caracteristica"
+											value="#{existenciasController.caracteristicaSelect}">
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.caracteristica}" />
+											<f:selectItems
+												value="#{existenciasController.caracteristicas}"
+												itemLabel="#{caracteristica.nombreCr}"
+												itemValue="#{caracteristica}" var="caracteristica">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-									<!-- **************************  Sub-Panel - Informacion General   *************************** -->
-									<p:fieldset
-										style="border-radius: 10px 10px 10px 10px;
-										-moz-border-radius: 10px 10px 10px 10px;
-										-webkit-border-radius: 10px 10px 10px 10px;
-										border: 0px solid #000000;
-										border-style: double;
-										border-width: 1px;
-										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-										legend="Informacion General">
+										<p:outputLabel id="lblConcentracion" for="concentracion"
+											value="Concentración: " style="color:white!important" />
+										<p:selectOneMenu id="concentracion"
+											value="#{existenciasController.concentracionSelect}">
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.concentracion}" />
+											<f:selectItems
+												value="#{existenciasController.concentracions}"
+												itemLabel="#{concentracion.nombreCon}"
+												itemValue="#{concentracion}" var="concentracion">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-										<div class="ui-fluid">
+										<p:outputLabel id="lblTipo" for="tipo" value="Tipo: "
+											style="color:white!important" />
+										<p:selectOneMenu id="tipo"
+											value="#{existenciasController.tipoproductoSelect}">
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.tempTipoproducto}" />
+											<f:selectItems value="#{existenciasController.tipoproductos}"
+												itemLabel="#{tipoPro.nombreTprod}" itemValue="#{tipoPro}"
+												var="tipoPro">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-											<center>
-												<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+										<p:outputLabel id="lblPureza" for="pureza" value="Puerza: "
+											style="color:white!important" />
+										<p:selectOneMenu id="pureza"
+											value="#{existenciasController.purezaSelect}">
+											<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+											<f:selectItems value="#{existenciasController.purezas}"
+												itemLabel="#{pureza.nombrePureza}" itemValue="#{pureza}"
+												var="pureza">
+											</f:selectItems>
+										</p:selectOneMenu>
 
-													<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
-														style="color:white!important" />
-													<p:selectOneMenu id="bodega"
-														value="#{existenciasController.bodegaSelect}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="#{existenciasController.bodega}" />
-														<f:selectItems value="#{existenciasController.bodegas}"
-															itemLabel="#{bodega.nombreBg}" itemValue="#{bodega}"
-															var="bodega">
-														</f:selectItems>
-													</p:selectOneMenu>
-
-													<p:outputLabel id="lblFecha" for="fecha"
-														value="Fecha de Cducidad: " style="color:white!important" />
-													<p:calendar id="fecha"
-														value="#{existenciasController.nuevoExistencia.fechacadE}"
-														showOn="button" />
-
-													<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
-														value="Saldo Neto: " style="color:white!important" />
-													<p:inputNumber id="saldoNeto"
-														value="#{existenciasController.nuevoExistencia.cantidadE}"
-														required="true" requiredMessage="Debe ingresar un saldo"
-														size="30" maxlength="100">
-													</p:inputNumber>
-
-													<p:outputLabel id="lblUnidadM" for="unidadM"
-														value="Unidad Medida: " style="color:white!important" />
-													<p:selectOneMenu id="unidadM"
-														value="#{existenciasController.unidadmedida2Select}"
-														required="true"
-														requiredMessage="Debe selecionar una opción">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="" />
-														<f:selectItems
-															value="#{existenciasController.unidadmedidas}"
-															itemLabel="#{unidadM.siglaUm}" itemValue="#{unidadM}"
-															var="unidadM">
-														</f:selectItems>
-													</p:selectOneMenu>
-
-													<p:outputLabel id="lblPuntoReorden" for="puntoReorden"
-														value="Punto de Reorden: " style="color:white!important" />
-													<p:inputNumber id="puntoReorden"
-														value="#{existenciasController.nuevoExistencia.tasausoE}"
-														size="30" maxlength="100">
-													</p:inputNumber>
-
-													<p:outputLabel id="lblUbicacion" for="ubicacion"
-														value="Ubicación: " style="color:white!important" />
-													<p:inputText id="ubicacion"
-														value="#{existenciasController.nuevoExistencia.ubicaE}"
-														required="true"
-														requiredMessage="Debe ingresar la ubicación" size="30"
-														maxlength="100">
-													</p:inputText>
-
-												</p:panelGrid>
-											</center>
-											<br />
-
-										</div>
-
-
-									</p:fieldset>
+									</p:panelGrid>
 
 								</div>
-							</div>
 
-						</div>
+								<br />
+								<br />
+							</p:tab>
 
-						<br />
-						<br />
+							<!-- **************************  Sub-Panel - Informacion General   *************************** -->
+							<p:tab id="infoGeneral" title="Información General"
+								titleStyle="color: black! Important;">
+								<p:messages />
+								<br />
+								<br />
+
+								<div class="ui-fluid">
+
+									<center>
+										<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+											layout="grid"
+											style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+													-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+													box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+
+											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
+												style="color:white!important" />
+											<p:selectOneMenu id="bodega"
+												value="#{existenciasController.bodegaSelect}">
+												<f:selectItem itemLabel="Por favor seleccione"
+													itemValue="#{existenciasController.bodega}" />
+												<f:selectItems value="#{existenciasController.bodegas}"
+													itemLabel="#{bodega.nombreBg}" itemValue="#{bodega}"
+													var="bodega">
+												</f:selectItems>
+											</p:selectOneMenu>
+
+											<p:outputLabel id="lblFecha" for="fecha"
+												value="Fecha de Caducidad: " style="color:white!important" />
+											<p:calendar id="fecha"
+												value="#{existenciasController.nuevoExistencia.fechacadE}"
+												showOn="button" />
+
+											<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
+												value="Saldo Neto: " style="color:white!important" />
+
+											<p:inputNumber id="saldoNeto"
+												value="#{existenciasController.nuevoExistencia.cantidadE}"
+												size="30" maxlength="100">
+											</p:inputNumber>
+
+											<p:outputLabel id="lblUnidadM" for="unidadM"
+												value="Unidad Medida: " style="color:white!important" />
+
+											<p:selectOneMenu id="unidadM"
+												value="#{existenciasController.unidadmedida2Select}">
+												<f:selectItem itemLabel="Por favor seleccione"
+													itemValue="#{existenciasController.tempUnidadMedida}" />
+												<f:selectItems
+													value="#{existenciasController.unidadmedidas}"
+													itemLabel="#{unidadM.siglaUm}" itemValue="#{unidadM}"
+													var="unidadM">
+												</f:selectItems>
+											</p:selectOneMenu>
+
+											<p:outputLabel id="lblPuntoReorden" for="puntoReorden"
+												value="Punto de Reorden: " style="color:white!important" />
+											<p:inputNumber id="puntoReorden"
+												value="#{existenciasController.nuevoExistencia.tasausoE}"
+												size="30" maxlength="100">
+											</p:inputNumber>
+
+											<p:outputLabel id="lblUbicacion" for="ubicacion"
+												value="Ubicación: " style="color:white!important" />
+											<p:inputText id="ubicacion"
+												value="#{existenciasController.nuevoExistencia.ubicaE}"
+												size="30" maxlength="100">
+											</p:inputText>
+
+										</p:panelGrid>
+									</center>
+
+								</div>
+								<br />
+								<br />
+
+							</p:tab>
+
+							<p:tab id="confirm" title="Confirmar"
+								titleStyle="color: black! Important;">
+								<p:messages />
+								<br />
+								<br />
+								<center>
+									<p>
+										<strong>¿Está seguro que desea guardar la Existencia
+											creada? </strong>
+									</p>
+								</center>
+								<br />
+								<br />
+								<center>
+									<h:panelGrid columns="2">
+
+										<p:commandButton value="Guardar" icon="fa fa-save"
+											style="width: 115px; margin: 10px"
+											actionListener="#{existenciasController.agregarExistencia}"
+											oncomplete="PF('filterExistenciasTable').filter();PF('wiz').loadStep('listaProducto', false)"
+											update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoEx">
+										</p:commandButton>
+
+										<p:commandButton value="Atrás "
+											style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+											onclick="PF('nuevoEx').hide();" process="@none">
+
+										</p:commandButton>
+
+									</h:panelGrid>
+								</center>
+								<br />
+								<br />
+							</p:tab>
 
 
-						<center>
 
-							<h:panelGrid columns="2">
-
-								<p:commandButton value="Guardar" icon="fa fa-save"
-									style="width: 115px; margin: 10px"
-									actionListener="#{existenciasController.agregarExistencia}"
-									process="@this,formNuevoEx"
-									oncomplete="PF('filterExistenciasTable').filter();"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEx">
-								</p:commandButton>
-
-								<p:commandButton value="Atrás "
-									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-									onclick="PF('nuevoEx').hide();" process="@none">
-
-								</p:commandButton>
-
-							</h:panelGrid>
-
-						</center>
-
-
+						</p:wizard>
 
 					</p:fieldset>
 				</h:form>
@@ -857,7 +836,7 @@
 
 			<p:dialog id="panelModificarEx" resizable="true"
 				widgetVar="modificarEx" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="60%"
+				hideEffect="fade" responsive="true" dynamic="true" width="65%"
 				header="Modificar Norma">
 
 
@@ -865,37 +844,41 @@
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 
 						<!-- Panel de Nuevo  -->
 						<p:fieldset
 							style="border-radius: 10px 10px 10px 10px;
-	-moz-border-radius: 10px 10px 10px 10px;
-	-webkit-border-radius: 10px 10px 10px 10px;
-	border: 0px solid #000000;
-	border-style: double;
-	border-width: 1px;
-	border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 							legend="Producto">
 							<center>
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblIdProducto" for="idProducto"
 										value="Id Producto: " style="color:white!important" />
-									<p:inputText id="idProducto"
+									<p:outputLabel id="idProducto"
 										value="#{existenciasController.existencia.producto.idProducto}"
 										size="24" disabled="true" />
 
 									<p:outputLabel id="lblNombrePro" for="nombrePro"
 										value="Nombre: " style="color:white!important" />
-									<p:inputText id="nombrePro"
+									<p:outputLabel id="nombrePro"
 										value="#{existenciasController.existencia.producto.nombrePr}"
 										size="24" disabled="true" />
 
@@ -916,119 +899,120 @@
 							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 							legend="Informacion Tecnica">
 							<div class="ui-fluid">
-								<center>
-									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
-										<p:outputLabel id="lblPresentacion" for="presentacion"
-											value="Presentación: " style="color:white!important" />
-										<p:selectOneMenu id="presentacion"
-											value="#{existenciasController.existencia.presentacion.idPresentacion}">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-											<f:selectItems
-												value="#{existenciasController.presentaciones}"
-												itemLabel="#{presentacion.nombrePrs}"
-												itemValue="#{presentacion.idPresentacion}"
-												var="presentacion">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblPresentacion" for="presentacion"
+										value="Presentación: " style="color:white!important" />
+									<p:selectOneMenu id="presentacion"
+										value="#{existenciasController.existencia.presentacion.idPresentacion}">
 
-										<p:outputLabel id="lblEstadoPro" for="estadoPro"
-											value="Estado Producto: " style="color:white!important" />
-										<p:selectOneMenu id="estadoPro"
-											value="#{existenciasController.existencia.estadoproducto.idEstadoprod}">
+										<f:selectItems value="#{existenciasController.presentaciones}"
+											itemLabel="#{presentacion.nombrePrs}"
+											itemValue="#{presentacion.idPresentacion}" var="presentacion">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems
-												value="#{existenciasController.estadoproductos}"
-												itemLabel="#{estadoPro.nombreEstp}"
-												itemValue="#{estadoPro.idEstadoprod}" var="estadoPro">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblEstadoPro" for="estadoPro"
+										value="Estado Producto: " style="color:white!important" />
+									<p:selectOneMenu id="estadoPro"
+										value="#{existenciasController.existencia.estadoproducto.idEstadoprod}">
 
-										<p:outputLabel id="lblGrado" for="grado" value="Grado: "
-											style="color:white!important" />
-										<p:selectOneMenu id="grado"
-											value="#{existenciasController.existencia.grado.idGrado}">
+										<f:selectItems
+											value="#{existenciasController.estadoproductos}"
+											itemLabel="#{estadoPro.nombreEstp}"
+											itemValue="#{estadoPro.idEstadoprod}" var="estadoPro">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems value="#{existenciasController.grados}"
-												itemLabel="#{grado.nombreGr}" itemValue="#{grado.idGrado}"
-												var="grado">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblGrado" for="grado" value="Grado: "
+										style="color:white!important" />
+									<p:selectOneMenu id="grado"
+										value="#{existenciasController.existencia.grado.idGrado}">
 
-										<p:outputLabel id="lblPosicionGiro" for="posicionGiro"
-											value="Posición Giro: " style="color:white!important" />
-										<p:selectOneMenu id="posicionGiro"
-											value="#{existenciasController.existencia.posgiro.idPosgiro}">
+										<f:selectItems value="#{existenciasController.grados}"
+											itemLabel="#{grado.nombreGr}" itemValue="#{grado.idGrado}"
+											var="grado">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems value="#{existenciasController.posgiros}"
-												itemLabel="#{posgiro.nombrePg}"
-												itemValue="#{posgiro.idPosgiro}" var="posgiro">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblPosicionGiro" for="posicionGiro"
+										value="Posición Giro: " style="color:white!important" />
+									<p:selectOneMenu id="posicionGiro"
+										value="#{existenciasController.existencia.posgiro.idPosgiro}">
 
-										<p:outputLabel id="lblHidratacion" for="hidratacion"
-											value="Hidratación: " style="color:white!important" />
-										<p:selectOneMenu id="hidratacion"
-											value="#{existenciasController.existencia.idHidratacion}">
+										<f:selectItems value="#{existenciasController.posgiros}"
+											itemLabel="#{posgiro.nombrePg}"
+											itemValue="#{posgiro.idPosgiro}" var="posgiro">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems value="#{existenciasController.hidrataciones}"
-												itemLabel="#{hidratacion.nombreHi}"
-												itemValue="#{hidratacion.idHidratacion}" var="hidratacion">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblHidratacion" for="hidratacion"
+										value="Hidratación: " style="color:white!important" />
+									<p:selectOneMenu id="hidratacion"
+										value="#{existenciasController.existencia.idHidratacion}">
 
-										<p:outputLabel id="lblCaracteristica" for="caracteristica"
-											value="Característica: " style="color:white!important" />
-										<p:selectOneMenu id="caracteristica"
-											value="#{existenciasController.existencia.caracteristica.idCaracteristica}">
+										<f:selectItems value="#{existenciasController.hidrataciones}"
+											itemLabel="#{hidratacion.nombreHi}"
+											itemValue="#{hidratacion.idHidratacion}" var="hidratacion">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems
-												value="#{existenciasController.caracteristicas}"
-												itemLabel="#{caracteristica.nombreCr}"
-												itemValue="#{caracteristica.idCaracteristica}"
-												var="caracteristica">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblCaracteristica" for="caracteristica"
+										value="Característica: " style="color:white!important" />
+									<p:selectOneMenu id="caracteristica"
+										value="#{existenciasController.existencia.caracteristica.idCaracteristica}">
 
-										<p:outputLabel id="lblConcentracion" for="concentracion"
-											value="Concentración: " style="color:white!important;" />
-										<p:selectOneMenu id="concentracion"
-											value="#{existenciasController.existencia.concentracion.idConcentracion}">
+										<f:selectItems
+											value="#{existenciasController.caracteristicas}"
+											itemLabel="#{caracteristica.nombreCr}"
+											itemValue="#{caracteristica.idCaracteristica}"
+											var="caracteristica">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems
-												value="#{existenciasController.concentracions}"
-												itemLabel="#{concentracion.nombreCon}"
-												itemValue="#{concentracion.idConcentracion}"
-												var="concentracion">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblConcentracion" for="concentracion"
+										value="Concentración: " style="color:white!important;" />
+									<p:selectOneMenu id="concentracion"
+										value="#{existenciasController.existencia.concentracion.idConcentracion}">
 
-										<p:outputLabel id="lblTipo" for="tipo" value="Tipo: "
-											style="color:white!important" />
-										<p:selectOneMenu id="tipo"
-											value="#{existenciasController.existencia.tipoproducto.idTipoprod}"
-											required="true" requiredMessage="Debe selecionar una opción">
+										<f:selectItems value="#{existenciasController.concentracions}"
+											itemLabel="#{concentracion.nombreCon}"
+											itemValue="#{concentracion.idConcentracion}"
+											var="concentracion">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems value="#{existenciasController.tipoproductos}"
-												itemLabel="#{tipoPro.nombreTprod}"
-												itemValue="#{tipoPro.idTipoprod}" var="tipoPro">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblTipo" for="tipo" value="Tipo: "
+										style="color:white!important" />
+									<p:selectOneMenu id="tipo"
+										value="#{existenciasController.existencia.tipoproducto.idTipoprod}"
+										required="true" requiredMessage="Debe selecionar una opción">
 
-										<p:outputLabel id="lblPureza" for="pureza" value="Puerza: "
-											style="color:white!important" />
-										<p:selectOneMenu id="pureza"
-											value="#{existenciasController.existencia.purezaE}">
+										<f:selectItems value="#{existenciasController.tipoproductos}"
+											itemLabel="#{tipoPro.nombreTprod}"
+											itemValue="#{tipoPro.idTipoprod}" var="tipoPro">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-											<f:selectItems value="#{existenciasController.purezas}"
-												itemLabel="#{pureza.nombrePureza}"
-												itemValue="#{pureza.idPureza}" var="pureza">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblPureza" for="pureza" value="Puerza: "
+										style="color:white!important" />
+									<p:selectOneMenu id="pureza"
+										value="#{existenciasController.existencia.purezaE}">
 
-									</p:panelGrid>
-								</center>
+										<f:selectItems value="#{existenciasController.purezas}"
+											itemLabel="#{pureza.nombrePureza}"
+											itemValue="#{pureza.idPureza}" var="pureza">
+										</f:selectItems>
+									</p:selectOneMenu>
+
+								</p:panelGrid>
+
 							</div>
 						</p:fieldset>
 						<br />
@@ -1045,65 +1029,68 @@
 							legend="Informacion General">
 							<div class="ui-fluid">
 
-								<center>
-									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
-										<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
-											style="color:white!important" />
-										<p:selectOneMenu id="bodega"
-											value="#{existenciasController.existencia.bodega.idBodega}">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+										box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-											<f:selectItems value="#{existenciasController.bodegas}"
-												itemLabel="#{bodega.nombreBg}"
-												itemValue="#{bodega.idBodega}" var="bodega">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
+										style="color:white!important" />
+									<p:selectOneMenu id="bodega"
+										value="#{existenciasController.existencia.bodega.idBodega}">
 
-										<p:outputLabel id="lblFecha" for="fecha"
-											value="Fecha de Cducidad: " style="color:white!important" />
-										<p:calendar id="fecha"
-											value="#{existenciasController.existencia.fechacadE}"
-											showOn="button" />
+										<f:selectItems value="#{existenciasController.bodegas}"
+											itemLabel="#{bodega.nombreBg}" itemValue="#{bodega.idBodega}"
+											var="bodega">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-										<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
-											value="Saldo Neto: " style="color:white!important" />
-										<p:inputNumber id="saldoNeto"
-											value="#{existenciasController.existencia.cantidadnetaE}"
-											size="30" maxlength="100" required="true"
-											requiredMessage="Debe ingresar el saldo">
-										</p:inputNumber>
+									<p:outputLabel id="lblFecha" for="fecha"
+										value="Fecha de Cducidad: " style="color:white!important" />
+									<p:calendar id="fecha"
+										value="#{existenciasController.existencia.fechacadE}"
+										showOn="button" />
 
-										<p:outputLabel id="lblUnidadM" for="unidadM"
-											value="Unidad Medida: " style="color:white!important" />
-										<p:selectOneMenu id="unidadM"
-											value="#{existenciasController.existencia.unidadmedida.idUmedida}"
-											required="true" requiredMessage="Debe selecionar una opción">
+									<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
+										value="Saldo Neto: " style="color:white!important" />
+									<p:inputNumber id="saldoNeto"
+										value="#{existenciasController.existencia.cantidadnetaE}"
+										size="30" maxlength="100" required="true"
+										requiredMessage="Debe ingresar el saldo">
+									</p:inputNumber>
 
-											<f:selectItems value="#{existenciasController.unidadmedidas}"
-												itemLabel="#{unidadM.siglaUm}"
-												itemValue="#{unidadM.idUmedida}" var="unidadM">
-											</f:selectItems>
-										</p:selectOneMenu>
+									<p:outputLabel id="lblUnidadM" for="unidadM"
+										value="Unidad Medida: " style="color:white!important" />
+									<p:selectOneMenu id="unidadM"
+										value="#{existenciasController.existencia.unidadmedida.idUmedida}"
+										required="true" requiredMessage="Debe selecionar una opción">
 
-										<p:outputLabel id="lblPuntoReorden" for="puntoReorden"
-											value="Punto de Reorden: " style="color:white!important" />
-										<p:inputNumber id="puntoReorden"
-											value="#{existenciasController.existencia.cantidadE}"
-											size="30" maxlength="100">
-										</p:inputNumber>
+										<f:selectItems value="#{existenciasController.unidadmedidas}"
+											itemLabel="#{unidadM.siglaUm}"
+											itemValue="#{unidadM.idUmedida}" var="unidadM">
+										</f:selectItems>
+									</p:selectOneMenu>
 
-										<p:outputLabel id="lblUbicacion" for="ubicacion"
-											value="Ubicación: " style="color:white!important" />
-										<p:inputText id="ubicacion"
-											value="#{existenciasController.existencia.ubicaE}"
-											required="true" requiredMessage="Debe ingresar la ubicacion"
-											size="30" maxlength="100">
-										</p:inputText>
+									<p:outputLabel id="lblPuntoReorden" for="puntoReorden"
+										value="Punto de Reorden: " style="color:white!important" />
+									<p:inputNumber id="puntoReorden"
+										value="#{existenciasController.existencia.cantidadE}"
+										size="30" maxlength="100">
+									</p:inputNumber>
 
+									<p:outputLabel id="lblUbicacion" for="ubicacion"
+										value="Ubicación: " style="color:white!important" />
+									<p:inputText id="ubicacion"
+										value="#{existenciasController.existencia.ubicaE}"
+										required="true" requiredMessage="Debe ingresar la ubicacion"
+										size="30" maxlength="100">
+									</p:inputText>
 
-									</p:panelGrid>
-								</center>
+								</p:panelGrid>
+
 								<br />
 
 							</div>
@@ -1125,7 +1112,7 @@
 										actionListener="#{existenciasController.modificarExistencia}"
 										process="@this,formModificarEx"
 										oncomplete="PF('filterExistenciasTable').filter();"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEx">
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarEx">
 
 									</p:commandButton>
 
@@ -1156,7 +1143,7 @@
 							oncomplete="PF('filterExistenciasTable').filter();"
 							onsuccess="PF('eliminarExistencia').hide();"
 							actionListener="#{existenciasController.eliminarExistencia}"
-							update="@([id$=messagesForm],[id$=formprincipal])" />
+							update="@([id$=messagesForm],[id$=formPrincipal])" />
 
 
 						<p:commandButton value="Cancelar"

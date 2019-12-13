@@ -65,7 +65,7 @@
 						<p:dataTable id="tblProducto"
 							value="#{productoController.listarProductos}" var="pro"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
-							widgetVar="filterProductoTable" resizableColumns="true" rows="10"
+							widgetVar="filterProductoTable" rows="10"
 							paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
 							rowsPerPageTemplate="5,10,15,20,30,50,75,100"
@@ -74,64 +74,47 @@
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<f:facet name="header">
-								<p:outputPanel>
-									<h:outputText value="Búsqueda por nombre:" />
-									<p:inputText id="globalFilter"
-										value="#{productoController.nombrePro}" style="width:150px"
-										placeholder="Busqueda">
-										<p:ajax event="keyup" update="tblProducto"
-											listener="#{productoController.busquedaGloblal}" />
-									</p:inputText>
-								</p:outputPanel>
-							</f:facet>
+							<p:outputPanel>
+								<h:outputText value="Búsqueda por nombre:" />
+								<p:inputText id="globalFilter"
+									value="#{productoController.nombrePro}" style="width:150px"
+									placeholder="Busqueda">
+									<p:ajax event="keyup" update="tblProducto"
+										listener="#{productoController.busquedaGloblal}" />
+								</p:inputText>
+							</p:outputPanel>
 
-							<p:column headerText="ID">
-								<f:facet name="header">
-									<h:outputText value="ID" />
-								</f:facet>
+							<p:column headerText="ID Producto">
+
 								<h:outputText value="#{pro.idProducto}" />
 							</p:column>
 
 							<p:column headerText="Nombre">
-								<f:facet name="header">
-									<h:outputText value="NOMBRE" />
-								</f:facet>
+
 								<h:outputText value="#{pro.nombrePr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Específico">
-								<f:facet name="header">
-									<h:outputText value="RIESGO ESPECÍFICO" />
-								</f:facet>
+
 								<h:outputText value="#{pro.riesgoespecifico.nombreRe}" />
 							</p:column>
 
 							<p:column headerText="Fórmula">
-								<f:facet name="header">
-									<h:outputText value="FORMULA" />
-								</f:facet>
+
 								<h:outputText value="#{pro.formulaPr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Salud">
-								<f:facet name="header">
-									<h:outputText value="RIESGO SALUD" />
-								</f:facet>
+
 								<h:outputText value="#{pro.riesgosaludPr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Inflamabilidad">
-								<f:facet name="header">
-									<h:outputText value="RIESGO INFLAMABILIDAD" />
-								</f:facet>
+
 								<h:outputText value="#{pro.riesgoinflamabilidadPr}" />
 							</p:column>
 
 							<p:column headerText="Riesgo Reactividad">
-								<f:facet name="header">
-									<h:outputText value="RIESGO REACTIVIDAD" />
-								</f:facet>
 								<h:outputText value="#{pro.riesgoreactividadPr}" />
 							</p:column>
 
@@ -193,10 +176,10 @@
 
 			<!-- 		Panel de registro que se abre en un dialogo	 -->
 
-			<p:dialog id="panelNuevoProducto" resizable="true" closable="false"
-				draggable="false" widgetVar="nuevoProducto" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Nuevo Producto">
+			<p:dialog id="panelNuevoProducto" resizable="true" draggable="false"
+				widgetVar="nuevoProducto" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="60%"
+				header="Nuevo Producto">
 
 
 				<h:form id="formNuevoProducto">
@@ -212,116 +195,120 @@
 
 						<br />
 						<br />
-						<center>
-							<div class="ui-fluid">
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{productoController.nuevoProducto.nombrePr}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre del Producto"
-										size="30" maxlength="100">
-									</p:inputText>
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
-									<p:outputLabel id="lblIUPAC" for="iupac" value="IUPAC: "
-										style="color:white!important" />
-									<p:inputText id="iupac"
-										value="#{productoController.nuevoProducto.iupacPr}"
-										required="false" size="30" maxlength="100">
-									</p:inputText>
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{productoController.nuevoProducto.nombrePr}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Producto"
+									size="30" maxlength="100">
+								</p:inputText>
 
-									<p:outputLabel id="lblRiesgoEspe" for="riesgoEspeci"
-										value="Riesgo Específico: " style="color:white!important" />
-									<p:selectOneMenu id="riesgoEspeci"
-										value="#{productoController.riesgoEspecificoSelect}"
-										required="true" requiredMessage="Debe selecionar una opción">
-										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems value="#{productoController.listarRiesgosEsp}"
-											itemLabel="#{riesgoEspeci.nombreRe}"
-											itemValue="#{riesgoEspeci}" var="riesgoEspeci">
-										</f:selectItems>
-									</p:selectOneMenu>
+								<p:outputLabel id="lblIUPAC" for="iupac" value="IUPAC: "
+									style="color:white!important" />
+								<p:inputText id="iupac"
+									value="#{productoController.nuevoProducto.iupacPr}"
+									required="false" size="30" maxlength="100">
+								</p:inputText>
 
-
-									<p:outputLabel id="lblTipoPro" for="tipoPro"
-										value="Tipo Producto: " style="color:white!important" />
-									<p:selectOneMenu id="tipoPro"
-										value="#{productoController.tipoProductoSelect}"
-										required="true" requiredMessage="Debe selecionar una opción">
-										<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-										<f:selectItems
-											value="#{productoController.listarTipoProducto}"
-											itemLabel="#{tipoPro.nombreTprod}" itemValue="#{tipoPro}"
-											var="tipoPro">
-										</f:selectItems>
-									</p:selectOneMenu>
-
-									<p:outputLabel id="lblDescripcion" for="descripcion"
-										value="Descripción: " style="color:white!important" />
-									<p:inputTextarea id="descripcion"
-										value="#{productoController.nuevoProducto.descrPr}"
-										maxlength="100" rows="5" cols="30" />
-
-									<p:outputLabel id="lblFormula" for="formula" value="Formula: "
-										style="color:white!important" />
-									<p:inputTextarea id="formula"
-										value="#{productoController.nuevoProducto.formulaPr}"
-										maxlength="100" rows="5" cols="30" />
-
-									<p:outputLabel id="lblRegSalud" for="regSalud"
-										value="Riesgo Salud: " style="color:white!important" />
-									<h:panelGrid columns="1" style="margin-bottom: 10px">
-										<p:inputText id="regSalud"
-											value="#{productoController.nuevoProducto.riesgosaludPr}" />
-										<p:slider for="regSalud" maxValue="4" minValue="0" />
-									</h:panelGrid>
-
-									<p:outputLabel id="lblRegInfla" for="regInfla"
-										value="Riesgo Inflamabilidad: " style="color:white!important" />
-									<h:panelGrid columns="1" style="margin-bottom: 10px">
-										<p:inputText id="regInfla"
-											value="#{productoController.nuevoProducto.riesgoinflamabilidadPr}" />
-										<p:slider for="regInfla" maxValue="4" minValue="0" />
-									</h:panelGrid>
-
-									<p:outputLabel id="lblRegRea" for="regReac"
-										value="Riesgo Reactividad: " style="color:white!important" />
-									<h:panelGrid columns="1" style="margin-bottom: 10px">
-										<p:inputText id="regReac"
-											value="#{productoController.nuevoProducto.riesgoreactividadPr}"
-											required="true"
-											requiredMessage="Debe selecionar el nivel de Reactividad" />
-										<p:slider for="regReac" maxValue="4" minValue="0" />
-									</h:panelGrid>
-
-								</p:panelGrid>
-							</div>
-							<br /> <br />
+								<p:outputLabel id="lblRiesgoEspe" for="riesgoEspeci"
+									value="Riesgo Específico: " style="color:white!important" />
+								<p:selectOneMenu id="riesgoEspeci"
+									value="#{productoController.riesgoEspecificoSelect}"
+									required="true" requiredMessage="Debe selecionar una opción">
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									<f:selectItems value="#{productoController.listarRiesgosEsp}"
+										itemLabel="#{riesgoEspeci.nombreRe}"
+										itemValue="#{riesgoEspeci}" var="riesgoEspeci">
+									</f:selectItems>
+								</p:selectOneMenu>
 
 
-							<center>
+								<p:outputLabel id="lblTipoPro" for="tipoPro"
+									value="Tipo Producto: " style="color:white!important" />
+								<p:selectOneMenu id="tipoPro"
+									value="#{productoController.tipoProductoSelect}"
+									required="true" requiredMessage="Debe selecionar una opción">
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									<f:selectItems value="#{productoController.listarTipoProducto}"
+										itemLabel="#{tipoPro.nombreTprod}" itemValue="#{tipoPro}"
+										var="tipoPro">
+									</f:selectItems>
+								</p:selectOneMenu>
 
-								<h:panelGrid columns="2">
+								<p:outputLabel id="lblDescripcion" for="descripcion"
+									value="Descripción: " style="color:white!important" />
+								<p:inputTextarea id="descripcion"
+									value="#{productoController.nuevoProducto.descrPr}"
+									maxlength="100" rows="5" cols="30" />
 
-									<p:commandButton value="Guardar" icon="fa fa-save"
-										style="width: 115px; margin: 10px"
-										actionListener="#{productoController.agregarProducto}"
-										oncomplete="PF('nuevoProducto');"
-										process="@this,formNuevoProducto"
-										update="@([id$=messagesForm],[id$=formPrincipal]), formNuevoProducto">
+								<p:outputLabel id="lblFormula" for="formula" value="Formula: "
+									style="color:white!important" />
+								<p:inputTextarea id="formula"
+									value="#{productoController.nuevoProducto.formulaPr}"
+									maxlength="100" rows="5" cols="30" />
 
-									</p:commandButton>
-
-									<p:commandButton value="Atrás "
-										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-										onclick="PF('nuevoProducto').hide();" process="@none">
-									</p:commandButton>
+								<p:outputLabel id="lblRegSalud" for="regSalud"
+									value="Riesgo Salud: " style="color:white!important" />
+								<h:panelGrid columns="1" style="margin-bottom: 10px">
+									<p:inputText id="regSalud"
+										value="#{productoController.nuevoProducto.riesgosaludPr}" />
+									<p:slider for="regSalud" maxValue="4" minValue="0" />
 								</h:panelGrid>
-							</center>
+
+								<p:outputLabel id="lblRegInfla" for="regInfla"
+									value="Riesgo Inflamabilidad: " style="color:white!important" />
+								<h:panelGrid columns="1" style="margin-bottom: 10px">
+									<p:inputText id="regInfla"
+										value="#{productoController.nuevoProducto.riesgoinflamabilidadPr}" />
+									<p:slider for="regInfla" maxValue="4" minValue="0" />
+								</h:panelGrid>
+
+								<p:outputLabel id="lblRegRea" for="regReac"
+									value="Riesgo Reactividad: " style="color:white!important" />
+								<h:panelGrid columns="1" style="margin-bottom: 10px">
+									<p:inputText id="regReac"
+										value="#{productoController.nuevoProducto.riesgoreactividadPr}"
+										required="true"
+										requiredMessage="Debe selecionar el nivel de Reactividad" />
+									<p:slider for="regReac" maxValue="4" minValue="0" />
+								</h:panelGrid>
+
+							</p:panelGrid>
+						</div>
+						<br />
+						<br />
+
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{productoController.agregarProducto}"
+									oncomplete="PF('nuevoProducto');"
+									process="@this,formNuevoProducto"
+									update="@([id$=messagesForm],[id$=formPrincipal]), formNuevoProducto">
+
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoProducto').hide();" process="@none">
+								</p:commandButton>
+							</h:panelGrid>
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
@@ -329,10 +316,9 @@
 			<!-- Panel de Modificar -->
 
 			<p:dialog id="panelModificarProducto" resizable="true"
-				closable="false" draggable="false" widgetVar="modificarProducto"
-				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="65%"
-				header="Modificar Producto">
+				draggable="false" widgetVar="modificarProducto" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="65%" header="Modificar Producto">
 
 
 				<h:form id="formModificarProducto">
@@ -351,7 +337,11 @@
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									layout="grid"
+									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
+									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
 
 									<p:outputLabel id="lblID" value="Código: "
 										style="color:white!important" />
