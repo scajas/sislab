@@ -82,17 +82,16 @@ public class TipoProveedorController implements Serializable {
 		try {
 			if (buscarTipoProveedor(nuevoTipoProveedor.getNombreTpv()) == true) {
 
-				mensajeError("Ha ocurrido un error, el tipo de proveedor (" + nuevoTipoProveedor.getNombreTpv()
+				mensajeError("El Tipo de proveedor (" + nuevoTipoProveedor.getNombreTpv()
 						+ ") ya existe.");
 
-				nuevoTipoProveedor = new Tipoproveedor();
 			} else {
 				tipoProveedorI.save(nuevoTipoProveedor);
 
 				tiposProveedor = tipoProveedorI.getAll(Tipoproveedor.class);
 
 				mensajeInfo(
-						"El Tipo proveedor(" + nuevoTipoProveedor.getNombreTpv() + ") se ha almacenado exitosamente.");
+						"El Tipo proveedor (" + nuevoTipoProveedor.getNombreTpv() + ") se ha almacenado exitosamente.");
 
 				nuevoTipoProveedor = new Tipoproveedor();
 

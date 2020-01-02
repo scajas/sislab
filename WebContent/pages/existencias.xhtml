@@ -54,13 +54,19 @@
 						<br />
 
 						<!-- Boton De Nuevo -->
-						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoEx').show()"
-								update=":formNuevoEx,@this">
 
-							</p:commandButton>
+						<center>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoEx').show();" update=":formNuevoEx,@this">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+
+							</p:commandLink>
 
 						</center>
 						<br />
@@ -83,7 +89,8 @@
 
 							<p:column headerText="ID Producto"
 								filterBy="#{existencia.producto.idProducto}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" filterStyle="width: 70%"
+								style="width: 9%">
 
 								<!-- **************************  Boton Ver Detalles Exisencia   *************************** -->
 
@@ -102,46 +109,56 @@
 							</p:column>
 
 							<p:column headerText="ID Existencia"
-								filterBy="#{existencia.idExistencia}" filterMatchMode="contains">
+								filterBy="#{existencia.idExistencia}" filterMatchMode="contains"
+								filterStyle="width: 70%" style="width: 9%">
 								<h:outputText value="#{existencia.idExistencia}" />
 							</p:column>
 
 							<p:column headerText="Producto"
 								filterBy="#{existencia.producto.nombrePr}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" filterStyle="width: 70%"
+								style="width: 9%">
 								<h:outputText value="#{existencia.producto.nombrePr}" />
 							</p:column>
 
 							<p:column headerText="Grado"
 								filterBy="#{existencia.grado.nombreGr}"
-								filterMatchMode="contains" style="width: 8% ">
+								filterMatchMode="contains" style="width: 7% "
+								filterStyle="width: 80%">
 								<h:outputText value="#{existencia.grado.nombreGr}" />
 							</p:column>
 
 							<p:column headerText="Concentración"
 								filterBy="#{existencia.concentracion.nombreCon}"
-								filterMatchMode="contains" style="width: 10% ">
+								filterMatchMode="contains" style="width: 9% "
+								filterStyle="width: 80%">
 								<h:outputText value="#{existencia.concentracion.nombreCon}" />
 							</p:column>
 
 							<p:column headerText="Bodega"
-								filterBy="#{existencia.bodega.nombreBg}">
+								filterBy="#{existencia.bodega.nombreBg}"
+								filterMatchMode="contains" filterStyle="width: 70%"
+								style="width: 13%">
 								<h:outputText value="#{existencia.bodega.nombreBg}" />
 							</p:column>
 
 							<p:column headerText="Saldo" filterBy="#{existencia.cantidadE}"
-								filterMatchMode="contains" style="width: 6% ">
+								filterMatchMode="contains" style="width: 6%"
+								filterStyle="width: 70%">
 								<h:outputText value="#{existencia.cantidadE}" />
 							</p:column>
 
 							<p:column headerText="U.M."
 								filterBy="#{existencia.unidadmedida.medidaUm}"
-								filterMatchMode="contains" style="width: 6% ">
+								filterMatchMode="contains" style="width: 4%"
+								filterStyle="width: 40%">
 								<h:outputText value="#{existencia.unidadmedida.siglaUm}" />
 							</p:column>
 
 							<p:column headerText="Tipo Producto"
-								filterBy="#{existencia.producto.tipoproducto.nombreTprod}">
+								filterBy="#{existencia.producto.tipoproducto.nombreTprod}"
+								filterMatchMode="contains" filterStyle="width: 70%"
+								style="width: 12%">
 								<h:outputText
 									value="#{existencia.producto.tipoproducto.nombreTprod}" />
 							</p:column>
@@ -484,7 +501,7 @@
 
 			<p:dialog id="panelNuevoEx" resizable="true" widgetVar="nuevoEx"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="65%"
+				responsive="true" dynamic="true" width="120vh" height="73vh"
 				header="Nueva Existencia">
 
 				<h:form id="formNuevoEx">
@@ -500,11 +517,19 @@
 
 						<!-- **************************  Sub-Panel - Buscar Producto   *************************** -->
 						<p:wizard flowListener="#{existenciasController.onFlowProcess}"
-							widgetVar="wiz">
+							widgetVar="wiz" backLabel="Atrás" nextLabel="Siguiente">
 
-							<p:tab id="listaProducto" title="Lista de Productos"
-								titleStyle="color: black! Important; " icon="fa fa-save">
+							<p:tab id="listaProducto" titleStyle="color: black! Important; ">
+								<center>
+									<f:facet name="title">
+										<center>
+											<p:graphicImage value="/images/archivos/product.png"
+												width="25" height="25" />
+										</center>
 
+										<h:outputText value="Productos" />
+									</f:facet>
+								</center>
 								<p:messages />
 								<br />
 								<p:dataTable id="tblProducto"
@@ -520,7 +545,7 @@
 
 									<f:facet name="header">
 										<p:outputPanel>
-											<h:outputText value="Búsqueda por nombre: " />
+											<h:outputText value="Búsqueda por nombre: * " />
 											<p:inputText id="globalFilter"
 												value="#{existenciasController.nombrePro}"
 												style="width:150px" placeholder="Busqueda" required="true"
@@ -546,17 +571,26 @@
 							<!-- **************************  Sub-Panel - Producto  *************************** -->
 							<p:tab id="infoTecni" title="Información Técnica"
 								titleStyle="color:black! Important;">
+								<center>
+									<f:facet name="title">
+										<center>
+											<p:graphicImage value="/images/archivos/configurar.png"
+												width="25" height="25" />
+										</center>
+
+										<h:outputText value="Info. Técnica" />
+									</f:facet>
+								</center>
+
 								<p:messages />
 
 								<br />
-								<div class="ui-fluid">
 
+								<div class="ui-fluid">
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 										layout="grid"
-										style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-										-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-										box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 										<p:outputLabel id="lblIdProducto" for="idProducto"
 											value="ID Producto: " style="color:white!important" />
@@ -583,14 +617,13 @@
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 										layout="grid"
-										style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-										-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-										box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 										<p:outputLabel id="lblPresentacion" for="presentacion"
 											value="Presentación: " style="color:white!important" />
 										<p:selectOneMenu id="presentacion"
-											value="#{existenciasController.presentacionSelect}">
+											value="#{existenciasController.presentacionSelect}"
+											filter="true" filterMatchMode="contains">
 
 											<f:selectItem itemLabel="Por favor seleccione"
 												itemValue="#{existenciasController.presentacion}" />
@@ -617,7 +650,8 @@
 										<p:outputLabel id="lblGrado" for="grado" value="Grado: "
 											style="color:white!important" />
 										<p:selectOneMenu id="grado"
-											value="#{existenciasController.gradoSelect}">
+											value="#{existenciasController.gradoSelect}" filter="true"
+											filterMatchMode="contains">
 											<f:selectItem itemLabel="Por favor seleccione"
 												itemValue="#{existenciasController.grado}" />
 											<f:selectItems value="#{existenciasController.grados}"
@@ -629,7 +663,8 @@
 										<p:outputLabel id="lblPosicionGiro" for="posicionGiro"
 											value="Posición Giro: " style="color:white!important" />
 										<p:selectOneMenu id="posicionGiro"
-											value="#{existenciasController.posGiroSelect}">
+											value="#{existenciasController.posGiroSelect}" filter="true"
+											filterMatchMode="contains">
 											<f:selectItem itemLabel="Por favor seleccione"
 												itemValue="#{existenciasController.posgiro}" />
 											<f:selectItems value="#{existenciasController.posgiros}"
@@ -654,7 +689,8 @@
 										<p:outputLabel id="lblCaracteristica" for="caracteristica"
 											value="Característica: " style="color:white!important" />
 										<p:selectOneMenu id="caracteristica"
-											value="#{existenciasController.caracteristicaSelect}">
+											value="#{existenciasController.caracteristicaSelect}"
+											filter="true" filterMatchMode="contains">
 											<f:selectItem itemLabel="Por favor seleccione"
 												itemValue="#{existenciasController.caracteristica}" />
 											<f:selectItems
@@ -667,17 +703,18 @@
 										<p:outputLabel id="lblConcentracion" for="concentracion"
 											value="Concentración: " style="color:white!important" />
 										<p:selectOneMenu id="concentracion"
-											value="#{existenciasController.concentracionSelect}">
+											value="#{existenciasController.concentracionSelect}"
+											filter="true" filterMatchMode="contains">
 											<f:selectItem itemLabel="Por favor seleccione"
 												itemValue="#{existenciasController.concentracion}" />
 											<f:selectItems
 												value="#{existenciasController.concentracions}"
-												itemLabel="#{concentracion.nombreCon}"
+												itemLabel="#{concentracion.descrCon}"
 												itemValue="#{concentracion}" var="concentracion">
 											</f:selectItems>
 										</p:selectOneMenu>
 
-										<p:outputLabel id="lblTipo" for="tipo" value="Tipo: "
+										<p:outputLabel id="lblTipo" for="tipo" value="Tipo: * "
 											style="color:white!important" />
 										<p:selectOneMenu id="tipo"
 											value="#{existenciasController.tipoproductoSelect}">
@@ -711,6 +748,17 @@
 							<!-- **************************  Sub-Panel - Informacion General   *************************** -->
 							<p:tab id="infoGeneral" title="Información General"
 								titleStyle="color: black! Important;">
+
+								<center>
+									<f:facet name="title">
+										<center>
+											<p:graphicImage value="/images/archivos/info.png" width="25"
+												height="25" />
+										</center>
+
+										<h:outputText value="Info. General" />
+									</f:facet>
+								</center>
 								<p:messages />
 								<br />
 								<br />
@@ -721,11 +769,9 @@
 										<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 											layout="grid"
-											style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-													-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-													box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+											style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
-											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
+											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: *"
 												style="color:white!important" />
 											<p:selectOneMenu id="bodega"
 												value="#{existenciasController.bodegaSelect}">
@@ -744,7 +790,7 @@
 												showOn="button" />
 
 											<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
-												value="Saldo Neto: " style="color:white!important" />
+												value="Saldo Neto: *" style="color:white!important" />
 
 											<p:inputNumber id="saldoNeto"
 												value="#{existenciasController.nuevoExistencia.cantidadE}"
@@ -755,7 +801,8 @@
 												value="Unidad Medida: " style="color:white!important" />
 
 											<p:selectOneMenu id="unidadM"
-												value="#{existenciasController.unidadmedida2Select}">
+												value="#{existenciasController.unidadmedida2Select}"
+												required="true">
 												<f:selectItem itemLabel="Por favor seleccione"
 													itemValue="#{existenciasController.tempUnidadMedida}" />
 												<f:selectItems
@@ -790,6 +837,18 @@
 
 							<p:tab id="confirm" title="Confirmar"
 								titleStyle="color: black! Important;">
+
+								<center>
+									<f:facet name="title">
+										<center>
+											<p:graphicImage value="/images/archivos/confirm.png"
+												width="25" height="25" />
+										</center>
+
+										<h:outputText value="Confirmar" />
+									</f:facet>
+								</center>
+
 								<p:messages />
 								<br />
 								<br />
@@ -821,11 +880,15 @@
 								</center>
 								<br />
 								<br />
+								<br />
 							</p:tab>
 
-
-
 						</p:wizard>
+
+						<br />
+						<p style="color: red;">
+							<strong>Nota: Las campos con (*) son obligatorios</strong>
+						</p>
 
 					</p:fieldset>
 				</h:form>
@@ -836,8 +899,8 @@
 
 			<p:dialog id="panelModificarEx" resizable="true"
 				widgetVar="modificarEx" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="65%"
-				header="Modificar Norma">
+				hideEffect="fade" responsive="true" dynamic="true" width="140vh"
+				height="95vh" header="Modificar Norma">
 
 
 				<h:form id="formModificarEx">
@@ -850,7 +913,6 @@
 						border-style: double;
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
 
 						<!-- Panel de Nuevo  -->
 						<p:fieldset
@@ -866,9 +928,7 @@
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblIdProducto" for="idProducto"
 										value="Id Producto: " style="color:white!important" />
@@ -898,20 +958,17 @@
 							border-width: 1px;
 							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 							legend="Informacion Tecnica">
-							<div class="ui-fluid">
 
+							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblPresentacion" for="presentacion"
 										value="Presentación: " style="color:white!important" />
 									<p:selectOneMenu id="presentacion"
 										value="#{existenciasController.existencia.presentacion.idPresentacion}">
-
 										<f:selectItems value="#{existenciasController.presentaciones}"
 											itemLabel="#{presentacion.nombrePrs}"
 											itemValue="#{presentacion.idPresentacion}" var="presentacion">
@@ -1027,20 +1084,18 @@
 							border-width: 1px;
 							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 							legend="Informacion General">
+
 							<div class="ui-fluid">
-
-
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-										-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-										box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
-									<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
+									<p:outputLabel id="lblBodega" for="bodega" value="Bodega: *"
 										style="color:white!important" />
 									<p:selectOneMenu id="bodega"
-										value="#{existenciasController.existencia.bodega.idBodega}">
+										value="#{existenciasController.existencia.bodega.idBodega}"
+										required="true">
 
 										<f:selectItems value="#{existenciasController.bodegas}"
 											itemLabel="#{bodega.nombreBg}" itemValue="#{bodega.idBodega}"
@@ -1055,18 +1110,17 @@
 										showOn="button" />
 
 									<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
-										value="Saldo Neto: " style="color:white!important" />
+										value="Saldo Neto: *" style="color:white!important" />
 									<p:inputNumber id="saldoNeto"
 										value="#{existenciasController.existencia.cantidadnetaE}"
-										size="30" maxlength="100" required="true"
-										requiredMessage="Debe ingresar el saldo">
+										size="30" maxlength="100">
 									</p:inputNumber>
 
 									<p:outputLabel id="lblUnidadM" for="unidadM"
 										value="Unidad Medida: " style="color:white!important" />
 									<p:selectOneMenu id="unidadM"
 										value="#{existenciasController.existencia.unidadmedida.idUmedida}"
-										required="true" requiredMessage="Debe selecionar una opción">
+										required="true">
 
 										<f:selectItems value="#{existenciasController.unidadmedidas}"
 											itemLabel="#{unidadM.siglaUm}"
@@ -1092,17 +1146,12 @@
 								</p:panelGrid>
 
 								<br />
-
 							</div>
-
-
 						</p:fieldset>
 
 						<center>
 
 							<br /> <br />
-
-
 							<center>
 
 								<h:panelGrid columns="2">
@@ -1113,7 +1162,6 @@
 										process="@this,formModificarEx"
 										oncomplete="PF('filterExistenciasTable').filter();"
 										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarEx">
-
 									</p:commandButton>
 
 									<p:commandButton value="Atrás " icon="fa fa-arrow-left"

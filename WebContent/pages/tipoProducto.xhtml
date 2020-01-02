@@ -54,12 +54,19 @@
 						<!-- Boton De Nuevo -->
 
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoTipoProducto').show()"
-								update=":formNuevoTipoProducto,@this">
-							</p:commandButton>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoTipoProducto').show();">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
+
 						</center>
+
 						<br />
 						<br />
 
@@ -126,7 +133,6 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
@@ -135,9 +141,9 @@
 			<!-- Panel de Nuevo	 -->
 
 			<p:dialog id="panelNuevoTipoProducto" resizable="false"
-				draggable="false" widgetVar="nuevoTipoProducto" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Nuevo Tipo Producto">
+				widgetVar="nuevoTipoProducto" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nuevo Tipo Producto" width="75vh" height="50vh">
 
 
 				<h:form id="formNuevoTipoProducto">
@@ -155,12 +161,9 @@
 						<br />
 						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
-
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -179,6 +182,7 @@
 
 							</p:panelGrid>
 						</div>
+						<br />
 						<br />
 						<br />
 						<center>
@@ -209,9 +213,9 @@
 			<!-- Panel de Modificar -->
 
 			<p:dialog id="panelModificarTipoProducto" resizable="false"
-				draggable="false" widgetVar="modificarTipoProducto" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Tipo Producto">
+				widgetVar="modificarTipoProducto" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Tipo Producto" width="75vh" height="50vh">
 
 
 				<h:form id="formModificarTipoProducto">
@@ -233,9 +237,7 @@
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -255,7 +257,7 @@
 								</p:panelGrid>
 
 							</div>
-							<br /> <br />
+							<br /> <br /> <br />
 
 							<center>
 

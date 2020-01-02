@@ -52,17 +52,25 @@
 
 						<br />
 						<br />
+
 						<!-- Boton De Nuevo -->
 
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoCliente').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoCliente').show();"
 								update="formNuevoCliente,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+
+							</p:commandLink>
 
 						</center>
+
 						<br />
 						<br />
 
@@ -90,7 +98,7 @@
 								<f:facet name="filter">
 									<p:selectOneMenu onchange="PF('filterCliente').filter()"
 										styleClass="custom-filter" autoWidth="false">
-										<f:selectItem itemLabel="Seleccione..." itemValue="#{null}"
+										<f:selectItem itemLabel="Seleccione" itemValue="#{null}"
 											noSelectionOption="true" />
 										<f:selectItems value="#{clienteController.tipoClientes}"
 											var="tc" itemLabel="#{tc.tipoTcl}" itemValue="#{tc.tipoTcl}">
@@ -161,8 +169,8 @@
 
 			<p:dialog id="panelNuevoCliente" resizable="true" draggable="false"
 				widgetVar="nuevoCliente" responsive="true" modal="true"
-				showEffect="explode" hideEffect="fade" dynamic="true" width="65%"
-				header="Nuevo Cliente">
+				showEffect="explode" hideEffect="fade" dynamic="true" width="120vh"
+				height="73vh" header="Nuevo Cliente">
 
 				<h:form id="formNuevoCliente">
 
@@ -182,9 +190,7 @@
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
 									layout="grid">
 
 									<p:outputLabel id="lblCliente" for="cliente" value="Tipo: "
@@ -309,7 +315,8 @@
 			<p:dialog id="panelModificarCliente" resizable="true"
 				draggable="false" widgetVar="modificarCliente" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="65%" header="Modificar Cliente">
+				dynamic="true" header="Modificar Cliente" width="120vh"
+				height="73vh">
 
 				<h:form id="formModificarCliente">
 
@@ -328,9 +335,7 @@
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
 									layout="grid">
 
 									<p:outputLabel id="lblCliente" for="cliente" value="Tipo: "
@@ -411,8 +416,7 @@
 									<p:inputText id="email"
 										value="#{clienteController.cliente.emailCl}"
 										validatorMessage="Formato de correo no válido" maxlength="50">
-										<f:validateRegex
-											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+
 									</p:inputText>
 
 									<p:outputLabel id="lblContacto" for="cont" value="Contacto: "

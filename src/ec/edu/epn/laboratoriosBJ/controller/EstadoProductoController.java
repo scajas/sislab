@@ -42,18 +42,20 @@ public class EstadoProductoController implements Serializable {
 	/****************************************************************************/
 
 	// Variables de la clase
-	private List<Estadoproducto> listaEstadoProducto = new ArrayList<>();
+	private List<Estadoproducto> estadoProductos = new ArrayList<>();
 	private Estadoproducto nuevoEstadoProducto;
 	private Estadoproducto estadoproducto;
 	private String nombreTP;
 	private List<Estadoproducto> filtrarEstados;
 
 	private List<Estadoproducto> selectEP;
+
 	// Método init
 	@PostConstruct
 	public void init() {
 		try {
-			setListaEstadoProducto(estadoProductoI.getAll(Estadoproducto.class));
+
+			estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 			setNuevoEstadoProducto(new Estadoproducto());
 			estadoproducto = new Estadoproducto();
 
@@ -80,28 +82,31 @@ public class EstadoProductoController implements Serializable {
 	/****** Nuevo ****/
 
 	public void agregarEstadoProducto() {
+
 		RequestContext context = RequestContext.getCurrentInstance();
 
 		try {
+			System.out.println("Lista: " + nuevoEstadoProducto.getNombreEstp());
 			if (buscarEstadoProducto(nuevoEstadoProducto.getNombreEstp()) == true) {
 
 				mensajeError("El Estado Producto (" + nuevoEstadoProducto.getNombreEstp() + ") ya existe.");
 
 			} else {
 				estadoProductoI.save(nuevoEstadoProducto);
-				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
+				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 
 				mensajeInfo("El Estado producto (" + nuevoEstadoProducto.getNombreEstp()
 						+ ") se ha almacenado exitosamente.");
 
 				nuevoEstadoProducto = new Estadoproducto();
 
-				context.execute("PF('nuevoEstadoProducto').hide();");
+				context.execute("PF('nuevoEstadoPro').hide();");
 			}
 
 		} catch (Exception e) {
 
 			mensajeError("Ha ocurrido un problema.");
+			e.printStackTrace();
 		}
 
 	}
@@ -115,22 +120,22 @@ public class EstadoProductoController implements Serializable {
 		try {
 			if (estadoproducto.getNombreEstp().equals(getNombreTP())) {
 				estadoProductoI.update(estadoproducto);
-				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
+				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 
 				mensajeInfo(
 						"El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha actualizado exitosamente.");
 
-				context.execute("PF('modificarEstadoProducto').hide();");
+				context.execute("PF('modificarEstadoPro').hide();");
 
 			} else if (buscarEstadoProducto(estadoproducto.getNombreEstp()) == false) {
 				estadoProductoI.update(estadoproducto);
-				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
+				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 
 				mensajeInfo(
 						"El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha actualizado exitosamente.");
-				context.execute("PF('modificarEstadoProducto').hide();");
+				context.execute("PF('modificarEstadoPro').hide();");
 			} else {
-				listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
+				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 				mensajeError("El Estado Producto (" + estadoproducto.getNombreEstp() + ") ya existe.");
 			}
 
@@ -148,7 +153,7 @@ public class EstadoProductoController implements Serializable {
 		try {
 
 			estadoProductoI.delete(estadoproducto);
-			listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
+			estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 			mensajeInfo("El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
@@ -172,14 +177,14 @@ public class EstadoProductoController implements Serializable {
 	private boolean buscarEstadoProducto(String valor) {
 
 		try {
-			listaEstadoProducto = estadoProductoI.getAll(Estadoproducto.class);
+			estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 
 		boolean resultado = false;
-		for (Estadoproducto tipo : listaEstadoProducto) {
+		for (Estadoproducto tipo : estadoProductos) {
 			if (tipo.getNombreEstp().equals(valor)) {
 				resultado = true;
 				break;
@@ -205,12 +210,12 @@ public class EstadoProductoController implements Serializable {
 		this.nuevoEstadoProducto = nuevoEstadoProducto;
 	}
 
-	public List<Estadoproducto> getListaEstadoProducto() {
-		return listaEstadoProducto;
+	public List<Estadoproducto> getEstadoProductos() {
+		return estadoProductos;
 	}
 
-	public void setListaEstadoProducto(List<Estadoproducto> listaEstadoProducto) {
-		this.listaEstadoProducto = listaEstadoProducto;
+	public void setEstadoProductos(List<Estadoproducto> estadoProductos) {
+		this.estadoProductos = estadoProductos;
 	}
 
 	public Estadoproducto getEstadoproducto() {

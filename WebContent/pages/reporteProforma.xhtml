@@ -48,13 +48,16 @@
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 						<center>
 							<h:form id="formBuscar">
+
 								<div class="ui-fluid">
 
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 65%"
+										layout="grid">
 
-										<h:outputLabel value="Ingrese Fecha Inicial: "
-											style="font-size: 15px" />
+										<p:outputLabel value="Ingrese Fecha Inicial: "
+											style="color:white!important" />
 
 										<p:calendar id="fechaInicio"
 											value="#{reporteProformaController.fechaInicio}"
@@ -65,8 +68,8 @@
 											<p:ajax event="dateSelect" update="fechaFinal" />
 										</p:calendar>
 
-										<h:outputLabel value="Ingrese Fecha Final: "
-											style="font-size: 15px" />
+										<p:outputLabel value="Ingrese Fecha Final: "
+											style="color:white!important" />
 										<p:calendar id="fechaFinal"
 											value="#{reporteProformaController.fechaFinal}"
 											mindate="#{reporteProformaController.fechaInicio}"
@@ -74,16 +77,13 @@
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Final Requerida" navigator="true"
 											effect="fadeIn" effectDuration="100" showOn="button">
-											<f:attribute name="fechaInicio"
-												value="#{reporteProformaController.fechaInicio}" />
-											<f:validator validatorId="primeDateRangeValidator" />
+
 										</p:calendar>
 
-										<h:outputLabel value="Tipo de Cliente:"
-											style="font-size: 15px" />
+										<p:outputLabel value="Tipo de Cliente:"
+											style="color:white!important" />
 										<p:selectOneMenu id="tipoCliente"
-											value="#{reporteProformaController.nombreCli}"
-											style="FONT-FAMILY: arial;" size="35">
+											value="#{reporteProformaController.nombreCli}">
 											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
 											<f:selectItems
 												value="#{reporteProformaController.listaTipoCliente}"
@@ -92,11 +92,9 @@
 
 										</p:selectOneMenu>
 
-										<h:outputLabel value="Estado:"
-											style="FONT-FAMILY: arial; font-size: 15px" />
+										<p:outputLabel value="Estado:" style="color:white!important" />
 										<p:selectOneMenu id="estado"
-											value="#{reporteProformaController.proforma.estadoPo}"
-											style="FONT-FAMILY: arial;font-size: 17px;">
+											value="#{reporteProformaController.proforma.estadoPo}">
 											<f:selectItem itemLabel="Seleccione..." itemValue="" />
 											<f:selectItem itemLabel="ACEPTADA" itemValue="Aceptada" />
 											<f:selectItem itemLabel="PENDIENTE" itemValue="Pendiente" />
@@ -108,19 +106,27 @@
 
 									<br /> <br />
 
+									<p:dataTable>
+										<p:column>
+											<center>
+												<p:commandLink
+													actionListener="#{reporteProformaController.buscarCliente}"
+													update="@([id$=tblProforma]),@([id$=messagesForm])"
+													process="@this,formBuscar">
 
-									<center>
-										<p:commandLink
-											actionListener="#{reporteProformaController.buscarCliente}"
-											update="@([id$=tblProforma]),@([id$=messagesForm])"
-											process="@this,formBuscar">
+													<h:graphicImage value="/images/archivos/busqueda.png"
+														class="btn bt-success" title="Buscar"
+														style="border:0px solid #CAD6E0;" width="35" height="35 " />
 
-											<h:graphicImage value="/images/archivos/busqueda.png"
-												class="btn bt-success" title="Buscar"
-												style="border:0px solid #CAD6E0;" width="35" height="35 " />
+													<p>
+														<strong>Buscar</strong>
+													</p>
 
-										</p:commandLink>
+												</p:commandLink>
+											</center>
 
+										</p:column>
+										
 										<p:commandLink oncomplete="PF('repoServicio').show();"
 											id="btnGenerarReporte"
 											update="@([id$=dialogReporteServ], [id$=pdfView])"
@@ -129,10 +135,14 @@
 											<p:graphicImage value="/images/archivos/imprimir.png"
 												height="35px" width="35px" title="Generar Reporte" />
 
+											<p>
+												<strong>Reporte</strong>
+											</p>
+
 										</p:commandLink>
 
-									</center>
 
+									</p:dataTable>
 									<br /> <br />
 								</div>
 							</h:form>
@@ -141,8 +151,8 @@
 					<br />
 					<p:dataTable id="tblProforma"
 						value="#{reporteProformaController.listaProforma}" var="proforma"
-						emptyMessage="No se pudo encontrar ninguna coincidencia"
-						resizableColumns="true" rows="10" paginator="true"
+						emptyMessage="No se pudo encontrar ninguna coincidencia" rows="10"
+						paginator="true"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15"
 						style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
@@ -150,59 +160,58 @@
 						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 						paginatorPosition="bottom">
 
-
-						<p:column headerText="Proforma">
+						<p:column headerText="Proforma" style="width: 10%">
 							<f:facet name="header">
-								<h:outputText value="PROFORMA" />
+								<h:outputText value="Proforma" />
 							</f:facet>
 							<h:outputText value="#{proforma.idProforma}" />
 						</p:column>
 
-						<p:column headerText="Fecha">
+						<p:column headerText="Fecha" style="width: 8%">
 							<f:facet name="header">
-								<h:outputText value="FECHA" />
+								<h:outputText value="Fecha" />
 							</f:facet>
 							<h:outputText value="#{proforma.fecha}" />
 						</p:column>
 
-						<p:column headerText="Cliente">
+						<p:column headerText="Cliente" style="width: 30%">
 							<f:facet name="header">
-								<h:outputText value="NOMBRE DEL CLIENTE" />
+								<h:outputText value="Cliente" />
 							</f:facet>
 							<h:outputText value="#{proforma.cliente.nombreCl}" />
 						</p:column>
 
-						<p:column headerText="Tipo de Cliente">
+						<p:column headerText="Tipo de Cliente" style="width: 11%">
 							<f:facet name="header">
-								<h:outputText value="TIPO DE CLIENTE" />
+								<h:outputText value="Tipo de Cliente" />
 							</f:facet>
 							<h:outputText value="#{proforma.cliente.tipocliente.tipoTcl}" />
 						</p:column>
 
-						<p:column headerText="Estado">
+						<p:column headerText="Estado" style="width: 8%">
 							<f:facet name="header">
-								<h:outputText value="ESTADO" />
+								<h:outputText value="Estado" />
 							</f:facet>
 							<h:outputText value="#{proforma.estadoPo}" />
 						</p:column>
 
-						<p:column headerText="SubTotal">
+						<p:column headerText="SubTotal" style="width: 6%">
 							<f:facet name="header">
-								<h:outputText value="SUBTOTAL" />
+								<h:outputText value="Subtotal" />
 							</f:facet>
 							<h:outputText value="#{proforma.subtotalPo}" />
 						</p:column>
 
-						<p:column headerText="IVA">
+						<p:column headerText="IVA" style="width: 6%">
 							<f:facet name="header">
 								<h:outputText value="IVA" />
 							</f:facet>
 							<h:outputText value="#{proforma.ivaPo}" />
 						</p:column>
 
-						<p:column headerText="Total">
+						<p:column headerText="Total" style="width: 6%">
 							<f:facet name="header">
-								<h:outputText value="TOTAL" />
+								<h:outputText value="Total" />
 							</f:facet>
 							<h:outputText value="#{proforma.totalPo}" />
 						</p:column>

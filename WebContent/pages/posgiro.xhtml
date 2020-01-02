@@ -54,13 +54,18 @@
 						<!-- Boton De Nuevo -->
 
 						<center>
-
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoPosgiro').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoPosgiro').show();"
 								update=":formNuevoPosgiro,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
+
 						</center>
 						<br />
 						<br />
@@ -101,7 +106,6 @@
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
-
 										<f:setPropertyActionListener
 											target="#{posgiroController.posgiro}" value="#{tipoPosgiro}">
 										</f:setPropertyActionListener>
@@ -133,11 +137,10 @@
 
 			<!-- Panel de Nuevo -->
 
-			<p:dialog id="panelNuevoPosgiro" resizable="true" draggable="false"
+			<p:dialog id="panelNuevoPosgiro" resizable="true"
 				widgetVar="nuevoPosgiro" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="40%"
-				header="Nueva Posgiro">
-
+				hideEffect="fade" responsive="true" dynamic="true" width="75vh"
+				height="50vh" header="Nueva Posgiro">
 
 				<h:form id="formNuevoPosgiro">
 
@@ -153,14 +156,13 @@
 						<br />
 						<br />
 						<center>
+
 							<div class="ui-fluid">
 
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -179,7 +181,7 @@
 
 								</p:panelGrid>
 							</div>
-							<br /> <br />
+							<br /> <br /> <br />
 
 							<center>
 
@@ -209,9 +211,9 @@
 			<!-- Panel de Modificar -->
 
 			<p:dialog id="panelModificarPosgiro" resizable="true"
-				draggable="false" widgetVar="modificarPosgiro" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="40%" header="Nueva Posgiro">
+				widgetVar="modificarPosgiro" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="75vh"
+				height="50vh" header="Nueva Posgiro">
 
 				<h:form id="formModificarPosgiro">
 
@@ -230,10 +232,7 @@
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
-
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -251,6 +250,7 @@
 
 							</p:panelGrid>
 						</div>
+						<br />
 						<br />
 						<br />
 
@@ -280,8 +280,6 @@
 				</h:form>
 			</p:dialog>
 
-
-
 			<!-- Panel de Eliminar -->
 
 			<h:form id="eliminarPosgiro">
@@ -304,13 +302,8 @@
 					</center>
 
 				</p:confirmDialog>
-
-
 			</h:form>
-
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){

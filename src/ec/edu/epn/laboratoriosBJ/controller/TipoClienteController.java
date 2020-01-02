@@ -80,7 +80,7 @@ public class TipoClienteController implements Serializable {
 
 		try {
 			if (buscarTipoCliente(nuevoTipoCliente.getTipoTcl()) == true) {
-				mensajeInfo("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") ya existe.");
+				mensajeError("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") ya existe.");
 
 			} else {
 				tipoClienteI.save(nuevoTipoCliente);

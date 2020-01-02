@@ -66,48 +66,56 @@
 
 							<p:column headerText="Id Orden"
 								filterBy="#{listaOi.detalleorden.ordenTrabajo.idOrden}"
-								filterMatchMode="contains">
+								filterMatchMode="contains" style="width: 10%"
+								filterStyle="width: 70%">
 								<h:outputText
 									value="#{listaOi.detalleorden.ordenTrabajo.idOrden}" />
 							</p:column>
 
 							<p:column headerText="ID Orden Inv"
-								filterBy="#{listaOi.idOrdeninventario}">
+								filterBy="#{listaOi.idOrdeninventario}" style="width: 10%"
+								filterStyle="width: 70%">
 								<h:outputText value="#{listaOi.idOrdeninventario}" />
 							</p:column>
 
 							<p:column headerText="Responsable"
-								filterBy="#{listaOi.responsableOi}">
+								filterBy="#{listaOi.responsableOi}" style="width: 12%"
+								filterStyle="width: 70%">
 								<h:outputText value="#{listaOi.responsableOi}" />
 							</p:column>
 
-							<p:column headerText="Fecha" filterBy="#{listaOi.fechaingresoOi}">
+							<p:column headerText="Fecha" filterBy="#{listaOi.fechaingresoOi}"
+								style="width: 8%" filterStyle="width: 70%">
 								<h:outputText value="#{listaOi.fechaingresoOi}" />
 							</p:column>
 
 							<p:column headerText="Tipo O.I."
-								filterBy="#{listaOi.tipordeninv.nombreToi}">
+								filterBy="#{listaOi.tipordeninv.nombreToi}" style="width: 8%"
+								filterStyle="width: 70%">
 								<h:outputText value="#{listaOi.tipordeninv.nombreToi}" />
 							</p:column>
 
-							<p:column headerText="Estado O.I." filterBy="#{listaOi.estadoOi}">
+							<p:column headerText="Estado O.I." filterBy="#{listaOi.estadoOi}"
+								style="width: 8%" filterStyle="width: 70%">
 								<h:outputText value="#{listaOi.estadoOi}" />
 							</p:column>
 
 							<p:column headerText="Motivo O.I."
-								filterBy="#{listaOi.motivoEstado}">
+								filterBy="#{listaOi.motivoEstado}" style="width: 8%"
+								filterStyle="width: 70%">
 								<h:outputText value="#{listaOi.motivoEstado}" />
 							</p:column>
 
 							<p:column headerText="Metodo"
-								filterBy="#{listaOi.detalleorden.idMetodo}">
+								filterBy="#{listaOi.detalleorden.idMetodo}" style="width: 8%"
+								filterStyle="width: 70%">
 								<h:outputText value="#{listaOi.detalleorden.idMetodo}" />
 							</p:column>
 
 
 							<!-- **************************  Boton Ver OI   *************************** -->
 
-							<p:column headerText="Ver O.I.">
+							<p:column headerText="Ver O.I." style="width: 6%">
 								<center>
 									<p:commandLink
 										action="#{ordenInventarioController.pasarDetalleMetodo(listaOi.idOrdeninventario)}"
@@ -140,7 +148,7 @@
 
 			<p:dialog id="panelverOI" resizable="true" widgetVar="verOI"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="90%"
+				responsive="true" dynamic="true" width="140vh" height="95vh"
 				header="Orden Inventario">
 
 
@@ -159,7 +167,9 @@
 						<center>
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+									layout="grid"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblIdOrdenTrabajo" for="idOrdenTrabajo"
 										value="Id Orden Trabajo: " style="color:white!important" />
@@ -217,10 +227,9 @@
 									<p:tab title="Existencias del Método">
 										<p:dataTable id="tblExistenciasMetodo"
 											value="#{ordenInventarioController.movimientoInventarios}"
-											var="listaOi" resizableColumns="true">
+											var="listaOi">
 
-											<p:column headerText="Existencia"
-												style="width: 10% !important;">
+											<p:column headerText="Existencia" style="width: 14%">
 												<h:outputText value="#{listaOi.idExistencia}" />
 											</p:column>
 
@@ -253,7 +262,9 @@
 								<br />
 
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+									layout="grid"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblEstadoOI" for="estadoOI"
 										value="EstadoOI " style="color:white!important" />

@@ -2,7 +2,6 @@ package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,16 +10,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.NormaDAO;
-
 import ec.edu.epn.laboratorioBJ.entities.Norma;
-
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "normaController")
@@ -45,7 +41,7 @@ public class NormaController implements Serializable {
 	// variables de la clase
 	private Norma norma;
 	private List<Norma> normas = new ArrayList<>();
-	private List<Norma> filtroNorma = new ArrayList<>();
+	private List<Norma> filtrarNorma;
 	private Norma nuevoNorma;
 	private String nombreN;
 
@@ -63,83 +59,92 @@ public class NormaController implements Serializable {
 		}
 	}
 
-	public void agregarNorma(ActionEvent event) {
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
+	}
+
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	public void agregarNorma() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (buscarNorma(nuevoNorma.getNombreN()) == true) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-								"Ha ocurrido un error, la norma (" + nuevoNorma.getNombreN() + ") ya existe."));
-				nuevoNorma = new Norma();
-			} else {
-				normaI.save(nuevoNorma);
+				mensajeError("La Norma (" + nuevoNorma.getNombreN() + ") ya existe.");
 
+			} else {
+
+				normaI.save(nuevoNorma);
 				normas = normaI.getAll(Norma.class);
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Norma almacenada exitosamente"));
+				mensajeInfo("La Norma (" + nuevoNorma.getNombreN() + ") se ha almacenado exitosamente");
 
 				nuevoNorma = new Norma();
+
+				context.execute("PF('nuevoN').hide();");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 
 	}
 
-	public void modificarNorma(ActionEvent event) {
+	public void modificarNorma() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
 		try {
 			if (norma.getNombreN().equals(getnombreN())) {
 				normaI.update(norma);
 				normas = normaI.getAll(Norma.class);
 
-				RequestContext context = RequestContext.getCurrentInstance();
 				context.execute("PF('modificarN').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Norma actualizada exitosamente"));
+				mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha actualizado exitosamente");
 
 			} else if (buscarNorma(norma.getNombreN()) == false) {
+
 				normaI.update(norma);
 				normas = normaI.getAll(Norma.class);
-
-				RequestContext context = RequestContext.getCurrentInstance();
 				context.execute("PF('modificarN').hide();");
 
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Norma actualizada exitosamente"));
+				mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha actualizado exitosamente");
+
 			} else {
 				normas = normaI.getAll(Norma.class);
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error",
-								"La norma (" + norma.getNombreN() + ") ya existe."));
+				mensajeError("La norma (" + norma.getNombreN() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
+			mensajeError("Ha ocurrido un problema");
 		}
 	}
 
-	public void eliminarNorma(ActionEvent event) {
+	public void eliminarNorma() {
 		try {
 
 			normaI.delete(norma);
 			normas = normaI.getAll(Norma.class);
 
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Norma eliminada exitosamente"));
+			mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-								"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
+
+				mensajeError("La tabla Norma (" + norma.getNombreN() + ") tiene relación con otra tabla.");
 			} else {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "Ha ocurrido un error"));
+				mensajeError("Ha ocurrido un problema");
 			}
 
 		}
@@ -191,14 +196,6 @@ public class NormaController implements Serializable {
 		this.normas = normas;
 	}
 
-	public List<Norma> getFiltroNorma() {
-		return filtroNorma;
-	}
-
-	public void setFiltroNorma(List<Norma> filtroNorma) {
-		this.filtroNorma = filtroNorma;
-	}
-
 	public Norma getNuevoNorma() {
 		return nuevoNorma;
 	}
@@ -213,6 +210,14 @@ public class NormaController implements Serializable {
 
 	public void setnombreN(String nombreN) {
 		this.nombreN = nombreN;
+	}
+
+	public List<Norma> getFiltrarNorma() {
+		return filtrarNorma;
+	}
+
+	public void setFiltrarNorma(List<Norma> filtrarNorma) {
+		this.filtrarNorma = filtrarNorma;
 	}
 
 }

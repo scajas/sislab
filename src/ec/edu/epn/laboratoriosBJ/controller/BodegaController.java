@@ -18,7 +18,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.BodegaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Bodega;
-
+import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "bodegaController")
@@ -43,10 +43,10 @@ public class BodegaController implements Serializable {
 	// variables de la clase
 	private Bodega bodega;
 	private List<Bodega> bodegas = new ArrayList<>();
-	private List<Bodega> filtroBodegas = new ArrayList<>();
+	private List<Bodega> filtroBodegas;
 	private Bodega nuevoBodega;
 	private String nombreB;
-
+	
 	// Metodo Init
 	@PostConstruct
 	public void init() {
@@ -196,14 +196,6 @@ public class BodegaController implements Serializable {
 		this.bodegas = bodegas;
 	}
 
-	public List<Bodega> getFiltroBodegas() {
-		return filtroBodegas;
-	}
-
-	public void setFiltroBodegas(List<Bodega> filtroBodegas) {
-		this.filtroBodegas = filtroBodegas;
-	}
-
 	public Bodega getNuevoBodega() {
 		return nuevoBodega;
 	}
@@ -218,6 +210,14 @@ public class BodegaController implements Serializable {
 
 	public void setNombreB(String nombreB) {
 		this.nombreB = nombreB;
+	}
+
+	public List<Bodega> getFiltroBodegas() {
+		return filtroBodegas;
+	}
+
+	public void setFiltroBodegas(List<Bodega> filtroBodegas) {
+		this.filtroBodegas = filtroBodegas;
 	}
 
 }

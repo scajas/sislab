@@ -55,19 +55,25 @@
 						<!-- Boton De Nuevo -->
 
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevaCaracteristica').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevaCaracteristica').show();"
 								update=":formNuevaCaracteristica,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
+
 						</center>
 						<br />
 						<br />
 
 						<p:dataTable id="tblCaracteristica"
 							value="#{caracteristicaController.listarCaracteristicas}"
-							var="tipoCaracteristica" widgetVar="filterCaracteristicaTable"
+							var="caracteristica" widgetVar="filterCaracteristicaTable"
 							filteredValue="#{caracteristicaController.filtrarCaracteristicas}"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							resizableColumns="true" rows="10" paginator="true"
@@ -78,15 +84,15 @@
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;">
 
 							<p:column headerText="Nombre"
-								filterBy="#{tipoCaracteristica.nombreCr}"
+								filterBy="#{caracteristica.nombreCr}"
 								filterMatchMode="contains">
-								<h:outputText value="#{tipoCaracteristica.nombreCr}"
+								<h:outputText value="#{caracteristica.nombreCr}"
 									filterMatchMode="contains" />
 							</p:column>
 
 							<p:column headerText="Descripción"
-								filterBy="#{tipoCaracteristica.descrCr}">
-								<h:outputText value="#{tipoCaracteristica.descrCr}" />
+								filterBy="#{caracteristica.descrCr}">
+								<h:outputText value="#{caracteristica.descrCr}" />
 							</p:column>
 
 							<!-- **************************  Boton Modificar   *************************** -->
@@ -94,7 +100,7 @@
 							<p:column headerText="Acciones">
 								<center>
 									<p:commandLink
-										action="#{caracteristicaController.pasarNombre(tipoCaracteristica.nombreCr)}"
+										action="#{caracteristicaController.pasarNombre(caracteristica.nombreCr)}"
 										update=":formModificarCaracteristica,@this"
 										process="@this,tblCaracteristica"
 										oncomplete="PF('modificarCaracteristica').show();">
@@ -106,7 +112,7 @@
 
 										<f:setPropertyActionListener
 											target="#{caracteristicaController.caracteristica}"
-											value="#{tipoCaracteristica}">
+											value="#{caracteristica}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
@@ -123,14 +129,13 @@
 
 										<f:setPropertyActionListener
 											target="#{caracteristicaController.caracteristica}"
-											value="#{tipoCaracteristica}">
+											value="#{caracteristica}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 								</center>
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
@@ -139,9 +144,9 @@
 			<!-- Panel Nuevo -->
 
 			<p:dialog id="panelnuevaCaracteristica" resizable="true"
-				draggable="false" widgetVar="nuevaCaracteristica" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Nueva Característica">
+				widgetVar="nuevaCaracteristica" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nueva Característica" width="75vh" height="50vh">
 
 				<h:form id="formNuevaCaracteristica">
 
@@ -162,9 +167,7 @@
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -186,7 +189,7 @@
 						</div>
 						<br />
 						<br />
-
+						<br />
 
 						<center>
 
@@ -217,10 +220,10 @@
 			<!-- Panel de Modificar -->
 
 			<p:dialog id="panelModificarCaracteristica" resizable="true"
-				draggable="false" widgetVar="modificarCaracteristica" modal="true"
+				widgetVar="modificarCaracteristica" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="35%" header="Modificar Característica">
-
+				dynamic="true" header="Modificar Característica" width="75vh"
+				height="50vh">
 
 				<h:form id="formModificarCaracteristica">
 
@@ -238,12 +241,11 @@
 						<center>
 
 							<div class="ui-fluid">
+
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -262,7 +264,7 @@
 
 								</p:panelGrid>
 							</div>
-							<br /> <br />
+							<br /> <br /> <br />
 
 							<center>
 
@@ -305,7 +307,6 @@
 							onsuccess="PF('eliminarCaracteristica').hide();"
 							actionListener="#{caracteristicaController.eliminarCaracteristica}"
 							update="@([id$=messagesForm],[id$=formprincipal])" />
-
 
 						<p:commandButton value="Cancelar"
 							onclick="PF('eliminarCaracteristica').hide();" type="button" />
