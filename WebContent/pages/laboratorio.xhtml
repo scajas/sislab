@@ -52,15 +52,20 @@
 						<!-- Boton De Nuevo -->
 
 						<center>
-
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoLaboratorio').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoLaboratorio').show();"
 								update=":formNuevoLaboratorio,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
 
 						</center>
+
 						<br />
 						<br />
 
@@ -145,7 +150,8 @@
 			<p:dialog id="panelNuevoLaboratorio" resizable="true"
 				draggable="false" widgetVar="nuevoLaboratorio" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="65%" header="Nuevo Laboratorio">
+				dynamic="true" header="Nuevo Laboratorio" width="135vh"
+				height="73vh">
 
 				<h:form id="formNuevoLaboratorio">
 
@@ -163,17 +169,15 @@
 						<div class="ui-fluid">
 							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
 								layout="grid">
 
 								<p:outputLabel id="lblUnidad" for="unidad" value="Unidad: "
 									style="color:white!important" />
 
-								<p:selectOneMenu id="unidad" effect="fold"
-									value="#{laboratorioController.unidadSelect}" filter="true"
-									filterMatchMode="contains" required="true"
+								<p:selectOneMenu id="unidad"
+									value="#{laboratorioController.unidadSelect}" effect="fold"
+									filter="true" filterMatchMode="contains" required="true"
 									requiredMessage="Ingrese la Unidad">
 
 									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
@@ -257,7 +261,7 @@
 
 							</p:panelGrid>
 						</div>
-						<br />
+
 						<br />
 						<center>
 
@@ -291,7 +295,8 @@
 			<p:dialog id="panelModificarLaboratorio" resizable="true"
 				draggable="false" widgetVar="modificarLaboratorio" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Laboratorio" width="65%">
+				dynamic="true" header="Modificar Laboratorio" width="135vh"
+				height="73vh">
 
 				<h:form id="formModificarLaboratorio">
 
@@ -311,9 +316,7 @@
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblUnidad" for="uni" value="Unidad: "
 										style="color:white!important" />
@@ -404,7 +407,7 @@
 
 								</p:panelGrid>
 							</div>
-							<br /> <br />
+							<br />
 
 							<center>
 

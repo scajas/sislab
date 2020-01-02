@@ -44,28 +44,26 @@ public class ProveedorLabController implements Serializable {
 
 	/** VARIABLES **/
 	private ProveedorLab proveedor;
-	private List<ProveedorLab> listaProveedorLab = new ArrayList<ProveedorLab>();
+	private List<ProveedorLab> proveedores = new ArrayList<>();
 	private ProveedorLab nuevoProveedor;
 	private String nombreP;
 
-	private Tipoproveedor tipoProveedorSelect;
-	private List<Tipoproveedor> tipoProveedores = new ArrayList<Tipoproveedor>();
+	private List<Tipoproveedor> tipoProveedores = new ArrayList<>();
 	private Tipoproveedor tipoProveedor;
+	private Tipoproveedor tipoProveedorSelect;
 
 	private List<ProveedorLab> filtroProveedor;
-	private List<Tipoproveedor> filtroTipoProveedor;
 
 	@PostConstruct
 	public void init() {
 		try {
 
-			setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
-			// listaProveedorLab= proveedorI.getListProveedor();
+			proveedores = proveedorI.getListProveedor();
 			nuevoProveedor = new ProveedorLab();
 			proveedor = new ProveedorLab();
 
-			// tipoProveedores = tipoProveedorI.getAll(Tipoproveedor.class);
-			// tipoProveedor= new Tipoproveedor();
+			tipoProveedores = tipoProveedorI.getAll(Tipoproveedor.class);
+			tipoProveedor = new Tipoproveedor();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,7 +74,7 @@ public class ProveedorLabController implements Serializable {
 	public void mensajeError(String mensaje) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
 	}
 
 	public void mensajeInfo(String mensaje) {
@@ -101,12 +99,14 @@ public class ProveedorLabController implements Serializable {
 
 				nuevoProveedor.setTipoproveedor(tipoProveedorSelect);
 				proveedorI.save(nuevoProveedor);
-				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+
+				proveedores = proveedorI.getListProveedor();
 
 				mensajeInfo("El Proveedor (" + nuevoProveedor.getNombrePv() + ") se ha almacenado exitosamente");
 
 				nuevoProveedor = new ProveedorLab();
 				tipoProveedorSelect = new Tipoproveedor();
+
 				context.execute("PF('nuevoProveedor').hide();");
 
 			}
@@ -128,7 +128,7 @@ public class ProveedorLabController implements Serializable {
 			if (proveedor.getNombrePv().equals(getNombreP())) {
 
 				proveedorI.update(proveedor);
-				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+				proveedores = proveedorI.getListProveedor();
 
 				mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
 
@@ -137,14 +137,14 @@ public class ProveedorLabController implements Serializable {
 			} else if (buscarProveedor(proveedor.getNombrePv()) == false) {
 
 				proveedorI.update(proveedor);
-				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+				proveedores = proveedorI.getListProveedor();
 
 				mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarProveedor').hide();");
 
 			} else {
-				setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
+				proveedores = proveedorI.getListProveedor();
 				mensajeError("El Proveedor (" + proveedor.getNombrePv() + ") ya existe.");
 			}
 
@@ -161,8 +161,8 @@ public class ProveedorLabController implements Serializable {
 		try {
 
 			proveedorI.delete(proveedor);
-			setListaProveedorLab(proveedorI.getAll(ProveedorLab.class));
-			mensajeError("El Proveedor (" + proveedor.getNombrePv() + ") se ha eliminado correctamente");
+			proveedores = proveedorI.getListProveedor();
+			mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
@@ -181,7 +181,9 @@ public class ProveedorLabController implements Serializable {
 	private boolean buscarProveedor(String valor) {
 
 		try {
-			listaProveedorLab = proveedorI.getAll(ProveedorLab.class);
+
+			proveedores = proveedorI.getListProveedor();
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -189,8 +191,9 @@ public class ProveedorLabController implements Serializable {
 
 		boolean resultado = false;
 
-		for (ProveedorLab proveedorLab : listaProveedorLab) {
-			if (proveedorLab.getNombrePv().equals(valor)) {
+		for (ProveedorLab pro : proveedores) {
+			if (pro.getNombrePv().equals(valor)) {
+
 				resultado = true;
 				break;
 			} else {
@@ -198,21 +201,14 @@ public class ProveedorLabController implements Serializable {
 			}
 		}
 
-		System.out.println("Este es el resultado: " + resultado);
-
 		return resultado;
 	}
 
-	public void pasarNombre(String nombre, Tipoproveedor tp) {
+	public void pasarNombre(String nombre) {
 		setNombreP(nombre);
-		tipoProveedor = tp;
 	}
 
 	// ****** Getter y Setters ****//*
-
-	public List<ProveedorLab> getListaProveedorLab() {
-		return listaProveedorLab;
-	}
 
 	public ProveedorLab getProveedor() {
 		return proveedor;
@@ -220,10 +216,6 @@ public class ProveedorLabController implements Serializable {
 
 	public void setProveedor(ProveedorLab proveedor) {
 		this.proveedor = proveedor;
-	}
-
-	public void setListaProveedorLab(List<ProveedorLab> listaProveedorLab) {
-		this.listaProveedorLab = listaProveedorLab;
 	}
 
 	public ProveedorLab getNuevoProveedor() {
@@ -240,14 +232,6 @@ public class ProveedorLabController implements Serializable {
 
 	public void setNombreP(String nombreP) {
 		this.nombreP = nombreP;
-	}
-
-	public Tipoproveedor getTipoProveedorSelect() {
-		return tipoProveedorSelect;
-	}
-
-	public void setTipoProveedorSelect(Tipoproveedor tipoProveedorSelect) {
-		this.tipoProveedorSelect = tipoProveedorSelect;
 	}
 
 	public List<Tipoproveedor> getTipoProveedores() {
@@ -274,12 +258,20 @@ public class ProveedorLabController implements Serializable {
 		this.filtroProveedor = filtroProveedor;
 	}
 
-	public List<Tipoproveedor> getFiltroTipoProveedor() {
-		return filtroTipoProveedor;
+	public List<ProveedorLab> getProveedores() {
+		return proveedores;
 	}
 
-	public void setFiltroTipoProveedor(List<Tipoproveedor> filtroTipoProveedor) {
-		this.filtroTipoProveedor = filtroTipoProveedor;
+	public void setProveedores(List<ProveedorLab> proveedores) {
+		this.proveedores = proveedores;
+	}
+
+	public Tipoproveedor getTipoProveedorSelect() {
+		return tipoProveedorSelect;
+	}
+
+	public void setTipoProveedorSelect(Tipoproveedor tipoProveedorSelect) {
+		this.tipoProveedorSelect = tipoProveedorSelect;
 	}
 
 }

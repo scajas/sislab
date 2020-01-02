@@ -31,6 +31,8 @@
 
 	</script>
 		</h:head>
+
+
 		<h:body>
 
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
@@ -48,26 +50,30 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
 						;width: '90%';">
-
 						<br />
-
+						<br />
 						<!-- Boton De Nuevo -->
 
 						<center>
-
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoEstadoProducto').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoEstadoPro').show();"
 								update=":formNuevoEstadoProducto,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
 
 						</center>
 						<br />
+						<br />
 
-						<p:dataTable id="tblEstadoProducto"
-							value="#{estadoProductoController.listaEstadoProducto}"
-							var="estado" widgetVar="tblEstadoProducto"
+						<p:dataTable id="tblEstadoPro"
+							value="#{estadoProductoController.estadoProductos}" var="estado"
+							widgetVar="filterEstadoPro"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							filteredValue="#{estadoProductoController.filtrarEstados}"
 							resizableColumns="true" rows="10" paginator="true"
@@ -88,33 +94,37 @@
 								<h:outputText value="#{estado.descrEstp}" />
 							</p:column>
 
-							<!-- Botón De Modificar  -->
+							<!-- **************************  Boton Modificar   *************************** -->
 
 							<p:column headerText="Acciones">
 								<center>
 									<p:commandLink
 										action="#{estadoProductoController.pasarNombre(estado.nombreEstp)}"
-										update=":formModificarEstadoProducto,@this"
-										process="@this,tblEstadoProducto"
-										oncomplete="PF('modificarEstadoProducto').show();">
+										update=":formModificarEstadoPro,@this"
+										process="@this,tblEstadoPro"
+										oncomplete="PF('modificarEstadoPro').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
+
+
 										<f:setPropertyActionListener
 											target="#{estadoProductoController.estadoproducto}"
 											value="#{estado}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
-									<!-- Botón De Eliminar  -->
+									<!-- **************************  Boton Eliminar   *************************** -->
+
 
 									<p:commandLink process="@this" icon="ui-icon-check"
-										onclick="PF('eliminarEP').show();">
+										onclick="PF('eliminarEstadoPro').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
+
 
 										<f:setPropertyActionListener
 											target="#{estadoProductoController.estadoproducto}"
@@ -125,18 +135,17 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
 
-			<!-- Panel de Nuevo  -->
+			<!-- Panel de Nuevo	 -->
 
-			<p:dialog id="panelNuevoEstadoProducto" resizable="true"
-				draggable="false" widgetVar="nuevoEstadoProducto" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="false" header="Nuevo Estado Producto" width="40%">
+			<p:dialog id="panelnuevoEstadoPro" resizable="false"
+				widgetVar="nuevoEstadoPro" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="75vh"
+				height="50vh" header="Nuevo Estado Producto">
 
 				<h:form id="formNuevoEstadoProducto">
 
@@ -151,13 +160,12 @@
 
 						<br />
 						<br />
+
 						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -178,6 +186,7 @@
 						</div>
 						<br />
 						<br />
+						<br />
 
 						<center>
 							<h:panelGrid columns="2">
@@ -185,31 +194,32 @@
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
 									actionListener="#{estadoProductoController.agregarEstadoProducto}"
+									oncomplete="PF('nuevoEstadoPro'); PF('filterEstadoPro').filter();"
 									process="@this,formNuevoEstadoProducto"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto"
-									oncomplete="PF('tblEstadoProducto').filter()">
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoEstadoProducto">
+
 								</p:commandButton>
 
 								<p:commandButton value="Atrás "
 									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-									onclick="PF('nuevoEstadoProducto').hide();" process="@none">
+									onclick="PF('nuevoEstadoPro').hide();" process="@none">
 
 								</p:commandButton>
 							</h:panelGrid>
-
 						</center>
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
-			<!-- Panel de Modificar  -->
+			<!-- Panel de Modificar -->
 
-			<p:dialog id="panelModificarEstadoProducto" resizable="true"
-				draggable="false" widgetVar="modificarEstadoProducto" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Estado Producto">
+			<p:dialog id="panelmodificarEstadoPro" resizable="false"
+				widgetVar="modificarEstadoPro" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Estado Producto" width="75vh" height="50vh">
 
-				<h:form id="formModificarEstadoProducto">
+
+				<h:form id="formModificarEstadoPro">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -222,83 +232,89 @@
 
 						<br />
 						<br />
-						<center>
+						<div class="ui-fluid">
+							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
-							<div class="ui-fluid">
-								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
-									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{estadoProductoController.estadoproducto.nombreEstp}"
+									required="true"
+									requiredMessage="Debe ingresar el nombre del Estado del producto"
+									maxlength="60">
+								</p:inputText>
 
-									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-										style="color:white!important" />
-									<p:inputText id="nombre"
-										value="#{estadoProductoController.estadoproducto.nombreEstp}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre del Estado del producto"
-										maxlength="60">
-									</p:inputText>
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{estadoProductoController.estadoproducto.descrEstp}"
+									maxlength="100" rows="5" cols="30" />
 
-									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-										style="color:white!important" />
-									<p:inputTextarea id="desc"
-										value="#{estadoProductoController.estadoproducto.descrEstp}"
-										maxlength="100" rows="5" cols="30" />
-
-								</p:panelGrid>
-
-							</div>
-						</center>
+							</p:panelGrid>
+						</div>
+						<br />
 						<br />
 						<br />
 
 						<center>
+
 							<h:panelGrid columns="2">
 
 								<p:commandButton value="Modificar" icon="fa fa-edit"
 									style="width: 115px; margin: 5px"
 									actionListener="#{estadoProductoController.modificarEstadoProducto}"
-									process="@this,formModificarEstadoProducto"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEstadoProducto"
-									oncomplete="PF('tblEstadoProducto').filter()">
+									process="@this,formModificarEstadoPro"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formModificarEstadoPro"
+									oncomplete="PF('filterEstadoPro').filter();">
 
 								</p:commandButton>
 
 								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
 									style="width: 115px; margin: 5px"
-									onclick="PF('modificarEstadoProducto').hide();" process="@none">
+									onclick="PF('modificarEstadoPro').hide();" process="@none">
 
 								</p:commandButton>
+
 							</h:panelGrid>
+
 						</center>
+
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
 			<!-- Panel de Eliminar -->
 
-			<h:form id="eliminarEstadoProducto">
+			<h:form id="eliminarEstadoPro">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar el Estado Producto seleccionado?"
-					header="Eliminar Estado Producto" severity="info" closable="false"
-					widgetVar="eliminarEP">
+					message="¿Esta seguro(a) que desea eliminar el Estado Producto seleccionado"
+					header="Eliminar Estado Producto" severity="info"
+					widgetVar="eliminarEstadoPro">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('eliminarEP').hide();"
+							oncomplete="PF('filterEstadoPro').filter();"
+							onsuccess="PF('eliminarEstadoPro').hide();"
 							actionListener="#{estadoProductoController.eliminarEstadoProducto}"
-							oncomplete="PF('tblEstadoProducto').filter()"
-							update="@([id$=messagesForm],[id$=formprincipal],eliminarEP)" />
+							update="@([id$=messagesForm],[id$=formprincipal],eliminarEstadoPro)" />
+
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('eliminarEP').hide();" type="button" />
+							onclick="PF('eliminarEstadoPro').hide();" type="button" />
 
 					</center>
+
 				</p:confirmDialog>
+
+
 			</h:form>
+
 		</h:body>
+
+
 
 		<script type="text/javascript">
 			function start(){
@@ -310,5 +326,6 @@
 			}
 
 		</script>
+
 	</ui:define>
 </ui:composition>

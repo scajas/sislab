@@ -54,13 +54,20 @@
 						<br />
 
 						<!-- Boton De Nuevo -->
-						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoTipoServicio').show()"
-								update=":formNuevoTipoServicio,@this,@([id$=messagesForm])">
 
-							</p:commandButton>
+						<center>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoTipoServicio').show();"
+								update=":formNuevoTipoServicio,@this">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+
+							</p:commandLink>
 						</center>
 						<br />
 						<br />
@@ -135,7 +142,7 @@
 			<p:dialog id="panelnuevoTipoServicio" resizable="true"
 				closable="false" draggable="false" widgetVar="nuevoTipoServicio"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
+				responsive="true" dynamic="true" width="75vh" height="50vh"
 				header="Nuevo Tipo Servicio">
 
 
@@ -153,24 +160,28 @@
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+									layout="grid">
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" size="30" />
-								<p:inputText id="nombre"
-									value="#{tipoServicioController.nuevoTipoServicio.nombreTs}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Tipo de Servicio"
-									size="30" maxlength="60">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" size="30" />
+									<p:inputText id="nombre"
+										value="#{tipoServicioController.nuevoTipoServicio.nombreTs}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Tipo de Servicio"
+										size="30" maxlength="60">
+									</p:inputText>
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{tipoServicioController.nuevoTipoServicio.descrTs}"
-									maxlength="100" rows="5" cols="30" />
-							</p:panelGrid>
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{tipoServicioController.nuevoTipoServicio.descrTs}"
+										maxlength="100" rows="5" cols="30" />
+								</p:panelGrid>
+							</div>
 							<br /> <br />
 
 							<center>
@@ -204,7 +215,7 @@
 			<p:dialog id="panelModificarTipoServicio" resizable="true"
 				closable="false" draggable="false" widgetVar="modificarTipoServicio"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="35%"
+				responsive="true" dynamic="true" width="75vh" height="50vh"
 				header="Modificar Tipo Servicio">
 
 
@@ -222,25 +233,29 @@
 						<br />
 						<br />
 						<center>
-							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+									layout="grid">
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{tipoServicioController.tipoServicio.nombreTs}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Tipo de Servicio"
-									size="30" maxlength="60">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{tipoServicioController.tipoServicio.nombreTs}"
+										required="true"
+										requiredMessage="Debe ingresar el nombre del Tipo de Servicio"
+										size="30" maxlength="60">
+									</p:inputText>
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{tipoServicioController.tipoServicio.descrTs}"
-									maxlength="100" rows="5" cols="30" />
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{tipoServicioController.tipoServicio.descrTs}"
+										maxlength="100" rows="5" cols="30" />
 
-							</p:panelGrid>
+								</p:panelGrid>
+							</div>
 							<br /> <br />
 
 							<center>

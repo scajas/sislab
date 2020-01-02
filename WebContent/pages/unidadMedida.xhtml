@@ -32,7 +32,6 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
 
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
@@ -56,13 +55,17 @@
 						<!-- Boton De Nuevo -->
 
 						<center>
-
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoUnidadMedida').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoUnidadMedida').show();"
 								update=":formNuevoUnidadMedida,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
 
 						</center>
 						<br />
@@ -118,20 +121,18 @@
 
 									<!-- **************************  Boton Eliminar   *************************** -->
 
-
 									<p:commandLink process="@this" icon="ui-icon-check"
 										onclick="PF('eliminarUnidadMedida').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
-
-
 										<f:setPropertyActionListener
 											target="#{unidadMedidaController.unidadMedida}"
 											value="#{unidad}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
+
 								</center>
 							</p:column>
 
@@ -144,9 +145,9 @@
 			<!-- Panel de Nuevo	 -->
 
 			<p:dialog id="panelNuevoUnidadMedida" resizable="true"
-				draggable="false" widgetVar="nuevoUnidadMedida" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="40%" header="Nuevo Unidad de Medida">
+				widgetVar="nuevoUnidadMedida" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nuevo Unidad de Medida" width="75vh" height="55vh">
 
 				<h:form id="formNuevoUnidadMedida">
 
@@ -167,9 +168,7 @@
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -198,6 +197,7 @@
 						</div>
 						<br />
 						<br />
+
 
 						<center>
 
@@ -229,10 +229,9 @@
 			<!-- Panel de actualizacion que se abre en un dialogo -->
 
 			<p:dialog id="panelmodificarUnidadMedida" resizable="true"
-				draggable="false" widgetVar="modificarUnidadMedida" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="40%" header="Modificar Unidad Medida">
-
+				widgetVar="modificarUnidadMedida" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Unidad Medida" width="75vh" height="55vh">
 
 				<h:form id="formUnidadMedida">
 
@@ -254,9 +253,7 @@
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -294,7 +291,6 @@
 										oncomplete="PF('filterUnidadMedidaTable').filter();"
 										process="@this,formUnidadMedida"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formUnidadMedida">
-
 									</p:commandButton>
 
 									<p:commandButton value="Atrás " icon="fa fa-arrow-left"
@@ -333,13 +329,8 @@
 					</center>
 
 				</p:confirmDialog>
-
-
 			</h:form>
-
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){

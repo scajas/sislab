@@ -47,8 +47,8 @@ import net.sf.jasperreports.engine.JRParameter;
 
 @ManagedBean(name = "reporteProformaController")
 @SessionScoped
-@FacesValidator("primeDateRangeValidator")
-public class ReporteProformaController implements Serializable, Validator {
+
+public class ReporteProformaController implements Serializable{
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -127,11 +127,9 @@ public class ReporteProformaController implements Serializable, Validator {
 	public void buscarCliente() {
 
 		try {
-			System.out.println("COMBO OBTENIDO" + getNombreCli());
+
 			listaProforma = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()),
 					getNombreCli(), proforma.getEstadoPo());
-
-			System.out.print("Numero de servicios obtenidos: " + listaProforma.size());
 
 			mensajeInfo("Número de coincidencias encontradas:" + listaProforma.size());
 		} catch (Exception e) {
@@ -355,12 +353,6 @@ public class ReporteProformaController implements Serializable, Validator {
 
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
-	}
-
-	@Override
-	public void validate(FacesContext arg0, UIComponent arg1, Object arg2) throws ValidatorException {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Date getFechaFinal() {

@@ -50,13 +50,22 @@
 						<br />
 						<br />
 						<!--  Boton de Nuevo -->
+
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoS').show()"
-								update="formNuevoS,@this">
-							</p:commandButton>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoS').show();" update="formNuevoS,@this">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+
+							</p:commandLink>
+
 						</center>
+
 						<br />
 						<br />
 
@@ -75,7 +84,7 @@
 
 							<p:column headerText="ID Servicio"
 								filterBy="#{servicio.idServicio}" filterMatchMode="contains"
-								style="width: 8%" resizable="true" filterStyle="width: 50%">
+								style="width: 8%" filterStyle="width: 50%">
 								<h:outputText value="#{servicio.idServicio}" />
 							</p:column>
 
@@ -159,7 +168,7 @@
 			<p:dialog id="panelNuevoS" resizable="true" draggable="false"
 				widgetVar="nuevoS" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nuevo Servicio" width="65%">
+				header="Nuevo Servicio" width="120vh" height="55vh">
 
 				<h:form id="formNuevoS">
 
@@ -177,9 +186,7 @@
 						<div class="ui-fluid">
 							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
 								layout="grid">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
@@ -275,8 +282,8 @@
 
 			<p:dialog id="panelModificarS" resizable="true" draggable="false"
 				widgetVar="modificarS" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="65%"
-				header="Modificar Servicio">
+				hideEffect="fade" responsive="true" dynamic="true" width="120vh"
+				height="55vh" header="Modificar Servicio">
 
 
 				<h:form id="formModificarS">
@@ -297,9 +304,7 @@
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
 									layout="grid">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "

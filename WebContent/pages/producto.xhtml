@@ -33,7 +33,6 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
@@ -52,76 +51,121 @@
 						;width: '90%';">
 						<br />
 						<br />
-						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoProducto').show()"
-								update=":formNuevoProducto,@this,@([id$=messagesForm])">
 
-							</p:commandButton>
+						<!-- Boton De Nuevo -->
+
+						<center>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoProducto').show();"
+								update=":formNuevoProducto,@this">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
+
 						</center>
+						<br />
 						<br />
 
 						<p:dataTable id="tblProducto"
 							value="#{productoController.listarProductos}" var="pro"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
-							widgetVar="filterProductoTable" rows="10"
-							paginator="true"
+							widgetVar="filterProductoTable" rows="10" paginator="true"
+							filteredValue="#{productoController.filtroProducto}"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
 							rowsPerPageTemplate="5,10,15,20,30,50,75,100"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-							paginatorPosition="bottom">
+							paginatorPosition="bottom" resizableColumns="true">
 
-							<p:outputPanel>
-								<h:outputText value="Búsqueda por nombre:" />
-								<p:inputText id="globalFilter"
-									value="#{productoController.nombrePro}" style="width:150px"
-									placeholder="Busqueda">
-									<p:ajax event="keyup" update="tblProducto"
-										listener="#{productoController.busquedaGloblal}" />
-								</p:inputText>
-							</p:outputPanel>
+							<f:facet name="header">
+								<p:outputPanel>
+									<h:outputText value="Buscar Producto:" />
+									<p:inputText id="globalFilter"
+										value="#{productoController.nombrePro}" style="width:150px"
+										placeholder="Busqueda">
+										<p:ajax event="keyup" update="tblProducto"
+											oncomplete="PF('filterProductoTable').filter()"
+											listener="#{productoController.busquedaGlobal}" />
+									</p:inputText>
+								</p:outputPanel>
+							</f:facet>
 
-							<p:column headerText="ID Producto">
-
+							<p:column headerText="ID Producto" filterBy="#{pro.idProducto}"
+								filterMatchMode="contains" style="width: 10%"
+								filterStyle="width: 50%">
+								<f:facet name="header">
+									<h:outputText value="ID Producto" />
+								</f:facet>
 								<h:outputText value="#{pro.idProducto}" />
 							</p:column>
 
-							<p:column headerText="Nombre">
-
+							<p:column headerText="Nombre" filterBy="#{pro.nombrePr}"
+								filterMatchMode="contains" style="width: 20%"
+								filterStyle="width: 70%">
+								<f:facet name="header">
+									<h:outputText value="Nombre del Producto" />
+								</f:facet>
 								<h:outputText value="#{pro.nombrePr}" />
+
+								<h:outputText />
 							</p:column>
 
-							<p:column headerText="Riesgo Específico">
-
+							<p:column headerText="Riesgo Específico"
+								filterBy="#{pro.riesgoespecifico.nombreRe}"
+								filterMatchMode="contains">
+								<f:facet name="header">
+									<h:outputText value="Riesgo Específico" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgoespecifico.nombreRe}" />
 							</p:column>
 
-							<p:column headerText="Fórmula">
-
+							<p:column headerText="Fórmula" filterBy="#{pro.formulaPr}"
+								filterMatchMode="contains" style="width: 8%"
+								filterStyle="width: 70%">
+								<f:facet name="header">
+									<h:outputText value="Fórmula" />
+								</f:facet>
 								<h:outputText value="#{pro.formulaPr}" />
 							</p:column>
 
-							<p:column headerText="Riesgo Salud">
-
+							<p:column headerText="Riesgo Salud"
+								filterBy="#{pro.riesgosaludPr}" filterMatchMode="contains"
+								style="width: 10%" filterStyle="width: 30%">
+								<f:facet name="header">
+									<h:outputText value="Riesgo Salud" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgosaludPr}" />
 							</p:column>
 
-							<p:column headerText="Riesgo Inflamabilidad">
-
+							<p:column headerText="Riesgo Inflamabilidad"
+								filterBy="#{pro.riesgoinflamabilidadPr}"
+								filterMatchMode="contains" style="width: 14%"
+								filterStyle="width: 30%">
+								<f:facet name="header">
+									<h:outputText value="Riesgo Inflamabilidad" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgoinflamabilidadPr}" />
 							</p:column>
 
-							<p:column headerText="Riesgo Reactividad">
+							<p:column headerText="Riesgo Reactividad"
+								filterBy="#{pro.riesgoreactividadPr}" filterMatchMode="contains"
+								style="width: 13%" filterStyle="width: 20%">
+								<f:facet name="header">
+									<h:outputText value="Riesgo Reactividad" />
+								</f:facet>
 								<h:outputText value="#{pro.riesgoreactividadPr}" />
 							</p:column>
 
-
 							<!-- **************************  Boton Modificar   *************************** -->
 
-							<p:column headerText="Acciones" exportable="false">
+							<p:column headerText="Acciones" exportable="false"
+								style="width: 9%">
 								<center>
 									<p:commandLink
 										action="#{productoController.pasarNombre(pro.nombrePr,pro.riesgoespecifico,pro.tipoproducto)}"
@@ -176,11 +220,10 @@
 
 			<!-- 		Panel de registro que se abre en un dialogo	 -->
 
-			<p:dialog id="panelNuevoProducto" resizable="true" draggable="false"
+			<p:dialog id="panelNuevoProducto" resizable="true"
 				widgetVar="nuevoProducto" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="60%"
-				header="Nuevo Producto">
-
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nuevo Producto" width="120vh" height="77vh">
 
 				<h:form id="formNuevoProducto">
 
@@ -197,12 +240,11 @@
 						<br />
 
 						<div class="ui-fluid">
+
 							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -296,7 +338,7 @@
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
 									actionListener="#{productoController.agregarProducto}"
-									oncomplete="PF('nuevoProducto');"
+									oncomplete="PF('nuevoProducto');PF('filterProductoTable').filter()"
 									process="@this,formNuevoProducto"
 									update="@([id$=messagesForm],[id$=formPrincipal]), formNuevoProducto">
 
@@ -318,8 +360,8 @@
 			<p:dialog id="panelModificarProducto" resizable="true"
 				draggable="false" widgetVar="modificarProducto" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="65%" header="Modificar Producto">
-
+				dynamic="true" header="Modificar Producto" width="120vh"
+				height="77vh">
 
 				<h:form id="formModificarProducto">
 
@@ -339,9 +381,7 @@
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblID" value="Código: "
 										style="color:white!important" />
@@ -439,6 +479,7 @@
 										style="width: 115px; margin: 5px"
 										actionListener="#{productoController.modificarProducto}"
 										process="@this,formModificarProducto"
+										oncomplete="PF('filterProductoTable').filter();"
 										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarProducto">
 
 									</p:commandButton>
@@ -469,6 +510,7 @@
 
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('eliminarProducto').hide();"
+							oncomplete="PF('filterProductoTable').filter();"
 							actionListener="#{productoController.eliminarProducto}"
 							update="@([id$=messagesForm],[id$=formPrincipal])" />
 						<p:commandButton value="Cancelar"

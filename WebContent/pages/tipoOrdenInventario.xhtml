@@ -53,13 +53,18 @@
 						<br />
 
 						<!-- Boton De Nuevo -->
-						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevoTOI').show()"
-								update=":formNuevoTOI,@this">
-							</p:commandButton>
 
+						<center>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoTOI').show();" update=":formNuevoTOI,@this">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
 						</center>
 						<br />
 						<br />
@@ -125,7 +130,6 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
@@ -133,10 +137,11 @@
 
 			<!-- Panel de Nuevo -->
 
-			<p:dialog id="panelNuevoTOI" resizable="false" draggable="false"
-				widgetVar="nuevoTOI" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="40%"
-				header="Nuevo Tipo Orden de Inventario">
+			<p:dialog id="panelNuevoTOI" resizable="false" widgetVar="nuevoTOI"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true"
+				header="Nuevo Tipo Orden de Inventario" width="75vh" height="50vh">
+
 
 				<h:form id="formNuevoTOI">
 
@@ -152,12 +157,11 @@
 						<br />
 						<br />
 						<div class="ui-fluid">
+
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -175,6 +179,7 @@
 									maxlength="200" rows="5" cols="30" />
 							</p:panelGrid>
 						</div>
+						<br />
 						<br />
 						<br />
 
@@ -207,10 +212,11 @@
 
 			<!-- Panel de Modificar -->
 
-			<p:dialog id="panelModificarTOI" resizable="false" draggable="false"
+			<p:dialog id="panelModificarTOI" resizable="false"
 				widgetVar="modificarTOI" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="40%"
-				header="Modificar Tipo Orden de Inventario">
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Tipo Orden de Inventario" width="75vh"
+				height="50vh">
 
 
 				<h:form id="formModificarTOI">
@@ -228,12 +234,11 @@
 						<br />
 
 						<div class="ui-fluid">
+
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-							-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-							box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -253,6 +258,7 @@
 							</p:panelGrid>
 						</div>
 
+						<br />
 						<br />
 						<br />
 

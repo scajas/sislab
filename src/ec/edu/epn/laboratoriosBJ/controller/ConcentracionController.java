@@ -87,7 +87,6 @@ public class ConcentracionController implements Serializable {
 
 				mensajeError("La concentración (" + nuevaConcentracion.getNombreCon() + ") ya existe.");
 
-				nuevaConcentracion = new Concentracion();
 			} else {
 
 				concentracionI.save(nuevaConcentracion);

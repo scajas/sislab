@@ -51,14 +51,23 @@
 						<br />
 
 						<!-- Boton De Nuevo -->
+
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevaMuestra').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevaMuestra').show();"
 								update=":formNuevaMuestra,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+
+							</p:commandLink>
 						</center>
+
+
 						<br />
 						<br />
 
@@ -173,10 +182,10 @@
 
 			<!-- Panel de registro 	 -->
 
-			<p:dialog id="panelNuevaMuestra" resizable="true" draggable="false"
+			<p:dialog id="panelNuevaMuestra" resizable="true"
 				widgetVar="nuevaMuestra" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true"
-				header="Nueva Muestra" width="65%">
+				header="Nueva Muestra" width="120vh" height="75vh">
 
 				<h:form id="formNuevaMuestra">
 
@@ -189,7 +198,6 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-						<br />
 						<br />
 						<div class="ui-fluid">
 							<center>
@@ -205,98 +213,97 @@
 								</h:panelGrid>
 							</center>
 							<br /> <br />
+							<div class="ui-fluid">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+									layout="grid">
 
-							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									<p:outputLabel id="lblTransferencia" for="transferencia"
+										value="Transferencia: " style="color:white!important" />
+									<p:inputText id="transferencia"
+										value="#{muestraTransferenciaController.nuevaMuestra.idTi}"
+										required="true"
+										requiredMessage="Debe Seleccionar una Transferencia" size="30"
+										disabled="true">
+									</p:inputText>
 
-								<p:outputLabel id="lblTransferencia" for="transferencia"
-									value="Transferencia: " style="color:white!important" />
-								<p:inputText id="transferencia"
-									value="#{muestraTransferenciaController.nuevaMuestra.idTi}"
-									required="true"
-									requiredMessage="Debe Seleccionar una Transferencia" size="30"
-									disabled="true">
-								</p:inputText>
+									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+										style="color:white!important" />
+									<p:inputText id="nombre"
+										value="#{muestraTransferenciaController.nuevaMuestra.codigoMCliente}"
+										required="true"
+										requiredMessage="Debe Ingresar el nombre de la Muestra"
+										maxlength="50" size="30">
+									</p:inputText>
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-									style="color:white!important" />
-								<p:inputText id="nombre"
-									value="#{muestraTransferenciaController.nuevaMuestra.codigoMCliente}"
-									required="true"
-									requiredMessage="Debe Ingresar el nombre de la Muestra"
-									maxlength="50" size="30">
-								</p:inputText>
+									<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
+										style="color:white!important" />
+									<p:calendar id="fecha"
+										value="#{muestraTransferenciaController.nuevaMuestra.fechaTomaM}"
+										effect="fold" size="30" />
 
-								<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
-									style="color:white!important" />
-								<p:calendar id="fecha"
-									value="#{muestraTransferenciaController.nuevaMuestra.fechaTomaM}"
-									effect="fold" size="30" />
+									<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
+										value="Tipo de Preservante: " style="color:white!important" />
+									<p:inputText id="tipoPreservante"
+										value="#{muestraTransferenciaController.nuevaMuestra.tipopreservanteM}"
+										maxlength="50" size="30">
+									</p:inputText>
 
-								<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
-									value="Tipo de Preservante: " style="color:white!important" />
-								<p:inputText id="tipoPreservante"
-									value="#{muestraTransferenciaController.nuevaMuestra.tipopreservanteM}"
-									maxlength="50" size="30">
-								</p:inputText>
+									<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
+										value="Tipo de Muestra: " style="color:white!important" />
+									<p:selectOneMenu id="tipoMuestra"
+										value="#{muestraTransferenciaController.nuevaMuestra.tipoM}"
+										size="30">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
+										<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
+									</p:selectOneMenu>
 
-								<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
-									value="Tipo de Muestra: " style="color:white!important" />
-								<p:selectOneMenu id="tipoMuestra"
-									value="#{muestraTransferenciaController.nuevaMuestra.tipoM}"
-									size="30">
-									<f:selectItem itemLabel="Seleccione..." itemValue="" />
-									<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
-									<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
-								</p:selectOneMenu>
+									<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
+										value="Tipo de Envase: " style="color:white!important" />
+									<p:selectOneMenu id="tipoEnvase"
+										value="#{muestraTransferenciaController.nuevaMuestra.tipoenvaseM}"
+										size="30">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
+										<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
+										<f:selectItem itemLabel="LATA" itemValue="LATA" />
+									</p:selectOneMenu>
 
-								<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
-									value="Tipo de Envase: " style="color:white!important" />
-								<p:selectOneMenu id="tipoEnvase"
-									value="#{muestraTransferenciaController.nuevaMuestra.tipoenvaseM}"
-									size="30">
-									<f:selectItem itemLabel="Seleccione..." itemValue="" />
-									<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
-									<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
-									<f:selectItem itemLabel="LATA" itemValue="LATA" />
-								</p:selectOneMenu>
+									<p:outputLabel id="lblPreservante" for="preservante"
+										value="Preservante: " style="color:white!important" />
+									<p:selectOneMenu id="preservante"
+										value="#{muestraTransferenciaController.nuevaMuestra.preservanteM}">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
 
-								<p:outputLabel id="lblPreservante" for="preservante"
-									value="Preservante: " style="color:white!important" />
-								<p:selectOneMenu id="preservante"
-									value="#{muestraTransferenciaController.nuevaMuestra.preservanteM}">
-									<f:selectItem itemLabel="Seleccione..." itemValue="" />
-									<f:selectItem itemLabel="Si" itemValue="Si" />
-									<f:selectItem itemLabel="No" itemValue="No" />
+									</p:selectOneMenu>
 
-								</p:selectOneMenu>
+									<p:outputLabel id="lblRefrigeración" for="refrigeracion"
+										value="Refrigeración: " style="color:white!important" />
+									<p:selectOneMenu id="refrigeracion"
+										value="#{muestraTransferenciaController.nuevaMuestra.refrigeracionM}">
+										<f:selectItem itemLabel="Seleccione..." itemValue="" />
+										<f:selectItem itemLabel="Si" itemValue="Si" />
+										<f:selectItem itemLabel="No" itemValue="No" />
 
-								<p:outputLabel id="lblRefrigeración" for="refrigeracion"
-									value="Refrigeración: " style="color:white!important" />
-								<p:selectOneMenu id="refrigeracion"
-									value="#{muestraTransferenciaController.nuevaMuestra.refrigeracionM}">
-									<f:selectItem itemLabel="Seleccione..." itemValue="" />
-									<f:selectItem itemLabel="Si" itemValue="Si" />
-									<f:selectItem itemLabel="No" itemValue="No" />
+									</p:selectOneMenu>
 
-								</p:selectOneMenu>
+									<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+										style="color:white!important" />
+									<p:inputTextarea id="desc"
+										value="#{muestraTransferenciaController.nuevaMuestra.descrM}"
+										maxlength="200" rows="5" cols="30" />
 
-								<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
-									style="color:white!important" />
-								<p:inputTextarea id="desc"
-									value="#{muestraTransferenciaController.nuevaMuestra.descrM}"
-									maxlength="200" rows="5" cols="30" />
-
-								<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
-									style="color:white!important" />
-								<p:inputTextarea id="origen"
-									value="#{muestraTransferenciaController.nuevaMuestra.origenM}"
-									maxlength="200" rows="5" cols="30" />
-							</p:panelGrid>
+									<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
+										style="color:white!important" />
+									<p:inputTextarea id="origen"
+										value="#{muestraTransferenciaController.nuevaMuestra.origenM}"
+										maxlength="200" rows="5" cols="30" />
+								</p:panelGrid>
+							</div>
 						</div>
 						<br />
 						<br />
@@ -331,7 +338,8 @@
 			<p:dialog id="panelVerTransferencia" resizable="false"
 				draggable="false" widgetVar="verTransferencia" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Listado de Transferencias" width="65%">
+				dynamic="true" header="Listado de Transferencias" width="120vh"
+				height="65vh">
 
 				<h:form id="formVerTransferencia">
 
@@ -407,7 +415,7 @@
 				<p:dialog id="panelVerMuestra" resizable="true" draggable="false"
 					widgetVar="verMuestra" modal="true" showEffect="explode"
 					hideEffect="fade" responsive="true" dynamic="true" header="Muestra"
-					width="60%">
+					width="120vh" height="50vh">
 
 					<h:form id="formVerMuestra">
 
@@ -426,10 +434,8 @@
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+									layout="grid">
 
 									<p:outputLabel value="ID:" style="color:white!important" />
 									<p:outputLabel
@@ -505,10 +511,9 @@
 			<!-- Panel de actualizacion  -->
 
 			<p:dialog id="panelModificarMuestra" resizable="true"
-				draggable="false" widgetVar="modificarMuestra" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Muestra" width="65%">
-
+				widgetVar="modificarMuestra" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Muestra" width="120vh" height="70vh">
 
 				<h:form id="formModificarMuestra">
 
@@ -527,10 +532,8 @@
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+									layout="grid">
 
 									<p:outputLabel id="lblID" for="id" value="ID:"
 										style="color:white!important" />

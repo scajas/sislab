@@ -54,12 +54,18 @@
 						<!-- Boton De Nuevo -->
 
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevaConcentracion').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevaConcentracion').show();"
 								update=":formNuevaConcentracion,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
+
 						</center>
 						<br />
 						<br />
@@ -108,14 +114,12 @@
 
 									<!-- **************************  Boton Eliminar   *************************** -->
 
-
 									<p:commandLink process="@this" icon="ui-icon-check"
 										onclick="PF('eliminarConcentracion').show();">
 
 										<h:graphicImage value="/images/archivos/basurero.png"
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
-
 
 										<f:setPropertyActionListener
 											target="#{concentracionController.concentracion}"
@@ -134,9 +138,9 @@
 			<!-- Panel Nuevo-->
 
 			<p:dialog id="panelNuevaConcentracion" resizable="true"
-				draggable="false" widgetVar="nuevaConcentracion" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Nueva Concentración">
+				widgetVar="nuevaConcentracion" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nueva Concentración" width="75vh" height="50vh">
 
 				<h:form id="formNuevaConcentracion">
 
@@ -152,12 +156,11 @@
 						<br />
 						<br />
 						<div class="ui-fluid">
+
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -176,6 +179,7 @@
 
 							</p:panelGrid>
 						</div>
+						<br />
 						<br />
 						<br />
 
@@ -210,10 +214,9 @@
 			<!-- Panel de Nuevo -->
 
 			<p:dialog id="panelModificarConcentracion" resizable="true"
-				draggable="false" widgetVar="modificarConcentracion" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Concentración">
-
+				widgetVar="modificarConcentracion" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Concentración" width="75vh" height="50vh">
 
 				<h:form id="formModificarConcentracion">
 
@@ -230,12 +233,11 @@
 						<br />
 
 						<div class="ui-fluid">
+
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -257,6 +259,7 @@
 						</div>
 						<br />
 						<br />
+						<br />
 
 						<center>
 
@@ -268,14 +271,13 @@
 									process="@this,formModificarConcentracion"
 									update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarConcentracion"
 									oncomplete="PF('tblConcentracion').filter()">
-
 								</p:commandButton>
 
 								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
 									style="width: 115px; margin: 5px"
 									onclick="PF('modificarConcentracion').hide();" process="@none">
-
 								</p:commandButton>
+
 							</h:panelGrid>
 
 						</center>

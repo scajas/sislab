@@ -18,11 +18,12 @@ import javax.servlet.http.HttpSession;
 //import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.DetalleOrdenDAO;
+import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 //import ec.edu.epn.laboratorioBJ.beans.NormaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Detalleorden;
 import ec.edu.epn.laboratorioBJ.entities.Metodo;
 //import ec.edu.epn.laboratorioBJ.entities.Norma;
-
+import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "detalleOrdenController")
@@ -44,6 +45,11 @@ public class DetalleOrdenController implements Serializable {
 
 	private DetalleOrdenDAO detalleOrdenI;
 
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
+	private UnidadDAO unidadI;
+
+	/****************************************************************************/
+	/** VARIABLES DE LA CLASE **/
 	private Detalleorden detalleOrden;
 	private List<Detalleorden> detallesOrden = new ArrayList<Detalleorden>();
 
@@ -52,50 +58,50 @@ public class DetalleOrdenController implements Serializable {
 	public void init() {
 		try {
 
-			setDetallesOrden(detalleOrdenI.getAll(Detalleorden.class));
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			detallesOrden = detalleOrdenI.listTAbyId(uni.getCodigoU());
+
 			setDetalleOrden(new Detalleorden());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	public String metodo(String idMetodo){
+
+	public String metodo(String idMetodo) {
 		String nombre = "";
-		
+
 		Metodo metodo = new Metodo();
-		
+
 		metodo = detalleOrdenI.findMetodoById(idMetodo);
-		
-		if(metodo == null){
+
+		if (metodo == null) {
 			nombre = "N/A";
-		}else{
+		} else {
 			nombre = metodo.getNombreMt();
 		}
-		
+
 		return nombre;
 	}
-	
-	public String servicio(String idServicio){
+
+	public String servicio(String idServicio) {
 		String nombre = "";
-		
+
 		Metodo metodo = new Metodo();
-		
+
 		metodo = detalleOrdenI.findMetodoById(idServicio);
-		
-		if(metodo == null){
+
+		if (metodo == null) {
 			nombre = "N/A";
-		}else{
+		} else {
 			nombre = metodo.getServicio().getNombreS();
 		}
-		
+
 		return nombre;
 	}
-	
-	/*
-	 * get and set
-	 */
 
+	/****** Getter y Setter ****/
 	public Detalleorden getDetalleOrden() {
 		return detalleOrden;
 	}

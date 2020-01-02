@@ -1,7 +1,6 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +9,10 @@ import javax.ejb.EJB;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
@@ -180,12 +176,15 @@ public class ExistenciasController implements Serializable {
 	private Unidadmedida unidadmedida2Select;
 	private List<Unidadmedida> unidadmedidas = new ArrayList<Unidadmedida>();
 	private Unidadmedida unidadmedida;
+
 	private Unidadmedida tempUnidadMedida;
 
 	/** METODO Init **/
 	@PostConstruct
 	public void init() {
+
 		try {
+
 			/** Existencia **/
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
@@ -276,42 +275,72 @@ public class ExistenciasController implements Serializable {
 
 	}
 
-	public void setNuevaExistenciaSelect() {
-		// set de Presentacion
-		nuevoExistencia.setPresentacion(presentacionSelect);
+	/****** Agregar Estado Producto ****/
+	public void limpiarCampos() {
 
-		// set de Estadoproducto
-		nuevoExistencia.setEstadoproducto(estadoProSelect);
+		nuevoExistencia = new Existencia();
+		presentacionSelect = new Presentacion();
+		estadoProSelect = new Estadoproducto();
+		gradoSelect = new Grado();
+		posGiroSelect = new Posgiro();
+		
+		hidratacionSelect = new Hidratacion(); //err
+		
+		caracteristicaSelect = new Caracteristica();
+		concentracionSelect = new Concentracion();
+		tipoproductoSelect = new Tipoproducto();
+		purezaSelect = new Pureza();
+		bodegaSelect = new laboratory();
+		unidadmedida2Select = new Unidadmedida();
 
-		// set de Grado
-		nuevoExistencia.setGrado(gradoSelect);
+		setNombrePro(null);
 
-		// set de Posgiro
-		nuevoExistencia.setPosgiro(posGiroSelect);
-
-		// set de Hidratacion
-		nuevoExistencia.setIdHidratacion(String.valueOf(hidratacionSelect.getIdHidratacion()));
-
-		// set de Caracteristica
-		nuevoExistencia.setCaracteristica(caracteristicaSelect);
-
-		// set de Concentracion
-		nuevoExistencia.setConcentracion(concentracionSelect);
-
-		// set de Tipoproducto
-		nuevoExistencia.setTipoproducto(tipoproductoSelect);
-
-		// set de Pureza
-		nuevoExistencia.setPurezaE(purezaSelect.getIdPureza());
-
-		// set de Bodega
-		nuevoExistencia.setBodega(bodegaSelect);
-
-		// set de Unidadmedida
-		nuevoExistencia.setUnidadmedida(unidadmedida2Select);
 	}
 
-	/****** Agregar Estado Producto ****/
+	public void crearIdExistencia() {
+
+		try {
+
+			String codigoAux = existenciasI.maxIdServ(su.UNIDAD_USUARIO_LOGEADO);
+			String codigoCortado = codigoAux.substring(5, 10);
+
+			Integer codigo = Integer.parseInt(codigoCortado);
+			codigo = codigo + 1;
+
+			String codigoExistencia = codigo.toString();
+			nuevoExistencia.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			UnidadLabo uni = new UnidadLabo();
+
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+
+			switch (codigoExistencia.length()) {
+			case 1:
+				nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "0000" + codigoExistencia);
+				break;
+			case 2:
+				nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "000" + codigoExistencia);
+				break;
+			case 3:
+				nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "00" + codigoExistencia);
+				break;
+			case 4:
+				nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "0" + codigoExistencia); // DC-E-2217
+				break;
+			case 5:
+				nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + codigoExistencia); // DC-E-2217
+				break;
+
+			default:
+				break;
+
+			}
+
+		} catch (Exception e) {
+
+		}
+
+	}
+
 
 	public void agregarExistencia() {
 
@@ -320,46 +349,24 @@ public class ExistenciasController implements Serializable {
 		try {
 			if (buscarExistencia(nuevoExistencia.getIdExistencia()) == true) {
 
-				mensajeError("Ha ocurrido un error, La Muestra (" + nuevoExistencia.getIdExistencia() + ") ya existe.");
-
-				nuevoExistencia = new Existencia();
+				mensajeError("La Muestra (" + nuevoExistencia.getIdExistencia() + ") ya existe.");
 
 			} else {
 
-				/** Creacion del IdExistencia **/
+				crearIdExistencia();
 
-				String codigoAux = existenciasI.maxIdServ(su.UNIDAD_USUARIO_LOGEADO);
-				String codigoCortado = codigoAux.substring(5, 10);
+				nuevoExistencia.setBodega(bodegaSelect);
+				nuevoExistencia.setPresentacion(presentacionSelect);
+				nuevoExistencia.setUnidadmedida(unidadmedida2Select);
+				nuevoExistencia.setEstadoproducto(estadoProSelect);
+				nuevoExistencia.setGrado(gradoSelect);
+				nuevoExistencia.setPosgiro(posGiroSelect);
+				nuevoExistencia.setPurezaE(purezaSelect.getIdPureza());
+				nuevoExistencia.setConcentracion(concentracionSelect);
+				nuevoExistencia.setCaracteristica(caracteristicaSelect);
+				nuevoExistencia.setTipoproducto(tipoproductoSelect);
 
-				Integer codigo = Integer.parseInt(codigoCortado);
-				codigo = codigo + 1;
-
-				String codigoExistencia = codigo.toString();
-				nuevoExistencia.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
-				UnidadLabo uni = new UnidadLabo();
-
-				uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-
-				switch (codigoExistencia.length()) {
-				case 1:
-					nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "0000" + codigoExistencia);
-					break;
-				case 2:
-					nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "000" + codigoExistencia);
-					break;
-				case 3:
-					nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "00" + codigoExistencia);
-					break;
-				case 4:
-					nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + "0" + codigoExistencia); // DC-E-2217
-					break;
-				case 5:
-					nuevoExistencia.setIdExistencia(uni.getCodigoU() + "-E-" + codigoExistencia); // DC-E-2217
-					break;
-
-				default:
-					break;
-				}
+				nuevoExistencia.setIdHidratacion(String.valueOf(hidratacionSelect.getIdHidratacion()));
 
 				existenciasI.save(nuevoExistencia);
 
@@ -367,7 +374,7 @@ public class ExistenciasController implements Serializable {
 
 				updateTable();
 
-				nuevoExistencia = new Existencia();
+				limpiarCampos();
 
 				productos.clear();
 
@@ -428,64 +435,65 @@ public class ExistenciasController implements Serializable {
 		setProductos(existenciasI.filtrarLista(getNombrePro()));
 	}
 
+	/****** Wizard Validation ****/
+
 	public String onFlowProcess(FlowEvent event) {
 
-		String resultado = event.getNewStep();
+		String resultado = null;
 
-		switch (event.getOldStep()) {
-		case "infoTecni":
+		switch (event.getNewStep()) {
 
-			if (tipoproductoSelect == null) {
-				resultado = event.getNewStep();
+		case "infoGeneral":
+
+			if (tipoproductoSelect.getIdTipoprod() == 99999) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingrese el Tipo de Producto.", null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				resultado = event.getOldStep();
 			} else {
-				if (tipoproductoSelect.getIdTipoprod() == 99999) {
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Seleccione el Tipo de Producto.",
-							null);
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-					resultado = event.getOldStep();
-				} else {
-
-					resultado = event.getNewStep();
-				}
+				resultado = event.getNewStep();
 			}
 
 			break;
 
-		case "infoGeneral":
+		case "confirm":
 
-			if (unidadmedida2Select.getIdUmedida() == 0) {
+			System.out.println("Entra al Case 2");
+			if (Integer.valueOf(bodegaSelect.getIdBodega()) == 1) {
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingrese la Bodega.", null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				resultado = event.getOldStep();
+
+			} else if (nuevoExistencia.getCantidadE().intValue() == 0) {
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingrese el Saldo.", null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				resultado = event.getOldStep();
+
+			} else if (unidadmedida2Select.getIdUmedida() == 99999) {
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingrese la Unidad de Medida.", null);
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				resultado = event.getOldStep();
+
+			}
+
+			else {
+
 				resultado = event.getNewStep();
-			} else {
-				if (unidadmedida2Select.getIdUmedida() == 99999) {
-
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Seleccione la Unidad de Medida.",
-							null);
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-					resultado = event.getOldStep();
-				} else {
-
-					if (nuevoExistencia.getCantidadE().intValue() == 0) {
-
-						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingrese el Saldo.", null);
-						FacesContext.getCurrentInstance().addMessage(null, msg);
-						resultado = event.getOldStep();
-
-					} else {
-
-						resultado = event.getNewStep();
-					}
-
-				}
-
 			}
 
 			break;
 
 		default:
 
+			System.out.println("Entra al default");
+			resultado = event.getNewStep();
 			break;
+
 		}
 
+		System.out.println("Case: " + resultado);
 		return resultado;
 
 	}

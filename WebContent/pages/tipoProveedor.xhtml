@@ -51,12 +51,22 @@
 						;width: '90%';">
 						<br />
 						<br />
-						<center>
-							<p:commandButton process="@this" onclick="PF('nuevoTP').show()"
-								update=":formnuevoTP,@this" value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;">
 
-							</p:commandButton>
+						<!-- Boton De Nuevo -->
+
+						<center>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevoTP').show();" update=":formnuevoTP,@this">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+
+							</p:commandLink>
 
 						</center>
 						<br />
@@ -134,8 +144,8 @@
 
 			<p:dialog id="panelnuevoTP" resizable="false" widgetVar="nuevoTP"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="40%"
-				header="Nuevo Tipo Proveedor" draggable="false">
+				responsive="true" dynamic="true" header="Nuevo Tipo Proveedor"
+				draggable="false" width="75vh" height="50vh">
 
 				<h:form id="formnuevoTP">
 
@@ -153,12 +163,11 @@
 						<center>
 
 							<div class="ui-fluid">
+
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -177,7 +186,7 @@
 
 								</p:panelGrid>
 							</div>
-							<br /> <br />
+							<br /> <br /> <br />
 
 							<center>
 
@@ -209,7 +218,8 @@
 			<p:dialog id="panelmodificarTP" resizable="false"
 				widgetVar="modificarTP" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true"
-				header="Modificar Tipo Proveedor" draggable="false" width="40%">
+				header="Modificar Tipo Proveedor" draggable="false" width="75vh"
+				height="50vh">
 
 				<h:form id="formModificarTP">
 
@@ -222,7 +232,6 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-
 						<br />
 						<br />
 						<center>
@@ -231,9 +240,7 @@
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 									layout="grid"
-									style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-									box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 									<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 										style="color:white!important" />
@@ -254,7 +261,7 @@
 
 							</div>
 
-							<br /> <br />
+							<br /> <br /> <br />
 
 							<center>
 
@@ -276,8 +283,6 @@
 								</h:panelGrid>
 
 							</center>
-
-
 
 						</center>
 					</p:fieldset>
@@ -305,7 +310,6 @@
 					</center>
 
 				</p:confirmDialog>
-
 
 			</h:form>
 		</h:body>

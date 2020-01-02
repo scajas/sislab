@@ -32,9 +32,7 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
-
 
 			<h:form id="formprincipal">
 				<p:growl id="messagesForm" sticky="false" showDetail="true"
@@ -53,12 +51,21 @@
 
 						<br />
 						<br />
+
+						<!-- Boton De Nuevo -->
+
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								onclick="PF('nuevaPresentacion').show()"
-								update=":formNuevaPresentacion,@this,@([id$=messagesForm])">
-							</p:commandButton>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevaPresentacion').show();"
+								update=":formNuevaPresentacion,@this">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
 						</center>
 						<br />
 						<br />
@@ -125,7 +132,6 @@
 							</p:column>
 
 						</p:dataTable>
-
 					</p:fieldset>
 				</p:panel>
 
@@ -134,10 +140,9 @@
 			<!-- Panel de Nuevo	 -->
 
 			<p:dialog id="panelnuevaPresentacion" resizable="false"
-				draggable="false" widgetVar="nuevaPresentacion" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="40%" header="Nueva Presentación">
-
+				widgetVar="nuevaPresentacion" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nueva Presentación" width="75vh" height="50vh">
 
 				<h:form id="formNuevaPresentacion">
 
@@ -154,11 +159,9 @@
 						<br />
 						<div class="ui-fluid">
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
 								layout="grid"
-								style="-webkit-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								-moz-box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);
-								box-shadow: -1px -5px 10px 0px rgba(0,0,0,0.75);border:none;text-align: left;">
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" size="30" />
@@ -179,7 +182,7 @@
 						</div>
 						<br />
 						<br />
-
+						<br />
 
 						<center>
 
@@ -197,7 +200,6 @@
 								<p:commandButton onclick="PF('nuevaPresentacion').hide();"
 									process="@none" style="width: 115px; margin: 5px"
 									value="Atrás " icon="fa fa-arrow-left">
-
 								</p:commandButton>
 
 							</h:panelGrid>
@@ -211,10 +213,9 @@
 			<!-- Panel de Modificar -->
 
 			<p:dialog id="panelmodificarPresentacion" resizable="false"
-				draggable="false" widgetVar="modificarPresentacion" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" width="40%" header="Modificar Presentación">
-
+				widgetVar="modificarPresentacion" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Presentación" width="75vh" height="50vh">
 
 				<h:form id="formModificarPresentacion">
 
@@ -227,12 +228,14 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-
 						<br />
 						<br />
 						<div class="ui-fluid">
+
 							<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs">
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
 									style="color:white!important" />
@@ -251,6 +254,7 @@
 
 							</p:panelGrid>
 						</div>
+						<br />
 						<br />
 						<br />
 
@@ -280,7 +284,6 @@
 				</h:form>
 			</p:dialog>
 
-
 			<!-- Panel de Eliminar -->
 
 			<h:form id="eliminarPresentacion">
@@ -303,10 +306,7 @@
 					</center>
 
 				</p:confirmDialog>
-
-
 			</h:form>
-
 		</h:body>
 
 		<script type="text/javascript">

@@ -21,6 +21,7 @@ import ec.edu.epn.laboratorioBJ.beans.RiesgoEspecificoDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.ProductoLab;
 import ec.edu.epn.laboratorioBJ.entities.Riesgoespecifico;
+import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
@@ -54,13 +55,9 @@ public class ProductoLabController implements Serializable {
 	private String nombrePro;
 	private List<ProductoLab> listarProductos = new ArrayList<>();
 	private ProductoLab nuevoProducto;
-	private ProductoLab productoLab;// eliminar y editar
-	private String nombreTP;
-	private String auxDes;
-	private Integer riesgoS;
-	private Integer riesgoI;
-	private Integer riesgoR;
-	private List<ProductoLab> productosfiltrados = new ArrayList<>();//
+	private ProductoLab productoLab;
+	private List<Servicio> filtroProducto;
+
 	// select de riesgo
 	private Riesgoespecifico riesgoEspecificoSelect;
 	private List<Riesgoespecifico> listarRiesgosEsp = new ArrayList<Riesgoespecifico>();
@@ -71,12 +68,18 @@ public class ProductoLabController implements Serializable {
 	private List<Tipoproducto> listarTipoProducto = new ArrayList<Tipoproducto>();
 	private Tipoproducto tipoProducto;
 
-	// Método init
+	private String nombreTP;
+	private String auxDes;
+	private Integer riesgoS;
+	private Integer riesgoI;
+	private Integer riesgoR;
+
 	@PostConstruct
 	public void init() {
 		try {
 
-			setListarProductos(productoI.getAll(ProductoLab.class));
+			// setListarProductos(productoI.getAll(ProductoLab.class));
+			listarProductos = productoI.getListPro();
 			setListarRiesgosEsp(riesgoEspI.getAll(Riesgoespecifico.class));
 			setListarTipoProducto(tipoProI.getAll(Tipoproducto.class));
 			setNuevoProducto(new ProductoLab());
@@ -119,7 +122,6 @@ public class ProductoLabController implements Serializable {
 		try {
 			if (buscarProducto(nuevoProducto.getNombrePr()) == true) {
 				mensajeError("El Producto (" + nuevoProducto.getNombrePr() + ") ya existe.");
-				nuevoProducto = new ProductoLab();
 
 			} else {
 
@@ -159,7 +161,7 @@ public class ProductoLabController implements Serializable {
 				nuevoProducto.setRiesgoreactividadPr("R" + nuevoProducto.getRiesgoreactividadPr());
 
 				productoI.save(nuevoProducto);
-				listarProductos = productoI.getAll(ProductoLab.class);
+				listarProductos = productoI.getListPro();
 
 				mensajeInfo("El producto (" + nuevoProducto.getNombrePr() + ") se ha almacenado exitosamente.");
 
@@ -190,7 +192,7 @@ public class ProductoLabController implements Serializable {
 				productoLab.setRiesgoinflamabilidadPr("I" + riesgoI.toString());
 				productoLab.setRiesgoreactividadPr("R" + riesgoR.toString());
 				productoI.update(productoLab);
-				listarProductos = productoI.getAll(ProductoLab.class);
+				listarProductos = productoI.getListPro();
 
 				mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha actualizado exitosamente.");
 
@@ -203,17 +205,17 @@ public class ProductoLabController implements Serializable {
 				productoLab.setRiesgosaludPr("S" + riesgoS.toString());
 				productoLab.setRiesgoinflamabilidadPr("I" + riesgoI.toString());
 				productoLab.setRiesgoreactividadPr("R" + riesgoR.toString());
-				listarProductos = productoI.getAll(ProductoLab.class);
+				listarProductos = productoI.getListPro();
 
 				productoI.update(productoLab);
-				listarProductos = productoI.getAll(ProductoLab.class);
+				listarProductos = productoI.getListPro();
 
 				mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarProducto').hide();");
 
 			} else {
-				listarProductos = productoI.getAll(ProductoLab.class);
+				listarProductos = productoI.getListPro();
 				mensajeError("El Producto (" + productoLab.getNombrePr() + ") ya existe.");
 			}
 
@@ -229,7 +231,7 @@ public class ProductoLabController implements Serializable {
 		try {
 
 			productoI.delete(productoLab);
-			listarProductos = productoI.getAll(ProductoLab.class);
+			listarProductos = productoI.getListPro();
 			mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
@@ -245,9 +247,15 @@ public class ProductoLabController implements Serializable {
 	}
 
 	/****** Busqueda Global ****/
-	
-	public void busquedaGloblal() {
-		setListarProductos(productoI.filtrarLista(getNombrePro()));
+
+	public void busquedaGlobal() {
+
+		try {
+			setListarProductos(productoI.filtrarLista(getNombrePro()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/****** Busqueda de Producto ****/
@@ -401,20 +409,20 @@ public class ProductoLabController implements Serializable {
 		this.riesgoR = riesgoR;
 	}
 
-	public List<ProductoLab> getProductosfiltrados() {
-		return productosfiltrados;
-	}
-
-	public void setProductosfiltrados(List<ProductoLab> productosfiltrados) {
-		this.productosfiltrados = productosfiltrados;
-	}
-
 	public String getNombrePro() {
 		return nombrePro;
 	}
 
 	public void setNombrePro(String nombrePro) {
 		this.nombrePro = nombrePro;
+	}
+
+	public List<Servicio> getFiltroProducto() {
+		return filtroProducto;
+	}
+
+	public void setFiltroProducto(List<Servicio> filtroProducto) {
+		this.filtroProducto = filtroProducto;
 	}
 
 }

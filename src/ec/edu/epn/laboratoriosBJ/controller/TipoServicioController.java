@@ -86,7 +86,6 @@ public class TipoServicioController implements Serializable {
 		try {
 			if (buscarTipoServicio(nuevoTipoServicio.getNombreTs()) == true) {
 				mensajeError("El Tipo de Servicio (" + nuevoTipoServicio.getNombreTs() + ") ya existe.");
-				nuevoTipoServicio = new Tiposervicio();
 
 			} else {
 

@@ -77,8 +77,6 @@ public class PresentacionController implements Serializable {
 
 				mensajeError("La presentación (" + nuevoPresentacion.getNombrePrs() + ") ya existe.");
 
-				nuevoPresentacion = new Presentacion();
-
 			} else {
 				presentacionI.save(nuevoPresentacion);
 

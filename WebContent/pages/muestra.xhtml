@@ -53,14 +53,20 @@
 						<!-- Boton De Nuevo -->
 
 						<center>
-							<p:commandButton value="Nuevo" icon="fa fa-file"
-								style="width: 125px; border-radius: 3px 3px 3px 3px;"
-								process="@this" onclick="PF('nuevaMuestra').show()"
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevaMuestra').show();"
 								update=":formNuevaMuestra,@this">
 
-							</p:commandButton>
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
 
+							</p:commandLink>
 						</center>
+
 						<br />
 						<br />
 
@@ -151,10 +157,10 @@
 											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
 											height="35" />
 
-
 										<f:setPropertyActionListener
 											target="#{muestraController.muestra}" value="#{muestra}">
 										</f:setPropertyActionListener>
+
 									</p:commandLink>
 								</center>
 							</p:column>
@@ -168,9 +174,9 @@
 			<!-- Panel de registro 	 -->
 
 			<p:dialog id="panelNuevaMuestra" resizable="true"
-				draggable="false" widgetVar="nuevaMuestra" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Nueva Muestra" width="65%">
+				widgetVar="nuevaMuestra" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Nueva Muestra" width="120vh" height="75vh">
 
 				<h:form id="formNuevaMuestra">
 
@@ -183,7 +189,6 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-						<br />
 						<br />
 
 						<center>
@@ -200,96 +205,98 @@
 						</center>
 						<br />
 						<br />
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+								layout="grid">
 
-						<p:panelGrid columns="4" styleClass="ui-fluid"
-							columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+								<p:outputLabel id="lblFactura" for="factura" value="Factura: "
+									style="color:white!important" />
+								<p:inputText id="factura"
+									value="#{muestraController.nuevaMuestra.idFactura}"
+									required="true" requiredMessage="Debe Seleccionar una Factura"
+									size="30" disabled="true">
+								</p:inputText>
 
-							<p:outputLabel id="lblFactura" for="factura" value="Factura: "
-								style="color:white!important" />
-							<p:inputText id="factura"
-								value="#{muestraController.nuevaMuestra.idFactura}"
-								required="true" requiredMessage="Debe Seleccionar una Factura"
-								size="30" disabled="true">
-							</p:inputText>
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:inputText id="nombre"
+									value="#{muestraController.nuevaMuestra.codigoMCliente}"
+									required="true"
+									requiredMessage="Debe Ingresar el nombre de la Muestra"
+									maxlength="50" size="30">
+								</p:inputText>
 
-							<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
-								style="color:white!important" />
-							<p:inputText id="nombre"
-								value="#{muestraController.nuevaMuestra.codigoMCliente}"
-								required="true"
-								requiredMessage="Debe Ingresar el nombre de la Muestra"
-								maxlength="50" size="30">
-							</p:inputText>
+								<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
+									style="color:white!important" />
+								<p:calendar id="fecha"
+									value="#{muestraController.nuevaMuestra.fechaTomaM}"
+									effect="fold" size="30" />
 
-							<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
-								style="color:white!important" />
-							<p:calendar id="fecha"
-								value="#{muestraController.nuevaMuestra.fechaTomaM}"
-								effect="fold" size="30" />
+								<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
+									value="Tipo de Preservante: " style="color:white!important" />
+								<p:inputText id="tipoPreservante"
+									value="#{muestraController.nuevaMuestra.tipopreservanteM}"
+									maxlength="50" size="30">
+								</p:inputText>
 
-							<p:outputLabel id="lblTipoPreservante" for="tipoPreservante"
-								value="Tipo de Preservante: " style="color:white!important" />
-							<p:inputText id="tipoPreservante"
-								value="#{muestraController.nuevaMuestra.tipopreservanteM}"
-								maxlength="50" size="30">
-							</p:inputText>
+								<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
+									value="Tipo de Muestra: " style="color:white!important" />
+								<p:selectOneMenu id="tipoMuestra"
+									value="#{muestraController.nuevaMuestra.tipoM}" size="30"
+									autoWidth="false">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
+									<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
+								</p:selectOneMenu>
 
-							<p:outputLabel id="lblTipoMuestra" for="tipoMuestra"
-								value="Tipo de Muestra: " style="color:white!important" />
-							<p:selectOneMenu id="tipoMuestra"
-								value="#{muestraController.nuevaMuestra.tipoM}" size="30"
-								autoWidth="false">
-								<f:selectItem itemLabel="Seleccione..." itemValue="" />
-								<f:selectItem itemLabel="Puntal" itemValue="Puntual" />
-								<f:selectItem itemLabel="Compuesta" itemValue="Compuesta" />
-							</p:selectOneMenu>
+								<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
+									value="Tipo de Envase: " style="color:white!important" />
+								<p:selectOneMenu id="tipoEnvase"
+									value="#{muestraController.nuevaMuestra.tipoenvaseM}" size="30"
+									autoWidth="false">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
+									<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
+									<f:selectItem itemLabel="LATA" itemValue="LATA" />
+								</p:selectOneMenu>
 
-							<p:outputLabel id="lblTipoEnvase" for="tipoEnvase"
-								value="Tipo de Envase: " style="color:white!important" />
-							<p:selectOneMenu id="tipoEnvase"
-								value="#{muestraController.nuevaMuestra.tipoenvaseM}" size="30"
-								autoWidth="false">
-								<f:selectItem itemLabel="Seleccione..." itemValue="" />
-								<f:selectItem itemLabel="Vidrio" itemValue="Vidrio" />
-								<f:selectItem itemLabel="Plastico" itemValue="Plastico" />
-								<f:selectItem itemLabel="LATA" itemValue="LATA" />
-							</p:selectOneMenu>
+								<p:outputLabel id="lblPreservante" for="preservante"
+									value="Preservante: " style="color:white!important" />
+								<p:selectOneMenu id="preservante"
+									value="#{muestraController.nuevaMuestra.preservanteM}"
+									autoWidth="false">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
 
-							<p:outputLabel id="lblPreservante" for="preservante"
-								value="Preservante: " style="color:white!important" />
-							<p:selectOneMenu id="preservante"
-								value="#{muestraController.nuevaMuestra.preservanteM}"
-								autoWidth="false">
-								<f:selectItem itemLabel="Seleccione..." itemValue="" />
-								<f:selectItem itemLabel="Si" itemValue="Si" />
-								<f:selectItem itemLabel="No" itemValue="No" />
+								</p:selectOneMenu>
 
-							</p:selectOneMenu>
+								<p:outputLabel id="lblRefrigeración" for="refrigeracion"
+									value="Refrigeración: " style="color:white!important" />
+								<p:selectOneMenu id="refrigeracion"
+									value="#{muestraController.nuevaMuestra.refrigeracionM}"
+									autoWidth="false">
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
 
-							<p:outputLabel id="lblRefrigeración" for="refrigeracion"
-								value="Refrigeración: " style="color:white!important" />
-							<p:selectOneMenu id="refrigeracion"
-								value="#{muestraController.nuevaMuestra.refrigeracionM}"
-								autoWidth="false">
-								<f:selectItem itemLabel="Seleccione..." itemValue="" />
-								<f:selectItem itemLabel="Si" itemValue="Si" />
-								<f:selectItem itemLabel="No" itemValue="No" />
+								</p:selectOneMenu>
 
-							</p:selectOneMenu>
+								<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
+									style="color:white!important" />
+								<p:inputTextarea id="desc"
+									value="#{muestraController.nuevaMuestra.descrM}"
+									maxlength="200" rows="5" cols="30" />
 
-							<p:outputLabel id="lblDeesc" for="desc" value="Descripción: "
-								style="color:white!important" />
-							<p:inputTextarea id="desc"
-								value="#{muestraController.nuevaMuestra.descrM}" maxlength="200"
-								rows="5" cols="30" />
-
-							<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
-								style="color:white!important" />
-							<p:inputTextarea id="origen"
-								value="#{muestraController.nuevaMuestra.origenM}"
-								maxlength="200" rows="5" cols="30" />
-						</p:panelGrid>
-
+								<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
+									style="color:white!important" />
+								<p:inputTextarea id="origen"
+									value="#{muestraController.nuevaMuestra.origenM}"
+									maxlength="200" rows="5" cols="30" />
+							</p:panelGrid>
+						</div>
 						<br />
 						<br />
 
@@ -322,7 +329,8 @@
 			<p:dialog id="panelVerFacturacion" resizable="false"
 				draggable="false" widgetVar="verFacturacion" modal="true"
 				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Listado de Facturas" width="65%">
+				dynamic="true" header="Listado de Facturas" width="120vh"
+				height="65vh">
 
 				<h:form id="formVerFacturacion">
 
@@ -394,10 +402,10 @@
 			<!-- Dialogo de Ver muestra   -->
 
 			<center>
-				<p:dialog id="panelVerMuestra" resizable="true" draggable="false"
+				<p:dialog id="panelVerMuestra" resizable="true"
 					widgetVar="verMuestra" modal="true" showEffect="explode"
 					hideEffect="fade" responsive="true" dynamic="true" header="Muestra"
-					width="60%">
+					width="100vh" height="45vh">
 
 					<h:form id="formVerMuestra">
 
@@ -414,8 +422,10 @@
 							<br />
 
 							<div class="ui-fluid">
-								<p:panelGrid columns="4"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+									layout="grid">
 
 									<p:outputLabel value="ID:" style="color:white!important" />
 									<p:outputLabel value="#{muestraController.muestra.idMuestra}" />
@@ -485,9 +495,9 @@
 			<!-- Panel de actualizacion  -->
 
 			<p:dialog id="panelModificarMuestra" resizable="true"
-				draggable="false" widgetVar="modificarMuestra" modal="true"
-				showEffect="explode" hideEffect="fade" responsive="true"
-				dynamic="true" header="Modificar Muestra">
+				widgetVar="modificarMuestra" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Modificar Muestra" width="120vh" height="70vh">
 
 				<h:form id="formModificarMuestra">
 
@@ -505,7 +515,9 @@
 
 							<div class="ui-fluid">
 								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+									layout="grid">
 
 									<p:outputLabel id="lblID" for="id" value="ID: "
 										style="color:white!important" />
@@ -587,7 +599,7 @@
 										style="color:white!important" />
 									<p:inputTextarea id="desc"
 										value="#{muestraController.muestra.descrM}" maxlength="200"
-										rows="5" cols="30"/>
+										rows="5" cols="30" />
 
 									<p:outputLabel id="lblOrigen" for="origen" value="Origen: "
 										style="color:white!important" />
