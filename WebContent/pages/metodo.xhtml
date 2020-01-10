@@ -10,7 +10,7 @@
 	xmlns:ps="http://primefaces.org/apark">
 
 
-	<ui:define name="pageTitle">Movimiento Inventario</ui:define>
+	<ui:define name="pageTitle">Método</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -45,7 +45,7 @@
 					action="#{movimientoInventarioController.limpiarCampos()}" />
 
 				<p:panel>
-					<p:fieldset legend="Movimientos Inventario"
+					<p:fieldset legend="Método"
 						style="border-radius: 5px 5px 5px 5px;
 	-moz-border-radius: 10px 10px 10px 10px;
 	-webkit-border-radius: 10px 10px 10px 10px;
@@ -850,7 +850,7 @@
 
 									<p:commandButton value="Guardar" icon="fa fa-save"
 										style="width: 115px; margin: 10px"
-										actionListener="#{movimientoInventarioController.comprobarEdit}"
+										actionListener="#{movimientoInventarioController.holaMundo}"
 										process="@form" update="@([id$=messagesForm]), formAgregarMI">
 
 									</p:commandButton>

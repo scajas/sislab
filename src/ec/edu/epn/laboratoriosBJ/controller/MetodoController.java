@@ -42,9 +42,9 @@ import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.CambioClave;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
-@ManagedBean(name = "movimientoInventarioController")
+@ManagedBean(name = "metodoController")
 @SessionScoped
-public class MovimientoInventarioController implements Serializable {
+public class MetodoController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -197,7 +197,7 @@ public class MovimientoInventarioController implements Serializable {
 	 * temporal
 	 ****/
 
-	public void comprobarEdit() {
+	public void holaMundo() {
 		RequestContext context = RequestContext.getCurrentInstance();
 		for (Movimientosinventario m : nuevoMovimientoInventarios) {
 			if (m.getIdExistencia().equals(movInventario.getIdExistencia())) {
@@ -678,12 +678,8 @@ public class MovimientoInventarioController implements Serializable {
 	/****** Metodo para construir el id ****/
 	public void obtenerIdOrdenId() {
 		try {
-			/**Consulta de COdigoUnidad**/
-			UnidadLabo uni = new UnidadLabo();
-			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			
 			/** Creacion del Obtener fecha **/
-			String fecha = obtenerFechaActual();
+			String fecha = obtenerFecha();
 			// String fecha = "2020-05-05";
 			String[] partsFecha = fecha.split("-");
 			String anio = partsFecha[0];
@@ -692,7 +688,7 @@ public class MovimientoInventarioController implements Serializable {
 			String codigoAux = ordenInventarioI.maxIdOrdenI(su.UNIDAD_USUARIO_LOGEADO, fecha);
 
 			if (codigoAux == null) {
-				codigoAux = (uni.getCodigoU() +"-OI-0000-" + anio);
+				codigoAux = ("DC-OI-0000-" + anio);
 			} else {
 				System.out.println("Problema resolvido");
 			}
@@ -711,7 +707,10 @@ public class MovimientoInventarioController implements Serializable {
 			String codigoOrden = codigo.toString();
 			// nuevoExistencia.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
 			// nuevoOrdeninventario.getUnidad().setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			
+			UnidadLabo uni = new UnidadLabo();
+
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+
 			unidadLabo = ordenInventarioI.obtenerUnidad(su.UNIDAD_USUARIO_LOGEADO);
 			nuevoOrdeninventario.setUnidad(unidadLabo);
 
@@ -1036,17 +1035,6 @@ public class MovimientoInventarioController implements Serializable {
 		}
 
 		System.out.println("Fecha restada: " + sdf.format(calendar.getTime()));
-
-		String fecha = sdf.format(calendar.getTime());
-
-		return fecha;
-
-	}
-	
-	public String obtenerFechaActual() {
-
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 		String fecha = sdf.format(calendar.getTime());
 
