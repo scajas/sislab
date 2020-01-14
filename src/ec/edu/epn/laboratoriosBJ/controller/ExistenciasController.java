@@ -53,7 +53,7 @@ import javax.faces.application.FacesMessage;
 @ManagedBean(name = "existenciasController")
 @SessionScoped
 public class ExistenciasController implements Serializable {
-
+ 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 1L;
 	FacesContext fc = FacesContext.getCurrentInstance();
@@ -283,9 +283,9 @@ public class ExistenciasController implements Serializable {
 		estadoProSelect = new Estadoproducto();
 		gradoSelect = new Grado();
 		posGiroSelect = new Posgiro();
-		
-		hidratacionSelect = new Hidratacion(); //err
-		
+
+		hidratacionSelect = new Hidratacion();
+
 		caracteristicaSelect = new Caracteristica();
 		concentracionSelect = new Concentracion();
 		tipoproductoSelect = new Tipoproducto();
@@ -341,7 +341,6 @@ public class ExistenciasController implements Serializable {
 
 	}
 
-
 	public void agregarExistencia() {
 
 		RequestContext context = RequestContext.getCurrentInstance();
@@ -361,11 +360,13 @@ public class ExistenciasController implements Serializable {
 				nuevoExistencia.setEstadoproducto(estadoProSelect);
 				nuevoExistencia.setGrado(gradoSelect);
 				nuevoExistencia.setPosgiro(posGiroSelect);
+
 				nuevoExistencia.setPurezaE(purezaSelect.getIdPureza());
+				System.out.println("Pureza Seleccionada: " + purezaSelect.getIdPureza());
+
 				nuevoExistencia.setConcentracion(concentracionSelect);
 				nuevoExistencia.setCaracteristica(caracteristicaSelect);
 				nuevoExistencia.setTipoproducto(tipoproductoSelect);
-
 				nuevoExistencia.setIdHidratacion(String.valueOf(hidratacionSelect.getIdHidratacion()));
 
 				existenciasI.save(nuevoExistencia);
