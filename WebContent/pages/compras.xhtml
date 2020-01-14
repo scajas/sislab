@@ -1,0 +1,980 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Compras</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body onload="rc();">
+
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+			<h:form id="formprincipal">
+
+				<p:remoteCommand name="rc"
+					action="#{compraController.limpiarCampos()}" />
+
+				<p:panel>
+					<p:fieldset legend="Compras"
+						style="border-radius: 5px 5px 5px 5px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
+						<br />
+						<br />
+
+						<!-- Boton De Nuevo -->
+
+						<center>
+							<p:commandLink process="@this" icon="ui-icon-check"
+								onclick="PF('nuevaCompra').show();">
+
+								<h:graphicImage value="/images/archivos/agregar.png"
+									title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+									height="35" />
+								<p>
+									<strong>Nuevo</strong>
+								</p>
+							</p:commandLink>
+
+						</center>
+						<br />
+						<br />
+
+						<p:dataTable id="tblCompra" value="#{compraController.compras}"
+							var="compra" widgetVar="filterCompras"
+							filteredValue="#{compraController.filterCompras}" rows="10"
+							paginator="true" resizableColumns="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+							<p:column headerText="ID Compra " filterBy="#{compra.idCompra}"
+								filterMatchMode="contains" style="width: 12%"
+								filterStyle="width: 70%">
+								<h:outputText value="#{compra.idCompra}" />
+							</p:column>
+
+							<p:column headerText="Descripción"
+								filterBy="#{compra.descrCompra}" filterMatchMode="contains">
+								<h:outputText value="#{compra.descrCompra}" />
+							</p:column>
+
+							<p:column headerText="Fecha" filterBy="#{compra.fechaCo}"
+								filterMatchMode="contains" style="width: 8%"
+								filterStyle="width: 80%">
+								<h:outputText value="#{compra.fechaCo}" />
+							</p:column>
+
+							<p:column headerText="Monto" filterBy="#{compra.montoCo}"
+								style="width: 6%" filterStyle="width: 50%">
+								<h:outputText value="#{compra.montoCo}" />
+							</p:column>
+
+							<p:column headerText="Proveedor"
+								filterBy="#{compra.proveedor.nombrePv}">
+								<h:outputText value="#{compra.proveedor.nombrePv}" />
+							</p:column>
+
+							<p:column headerText="Tipo de Proveedor"
+								filterBy="#{compra.proveedor.tipoproveedor.nombreTpv}"
+								style="width: 12%" filterStyle="width: 50%">
+								<h:outputText
+									value="#{compra.proveedor.tipoproveedor.nombreTpv}" />
+							</p:column>
+							<!-- **************************  Boton Acciones  *************************** -->
+
+							<p:column headerText="Acciones" style="width: 6%">
+
+								<center>
+
+									<p:commandLink update="@this,formMostrarMI"
+										process="@this,tblCompra" icon="ui-icon-check"
+										action="#{compraController.cargarMovInv(compra.idCompra)}"
+										oncomplete="PF('mostrarC').show();">
+
+										<h:graphicImage value="/images/archivos/verMas.png"
+											title="Ver Detalles" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+										<f:setPropertyActionListener
+											target="#{compraController.compra}" value="#{compra}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+								</center>
+
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+			</h:form>
+
+			<!-- **************************  PANEL - Nueva Compra  *************************** -->
+
+			<p:dialog id="panelNuevaCompra" resizable="true"
+				widgetVar="nuevaCompra" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="145vh"
+				height="73vh" header="Ingresar Compra">
+
+				<h:form id="formNuevaCompra">
+
+					<p:fieldset legend="Información Compras"
+						style="border-radius: 10px 10px 10px 10px;
+								-moz-border-radius: 10px 10px 10px 10px;
+								-webkit-border-radius: 10px 10px 10px 10px;
+								border: 0px solid #000000;
+								border-style: double;
+								border-width: 1px;
+								border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+								layout="grid">
+
+								<p:outputLabel id="lblDescripcionCompra" for="descripcionCompra"
+									value="Descripción: *" style="color:white!important" />
+								<p:inputTextarea id="descripcionCompra"
+									value="#{compraController.nuevaCompra.descrCompra}"
+									maxlength="200" rows="5" cols="30">
+								</p:inputTextarea>
+
+								<p:outputLabel id="lblProveedor" for="proveedor"
+									value="Proveedor: " style="color:white!important" />
+
+								<p:selectOneMenu id="proveedor"
+									value="#{compraController.proveedorSelect}" effect="fold"
+									filter="true" filterMatchMode="contains">
+
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									<f:selectItems value="#{compraController.proveedores}"
+										itemLabel="#{pro.nombrePv}" itemValue="#{pro}" var="pro">
+
+									</f:selectItems>
+								</p:selectOneMenu>
+
+								<p:outputLabel id="lblFechaCompra" for="fechaCompra"
+									value="Fecha de Compra: *" style="color:white!important" />
+								<p:calendar id="fechaCompra" pattern="yyyy-MM-dd" locale="es"
+									value="#{compraController.nuevaCompra.fechaCo}" maxlength="100"
+									size="30" readonlyInput="true" />
+
+								<p:outputLabel id="lblDocumento" for="documento"
+									value="Documento: *" style="color:white!important" />
+								<p:inputText id="documento"
+									value="#{compraController.nuevaCompra.documentoCo}"
+									maxlength="200">
+								</p:inputText>
+
+								<p:outputLabel id="lblMonto" for="monto" value="Monto: *"
+									style="color:white!important" />
+
+								<p:inputNumber id="monto"
+									value="#{compraController.nuevaCompra.montoCo}" size="24" />
+
+							</p:panelGrid>
+						</div>
+
+					</p:fieldset>
+					<br />
+					<p:fieldset legend="Información Orden Inventario"
+						style="border-radius: 10px 10px 10px 10px;
+								-moz-border-radius: 10px 10px 10px 10px;
+								-webkit-border-radius: 10px 10px 10px 10px;
+								border: 0px solid #000000;
+								border-style: double;
+								border-width: 1px;
+								border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+								layout="grid">
+
+								<p:outputLabel id="lblFecha" for="fecha"
+									value="Fecha de Ingreso: *" style="color:white!important" />
+								<p:calendar id="fecha" pattern="yyyy-MM-dd" locale="es"
+									requiredMessage="Ingrese la fecha"
+									value="#{compraController.nuevoOrdeninventario.fechaingresoOi}"
+									showOn="button" readonlyInput="true" />
+
+								<p:outputLabel id="lblResponsable" for="responsable"
+									value="Responsable: " style="color:white!important" />
+								<p:outputLabel id="responsable"
+									value="#{compraController.cambiarResponsable(sesionUsuario.usuario.nombreUsuario)}"
+									size="30" maxlength="100">
+								</p:outputLabel>
+
+								<p:outputLabel id="lblDescripcion" for="descripcion"
+									value="Descripción: " style="color:white!important" />
+								<p:inputTextarea id="descripcion"
+									value="#{compraController.nuevoOrdeninventario.descrOi}"
+									maxlength="200" rows="5" cols="30">
+								</p:inputTextarea>
+
+							</p:panelGrid>
+
+						</div>
+					</p:fieldset>
+
+					<br />
+
+					<p:fieldset legend="Detalle Compra"
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<center>
+							<h:panelGrid styleClass="ui-panelgrid-blank">
+
+								<p:commandButton process="@this,formNuevaCompra"
+									icon="fa fa-plus" value="Agregar"
+									onclick="PF('ingresarMI').show();"
+									update="@([id$=messagesForm])">
+								</p:commandButton>
+
+							</h:panelGrid>
+
+							<br />
+						</center>
+						<p:panel id="existencia" header="Existencias Ajuste de Inventario">
+							<p:dataTable id="tblExistenciasCompra"
+								value="#{compraController.nuevoMovimientoInventarios}"
+								var="compra" emptyMessage="No se han seleccionado Movimientos">
+
+								<p:column headerText="ID Existencia">
+									<h:outputText
+										value="#{compraController.cambiarDatosExistencia(compra.idExistencia).idExistencia}" />
+								</p:column>
+
+								<p:column headerText="Nombre">
+									<h:outputText
+										value="#{compraController.cambiarDatosExistencia(compra.idExistencia).producto.nombrePr}" />
+								</p:column>
+
+								<p:column headerText="Saldo N.">
+									<h:outputText
+										value="#{compraController.cambiarDatosExistencia(compra.idExistencia).cantidadE}" />
+								</p:column>
+
+								<p:column headerText="Cantidad">
+									<h:outputText value="#{compra.cantidadMov}" />
+								</p:column>
+
+								<p:column headerText="UM">
+									<h:outputText
+										value="#{compraController.cambiarDatosExistencia(compra.idExistencia).unidadmedida.siglaUm}" />
+								</p:column>
+
+								<p:column headerText="Bodega">
+									<h:outputText
+										value="#{compraController.cambiarDatosExistencia(compra.idExistencia).bodega.nombreBg}" />
+								</p:column>
+
+								<p:column headerText="Obs.">
+									<h:outputText value="#{compra.observacionesMov}" />
+								</p:column>
+
+								<p:column headerText="Acciones">
+									<center>
+										<!-- **************************  Boton Editar Temporal   *************************** -->
+										<p:commandLink process="tblExistenciasCompra"
+											update="formEditarMI" icon="ui-icon-check"
+											onclick="PF('editarMI').show();">
+
+											<h:graphicImage value="/images/archivos/editar.png"
+												title="Modificar" style="border:0px solid #CAD6E0;"
+												width="35" height="35" />
+
+											<f:setPropertyActionListener
+												target="#{compraController.movimientoInventario}"
+												value="#{compra}">
+											</f:setPropertyActionListener>
+
+										</p:commandLink>
+
+
+										<!-- **************************  Boton Eliminar Temporal  *************************** -->
+
+
+										<p:commandLink process="tblExistenciasCompra"
+											update="formEditarMI" icon="ui-icon-check"
+											onclick="PF('eliminarMovTemp').show();">
+
+											<h:graphicImage value="/images/archivos/basurero.png"
+												title="Eliminar" style="border:0px solid #CAD6E0;"
+												width="35" height="35" />
+
+											<f:setPropertyActionListener
+												target="#{compraController.movimientoInventario}"
+												value="#{compra}">
+											</f:setPropertyActionListener>
+
+										</p:commandLink>
+
+									</center>
+								</p:column>
+
+							</p:dataTable>
+						</p:panel>
+
+					</p:fieldset>
+
+					<center>
+						<br />
+						<h:panelGrid columns="3">
+
+							<p:commandButton style="width: 150px; margin: 10px"
+								value="Guardar" icon="fa fa-save"
+								actionListener="#{compraController.guardarCompra}"
+								oncomplete="PF('nuevaCompra'); PF('filterCompras').filter();"
+								process="@this,formNuevaCompra"
+								update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevaCompra,formIngresarMI">
+
+							</p:commandButton>
+
+							<p:commandButton style="width: 150px; margin: 10px"
+								icon="fa fa-bitbucket" value="Limpiar"
+								actionListener="#{compraController.limpiarCampos}"
+								update="@this,@([id$=messagesForm]),formNuevaCompra">
+							</p:commandButton>
+
+							<p:commandButton style="width: 150px; margin: 10px" value="Atrás"
+								icon="fa fa-arrow-left" onclick="PF('nuevaCompra').hide();"
+								process="@none">
+							</p:commandButton>
+
+						</h:panelGrid>
+					</center>
+
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Ingresar Movimiento Inventario  *************************** -->
+
+			<p:dialog id="panelIngresarMI" resizable="true"
+				widgetVar="ingresarMI" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="120vh"
+				height="67vh" header="Ingresar Movimiento Inventario">
+
+				<h:form id="formIngresarMI">
+
+					<p:fieldset legend="Movimientos Inventarios"
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<center>
+							<h:panelGrid columns="2">
+
+								<p:commandButton icon="fa fa-search-plus"
+									style="width: 150px; margin: 10px" value="Cargar Existencias"
+									onclick="PF('listadoEx').show();">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+						</center>
+
+						<div class="ui-fluid">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+								layout="grid">
+
+								<p:outputLabel id="lblIdExistencia" for="idExistencia"
+									value="ID Existencia: " style="color:white!important" />
+								<p:outputLabel id="idExistencia"
+									value="#{compraController.existencia.idExistencia}" size="24" />
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:outputLabel id="nombre"
+									value="#{compraController.existencia.producto.nombrePr}"
+									size="24" />
+
+								<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
+									value="Saldo Neto: " style="color:white!important" />
+								<p:outputLabel id="saldoNeto"
+									value="#{compraController.existencia.cantidadE}" size="24" />
+
+								<p:outputLabel id="lblUnidadM" for="unidadM"
+									value="Unidad de Medida: " style="color:white!important" />
+								<p:outputLabel id="unidadM"
+									value="#{compraController.existencia.unidadmedida.siglaUm}"
+									size="24" />
+
+								<p:outputLabel id="lblCantidad" for="cantidad"
+									value="Cantidad: " style="color:white!important" />
+								<p:inputNumber id="cantidad"
+									value="#{compraController.nuevoMovimientoInventario.cantidadMov}"
+									size="24" />
+
+								<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
+									style="color:white!important" />
+								<p:outputLabel id="bodega"
+									value="#{compraController.existencia.bodega.nombreBg}"
+									size="24" />
+
+								<p:outputLabel id="lblEnvase" for="envase" value="Envase: "
+									style="color:white!important" />
+								<p:inputText id="envase"
+									value="#{compraController.nuevoMovimientoInventario.envaseMov}"
+									maxlength="200">
+								</p:inputText>
+
+								<p:outputLabel id="lblObservacion" for="observacion"
+									value="Observación: " style="color:white!important" />
+								<p:inputTextarea id="observacion"
+									value="#{compraController.nuevoMovimientoInventario.observacionesMov}"
+									maxlength="200" rows="5" cols="30">
+								</p:inputTextarea>
+
+							</p:panelGrid>
+
+						</div>
+						<br />
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{compraController.agregarMovimientoTemporal}"
+									process="@this,formIngresarMI"
+									update="@this,@([id$=messagesForm]),formNuevaCompra,formIngresarMI">
+
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('ingresarMI').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- ****************************************************  Panel - Listado Existencias ***************************************************** -->
+
+			<p:dialog id="panelListadoEx" resizable="true" widgetVar="listadoEx"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="135vh" height="70vh"
+				header="Listado de Existencias">
+
+				<h:form id="formListadoEx">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<center>
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Existencias" update="@this,tblExistencias"
+								oncomplete="PF('filterExistenciasTable').filter();">
+							</p:commandButton>
+						</center>
+						<br />
+						<br />
+						<div class="ui-fluid" align="center">
+
+							<p:dataTable id="tblExistencias"
+								value="#{compraController.existencias}" var="existencia"
+								widgetVar="filterExistenciasTable"
+								emptyMessage="No se pudo encontrar ninguna coincidencia"
+								filteredValue="#{compraController.filterExistencia}" rows="7"
+								paginator="true" resizableColumns="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								rowKey="#{existencia.idExistencia}" selectionMode="single"
+								selection="#{compraController.selectExistencia}">
+
+								<p:column headerText="ID Existencia"
+									filterBy="#{existencia.idExistencia}"
+									filterMatchMode="contains" style="width: 12%">
+									<h:outputText value="#{existencia.idExistencia}" />
+								</p:column>
+
+								<p:column headerText="Producto"
+									filterBy="#{existencia.producto.nombrePr}"
+									filterMatchMode="contains" style="width: 20%">
+									<h:outputText value="#{existencia.producto.nombrePr}" />
+								</p:column>
+
+								<p:column headerText="Saldo Neto"
+									filterBy="#{existencia.cantidadE}" filterMatchMode="contains"
+									style="width: 8%">
+									<h:outputText value="#{existencia.cantidadE}" />
+								</p:column>
+
+								<p:column headerText="U.M."
+									filterBy="#{existencia.unidadmedida.siglaUm}"
+									filterMatchMode="contains" style="width: 6%">
+									<h:outputText value="#{existencia.unidadmedida.siglaUm}" />
+								</p:column>
+
+								<p:column headerText="Bodega"
+									filterBy="#{existencia.bodega.nombreBg}" style="width: 14%">
+									<h:outputText value="#{existencia.bodega.nombreBg}" />
+								</p:column>
+
+								<p:column headerText="Ubicación"
+									filterBy="#{existencia.bodega.ubicacionBg}"
+									filterMatchMode="contains" style="width: 12%">
+									<h:outputText value="#{existencia.ubicaE}" />
+								</p:column>
+
+							</p:dataTable>
+						</div>
+						<br />
+						<br />
+
+						<center>
+
+							<p:commandButton icon="fa fa-save" value="Seleccionar"
+								process="@this,tblExistencias"
+								action="#{compraController.seleccionarExistencia}"
+								update="@([id$=messagesForm],[id$=formIngresarMI])">
+
+							</p:commandButton>
+
+						</center>
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel -  Editar Movimiento Inventario   *************************** -->
+
+			<p:dialog id="panelEditarMI" resizable="true" widgetVar="editarMI"
+				draggable="false" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="135vh"
+				height="52vh" header="Editar Movimiento Inventario">
+
+				<h:form id="formEditarMI">
+
+					<p:fieldset legend="Movimientos Inventario"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<center>
+							<center>
+
+								<br />
+
+								<div class="ui-fluid">
+									<center>
+										<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+											style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+											layout="grid">
+
+											<p:outputLabel id="lblIdExistencia" for="idExistencia"
+												value="Id Existencia: " style="color:white!important" />
+											<p:outputLabel id="idExistencia"
+												value="#{compraController.movimientoInventario.idExistencia}"
+												size="24" />
+
+											<p:outputLabel id="lblNombrePro" for="nombrePro"
+												value="Nombre: " style="color:white!important" />
+											<p:outputLabel id="nombrePro"
+												value="#{compraController.cambiarDatosExistencia(compraController.movimientoInventario.idExistencia).producto.nombrePr}"
+												size="24" />
+
+											<p:outputLabel id="lblSaldoNeto" for="saldoNeto"
+												value="Saldo Neto: " style="color:white!important" />
+											<p:outputLabel id="saldoNeto"
+												value="#{compraController.cambiarDatosExistencia(compraController.movimientoInventario.idExistencia).cantidadE}"
+												size="24" />
+
+											<p:outputLabel id="lblUnidadM" for="unidadM"
+												value="Unidad de Medida: " style="color:white!important" />
+											<p:outputLabel id="unidadM"
+												value="#{compraController.cambiarDatosExistencia(compraController.movimientoInventario.idExistencia).unidadmedida.siglaUm}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblCantidad" for="cantidad"
+												value="Cantidad: " style="color:white!important" />
+											<p:inputNumber id="cantidad"
+												value="#{compraController.movimientoInventario.cantidadMov}"
+												size="24" required="true"
+												requiredMessage="Debe Agregar la Cantidad" />
+
+											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
+												style="color:white!important" />
+											<p:outputLabel id="bodega"
+												value="#{compraController.cambiarDatosExistencia(compraController.movimientoInventario.idExistencia).bodega.nombreBg}"
+												size="24" disabled="true" />
+
+											<p:outputLabel id="lblEnvase" for="envase" value="Envase: "
+												style="color:white!important" />
+											<p:inputTextarea id="envase"
+												value="#{compraController.movimientoInventario.envaseMov}"
+												size="24" />
+
+											<p:outputLabel id="lblObservaciones" for="observaciones"
+												value="Observaciones: " style="color:white!important" />
+											<p:inputTextarea id="observaciones"
+												value="#{compraController.movimientoInventario.observacionesMov}"
+												size="24" />
+
+										</p:panelGrid>
+									</center>
+								</div>
+							</center>
+							<br />
+
+							<center>
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton value="Guardar" icon="fa fa-save"
+										style="width: 115px; margin: 10px" process="@form"
+										actionListener="#{compraController.editarTemp}"
+										update="@([id$=messagesForm],[id$=tblExistenciasCompra])">
+
+									</p:commandButton>
+
+									<p:commandButton value="Atrás "
+										style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+										onclick="PF('editarMI').hide();" process="@none">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<h:form id="eliminarMI">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar el Mov. Inventario Seleccionado"
+					header="Eliminar M.I." severity="info" widgetVar="eliminarMovTemp">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							onsuccess="PF('eliminarMovTemp').hide();"
+							actionListener="#{compraController.eliminarTemp}"
+							update="@this,@([id$=messagesForm],[id$=tblExistenciasCompra]),formNuevaCompra" />
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('eliminarMovTemp').hide();" type="button" />
+
+					</center>
+				</p:confirmDialog>
+
+			</h:form>
+
+
+			<p:dialog id="panelmostrarMI" resizable="false" widgetVar="mostrarC"
+				modal="true" showEffect="explode" hideEffect="fade"
+				draggable="false" responsive="true" dynamic="true" width="135vh"
+				height="95vh" header="Detalles Compra">
+
+				<h:form id="formMostrarMI">
+
+					<p:fieldset legend="Detalle Compra"
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+								layout="grid">
+
+								<p:outputLabel id="lblDescripcionC" for="descripcionC"
+									value="Descripción: " style="color:white!important" />
+								<p:outputLabel id="descripcionC"
+									value="#{compraController.compra.descrCompra}" />
+
+								<p:outputLabel id="lblFechaC" for="fechaC"
+									value="Fecha de Compra: " style="color:white!important" />
+								<p:outputLabel id="fechaC"
+									value="#{compraController.compra.fechaCo}" />
+
+								<p:outputLabel id="lblDocumentoC" for="documentoC"
+									value="Documento: " style="color:white!important" />
+								<p:outputLabel id="documentoC"
+									value="#{compraController.compra.documentoCo}" />
+
+								<p:outputLabel id="lblMontoC" for="montoC" value="Monto: "
+									style="color:white!important" />
+								<p:outputLabel id="montoC"
+									value="#{compraController.compra.montoCo}" />
+
+								<p:outputLabel id="lblProveedorC" for="proveedorC"
+									value="Proveedor: " style="color:white!important" />
+								<p:outputLabel id="proveedorC"
+									value="#{compraController.compra.proveedor.nombrePv}" />
+
+								<p:outputLabel id="lblTipoProveedorC" for="tipoProveedorC"
+									value="Tipo de Proveedor: " style="color:white!important" />
+								<p:outputLabel id="tipoProveedorC"
+									value="#{compraController.compra.proveedor.tipoproveedor.nombreTpv}" />
+
+							</p:panelGrid>
+						</div>
+
+
+					</p:fieldset>
+					<br />
+
+					<p:accordionPanel>
+
+						<p:tab title="Mostrar Información Orden Inventario">
+
+							<p:fieldset legend="Detalle Orden Inventario"
+								style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+								<div class="ui-fluid">
+
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+										layout="grid">
+
+										<p:outputLabel id="lblFecha" for="fecha" value="Fecha: "
+											style="color:white!important" />
+										<p:outputLabel id="fecha"
+											value="#{compraController.obtenerOrden(compraController.compra.idCompra).fechaingresoOi}" />
+
+										<p:outputLabel id="lblResponsable" for="responsable"
+											value="Responsable: " style="color:white!important" />
+										<p:outputLabel id="responsable"
+											value="#{compraController.obtenerOrden(compraController.compra.idCompra).responsableOi}">
+										</p:outputLabel>
+
+										<p:outputLabel id="lblTipoOrdenInv" for="tipoOrdenI"
+											value="Tipo Orden Inventario: " style="color:white!important" />
+										<p:outputLabel id="tipoOrdenI"
+											value="#{compraController.obtenerOrden(compraController.compra.idCompra).tipordeninv.nombreToi}">
+										</p:outputLabel>
+
+										<p:outputLabel id="lblDescripcion" for="descripcion"
+											value="Descripción: " style="color:white!important" />
+										<p:outputLabel id="descripcion"
+											value="#{compraController.obtenerOrden(compraController.compra.idCompra).descrOi}"
+											maxlength="200" rows="5" cols="30">
+										</p:outputLabel>
+
+									</p:panelGrid>
+								</div>
+							</p:fieldset>
+						</p:tab>
+					</p:accordionPanel>
+					<br />
+
+					<p:fieldset legend="Detalle Compra"
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<div class="ui-fluid">
+
+							<p:panel id="existencia">
+								<p:dataTable id="tblMovimientoI"
+									value="#{compraController.tempMovimientoInventarios}"
+									var="compra" emptyMessage="No se han encontrado coincidencias">
+
+									<p:column headerText="ID Existencia">
+										<h:outputText
+											value="#{compraController.cambiarDatosExistencia(compra.idExistencia).idExistencia}" />
+									</p:column>
+
+									<p:column headerText="Nombre">
+										<h:outputText value="#{compraController.compra.descrCompra}" />
+									</p:column>
+
+									<p:column headerText="Cantidad Comprada">
+										<h:outputText value="#{compra.cantidadMov}" />
+									</p:column>
+
+									<p:column headerText="Cantidad Comprada">
+										<h:outputText value="#{compraController.compra.montoCo}" />
+									</p:column>
+
+									<p:column headerText="UM">
+										<h:outputText
+											value="#{compraController.cambiarDatosExistencia(compra.idExistencia).unidadmedida.siglaUm}" />
+									</p:column>
+
+									<p:column headerText="Bodega">
+										<h:outputText
+											value="#{compraController.cambiarDatosExistencia(compra.idExistencia).bodega.nombreBg}" />
+									</p:column>
+
+									<p:column headerText="Obs.">
+										<h:outputText value="#{compra.observacionesMov}" />
+									</p:column>
+
+								</p:dataTable>
+							</p:panel>
+
+						</div>
+
+
+					</p:fieldset>
+
+					<center>
+
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="1">
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('mostrarC').hide();" process="@this"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formMostrarMI"
+									oncomplete="PF('filterCompras').filter()">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+					</center>
+
+
+				</h:form>
+			</p:dialog>
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+			PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
+		</script>
+
+		<!-- **************************  Scroll en dialogo   *************************** -->
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+</style>
+
+	</ui:define>
+</ui:composition>

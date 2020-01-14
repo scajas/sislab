@@ -730,7 +730,7 @@
 											style="color:white!important" />
 										<p:selectOneMenu id="pureza"
 											value="#{existenciasController.purezaSelect}">
-											<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+											<f:selectItem itemLabel="Por favor seleccione" itemValue="#{existenciasController.pureza}" />
 											<f:selectItems value="#{existenciasController.purezas}"
 												itemLabel="#{pureza.nombrePureza}" itemValue="#{pureza}"
 												var="pureza">
