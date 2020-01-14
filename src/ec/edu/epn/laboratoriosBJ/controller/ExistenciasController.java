@@ -53,7 +53,7 @@ import javax.faces.application.FacesMessage;
 @ManagedBean(name = "existenciasController")
 @SessionScoped
 public class ExistenciasController implements Serializable {
-
+ 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 1L;
 	FacesContext fc = FacesContext.getCurrentInstance();

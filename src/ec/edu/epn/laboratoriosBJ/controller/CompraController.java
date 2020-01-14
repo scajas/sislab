@@ -57,7 +57,7 @@ import net.sf.jasperreports.engine.JasperReport;
 @SessionScoped
 
 public class CompraController implements Serializable, Validator {
-
+ 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
 	FacesContext fc = FacesContext.getCurrentInstance();
