@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="pageTitle">Proforma</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body onload="rc();">
+
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+
+
+			<p:fieldset>
+
+				<br />
+				<br />
+
+
+				<h:form id="formprincipal">
+
+					<p:remoteCommand name="rc"
+						action="#{printProformaController.limpiarProforma}"
+						update="formprincipal" />
+
+					<div id="imprimirProf">
+						<center>
+							<table width="1000" align="center"
+								style="BORDER-BOTTOM: #000000 4px solid;">
+								<tr>
+									<td align="center" width="50"></td>
+									<td align="center"><h:outputText
+											value="ESCUELA POLITECNICA NACIONAL"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
+										<br /> <h:outputText
+											value="#{printProformaController.unidad.nombreU} "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
+										<h:outputText value="#{printProformaController.unidad.siglaU}"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
+										<br /> <h:outputText
+											rendered="#{printProformaController.unidad.idUnidad != 2}"
+											value=" Campus Politécnico José Rubén Orellana Ricaurte "
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											value="Direc.: #{printProformaController.unidad.direccionU}"
+											rendered="#{printProformaController.unidad.idUnidad != 2}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <h:outputText
+											value="Telf.: #{printProformaController.unidad.telefonoU}"
+											rendered="#{printProformaController.unidad.idUnidad != 2}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											rendered="#{printProformaController.unidad.idUnidad != 2}"
+											value="Personas de Contacto: contacto Telf.: #{printProformaController.unidad.telCont1U} e-mail: #{printProformaController.unidad.emailCont1U}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											rendered="#{printProformaController.unidad.idUnidad != 2}"
+											value="contacto Telf.: #{printProformaController.unidad.telCont2U} e-mail: #{printProformaController.unidad.emailCont2U}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											rendered="#{printProformaController.unidad.idUnidad != 2}"
+											value="Quito - Ecuador"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <br /></td>
+									<td align="center" width="50"></td>
+								</tr>
+							</table>
+							<br />
+
+							<table width="1000" style="BORDER: #000000 1px solid;"
+								align="center">
+								<tr align="justify">
+									<td align="left" width="20"><h:outputText
+											value="PROFORMA: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.idProforma}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+									<td align="left" width="20"><h:outputText value="Fecha:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.cambioFecha(printProformaController.proforma.fecha)}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+								</tr>
+
+								<tr />
+								<tr />
+								<tr />
+
+								<tr align="justify">
+									<td align="left" width="20"><h:outputText value="Cliente:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.nombreCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+									<td align="left" width="20"><h:outputText
+											value="Dirección:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.direccionCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+								<tr align="justify">
+									<td align="left" width="20"><h:outputText value="Cédula:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.cedula}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+									<td align="left" width="20"><h:outputText value="RUC:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.rucCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+								</tr>
+								<tr align="justify">
+									<td align="left" width="20"><h:outputText
+											value="Teléfono:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.telefonoCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+									<td align="left" width="20"><h:outputText value="Celular:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.celularCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+								</tr>
+
+								<tr align="justify">
+									<td align="left" width="20"><h:outputText
+											value="Contacto:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.contactoCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+									<td align="left" width="20"><h:outputText value="E-mail:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printProformaController.proforma.cliente.emailCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+							</table>
+
+							<br />
+
+							<table width="1000" style="BORDER: #000000 1px solid;"
+								align="center">
+								<tr align="justify">
+									<td align="left" width="20"><p:dataTable
+											id="tblVerDetalleProPrint"
+											value="#{printProformaController.detalleProformasTemp}"
+											var="detallePro" sortBy="#{detallePro.totalservicioPo}"
+											emptyMessage="No se han registrado detalles de proforma.">
+
+											<p:column headerText="Servicio">
+												<h:outputText value="#{detallePro.servicio.nombreS}" />
+											</p:column>
+
+											<p:column headerText="Método">
+												<h:outputText value="#{detallePro.metodo.nombreMt}" />
+											</p:column>
+
+											<p:column headerText="Unidad/Laboratorio">
+												<h:outputText
+													value="#{detallePro.servicio.laboratorio.nombreL}" />
+											</p:column>
+
+											<p:column headerText="Cant." style="width: 6%">
+												<center>
+													<h:outputText value="#{detallePro.cantidadPo}" />
+												</center>
+											</p:column>
+
+											<p:column headerText="V. U." style="width: 6%">
+												<center>
+													<h:outputText
+														value="#{printProformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
+												</center>
+											</p:column>
+
+											<p:column headerText="Total" style="width: 6%">
+												<center>
+													<h:outputText
+														value="#{printProformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
+												</center>
+											</p:column>
+
+											<p:columnGroup type="footer">
+												<p:row>
+													<p:column colspan="5" style="text-align:right"
+														footerText="Sub Total:" />
+													<p:column
+														footerText="#{printProformaController.cambiarFormatoDouble(printProformaController.proforma.subtotalPo)}" />
+
+												</p:row>
+
+												<p:row>
+													<p:column colspan="5" style="text-align:right"
+														footerText="IVA (#{printProformaController.proforma.cliente.tipocliente.ivaTcl} %): " />
+													<p:column
+														footerText="#{printProformaController.cambiarFormatoDouble(printProformaController.proforma.ivaPo)}" />
+												</p:row>
+
+												<p:row>
+													<p:column colspan="5" style="text-align:right"
+														footerText="Total: " />
+													<p:column
+														footerText="#{printProformaController.cambiarFormatoDouble(printProformaController.proforma.totalPo)}" />
+												</p:row>
+											</p:columnGroup>
+										</p:dataTable></td>
+								</tr>
+
+							</table>
+
+							<br />
+							<table width="1000" style="BORDER: no border;" align="center">
+								<tr align="center">
+									<td align="left"><h:outputText value="Nota:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+								<tr align="justify">
+									<td align="justify" width="700"><h:outputText
+											value="#{printProformaController.unidad.nota1} "
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /> <br /></td>
+								</tr>
+
+
+								<tr align="justify">
+									<td align="justify" width="700"><h:outputText
+											value="#{printProformaController.unidad.nota2} "
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /> <br /></td>
+								</tr>
+
+
+								<tr align="justify">
+									<td align="justify" width="700"><h:outputText
+											value="#{printProformaController.unidad.nota3} "
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
+								</tr>
+
+							</table>
+
+
+							<br />
+
+							<table width="1000" style="BORDER: no border;" align="center">
+								<tr align="center">
+									<td align="justify" width="200"><h:outputText
+											value="#{printProformaController.laboratorio.leyendaOtL}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
+								</tr>
+							</table>
+							<br />
+							<table width="1000" style="BORDER: no border;" align="center">
+								<tr align="center">
+									<td align="left"><h:outputText
+											value="Validez de la proforma: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+								<tr align="justify">
+									<td align="justify" width="200"><h:outputText
+											value="#{printProformaController.laboratorio.leyendaprofL}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
+								</tr>
+							</table>
+							<br />
+							<table width="1000" style="BORDER: no border;" align="center">
+								<tr align="center">
+									<td align="left"><h:outputText value="Forma de Pago:"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+								<tr align="justify">
+									<td align="justify" width="200"><h:outputText
+											value="forma de pago"
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
+								</tr>
+
+							</table>
+
+							<br /> <br /> <br /> <br />
+
+
+							<table width="1000" align="center">
+								<tr align="center">
+									<td align="center"><h:outputText
+											value="___________________"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="center"><h:outputText value=" " /></td>
+									<td align="center"><h:outputText
+											value="___________________"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+								<tr>
+									<td align="center"><br /><h:outputText value="Cliente: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " />
+										<h:outputText
+											value="#{printProformaController.proforma.cliente.nombreCl}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="center"><h:outputText value=" " /></td>
+									<td align="center"><br /><h:outputText value="Responsable: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " />
+										<h:outputText value="#{sesionUsuario.usuario.nombreUsuario}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+
+							</table>
+							<br />
+						</center>
+					</div>
+
+				</h:form>
+
+
+
+				<div class="ui-fluid">
+					<center>
+						<h:panelGrid columns="2">
+
+							<p:commandButton style="width: 150px; margin: 10px"
+								value="Imprimir" icon="fa fa-print">
+								<p:printer target="formprincipal" />
+							</p:commandButton>
+
+							<p:commandButton style="width: 150px; margin: 10px"
+								icon=" fa fa-arrow-left"
+								onclick="PF('cdCancelarPro').show();" value="Cancelar"></p:commandButton>
+
+						</h:panelGrid>
+					</center>
+				</div>
+
+
+			</p:fieldset>
+
+			<!-- **************************  Panel - Confirmar regreso Pro ************************** -->
+			<h:form id="formCancelarPro">
+				<p:confirmDialog message="¿Esta seguro(a) que desea cancelar?"
+					header="Cancelar" severity="warn" widgetVar="cdCancelarPro">
+					<center>
+
+						<br /> <br />
+						<p:outputLabel
+							value="Si desea regresar a la interfaz de proformas de clic en Aceptar " />
+
+						<br /> <br /> <br />
+
+						<p:commandButton value="Aceptar"
+							action="#{printProformaController.regresarPanelPro}"
+							onsuccess="PF('cdCancelarPro').hide();" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdCancelarPro').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+			function aiuda(){
+			console.log('TIMBREMOS :v');
+
+				}
+
+			PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
+		</script>
+
+		<!-- **************************  Scroll en dialogo   *************************** -->
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+</style>
+
+	</ui:define>
+</ui:composition>

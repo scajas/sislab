@@ -41,7 +41,8 @@
 			<h:form id="formprincipal">
 
 				<p:remoteCommand name="rc"
-					action="#{proformaController.limpiarTodosCampos()}" update="formprincipal" />
+					action="#{proformaController.limpiarTodosCampos()}"
+					update="formprincipal" />
 
 				<p:panel>
 
@@ -49,14 +50,19 @@
 
 					<!-- Boton De Nuevo -->
 					<center>
-						<p:commandButton value="Nuevo" icon="fa fa-file"
-							title="Registrar Nueva Proforma"
-							style="width: 125px; border-radius: 3px 3px 3px 3px;"
-							process="@this" onclick="PF('nuevoPro').show()" update="@this,formAgregarPro">
+						<p:commandLink process="@this" icon="ui-icon-check"
+							onclick="PF('nuevoPro').show()" update="@this,formAgregarPro">
 
-						</p:commandButton>
+							<h:graphicImage value="/images/archivos/agregar.png"
+								title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+								height="35" />
+							<p>
+								<strong>Nuevo</strong>
+							</p>
+						</p:commandLink>
 
 					</center>
+
 					<p:fieldset legend="Buscar Proformas"
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
@@ -70,7 +76,9 @@
 								<div class="ui-fluid">
 
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width:60%"
+										layout="grid">
 
 										<p:outputLabel value="ID Proforma:" for="idProforma"
 											style="color:white!important" />
@@ -287,7 +295,7 @@
 
 			<p:dialog id="panelNuevoPro" resizable="true" widgetVar="nuevoPro"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="70%"
+				responsive="true" dynamic="true" width="150vh" height="73vh"
 				header="Agregar Movimiento Inventario">
 
 
@@ -533,7 +541,8 @@
 													<!-- **************************  Boton Editar   *************************** -->
 													<p:commandLink icon="ui-icon-check"
 														oncomplete="PF('editarDetallePro').show();"
-														action="#{proformaController.guardarTempDetallePro}" actionListener="#{proformaController.cambiarIdTempPanel(0,0)}"
+														action="#{proformaController.guardarTempDetallePro}"
+														actionListener="#{proformaController.cambiarIdTempPanel(0,0)}"
 														update="formEditarDetallePro">
 
 														<h:graphicImage value="/images/archivos/editar.png"
@@ -658,8 +667,8 @@
 			<!-- **************************  Panel - Agregar Detalle Proforma  *************************** -->
 			<p:dialog id="panelNuevoDetallePro" resizable="true"
 				widgetVar="detallePro" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="70%"
-				header="Agregar Detalle Proforma">
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Agregar Detalle Proforma">
 
 
 				<h:form id="formDetallePro">
@@ -718,7 +727,15 @@
 										</p:column>
 
 									</p:dataTable>
-
+									<br />
+									<center>
+										<p:commandButton icon="fa fa-search-plus"
+											style="border:none;text-align: left; width: 150px;"
+											value="Todos los Servicios" process="@this"
+											actionListener="#{proformaController.cargarAllServicios}"
+											onsuccess="PF('listadoServ').show()">
+										</p:commandButton>
+									</center>
 								</p:fieldset>
 							</div>
 
@@ -741,7 +758,9 @@
 
 											<center>
 												<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+													style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+													layout="grid">
 
 													<p:outputLabel for="servicio" value="Servicio: "
 														style="color:white!important" />
@@ -754,8 +773,8 @@
 														style="color:white!important" />
 													<p:selectOneMenu id="metodo"
 														value="#{proformaController.nuevodetalleProforma.metodo}">
-														<f:selectItem itemLabel="Por favor seleccione"
-															itemValue="ayuda" />
+														<f:selectItem itemLabel="Ninguno..."
+															itemValue="#{proformaController.metodoNA}" />
 														<f:selectItems value="#{proformaController.metodos}"
 															itemLabel="#{metodo.nombreMt}" itemValue="#{metodo}"
 															var="metodo">
@@ -839,7 +858,7 @@
 			<!-- **************************  Panel - Ver Proforma  *************************** -->
 			<p:dialog id="panelVerPro" resizable="true" widgetVar="verPro"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="70%"
+				responsive="true" dynamic="true" width="140vh" height="73vh"
 				header="Proforma y Detalle Proforma">
 
 
@@ -1069,8 +1088,7 @@
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Imprimir" icon="fa fa-save" process="@this"
-										update="formConfirmaNuevaProforma"
-										onsuccess="PF('cdConfirmarProforma').show();">
+										action="#{proformaController.abrirProforma}">
 
 									</p:commandButton>
 
@@ -1092,7 +1110,7 @@
 
 			<p:dialog id="panelEditarPro" resizable="true" widgetVar="editarPro"
 				modal="true" showEffect="explode" hideEffect="fade"
-				responsive="true" dynamic="true" width="70%"
+				responsive="true" dynamic="true" width="142vh" height="73vh"
 				header="Editar Proforma">
 
 
@@ -1219,7 +1237,8 @@
 													<!-- **************************  Boton Editar   *************************** -->
 													<p:commandLink icon="ui-icon-check"
 														oncomplete="PF('editarDetallePro').show();"
-														update="formEditarDetallePro" actionListener="#{proformaController.cambiarIdTempPanel(1,2)}">
+														update="formEditarDetallePro"
+														actionListener="#{proformaController.cambiarIdTempPanel(1,2)}">
 
 														<h:graphicImage value="/images/archivos/editar.png"
 															title="Modificar" style="border:0px solid #CAD6E0;"
@@ -1298,7 +1317,8 @@
 										value="Modificar" icon="fa fa-save"
 										process="@this,formEditarPro"
 										disabled="#{proformaController.disabledButton() != true}"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarPro" actionListener="#{proformaController.editarPro}"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarPro"
+										actionListener="#{proformaController.editarPro}"
 										onsuccess="PF('editarPro').hide();">
 
 									</p:commandButton>
@@ -1322,8 +1342,8 @@
 			<!-- **************************  Panel -  Editar Detalle Proforma   *************************** -->
 			<p:dialog id="panelEditarDetallePro" resizable="true"
 				widgetVar="editarDetallePro" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="40%"
-				header="Editar Detalle Proforma">
+				hideEffect="fade" responsive="true" dynamic="true" width="80vh"
+				height="40vh" header="Editar Detalle Proforma">
 
 
 				<h:form id="formEditarDetallePro">
@@ -1350,7 +1370,9 @@
 
 									<center>
 										<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+											style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+											layout="grid">
 
 											<p:outputLabel for="servicio" value="Servicio: "
 												style="color:white!important" />
@@ -1362,8 +1384,8 @@
 												style="color:white!important" />
 											<p:selectOneMenu id="metodo"
 												value="#{proformaController.detalleProforma.metodo}">
-												<f:selectItem itemLabel="Por favor seleccione"
-													itemValue="ayuda" />
+												<f:selectItem itemLabel="Ninguno..."
+													itemValue="#{proformaController.metodoNA}" />
 												<f:selectItems value="#{proformaController.metodos}"
 													itemLabel="#{metodo.nombreMt}" itemValue="#{metodo}"
 													var="metodo">
@@ -1401,7 +1423,7 @@
 
 										</p:panelGrid>
 									</center>
-									<br />
+
 
 								</div>
 
@@ -1410,7 +1432,7 @@
 
 
 
-						<br />
+
 						<br />
 
 
@@ -1442,12 +1464,10 @@
 			</p:dialog>
 
 			<!-- **************************  Panel - Listado Clientes ************************** -->
-
-
 			<p:dialog id="panelListadoCli" resizable="true"
 				widgetVar="listadoCli" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="80%"
-				header="Listado de Clientes">
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Listado de Clientes">
 
 
 				<h:form id="formListadoCli">
@@ -1534,11 +1554,95 @@
 				</h:form>
 			</p:dialog>
 
+			<!-- **************************  Panel - Listado de Todos los Servicios ************************** -->
+			<p:dialog id="panelListadoServ" resizable="true"
+				widgetVar="listadoServ" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Listado de Servicios">
+
+
+				<h:form id="formListadoServ">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Servicios" update="@this, tblAllServicios"
+								oncomplete="PF('filterAllServiciosTable').filter();">
+							</p:commandButton>
+
+							<br /> <br />
+
+							<div class="ui-fluid" align="center">
+
+								<p:dataTable id="tblAllServicios"
+									value="#{proformaController.allServicios}" var="servicio"
+									widgetVar="filterAllServiciosTable"
+									emptyMessage="No se pudo encontrar ninguna coincidencia"
+									filteredValue="#{proformaController.filtroAllServicios}"
+									rows="8" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+									rowKey="#{servicio.idServicio}"
+									selection="#{proformaController.selectServicio}"
+									selectionMode="single">
+
+									<p:column headerText="ID" filterBy="#{servicio.idServicio}"
+										filterMatchMode="contains">
+										<h:outputText value="#{servicio.idServicio}" />
+									</p:column>
+
+									<p:column headerText="Nombre" filterBy="#{servicio.nombreS}"
+										filterMatchMode="contains">
+										<h:outputText value="#{servicio.nombreS}" />
+									</p:column>
+
+									<p:column headerText="Laboratorio"
+										filterBy="#{servicio.laboratorio.nombreL}"
+										filterMatchMode="contains">
+										<h:outputText value="#{servicio.laboratorio.nombreL}" />
+									</p:column>
+
+
+								</p:dataTable>
+							</div>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="1">
+
+									<p:commandButton icon="fa fa-save" value="Seleccionar"
+										process="@this,tblAllServicios"
+										action="#{proformaController.seleccionarServicio}"
+										update="@([id$=messagesForm])">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
 			<!-- **************************  Panel - Editar Estado Proforma ************************** -->
 			<p:dialog id="panelEditarEstado" resizable="true"
 				widgetVar="editarEstado" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" width="30%"
-				header="Listado de Clientes">
+				hideEffect="fade" responsive="true" dynamic="true" width="55vh"
+				height="35vh" header="Listado de Clientes">
 
 
 				<h:form id="formEditarEstado">
@@ -1553,7 +1657,7 @@
 							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 						<br />
-						<br />
+
 
 						<center>
 							<div class="ui-fluid">
@@ -1587,39 +1691,31 @@
 						</center>
 
 						<br />
-						<br />
+
 						<center>
 
+							<h:panelGrid columns="2">
 
+								<p:commandButton icon="fa fa-save" value="Guardar"
+									process="@this,formEditarEstado"
+									actionListener="#{proformaController.editarEstado}"
+									update="@([id$=messagesForm],[id$=formprincipal])"
+									onsuccess="PF('editarEstado').hide()">
 
-							<br /> <br />
+								</p:commandButton>
 
-							<center>
+								<p:commandButton icon="fa fa-close" value="Cancelar"
+									onclick="PF('editarEstado').hide()">
 
-								<h:panelGrid columns="2">
+								</p:commandButton>
 
-									<p:commandButton icon="fa fa-save" value="Seleccionar"
-										process="@this,formEditarEstado"
-										actionListener="#{proformaController.editarEstado}"
-										update="@([id$=messagesForm],[id$=formprincipal])"
-										onsuccess="PF('editarEstado').hide()">
+							</h:panelGrid>
 
-									</p:commandButton>
-
-									<p:commandButton icon="fa fa-close" value="Cancelar"
-										onclick="PF('editarEstado').hide()">
-
-									</p:commandButton>
-
-								</h:panelGrid>
-
-							</center>
 						</center>
+						<br />
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
-
-			<!-- **************************  Panel - Ver Existencia ************************** -->
 
 			<!-- **************************  Panel - Eliminar Detalle Pro************************** -->
 			<h:form id="formEliminarDetallePro">
