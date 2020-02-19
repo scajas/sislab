@@ -369,6 +369,23 @@ public class ProformaController implements Serializable {
 		}
 
 	}
+	
+	public void buscarAllProformas() {
+
+		try {
+			UnidadLabo uni = new UnidadLabo();
+			proformaBuscar.setCliente(getCliente());
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			proformas = proformaI.listaAllProformas(uni.getCodigoU(), 1, proformaBuscar, fechaInicio,
+					fechaFinal);
+
+			System.out.println("Estos son todos los registros que trae " + proformas.size());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 	public void calcularTotalPrecios() {
 		double resultado = 0;

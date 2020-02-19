@@ -1,0 +1,2140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:rich="http://primefaces.org/ui">
+
+
+	<ui:define name="pageTitle">Orde Interna</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body onload="rc();">
+
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+			<h:form id="formprincipal">
+
+				<p:remoteCommand name="rc"
+					action="#{ordenInternaController.limpiarTodosCampos()}"
+					update="formprincipal" />
+
+				<p:panel>
+
+					<br />
+
+					<!-- Boton De Nuevo -->
+					<center>
+						<p:commandLink process="@this" icon="ui-icon-check"
+							onclick="PF('nuevoOT').show()" update="@this,formAgregarOT">
+
+							<h:graphicImage value="/images/archivos/agregar.png"
+								title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+								height="35" />
+							<p>
+								<strong>Nuevo</strong>
+							</p>
+						</p:commandLink>
+
+					</center>
+
+					<p:fieldset legend="Buscar Orden Interna"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						<center>
+							<h:form id="formBuscar">
+								<div class="ui-fluid">
+
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width:60%"
+										layout="grid">
+
+										<p:outputLabel value="Orden Trabajo:" for="idOT"
+											style="color:white!important" />
+										<p:inputText id="idOT"
+											value="#{ordenInternaController.buscarOrdenTrabajo.idOrden}"
+											size="24" />
+
+										<p:outputLabel value="Cliente:" for="cliente"
+											style="color:white!important" />
+										<p:inputText id="cliente"
+											value="#{ordenInternaController.cliente.nombreCl}" size="24" />
+
+										<p:outputLabel value="Cédula: " for="cedula"
+											style="color:white!important" />
+										<p:inputText id="cedula"
+											value="#{ordenInternaController.cliente.cedula}" size="24" />
+
+										<p:outputLabel value="RUC:" for="ruc"
+											style="color:white!important" />
+										<p:inputText id="ruc"
+											value="#{ordenInternaController.cliente.rucCl}" size="24" />
+
+										<h:outputLabel value="Fecha desde: "
+											style="color:white!important; font-size: 17px" />
+										<p:calendar id="fechaInicio"
+											value="#{ordenInternaController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Inicial Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="24">
+											<p:ajax event="dateSelect" update="fechaFinal" />
+											<p:ajax event="keyup" update="fechaFinal" />
+										</p:calendar>
+
+										<h:outputLabel value="Fecha hasta: "
+											style="color:white!important; font-size: 17px" />
+										<p:calendar id="fechaFinal"
+											disabled="#{ordenInternaController.disabledSelectItem() != true}"
+											value="#{ordenInternaController.fechaFinal}"
+											mindate="#{ordenInternaController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es" required="true"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Final Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="24">
+
+										</p:calendar>
+									</p:panelGrid>
+
+									<br /> <br />
+
+
+									<center>
+										<p:commandLink
+											actionListener="#{ordenInternaController.buscarOrdenTrabajos}"
+											update="@([id$=tblOrden]),@([id$=messagesForm])"
+											process="@this,formBuscar">
+
+											<h:graphicImage value="/images/archivos/busqueda.png"
+												class="btn bt-success" title="Buscar"
+												style="border:0px solid #CAD6E0;" width="35" height="35 " />
+										</p:commandLink>
+
+									</center>
+
+									<br />
+								</div>
+							</h:form>
+
+
+						</center>
+					</p:fieldset>
+					<br />
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						<p:dataTable id="tblOrden"
+							value="#{ordenInternaController.listaOrdenTrabajo}" var="ordenT"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+
+							<p:column headerText="Id OT">
+								<h:outputText value="#{ordenT.idOrden}" />
+							</p:column>
+
+							<p:column headerText="Cliente">
+								<h:outputText value="#{ordenT.cliente.nombreCl}" />
+							</p:column>
+
+							<p:column headerText="F. Recep.">
+								<h:outputText
+									value="#{ordenInternaController.cambioFecha(ordenT.fechaordenOt)}" />
+							</p:column>
+
+							<p:column headerText="F. Entrega">
+								<h:outputText
+									value="#{ordenInternaController.cambioFecha(ordenT.fechaentregaOt)}" />
+							</p:column>
+
+							<p:column headerText="F. Cierre">
+								<h:outputText
+									value="#{ordenInternaController.cambioFecha(ordenT.fechaCierre)}" />
+							</p:column>
+
+							<p:column headerText="Descr. Cliente">
+								<h:outputText value="#{ordenT.responsableOt}" />
+							</p:column>
+
+							<p:column headerText="Fecha cierre">
+								<p:commandLink update="@this,formEditarFechaCierre"
+									process="@this,tblOrden" icon="ui-icon-check"
+									action="#{ordenInternaController.validarEstadoOT(ordenT, 'editarFechaCierre')}">
+
+									<h:outputText value="Fecha Cierre" />
+
+									<f:setPropertyActionListener
+										target="#{ordenInternaController.ordenTrabajo}"
+										value="#{ordenT}">
+									</f:setPropertyActionListener>
+								</p:commandLink>
+
+							</p:column>
+
+							<p:column headerText="Fecha Entrega">
+								<p:commandLink update="@this,formEditarFechaEntrega"
+									process="@this,tblOrden" icon="ui-icon-check"
+									action="#{ordenInternaController.validarFechaEntregaOT(ordenT, 'editarFechaEntrega')}">
+
+									<h:outputText value="Fecha Entrega" />
+
+									<f:setPropertyActionListener
+										target="#{ordenInternaController.ordenTrabajo}"
+										value="#{ordenT}">
+									</f:setPropertyActionListener>
+								</p:commandLink>
+
+							</p:column>
+
+							<p:column headerText="Ver ordens">
+								<center>
+
+									<p:commandLink update="@this,formVerOT"
+										process="@this,tblOrden" icon="ui-icon-check"
+										action="#{ordenInternaController.cargarDetalleOT(ordenT.idOrden)}"
+										onsuccess="PF('verOT').show();">
+
+										<h:graphicImage value="/images/archivos/verMas.png"
+											title="Ver Orden" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+										<f:setPropertyActionListener
+											target="#{ordenInternaController.ordenTrabajo}"
+											value="#{ordenT}">
+										</f:setPropertyActionListener>
+									</p:commandLink>
+
+								</center>
+
+
+							</p:column>
+
+							<p:column headerText="Acciones">
+								<center>
+
+									<!-- **************************  Boton Editar   *************************** -->
+									<p:commandLink icon="ui-icon-check" process="@this,tblOrden"
+										action="#{ordenInternaController.cargarDetalleProformaEdit(ordenT.idOrden)}"
+										oncomplete="PF('editarOT').show();" update="formEditarOT">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+										<f:setPropertyActionListener
+											target="#{ordenInternaController.ordenTrabajo}"
+											value="#{ordenT}">
+										</f:setPropertyActionListener>
+
+
+									</p:commandLink>
+
+								</center>
+							</p:column>
+
+						</p:dataTable>
+					</p:fieldset>
+
+					<br />
+					<br />
+
+				</p:panel>
+
+			</h:form>
+
+
+			<!-- **************************  Panel - Dialogo de Registrar Nuevo   *************************** -->
+
+			<p:dialog id="panelNuevoOT" resizable="true" widgetVar="nuevoOT"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="150vh" height="73vh"
+				header="Agregar Orden de Trabajo">
+
+
+				<h:form id="formAgregarOT">
+					<div class="ui-fluid">
+						<p:fieldset
+							style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+							<center>
+								<div class="ui-g">
+									<div class="ui-g-4"></div>
+
+									<div class="ui-g-4">
+										<table>
+											<tr>
+												<td class="EncabezadoTitulo" align="center" colspan="2">
+													<p:outputLabel value="ESCUELA POLITÉCNICA NACIONAL"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 15px; " />
+												</td>
+											</tr>
+
+											<tr>
+												<td class="EncabezadoTitulo2" align="center" colspan="2">
+													<p:outputLabel
+														value="Campús Politécnico J. Rubén Orellana R."
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+											<tr>
+												<td class="EncabezadoTitulo3" align="center" colspan="2">
+													<p:outputLabel
+														value="Ladrón de Guevara E11-253 y Andalucia"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+											<tr>
+												<td class="EncabezadoTitulo3" align="center" colspan="2">
+													<p:outputLabel value="Telf.: 2976 300"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+											<tr>
+												<td class="EncabezadoTitulo3" align="center" colspan="2">
+													<p:outputLabel value="P.O. Box: 17-01-2759 / QUITO-ECUADOR"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+
+										</table>
+									</div>
+									<div class="ui-g-4"></div>
+								</div>
+								<br /> <br />
+							</center>
+
+							<!-- Buscar Cliente -->
+
+							<p:accordionPanel>
+								<p:tab title="⠀⠀⠀">
+									<center>
+										<p:fieldset legend="Buscar Cliente"
+											style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+											<br />
+
+											<div class="ui-g">
+												<div class="ui-g-10">
+													<p:panelGrid layout="grid" columns="4"
+														styleClass="ui-panelgrid-blank"
+														columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+														style="border: solid;border-width: 1px; border-color: #E6E6E6;text-align: left;">
+
+														<p:outputLabel value="Nombre: " for="clienteNom"
+															style="color:white!important" />
+														<p:inputText id="clienteNom"
+															value="#{ordenInternaController.cliente.nombreCl}"
+															size="24" />
+
+														<p:outputLabel value="RUC/Cédula:" for="ruc_ci"
+															style="color:white!important" />
+														<p:inputText id="ruc_ci"
+															value="#{ordenInternaController.cliente.rucCl}" size="24" />
+
+													</p:panelGrid>
+												</div>
+
+												<div class="ui-g-2">
+													<p:commandButton icon="fa fa-search-plus"
+														style="border:none;text-align: left; width: 110px;"
+														value="Buscar" process="@this, ruc_ci, clienteNom "
+														actionListener="#{ordenInternaController.buscarClientes}"
+														onsuccess="PF('listadoCli').show()">
+													</p:commandButton>
+												</div>
+											</div>
+
+
+											<br />
+
+										</p:fieldset>
+
+										<br />
+
+									</center>
+
+									<!-- Datos de usuario cargado -->
+									<center>
+										<p:fieldset
+											style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+											<p:panelGrid columns="4" layout="grid"
+												styleClass="ui-noborder" style="border:none;">
+
+												<p:outputLabel for="cliente" value="Cliente: "
+													style="font-weight:bold" />
+												<p:outputLabel id="cliente"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
+
+												<p:outputLabel for="contacto" value="Contacto: "
+													style="font-weight:bold" />
+												<p:outputLabel id="contacto"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
+
+											</p:panelGrid>
+
+											<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+												<p:outputLabel for="direccion" value="Dirección: "
+													style="font-weight:bold" />
+												<p:outputLabel id="direccion"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
+
+											</p:panelGrid>
+
+											<p:panelGrid columns="4" layout="grid"
+												styleClass="ui-noborder" style="border:none;">
+
+												<p:outputLabel for="telefono" value="Telefono: "
+													style="font-weight:bold" />
+												<p:outputLabel id="telefono"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
+
+												<p:outputLabel for="fax" value="Fax: "
+													style="font-weight:bold" />
+												<p:outputLabel id="fax"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.faxCl}" />
+
+												<p:outputLabel for="descCliente" value="Descr. C: "
+													style="font-weight:bold" />
+												<p:inputTextarea id="descCliente" autoResize="false"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.responsableOt}" />
+
+												<p:outputLabel for="fecha" value="Fecha: "
+													style="font-weight:bold" />
+												<p:outputLabel id="fecha"
+													value="#{ordenInternaController.cambioFecha(ordenInternaController.nuevoOrdenTrabajo.fechaordenOt)}" />
+
+
+
+											</p:panelGrid>
+
+
+										</p:fieldset>
+									</center>
+
+								</p:tab>
+								<br />
+								<br />
+
+							</p:accordionPanel>
+
+							<!-- Agregar -->
+
+							<br />
+							<center>
+								<p:commandButton value="Agregar" icon="fa fa-plus"
+									title="Agregar Detalle Orden Trabajo"
+									style="width: 125px; border-radius: 3px 3px 3px 3px;"
+									process="@this"
+									actionListener="#{ordenInternaController.validarCliente}"
+									update="@this,@([id$=messagesForm])">
+
+								</p:commandButton>
+							</center>
+							<br />
+							<center>
+								<p:fieldset
+									style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+									<p:panel id="detallePro" header="Detalle Orden Trabajo">
+										<p:dataTable id="tblDetallePro"
+											value="#{ordenInternaController.listaDetalleOrden}"
+											var="detalleOT" sortBy="#{detalleOT.idServicio}"
+											emptyMessage="No se han registrado detalles de proforma, clic en el boton agregar para registrar.">
+
+											<p:column headerText="Servicio">
+												<h:outputText
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
+											</p:column>
+
+											<p:column headerText="Método">
+												<h:outputText
+													value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
+											</p:column>
+
+											<p:column headerText="Unidad/Laboratorio">
+												<h:outputText
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
+											</p:column>
+
+											<p:column headerText="Responsable">
+												<h:outputText value="#{detalleOT.personal.nombresPe}" />
+											</p:column>
+
+											<p:column headerText="h/T">
+												<h:outputText value="#{detalleOT.horasTrabajo}" />
+											</p:column>
+
+											<p:column headerText="F. Inicio">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+											</p:column>
+
+											<p:column headerText="F. Fin">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+											</p:column>
+
+
+											<p:column headerText="Acciones">
+												<center>
+
+													<!-- **************************  Boton Editar   *************************** -->
+													<p:commandLink icon="ui-icon-check"
+														oncomplete="PF('editarDetalleOT').show();"
+														action="#{ordenInternaController.guardarTempDetalleOT()}"
+														actionListener="#{ordenInternaController.cambiarIdTempPanel(0,0)}"
+														update="formEditarDetalleOT">
+
+														<h:graphicImage value="/images/archivos/editar.png"
+															title="Modificar" style="border:0px solid #CAD6E0;"
+															width="35" height="35" />
+
+
+														<f:setPropertyActionListener
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
+														</f:setPropertyActionListener>
+
+													</p:commandLink>
+
+													<!-- **************************  Boton Eliminar   *************************** -->
+
+
+													<p:commandLink process="@this" icon="ui-icon-check"
+														onclick="PF('cdEliminarDetalleOT').show();"
+														actionListener="#{ordenInternaController.cambiarIdTempPanel(0,0)}">
+
+														<h:graphicImage value="/images/archivos/basurero.png"
+															title="Eliminar" style="border:0px solid #CAD6E0;"
+															width="35" height="35" />
+
+
+														<f:setPropertyActionListener
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
+														</f:setPropertyActionListener>
+
+													</p:commandLink>
+
+												</center>
+											</p:column>
+
+										</p:dataTable>
+									</p:panel>
+
+
+								</p:fieldset>
+
+								<br />
+
+								<p:fieldset
+									style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+									<p:panelGrid layout="grid" columns="2"
+										styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+										style="border: solid;border-width: 1px; border-color: #E6E6E6;text-align: left;">
+
+										<p:outputLabel value="Observaciones: " for="observaciones"
+											style="color:white!important" />
+										<p:inputText id="observaciones"
+											value="#{ordenInternaController.nuevoOrdenTrabajo.observOt}"
+											size="24" />
+
+									</p:panelGrid>
+
+								</p:fieldset>
+							</center>
+
+							<center>
+
+								<br /> <br />
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										value="Confirmar" icon="fa fa-save"
+										process="@this,formAgregarOT"
+										disabled="#{ordenInternaController.disabledButton() != true}"
+										update="formConfirmarNuevoOT"
+										onsuccess="PF('cdConfirmarOT').show();">
+
+									</p:commandButton>
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon=" fa fa-arrow-left" onclick="PF('nuevoOT').hide();"
+										process="@none" value="Atras">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</p:fieldset>
+					</div>
+				</h:form>
+			</p:dialog>
+
+
+			<!-- **************************  Panel - Agregar Detalle Orden  *************************** -->
+			<p:dialog id="panelNuevoDetalleOT" resizable="true"
+				widgetVar="detalleOT" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Agregar Detalle Orden">
+
+
+				<h:form id="formDetalleOT">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<!-- **************************  Sub-Panel - Buscar Servicio   *************************** -->
+						<div class="ui-g">
+							<div class="ui-g-6">
+								<p:fieldset
+									style="border-radius: 10px 10px 10px 10px;
+									-moz-border-radius: 10px 10px 10px 10px;
+									-webkit-border-radius: 10px 10px 10px 10px;
+									border: 0px solid #000000;
+									border-style: double;
+									border-width: 1px;
+									border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+									legend="Servicio">
+
+									<p:dataTable id="tblServicio"
+										value="#{ordenInternaController.servicios}" var="serv"
+										widgetVar="filterServiciosTable"
+										emptyMessage="No se pudo encontrar ninguna coincidencia"
+										filteredValue="#{ordenInternaController.filtroServicios}"
+										rows="5" paginator="true"
+										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+										rowKey="#{serv.idServicio}"
+										selection="#{ordenInternaController.nuevoServicio}"
+										selectionMode="single">
+										<p:ajax event="rowSelect"
+											listener="#{ordenInternaController.validarDetalleOT}"
+											update="@([id$=messagesForm])" />
+
+										<p:column headerText="ID" filterBy="#{serv.idServicio}"
+											filterMatchMode="contains">
+											<h:outputText value="#{serv.idServicio}" />
+										</p:column>
+
+										<p:column headerText="Nombre" filterBy="#{serv.nombreS}"
+											filterMatchMode="contains">
+											<h:outputText value="#{serv.nombreS}" />
+										</p:column>
+
+										<p:column headerText="Laboratorio"
+											filterBy="#{serv.laboratorio.nombreL}"
+											filterMatchMode="contains">
+											<h:outputText value="#{serv.laboratorio.nombreL}" />
+										</p:column>
+
+									</p:dataTable>
+									<br />
+
+								</p:fieldset>
+							</div>
+
+							<!-- **************************  Sub-Panel - Registro General  *************************** -->
+
+							<div class="ui-g-6 ui-g-nopad">
+								<div class="ui-g-12">
+									<!-- **************************  Sub-Panel - Informacion Servicio   *************************** -->
+									<p:fieldset
+										style="border-radius: 10px 10px 10px 10px;
+										-moz-border-radius: 10px 10px 10px 10px;
+										-webkit-border-radius: 10px 10px 10px 10px;
+										border: 0px solid #000000;
+										border-style: double;
+										border-width: 1px;
+										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+										legend="Informacion Servicio">
+
+										<div class="ui-fluid">
+
+											<center>
+												<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+													style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+													layout="grid">
+
+													<p:outputLabel for="servicio" value="Servicio: "
+														style="color:white!important" />
+													<p:outputLabel id="servicio"
+														value="#{ordenInternaController.nuevoServicio.nombreS}"
+														size="30" maxlength="100" />
+
+													<p:outputLabel for="laboratorio" value="Laboratorio: "
+														style="color:white!important" />
+													<p:outputLabel id="laboratorio"
+														value="#{ordenInternaController.nuevoServicio.laboratorio.nombreL}"
+														size="30" maxlength="100" />
+
+													<p:outputLabel for="metodo" value="Método: "
+														style="color:white!important" />
+													<p:selectOneMenu id="metodo"
+														value="#{ordenInternaController.nuevoDetalleOrden.idMetodo}">
+														<f:selectItem itemLabel="Ninguno..."
+															itemValue="#{ordenInternaController.metodoNA.idMetodo}" />
+														<f:selectItems value="#{ordenInternaController.metodos}"
+															itemLabel="#{metodo.nombreMt}"
+															itemValue="#{metodo.idMetodo}" var="metodo">
+														</f:selectItems>
+													</p:selectOneMenu>
+
+
+
+												</p:panelGrid>
+											</center>
+											<br />
+
+										</div>
+
+
+									</p:fieldset>
+
+									<p:fieldset
+										style="border-radius: 10px 10px 10px 10px;
+										-moz-border-radius: 10px 10px 10px 10px;
+										-webkit-border-radius: 10px 10px 10px 10px;
+										border: 0px solid #000000;
+										border-style: double;
+										border-width: 1px;
+										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+										legend="Informacion Personal">
+
+										<div class="ui-fluid">
+
+											<center>
+												<p:commandButton icon="fa fa-search-plus"
+													style="border:none;text-align: left; width: 150px;"
+													value="Buscar Personal" process="@this"
+													actionListener="#{ordenInternaController.cargarPersonal(0)}"
+													onsuccess="PF('listadoPer').show()">
+												</p:commandButton>
+											</center>
+											<br />
+											<center>
+												<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+													style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+													layout="grid">
+
+													<p:outputLabel for="personal" value="Personal: "
+														style="color:white!important" />
+													<p:outputLabel id="personal"
+														value="#{ordenInternaController.nuevoDetalleOrden.personal.nombresPe}"
+														size="30" maxlength="100" />
+
+													<p:outputLabel value="Horas/Trabajo: " for="ht"
+														style="color:white!important" />
+													<p:inputNumber id="ht"
+														value="#{ordenInternaController.nuevoDetalleOrden.horasTrabajo}"
+														required="true" emptyValue="zero"
+														requiredMessage="Debe ingresar la cantidad" size="30"
+														maxlength="100">
+
+													</p:inputNumber>
+
+													<h:outputLabel value="Fecha inicio: "
+														style="color:white!important; font-size: 17px" />
+													<p:calendar id="fechaInicio"
+														value="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
+														pattern="dd/MM/yyyy" locale="es"
+														onkeypress="return permite(event, 'none')"
+														requiredMessage="Fecha Inicial Requerida" navigator="true"
+														effect="fadeIn" effectDuration="100" showOn="button"
+														size="24">
+														<p:ajax event="dateSelect" update="fechaFinal" />
+														<p:ajax event="keyup" update="fechaFinal" />
+													</p:calendar>
+
+													<h:outputLabel value="Fecha fin: "
+														style="color:white!important; font-size: 17px" />
+													<p:calendar id="fechaFinal"
+														disabled="#{ordenInternaController.disabledDate() != true}"
+														value="#{ordenInternaController.nuevoDetalleOrden.fechaFinAnalisis}"
+														mindate="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
+														pattern="dd/MM/yyyy" locale="es" required="true"
+														onkeypress="return permite(event, 'none')"
+														requiredMessage="Fecha Final Requerida" navigator="true"
+														effect="fadeIn" effectDuration="100" showOn="button"
+														size="24">
+
+													</p:calendar>
+												</p:panelGrid>
+											</center>
+											<br />
+
+										</div>
+
+
+									</p:fieldset>
+
+								</div>
+							</div>
+
+						</div>
+
+						<br />
+						<br />
+
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{ordenInternaController.agregarDetalleOT}"
+									process="@this,formDetalleOT"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formDetalleOT">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('detalleOT').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Ver Orden Trabajo  *************************** -->
+			<p:dialog id="panelVerOT" resizable="true" widgetVar="verOT"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="140vh" height="73vh"
+				header="Orden de Trabajo">
+
+
+				<h:form id="formVerOT">
+					<div class="ui-fluid">
+						<p:fieldset
+							style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+							<center>
+								<div class="ui-g">
+									<div class="ui-g-4"></div>
+
+									<div class="ui-g-4">
+										<table>
+											<tr>
+												<td class="EncabezadoTitulo" align="center" colspan="2">
+													<p:outputLabel value="ESCUELA POLITÉCNICA NACIONAL"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 15px; " />
+												</td>
+											</tr>
+
+											<tr>
+												<td class="EncabezadoTitulo2" align="center" colspan="2">
+													<p:outputLabel
+														value="Campús Politécnico J. Rubén Orellana R."
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+											<tr>
+												<td class="EncabezadoTitulo3" align="center" colspan="2">
+													<p:outputLabel
+														value="Ladrón de Guevara E11-253 y Andalucia"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+											<tr>
+												<td class="EncabezadoTitulo3" align="center" colspan="2">
+													<p:outputLabel value="Telf.: 2976 300"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+											<tr>
+												<td class="EncabezadoTitulo3" align="center" colspan="2">
+													<p:outputLabel value="P.O. Box: 17-01-2759 / QUITO-ECUADOR"
+														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
+												</td>
+											</tr>
+
+										</table>
+									</div>
+									<div class="ui-g-4"></div>
+								</div>
+								<br /> <br />
+							</center>
+
+
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+								legend="Orden Trabajo">
+
+								<center>
+
+									<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+										<p:outputLabel for="id" value="Orden: "
+											style="font-weight:bold" />
+										<p:outputLabel id="id"
+											value="#{ordenInternaController.ordenTrabajo.idOrden}" />
+
+										<p:outputLabel for="fecha" value="Fecha cierre: "
+											style="font-weight:bold" />
+										<p:outputLabel id="fecha"
+											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
+										style="border:none;">
+
+										<p:outputLabel for="cliente" value="Cliente: "
+											style="font-weight:bold" />
+										<p:outputLabel id="cliente"
+											value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
+
+										<p:outputLabel for="contacto" value="Contacto: "
+											style="font-weight:bold" />
+										<p:outputLabel id="contacto"
+											value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+										<p:outputLabel for="direccion" value="Dirección: "
+											style="font-weight:bold" />
+										<p:outputLabel id="direccion"
+											value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
+										style="border:none;">
+
+										<p:outputLabel for="telefono" value="Telefono: "
+											style="font-weight:bold" />
+										<p:outputLabel id="telefono"
+											value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
+
+										<p:outputLabel for="fax" value="Fax: "
+											style="font-weight:bold" />
+										<p:outputLabel id="fax"
+											value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
+
+										<p:outputLabel for="descCliente" value="Descr. C: "
+											style="font-weight:bold" />
+										<p:outputLabel id="descCliente"
+											value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
+										style="border:none;">
+
+										<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+											style="font-weight:bold" />
+										<p:outputLabel id="fechaRec"
+											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
+
+										<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+											style="font-weight:bold" />
+										<p:outputLabel id="fechaEntrega"
+											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
+
+									</p:panelGrid>
+								</center>
+							</p:fieldset>
+
+
+							<br />
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+								legend="Detalle Orden">
+
+
+								<p:dataTable id="tblVerDetalleOT"
+									value="#{ordenInternaController.listaDetalleOrdenTemp}"
+									var="detalleOT" sortBy="#{detalleOT.idServicio}"
+									emptyMessage="No se han registrado detalles de proforma.">
+
+
+									<p:column headerText="Servicio">
+										<h:outputText
+											value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
+									</p:column>
+
+									<p:column headerText="Método">
+										<h:outputText
+											value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
+									</p:column>
+
+									<p:column headerText="Unidad/Laboratorio">
+										<h:outputText
+											value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
+									</p:column>
+
+									<p:column headerText="Responsable">
+										<h:outputText value="#{detalleOT.personal.nombresPe}" />
+									</p:column>
+
+									<p:column headerText="h/T">
+										<h:outputText value="#{detalleOT.horasTrabajo}" />
+									</p:column>
+
+									<p:column headerText="F. Inicio">
+										<h:outputText
+											value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+									</p:column>
+
+									<p:column headerText="F. Fin">
+										<h:outputText
+											value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+									</p:column>
+								</p:dataTable>
+
+							</p:fieldset>
+
+							<br />
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+								legend="Responsable">
+
+								<p:panelGrid layout="grid" columns="1" style="border:none;">
+
+									<p:outputLabel id="responsable"
+										value="#{ordenInternaController.ordenTrabajo.responsableOt}"
+										size="24" />
+
+								</p:panelGrid>
+
+							</p:fieldset>
+
+							<br />
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+								<p:panelGrid layout="grid" columns="1" style="border:none;">
+
+									<p:outputLabel id="leyenda"
+										value="#{ordenInternaController.ordenTrabajo.idUsuario}"
+										size="24" />
+
+								</p:panelGrid>
+
+							</p:fieldset>
+
+							<br />
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+								legend="Observaciones">
+
+								<p:panelGrid layout="grid" columns="1" style="border:none;">
+
+									<p:outputLabel id="observaciones"
+										value="#{ordenInternaController.ordenTrabajo.observOt}"
+										size="24" />
+
+								</p:panelGrid>
+
+							</p:fieldset>
+
+
+							<center>
+
+								<br /> <br />
+
+								<h:panelGrid columns="3">
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										value="Imprimir OT" icon="fa fa-save" process="@this"
+										action="#{ordenInternaController.abrirProforma()}">
+
+									</p:commandButton>
+
+									<p:commandButton style="width: 180px; margin: 10px"
+										value="Imprimir Formato Descarga" icon="fa fa-save"
+										process="@this"
+										action="#{ordenInternaController.abrirProforma()}">
+
+									</p:commandButton>
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon=" fa fa-arrow-left" onclick="PF('verOT').hide();"
+										process="@none" value="Atras">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</p:fieldset>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Editar Orden Trabajo   *************************** -->
+
+			<p:dialog id="panelEditarOT" resizable="true" widgetVar="editarOT"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="142vh" height="73vh"
+				header="Editar Orden Trabajo">
+
+
+				<h:form id="formEditarOT">
+					<div class="ui-fluid">
+						<p:fieldset
+							style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+							<!-- Datos de cliente-->
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+								legend="Editar Orden Trabajo">
+
+								<div class="ui-fluid">
+									<center>
+										<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+											<p:outputLabel for="id" value="Orden: "
+												style="font-weight:bold" />
+											<p:outputLabel id="id"
+												value="#{ordenInternaController.ordenTrabajo.idOrden}" />
+
+											<p:outputLabel for="fecha" value="Fecha cierre: "
+												style="font-weight:bold" />
+											<p:outputLabel id="fecha"
+												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
+
+										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid"
+											styleClass="ui-noborder" style="border:none;">
+
+											<p:outputLabel for="cliente" value="Cliente: "
+												style="font-weight:bold" />
+											<p:outputLabel id="cliente"
+												value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
+
+											<p:outputLabel for="contacto" value="Contacto: "
+												style="font-weight:bold" />
+											<p:outputLabel id="contacto"
+												value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
+
+										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+											<p:outputLabel for="direccion" value="Dirección: "
+												style="font-weight:bold" />
+											<p:outputLabel id="direccion"
+												value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
+
+										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid"
+											styleClass="ui-noborder" style="border:none;">
+
+											<p:outputLabel for="telefono" value="Telefono: "
+												style="font-weight:bold" />
+											<p:outputLabel id="telefono"
+												value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
+
+											<p:outputLabel for="fax" value="Fax: "
+												style="font-weight:bold" />
+											<p:outputLabel id="fax"
+												value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
+
+											<p:outputLabel for="descCliente" value="Descr. C: "
+												style="font-weight:bold" />
+											<p:inputTextarea id="descCliente" autoResize="false"
+												value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
+
+										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid"
+											styleClass="ui-noborder" style="border:none;">
+
+											<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+												style="font-weight:bold" />
+											<p:outputLabel id="fechaRec"
+												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
+
+											<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+												style="font-weight:bold" />
+											<p:outputLabel id="fechaEntrega"
+												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
+
+										</p:panelGrid>
+
+									</center>
+								</div>
+
+							</p:fieldset>
+
+
+
+							<!-- Agregar -->
+
+							<br />
+							<center>
+								<p:commandButton value="Agregar" icon="fa fa-plus"
+									title="Agregar Nuevo Detalle Proforma"
+									actionListener="#{ordenInternaController.cambiarIdTempPanel(1,1)}"
+									style="width: 125px; border-radius: 3px 3px 3px 3px;"
+									onsuccess="PF('detalleOT').show();" process="@this"
+									update="@this,@([id$=messagesForm])">
+
+								</p:commandButton>
+							</center>
+							<br />
+							<center>
+								<p:fieldset
+									style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+									<p:panel id="detalleOT" header="Detalle Orden Trabajo">
+										<p:dataTable id="tblDetalleOT"
+											value="#{ordenInternaController.listaDetalleOrden}"
+											var="detalleOT" sortBy="#{detalleOT.idServicio}"
+											emptyMessage="No se han registrado detalles de proforma, clic en el boton agregar para registrar.">
+
+
+											<p:column headerText="Servicio">
+												<h:outputText
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
+											</p:column>
+
+											<p:column headerText="Método">
+												<h:outputText
+													value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
+											</p:column>
+
+											<p:column headerText="Unidad/Laboratorio">
+												<h:outputText
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
+											</p:column>
+
+											<p:column headerText="Responsable">
+												<h:outputText value="#{detalleOT.personal.nombresPe}" />
+											</p:column>
+
+											<p:column headerText="h/T">
+												<h:outputText value="#{detalleOT.horasTrabajo}" />
+											</p:column>
+
+											<p:column headerText="F. Inicio">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+											</p:column>
+
+											<p:column headerText="F. Fin">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+											</p:column>
+
+											<p:column headerText="Acciones">
+												<center>
+
+													<!-- **************************  Boton Editar   *************************** -->
+													<p:commandLink icon="ui-icon-check"
+														oncomplete="PF('editarDetalleOT').show();"
+														update="formEditarDetalleOT"
+														actionListener="#{ordenInternaController.cambiarIdTempPanel(1,2)}">
+
+														<h:graphicImage value="/images/archivos/editar.png"
+															title="Modificar" style="border:0px solid #CAD6E0;"
+															width="35" height="35" />
+
+
+														<f:setPropertyActionListener
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
+														</f:setPropertyActionListener>
+
+													</p:commandLink>
+
+													<!-- **************************  Boton Eliminar   *************************** -->
+
+
+													<p:commandLink process="@this" icon="ui-icon-check"
+														action="#{ordenInternaController.cambiarIdTempPanel(1,2)}"
+														onclick="PF('cdEliminarDetalleOT').show();">
+
+														<h:graphicImage value="/images/archivos/basurero.png"
+															title="Eliminar" style="border:0px solid #CAD6E0;"
+															width="35" height="35" />
+
+
+														<f:setPropertyActionListener
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
+														</f:setPropertyActionListener>
+
+													</p:commandLink>
+
+												</center>
+											</p:column>
+
+
+										</p:dataTable>
+									</p:panel>
+
+
+								</p:fieldset>
+
+								<br />
+
+
+							</center>
+
+							<center>
+
+								<br /> <br />
+
+								<h:panelGrid columns="2">
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										value="Modificar" icon="fa fa-save"
+										process="@this,formEditarOT"
+										disabled="#{ordenInternaController.disabledButton() != true}"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarOT"
+										actionListener="#{ordenInternaController.editarPro}"
+										onsuccess="PF('editarOT').hide();">
+
+									</p:commandButton>
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon=" fa fa-arrow-left"
+										action="#{proformaController.limpiarTodosCampos}"
+										onclick="PF('editarOT').hide();" process="@none" value="Atras">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</p:fieldset>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel -  Editar Detalle Proforma   *************************** -->
+			<p:dialog id="panelEditarDetalleOT" resizable="true"
+				widgetVar="editarDetalleOT" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="80vh"
+				height="40vh" header="Editar Detalle Proforma">
+
+
+				<h:form id="formEditarDetalleOT">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<!-- **************************  Sub-Panel - Buscar Servicio   *************************** -->
+						<div class="ui-g">
+
+							<!-- **************************  Sub-Panel - Registro General  *************************** -->
+
+							<div class="ui-g-12">
+								<!-- **************************  Sub-Panel - Informacion Servicio   *************************** -->
+
+
+								<div class="ui-fluid">
+
+									<center>
+										<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+											style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+											layout="grid">
+
+											<p:outputLabel for="servicio" value="Servicio: "
+												style="color:white!important" />
+											<p:outputLabel id="servicio"
+												value="#{ordenInternaController.servicio(ordenInternaController.detalleOrden.idServicio).nombreS}"
+												size="30" maxlength="100" />
+
+											<p:outputLabel for="metodo" value="Metodo: "
+												style="color:white!important" />
+											<p:outputLabel id="metodo"
+												value="#{ordenInternaController.metodo(ordenInternaController.detalleOrden.idMetodo)}"
+												size="30" maxlength="100" />
+
+											<p:outputLabel for="muestra" value="Muestra: "
+												style="color:white!important" />
+											<p:outputLabel id="muestra"
+												value="#{ordenInternaController.detalleOrden.muestra.idMuestra}"
+												size="30" maxlength="100" />
+
+
+										</p:panelGrid>
+										<br />
+
+										<center>
+											<p:commandButton icon="fa fa-search-plus"
+												style="border:none;text-align: left; width: 150px;"
+												value="Buscar Personal" process="@this"
+												actionListener="#{ordenInternaController.cargarPersonal(1)}"
+												onsuccess="PF('listadoPer').show()">
+											</p:commandButton>
+										</center>
+										<br />
+
+										<center>
+											<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+												columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+												style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+												layout="grid">
+
+												<p:outputLabel for="resonsable" value="Responsable: "
+													style="color:white!important" />
+												<p:outputLabel id="resonsable"
+													value="#{ordenInternaController.detalleOrden.personal.nombresPe}"
+													size="30" maxlength="100" />
+
+												<p:outputLabel value="Horas/Trabajo: " for="ht"
+													style="color:white!important" />
+												<p:inputNumber id="ht"
+													value="#{ordenInternaController.detalleOrden.horasTrabajo}"
+													required="true" emptyValue="zero"
+													requiredMessage="Debe ingresar la cantidad" size="30"
+													maxlength="100">
+
+												</p:inputNumber>
+
+												<h:outputLabel value="Fecha inicio: "
+													style="color:white!important; font-size: 17px" />
+												<p:calendar id="fechaInicio"
+													value="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
+													pattern="dd/MM/yyyy" locale="es"
+													onkeypress="return permite(event, 'none')"
+													requiredMessage="Fecha Inicial Requerida" navigator="true"
+													effect="fadeIn" effectDuration="100" showOn="button"
+													size="24">
+													<p:ajax event="dateSelect" update="fechaFinal" />
+													<p:ajax event="keyup" update="fechaFinal" />
+												</p:calendar>
+
+												<h:outputLabel value="Fecha fin: "
+													style="color:white!important; font-size: 17px" />
+												<p:calendar id="fechaFinal"
+													disabled="#{ordenInternaController.disabledDateEdit() != true}"
+													value="#{ordenInternaController.detalleOrden.fechaFinAnalisis}"
+													mindate="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
+													pattern="dd/MM/yyyy" locale="es" required="true"
+													onkeypress="return permite(event, 'none')"
+													requiredMessage="Fecha Final Requerida" navigator="true"
+													effect="fadeIn" effectDuration="100" showOn="button"
+													size="24">
+
+												</p:calendar>
+											</p:panelGrid>
+										</center>
+										<br />
+
+
+
+									</center>
+
+
+								</div>
+
+							</div>
+						</div>
+						<br />
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{ordenInternaController.editarDetalleOT}"
+									process="@form,formEditarDetalleOT"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDetalleOT">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('editarDetalleOT').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Listado Clientes ************************** -->
+			<p:dialog id="panelListadoCli" resizable="true"
+				widgetVar="listadoCli" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Listado de Clientes">
+
+
+				<h:form id="formListadoCli">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Clientes" update="@this, tblClientes"
+								oncomplete="PF('filterClientesTable').filter();">
+							</p:commandButton>
+
+							<br /> <br />
+
+							<div class="ui-fluid" align="center">
+
+								<p:dataTable id="tblClientes"
+									value="#{ordenInternaController.clientes}" var="cliente"
+									widgetVar="filterClientesTable"
+									emptyMessage="No se pudo encontrar ninguna coincidencia"
+									filteredValue="#{ordenInternaController.filtroClientes}"
+									rows="7" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+									rowKey="#{cliente.idCliente}"
+									selection="#{ordenInternaController.selectCliente}"
+									selectionMode="single">
+
+									<p:column headerText="Cliente" filterBy="#{cliente.nombreCl}">
+										<h:outputText value="#{cliente.nombreCl}" />
+									</p:column>
+
+									<p:column headerText="RUC" filterBy="#{cliente.rucCl}"
+										filterMatchMode="contains">
+										<h:outputText value="#{cliente.rucCl}" />
+									</p:column>
+
+									<p:column headerText="Cedula" filterBy="#{cliente.cedula}">
+										<h:outputText value="#{cliente.cedula}" />
+									</p:column>
+
+									<p:column headerText="Teléfono"
+										filterBy="#{cliente.telefonoCl}" filterMatchMode="contains">
+										<h:outputText value="#{cliente.telefonoCl}" />
+									</p:column>
+
+									<p:column headerText="Contacto"
+										filterBy="#{cliente.contactoCl}" filterMatchMode="contains">
+										<h:outputText value="#{cliente.contactoCl}" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="1">
+
+									<p:commandButton icon="fa fa-save" value="Seleccionar"
+										process="@this,tblClientes"
+										action="#{ordenInternaController.seleccionarCliente}"
+										update="@([id$=messagesForm],[id$=formAgregarOT])"
+										onsuccess="PF('listadoCli').hide()">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Listado Personal ************************** -->
+			<p:dialog id="panelListadoPer" resizable="true"
+				widgetVar="listadoPer" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Listado de Servicios">
+
+
+				<h:form id="formListadoPer">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Servicios" update="@this, tblPersonal"
+								oncomplete="PF('filterPersonalTable').filter();">
+							</p:commandButton>
+
+							<br /> <br />
+
+							<div class="ui-fluid" align="center">
+
+								<p:dataTable id="tblPersonal"
+									value="#{ordenInternaController.personalLabs}" var="personal"
+									widgetVar="filterPersonalTable"
+									emptyMessage="No se pudo encontrar ninguna coincidencia"
+									filteredValue="#{ordenInternaController.filtroPersonalLabs}"
+									rows="8" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+									rowKey="#{personal.idPersonal}"
+									selection="#{ordenInternaController.personalLab}"
+									selectionMode="single">
+
+									<p:column headerText="ID" filterBy="#{personal.idPersonal}"
+										filterMatchMode="contains">
+										<h:outputText value="#{personal.idPersonal}" />
+									</p:column>
+
+									<p:column headerText="Nombre Analista"
+										filterBy="#{personal.nombresPe}" filterMatchMode="contains">
+										<h:outputText value="#{personal.nombresPe}" />
+									</p:column>
+
+									<p:column headerText="Laboratorio"
+										filterBy="#{personal.idUnidad}" filterMatchMode="contains">
+										<h:outputText value="#{personal.idUnidad}" />
+									</p:column>
+
+
+								</p:dataTable>
+							</div>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="1">
+
+									<p:commandButton icon="fa fa-save" value="Seleccionar"
+										process="@this,tblPersonal"
+										action="#{ordenInternaController.seleccionarPersonal}"
+										update="@([id$=messagesForm])"
+										onsuccess="PF('listadoPer').hide()">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Editar Fecha Cierre ************************** -->
+			<p:dialog id="panelEditarFechaCierre" resizable="true"
+				widgetVar="editarFechaCierre" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="55vh"
+				height="35vh" header="Editar Fecha Cierre">
+
+
+				<h:form id="formEditarFechaCierre">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+
+
+						<center>
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel for="orden" value="Id Orden: "
+										style="color:white!important" />
+									<p:outputLabel id="orden"
+										value="#{ordenInternaController.ordenTrabajo.idOrden}"
+										size="30" maxlength="100" />
+
+									<h:outputLabel value="Fecha Cierre: "
+										style="color:white!important; font-size: 17px" />
+									<p:calendar id="fechaCierre"
+										value="#{ordenInternaController.ordenTrabajo.fechaCierre}"
+										maxdate="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
+										pattern="dd/MM/yyyy" locale="es"
+										onkeypress="return permite(event, 'none')"
+										requiredMessage="Fecha Requerida" navigator="true"
+										effect="fadeIn" effectDuration="100" showOn="button" size="24">
+
+									</p:calendar>
+
+
+								</p:panelGrid>
+							</div>
+						</center>
+
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton icon="fa fa-save" value="Guardar"
+									process="@this,formEditarFechaCierre"
+									actionListener="#{ordenInternaController.editarEstado}"
+									update="@([id$=messagesForm],[id$=formprincipal])"
+									onsuccess="PF('editarFechaCierre').hide()">
+
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-close" value="Cancelar"
+									onclick="PF('editarFechaCierre').hide()">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+						<br />
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Editar Fecha Entrega ************************** -->
+			<p:dialog id="panelEditarFechaEntrega" resizable="true"
+				widgetVar="editarFechaEntrega" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="55vh"
+				height="35vh" header="Editar Fecha Entrega">
+
+
+				<h:form id="formEditarFechaEntrega">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+
+
+						<center>
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel for="orden" value="Id Orden: "
+										style="color:white!important" />
+									<p:outputLabel id="orden"
+										value="#{ordenInternaController.ordenTrabajo.idOrden}"
+										size="30" maxlength="100" />
+
+									<h:outputLabel value="Fecha Entrega: "
+										style="color:white!important; font-size: 17px" />
+									<p:calendar id="fechaEntrega"
+										value="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
+										mindate="#{ordenInternaController.ordenTrabajo.fechaCierre}"
+										pattern="dd/MM/yyyy" locale="es"
+										onkeypress="return permite(event, 'none')"
+										requiredMessage="Fecha Requerida" navigator="true"
+										effect="fadeIn" effectDuration="100" showOn="button" size="24">
+
+									</p:calendar>
+
+
+								</p:panelGrid>
+							</div>
+						</center>
+
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton icon="fa fa-save" value="Guardar"
+									process="@this,formEditarFechaEntrega"
+									actionListener="#{ordenInternaController.editarEstado}"
+									update="@([id$=messagesForm],[id$=formprincipal])"
+									onsuccess="PF('editarFechaEntrega').hide()">
+
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-close" value="Cancelar"
+									onclick="PF('editarFechaEntrega').hide()">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+						<br />
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Eliminar Detalle Pro************************** -->
+			<h:form id="formEliminarDetallePro">
+				<p:confirmDialog
+					message="Esta seguro(a) que desea eliminar el detalle de orden de trabajo"
+					header="Eliminar M.I." severity="warn"
+					widgetVar="cdEliminarDetalleOT">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							onsuccess="PF('cdEliminarDetalleOT').hide();"
+							actionListener="#{ordenInternaController.eliminarDetalleOT}"
+							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarDetalleOT').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+			<!-- **************************  Panel - Eliminar Proforma************************** -->
+			<h:form id="formEliminarPro">
+				<p:confirmDialog
+					message="Esta seguro(a) que desea eliminar la proforma"
+					header="Eliminar Proforma" severity="warn"
+					widgetVar="cdEliminarPro">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							actionListener="#{proformaController.eliminarProforma}"
+							update="@this,@([id$=messagesForm],[id$=formprincipal])"
+							onsuccess="PF('cdEliminarPro').hide();" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdEliminarPro').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+			<!-- **************************  Panel - Panel de error ************************** -->
+			<h:form id="formError">
+				<p:confirmDialog message="La orden ya ha sido cerrada."
+					header="Mensaje..." severity="warn" widgetVar="cdPanelError">
+					<center>
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdPanelError').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+			</h:form>
+
+			<h:form id="formErrorFecha">
+				<p:confirmDialog message="Debe de registar la fecha de cierre."
+					header="Mensaje..." severity="warn" widgetVar="cdPanelErrorFecha">
+					<center>
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdPanelErrorFecha').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+			</h:form>
+
+			<!-- **************************  Panel de vizualizacion - Confirmar Nuevo Orden   ************************** -->
+
+			<p:confirmDialog
+				message="Esta seguro(a) que desea guardar el orden con los siguientes datos: "
+				header="Confirmar Orden Trabajo." severity="warn"
+				widgetVar="cdConfirmarOT">
+
+				<center>
+					<h:form id="formConfirmarNuevoOT">
+
+						<p:panelGrid columns="2" layout="grid"
+							styleClass="ui-panelgrid-blank"
+							columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+							style="border:none;">
+
+							<p:outputLabel for="cliente" value="Cliente: "
+								style="color:white!important" />
+							<p:outputLabel id="cliente"
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
+
+							<p:outputLabel for="direccion" value="Direccion: "
+								style="color:white!important" />
+							<p:outputLabel id="direccion"
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
+
+							<p:outputLabel for="fax" value="Fax:  "
+								style="color:white!important" />
+							<p:outputLabel id="fax"
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.faxCl}" />
+
+							<p:outputLabel for="telefono" value="Telefono: "
+								style="color:white!important" />
+							<p:outputLabel id="telefono"
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
+
+							<p:outputLabel for="contacto" value="Contacto: "
+								style="color:white!important" />
+							<p:outputLabel id="contacto"
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
+
+						</p:panelGrid>
+
+						<br />
+
+						<p:commandButton value="Aceptar"
+							onsuccess="PF('cdConfirmarOT').hide();"
+							actionListener="#{ordenInternaController.guardarOT}"
+							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT,formDetalleOT" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdConfirmarOT').hide();" type="button" />
+					</h:form>
+				</center>
+
+			</p:confirmDialog>
+
+
+
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+			function aiuda(){
+			console.log('TIMBREMOS :v');
+
+				}
+
+			PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
+		</script>
+
+		<!-- **************************  Scroll en dialogo   *************************** -->
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+</style>
+
+	</ui:define>
+</ui:composition>
