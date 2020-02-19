@@ -9,7 +9,6 @@
 	xmlns:v="http://validators.epn.edu.ec.com"
 	xmlns:ps="http://primefaces.org/apark">
 
-
 	<ui:define name="pageTitle">Método</ui:define>
 	<ui:define name="body">
 
@@ -32,14 +31,14 @@
 	</script>
 		</h:head>
 
-
-		<h:body>
+		<h:body onload="rc();">
 
 			<p:growl id="messagesForm" showDetail="true" sticky="false"
 				autoupdate="true" life="3000" />
 			<h:form id="formprincipal">
 
-				<p:remoteCommand name="rc" />
+				<p:remoteCommand name="rc"
+					action="#{metodoController.limpiarCampos()}" />
 
 				<p:panel>
 					<p:fieldset legend="Método"
@@ -71,6 +70,8 @@
 						</center>
 						<br />
 						<br />
+
+						<!-- **************************  Table Metodos  *************************** -->
 
 						<p:dataTable id="tblMetodo" value="#{metodoController.metodos}"
 							var="metodo" widgetVar="filterMetodos"
@@ -162,7 +163,7 @@
 				</p:panel>
 
 			</h:form>
-			<!-- **************************  Panel Nuevo Método  *************************** -->
+			<!-- **************************  Panel Nuevo - Nuevo Método  *************************** -->
 
 			<p:dialog id="panelNuevoMetodo" resizable="true"
 				widgetVar="nuevoMetodo" modal="true" showEffect="explode"
@@ -210,14 +211,13 @@
 												itemLabel="#{serv.nombreS}" itemValue="#{serv}" var="serv">
 											</f:selectItems>
 
+											<p:ajax event="itemSelect" update="selectedItemText" />
 										</p:selectOneMenu>
 
-										<p:outputLabel id="nuevoLab" for="lab" value="Laboratorio: "
+										<p:outputLabel id="nuevoLab" value="Laboratorio: "
 											style="color:white!important" />
-										<p:outputLabel id="lab"
-											value="#{metodoController.metodo.servicio.laboratorio.nombreL}"
-											size="30" maxlength="100">
-										</p:outputLabel>
+										<h:outputText id="selectedItemText"
+											value="#{metodoController.servicioSelect.laboratorio.nombreL}" />
 
 										<p:outputLabel id="nuevoDescripcion" for="descripcion"
 											value="Descripción: " style="color:white!important" />
@@ -286,9 +286,10 @@
 
 						<p:column headerText="Acciones">
 							<center>
-								<!-- **************************  Guardar -> Boton Editar Temporal   *************************** -->
+								<!-- **************************  NUEVO -> Boton Editar Temporal   *************************** -->
 								<p:commandLink process="tblExistenciasMetodo"
-									icon="ui-icon-check" onclick="PF('editarDetalleTemp').show();">
+									update="formEditarDetalleTemp" icon="ui-icon-check"
+									onclick="PF('editarDetalleTemp').show();">
 
 									<h:graphicImage value="/images/archivos/editar.png"
 										title="Modificar" style="border:0px solid #CAD6E0;" width="35"
@@ -301,8 +302,7 @@
 								</p:commandLink>
 
 
-								<!-- **************************  Guardar -> Boton Eliminar Temporal  *************************** -->
-
+								<!-- **************************  NUEVO -> Boton Eliminar Temporal  *************************** -->
 
 								<p:commandLink process="tblExistenciasMetodo"
 									icon="ui-icon-check"
@@ -352,6 +352,8 @@
 					</center>
 				</h:form>
 			</p:dialog>
+
+			<!-- **************************  Panel Nuevo - Agregar Existencias  *************************** -->
 
 			<p:dialog id="panelNuevaExistencia" resizable="true"
 				widgetVar="nuevaExistencia" modal="true" showEffect="explode"
@@ -442,6 +444,7 @@
 				</h:form>
 			</p:dialog>
 
+			<!-- **************************  Panel Nuevo - Listado Existencias   *************************** -->
 
 			<p:dialog id="panelListadoEx" resizable="true" widgetVar="listadoEx"
 				modal="true" showEffect="explode" hideEffect="fade"
@@ -542,8 +545,7 @@
 				</h:form>
 			</p:dialog>
 
-
-			<!-- **************************  Panel -  Editar Detalle Orden Temp   *************************** -->
+			<!-- **************************  Panel Nuevo - Editar Detalle M. Temp   *************************** -->
 
 			<p:dialog id="panelEditarDetalleM" resizable="true"
 				widgetVar="editarDetalleTemp" draggable="false" modal="true"
@@ -553,7 +555,7 @@
 
 				<h:form id="formEditarDetalleTemp">
 
-					<p:fieldset legend="Movimientos Inventario"
+					<p:fieldset legend="Detalle Metodo"
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -631,7 +633,7 @@
 				</h:form>
 			</p:dialog>
 
-			<!-- **************************  Panel -  Eliminar Metodo   *************************** -->
+			<!-- **************************  Panel Nuevo - Eliminar Detalle M. Temp   *************************** -->
 
 			<h:form id="eliminarDetalleTemporal">
 				<p:confirmDialog
@@ -653,7 +655,479 @@
 
 			</h:form>
 
-			<!-- **************************  Panel -  Ver Metodo   *************************** -->
+			<!-- **************************  ◄◄ Panel Editar -  Editar Metodo ►►  *************************** -->
+
+			<p:dialog id="panelEditarMetodo" resizable="false"
+				widgetVar="editMetodo" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true"
+				header="Editar Método y Detalle Método" width="140vh" height="65vh">
+
+				<h:form id="formEditMetodo">
+
+					<p:fieldset legend="Método"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<div class="ui-fluid">
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								layout="grid"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
+
+								<p:outputLabel id="lblId" for="editId" value="ID Método: "
+									style="color:white!important" />
+								<p:outputLabel id="editId"
+									value="#{metodoController.metodo.idMetodo}" />
+
+								<p:outputLabel id="lblMetodo" for="editNombre" value="Método: "
+									style="color:white!important" />
+								<p:inputText id="editNombre"
+									value="#{metodoController.metodo.nombreMt}" maxlength="100" />
+
+								<p:outputLabel id="lblServicio" for="editServicio"
+									value="Servicio: " style="color:white!important" />
+								<p:outputLabel id="editServicio"
+									value="#{metodoController.metodo.servicio.nombreS}" />
+
+								<p:outputLabel id="lblDescripcion" for="editDescripcion"
+									value="Descripción: " style="color:white!important" />
+								<p:inputTextarea id="editDescripcion"
+									value="#{metodoController.metodo.descrMt}" maxlength="100"
+									rows="5" cols="30" />
+
+								<p:outputLabel id="lblCertificado" for="editCertificado"
+									value="Certificado: " style="color:white!important" />
+								<p:selectOneMenu id="editCertificado"
+									value="#{metodoController.metodo.certificadoMt}" filter="true"
+									filterMatchMode="contains" effect="fold">
+
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									<f:selectItem itemLabel="Seleccione..." itemValue="" />
+									<f:selectItem itemLabel="N/A" itemValue="N/A" />
+									<f:selectItem itemLabel="Si" itemValue="Si" />
+									<f:selectItem itemLabel="No" itemValue="No" />
+
+								</p:selectOneMenu>
+
+							</p:panelGrid>
+
+						</div>
+						<br />
+						<br />
+						<center>
+							<h:panelGrid styleClass="ui-panelgrid-blank">
+
+								<p:commandButton process="@this,formEditMetodo"
+									icon="fa fa-plus" value="Agregar"
+									onclick="PF('nuevaExTemp').show();"
+									update="@([id$=messagesForm])">
+								</p:commandButton>
+
+							</h:panelGrid>
+
+							<br />
+						</center>
+
+						<p:dataTable id="tblDetalleM"
+							value="#{metodoController.tempDetalleMetodosEdit}"
+							var="detalleDM"
+							emptyMessage="No se han encontrado coincidencias ">
+
+							<p:column headerText="ID Existencia">
+								<h:outputText
+									value="#{metodoController.cambiarDatosExistencia(detalleDM.idExistencia).idExistencia}" />
+							</p:column>
+
+							<p:column headerText="Producto">
+								<h:outputText
+									value="#{metodoController.cambiarDatosExistencia(detalleDM.idExistencia).producto.nombrePr}" />
+							</p:column>
+
+							<p:column headerText="Cantidad">
+								<h:outputText value="#{detalleDM.cantidadDmt}" />
+							</p:column>
+
+							<p:column headerText="Unidad de Medida">
+								<h:outputText
+									value="#{metodoController.cambiarDatosExistencia(detalleDM.idExistencia).unidadmedida.siglaUm}" />
+							</p:column>
+
+							<p:column headerText="Acciones">
+								<center>
+									<!-- **************************  Editar -> Boton Editar Temporal   *************************** -->
+
+									<p:commandLink process="tblDetalleM" icon="ui-icon-check"
+										update="formEditDetalleTemp"
+										onclick="PF('editDMTemp').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+										<f:setPropertyActionListener
+											target="#{metodoController.tempDetalleMetodoEdit}"
+											value="#{detalleDM}">
+										</f:setPropertyActionListener>
+
+									</p:commandLink>
+
+
+									<!-- **************************  Editar -> Boton Eliminar Temporal  *************************** -->
+
+									<p:commandLink process="tblDetalleM" icon="ui-icon-check"
+										onclick="PF('eliminarDMTemp').show();">
+
+										<h:graphicImage value="/images/archivos/basurero.png"
+											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+										<f:setPropertyActionListener
+											target="#{metodoController.tempDetalleMetodoEdit}"
+											value="#{detalleDM}">
+										</f:setPropertyActionListener>
+
+									</p:commandLink>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+						<center>
+							<br />
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Modificar" icon="fa fa-edit"
+									style="width: 115px; margin: 5px"
+									actionListener="#{metodoController.editMetodo}"
+									process="@this,formEditMetodo"
+									update="@this,@([id$=messagesForm],[id$=formprincipal])"
+									oncomplete="PF('filterMetodos').filter();">
+
+								</p:commandButton>
+
+								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
+									style="width: 115px; margin: 5px"
+									onclick="PF('editMetodo').hide();"
+									process="@this,formEditMetodo"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditMetodo"
+									oncomplete="PF('filterMetodos').filter()">
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel Editar -> Agregar Existencia *************************** -->
+
+			<p:dialog id="panelNuevaExistenciaTemp" resizable="true"
+				draggable="false" widgetVar="nuevaExTemp" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="110vh" height="45vh"
+				header="Ingresar Detalle Método">
+
+				<h:form id="formNuevaExistenciaTemp">
+
+					<p:fieldset legend="Detalle Método"
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<center>
+							<h:panelGrid columns="2">
+
+								<p:commandButton icon="fa fa-search-plus"
+									style="width: 150px; margin: 10px" value="Cargar Existencias"
+									onclick="PF('listadoExTemp').show();">
+								</p:commandButton>
+
+							</h:panelGrid>
+						</center>
+						<br />
+						<div class="ui-fluid">
+
+							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+								layout="grid">
+
+								<p:outputLabel id="lblIdExistencia" for="idExistencia"
+									value="ID Existencia: " style="color:white!important" />
+								<p:outputLabel id="idExistencia"
+									value="#{metodoController.existencia.idExistencia}" size="24" />
+
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+									style="color:white!important" />
+								<p:outputLabel id="nombre"
+									value="#{metodoController.existencia.producto.nombrePr}"
+									size="24" />
+
+								<p:outputLabel id="lblCantidad" for="cantidad"
+									value="Cantidad: " style="color:white!important" />
+								<p:inputNumber id="cantidad"
+									value="#{metodoController.tempDetalleMetodoEdit.cantidadDmt}"
+									size="24" />
+
+								<p:outputLabel id="lblUnidadM" for="unidadM"
+									value="Unidad de Medida: " style="color:white!important" />
+								<p:outputLabel id="unidadM"
+									value="#{metodoController.existencia.unidadmedida.siglaUm}"
+									size="24" />
+
+							</p:panelGrid>
+
+						</div>
+						<br />
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{metodoController.agregarDetalleTempEdit}"
+									process="@this,formNuevaExistenciaTemp"
+									update="@this,@([id$=messagesForm],[id$=formEditMetodo]),formNuevaExistenciaTemp">
+
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevaExTemp').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel Editar -> Listado de Existencias *************************** -->
+
+			<p:dialog id="panelListadoExTemp" resizable="true"
+				widgetVar="listadoExTemp" modal="true" showEffect="explode"
+				hideEffect="fade" draggable="false" responsive="true" dynamic="true"
+				width="135vh" height="70vh" header="Listado de Existencias">
+
+				<h:form id="formListadoExTemp">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<center>
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Existencias" update="@this,tblExistenciasTemp"
+								oncomplete="PF('filterExistencias').filter();">
+							</p:commandButton>
+						</center>
+						<br />
+						<br />
+						<div class="ui-fluid" align="center">
+
+							<p:dataTable id="tblExistenciasTemp"
+								value="#{metodoController.existencias}" var="existencia"
+								widgetVar="filterExistencias"
+								emptyMessage="No se pudo encontrar ninguna coincidencia"
+								filteredValue="#{metodoController.filterExistencia}" rows="7"
+								paginator="true" resizableColumns="true"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+								rowKey="#{existencia.idExistencia}" selectionMode="single"
+								selection="#{metodoController.selectExDMTemp}">
+
+								<p:column headerText="ID Existencia"
+									filterBy="#{existencia.idExistencia}"
+									filterMatchMode="contains" style="width: 6%">
+									<h:outputText value="#{existencia.idExistencia}" />
+								</p:column>
+
+								<p:column headerText="Producto"
+									filterBy="#{existencia.producto.nombrePr}"
+									filterMatchMode="contains" style="width: 12%">
+									<h:outputText value="#{existencia.producto.nombrePr}" />
+								</p:column>
+
+								<p:column headerText="U.M."
+									filterBy="#{existencia.unidadmedida.siglaUm}"
+									filterMatchMode="contains" style="width: 6%">
+									<h:outputText value="#{existencia.unidadmedida.siglaUm}" />
+								</p:column>
+
+								<p:column headerText="Bodega"
+									filterBy="#{existencia.bodega.nombreBg}" style="width: 14%">
+									<h:outputText value="#{existencia.bodega.nombreBg}" />
+								</p:column>
+
+								<p:column headerText="Grado"
+									filterBy="#{existencia.grado.nombreGr}"
+									filterMatchMode="contains" style="width: 8%">
+									<h:outputText value="#{existencia.grado.nombreGr}" />
+								</p:column>
+
+								<p:column headerText="Hidratación"
+									filterBy="#{existencia.grado.nombreGr}"
+									filterMatchMode="contains" style="width: 8%">
+									<h:outputText value="#{existencia.idHidratacion}" />
+								</p:column>
+
+								<p:column headerText="Concentración"
+									filterBy="#{existencia.concentracion.nombreCon}"
+									filterMatchMode="contains" style="width: 8%">
+									<h:outputText value="#{existencia.concentracion.nombreCon}" />
+								</p:column>
+
+							</p:dataTable>
+						</div>
+						<br />
+						<br />
+
+						<center>
+
+							<p:commandButton icon="fa fa-save" value="Seleccionar"
+								process="@this,tblExistenciasTemp"
+								action="#{metodoController.seleccionarExistenciaEdit}"
+								update="@([id$=messagesForm],[id$=formNuevaExistenciaTemp])">
+
+							</p:commandButton>
+
+						</center>
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel Editar->  Editar Detalle M Temporal  *************************** -->
+
+			<p:dialog id="pnlEditarDetalle" resizable="true"
+				widgetVar="editDMTemp" draggable="false" modal="true"
+				showEffect="explode" hideEffect="fade" responsive="true"
+				dynamic="true" width="100vh" height="40vh"
+				header="Editar Detalle Método">
+
+				<h:form id="formEditDetalleTemp">
+
+					<p:fieldset legend="Editar Detalle Método"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<center>
+							<br />
+
+							<div class="ui-fluid">
+								<center>
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
+										layout="grid">
+
+										<p:outputLabel id="lblIdExistenciaE" for="idExistenciaE"
+											value="Id Existencia: " style="color:white!important" />
+										<p:outputLabel id="idExistenciaE"
+											value="#{metodoController.tempDetalleMetodoEdit.idExistencia}"
+											size="24" />
+
+										<p:outputLabel id="lblNombreProE" for="nombreProE"
+											value="Nombre: " style="color:white!important" />
+										<p:outputLabel id="nombreProE"
+											value="#{metodoController.cambiarDatosExistencia(metodoController.tempDetalleMetodoEdit.idExistencia).producto.nombrePr}"
+											size="24" />
+
+										<p:outputLabel id="lblCantidadE" for="cantidadE"
+											value="Cantidad: " style="color:white!important" />
+										<p:inputNumber id="cantidadE"
+											value="#{metodoController.tempDetalleMetodoEdit.cantidadDmt}"
+											size="24" required="true"
+											requiredMessage="Debe Agregar la Cantidad" />
+
+										<p:outputLabel id="lblUnidadME" for="unidadME"
+											value="Unidad de Medida: " style="color:white!important" />
+										<p:outputLabel id="unidadME"
+											value="#{metodoController.cambiarDatosExistencia(metodoController.tempDetalleMetodoEdit.idExistencia).unidadmedida.siglaUm}"
+											size="24" disabled="true" />
+
+									</p:panelGrid>
+								</center>
+							</div>
+						</center>
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Editar" icon="fa fa-edit"
+									style="width: 115px; margin: 10px" process="@form"
+									actionListener="#{metodoController.editDMTemp}"
+									update="@([id$=messagesForm],[id$=tblDetalleM],formEditDetalleTemp)">
+
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('editDMTemp').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel Editar - Eliminar Detalle M. Temp   *************************** -->
+
+			<h:form id="eliminarDMTemp">
+				<p:confirmDialog
+					message="¿Esta seguro(a) que desea eliminar el Detalle Método seleccionado"
+					header="Eliminar Detalle Método" severity="info"
+					widgetVar="eliminarDMTemp">
+					<center>
+
+						<p:commandButton value="Aceptar"
+							onsuccess="PF('eliminarDMTemp').hide();"
+							actionListener="#{metodoController.eliminarDMTemp}"
+							update="@this,@([id$=messagesForm],[id$=tblDetalleM],formEditDetalleTemp)" />
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('eliminarDMTemp').hide();" type="button" />
+
+					</center>
+				</p:confirmDialog>
+
+			</h:form>
+
+			<!-- **************************  ◄◄ Panel Ver - Ver Metodo ►►  *************************** -->
 
 			<p:dialog id="panelVerMetodo" resizable="false"
 				widgetVar="showMetodo" modal="true" showEffect="explode"
@@ -774,7 +1248,7 @@
 				</h:form>
 			</p:dialog>
 
-			<!-- **************************  Panel -  Eliminar Metodo   *************************** -->
+			<!-- **************************  ◄◄ Panel Eliminar -  Eliminar Metodo ►►  *************************** -->
 
 			<h:form id="eliminarMetodo">
 				<p:confirmDialog
@@ -796,177 +1270,6 @@
 
 				</p:confirmDialog>
 			</h:form>
-
-			<!-- **************************  Panel -  Editar Metodo   *************************** -->
-
-			<p:dialog id="panelModificarMetodo" resizable="false"
-				widgetVar="editMetodo" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Editar Método y Detalle Método" width="140vh" height="65vh">
-
-				<h:form id="formEditMetodo">
-
-					<p:fieldset legend="Método"
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-						<div class="ui-fluid">
-							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-								layout="grid"
-								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
-
-								<p:outputLabel id="lblId" for="editId" value="ID Método: "
-									style="color:white!important" />
-								<p:outputLabel id="editId"
-									value="#{metodoController.metodo.idMetodo}" />
-
-								<p:outputLabel id="lblMetodo" for="editNombre" value="Método: "
-									style="color:white!important" />
-								<p:inputText id="editNombre"
-									value="#{metodoController.metodo.nombreMt}" maxlength="100" />
-
-								<p:outputLabel id="lblServicio" for="editServicio"
-									value="Servicio: " style="color:white!important" />
-								<p:outputLabel id="editServicio"
-									value="#{metodoController.metodo.servicio.nombreS}" />
-
-								<p:outputLabel id="lblDescripcion" for="editDescripcion"
-									value="Descripción: " style="color:white!important" />
-								<p:inputTextarea id="editDescripcion"
-									value="#{metodoController.metodo.descrMt}" maxlength="100"
-									rows="5" cols="30" />
-
-								<p:outputLabel id="lblCertificado" for="editCertificado"
-									value="Certificado: " style="color:white!important" />
-								<p:selectOneMenu id="editCertificado"
-									value="#{metodoController.metodo.certificadoMt}" filter="true"
-									filterMatchMode="contains" effect="fold">
-
-									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
-									<f:selectItem itemLabel="Seleccione..." itemValue="" />
-									<f:selectItem itemLabel="N/A" itemValue="N/A" />
-									<f:selectItem itemLabel="Si" itemValue="Si" />
-									<f:selectItem itemLabel="No" itemValue="No" />
-
-								</p:selectOneMenu>
-
-							</p:panelGrid>
-
-						</div>
-						<br />
-						<br />
-						<center>
-							<h:panelGrid styleClass="ui-panelgrid-blank">
-
-								<p:commandButton process="@this,formEditMetodo"
-									icon="fa fa-plus" value="Agregar"
-									onclick="PF('editExistencia').show();"
-									update="@([id$=messagesForm])">
-								</p:commandButton>
-
-							</h:panelGrid>
-
-							<br />
-						</center>
-
-						<p:dataTable id="tblExisMetodoEdit"
-							value="#{metodoController.tempDetalleMetodosEdit}"
-							var="detalleDM"
-							emptyMessage="No se han encontrado coincidencias ">
-
-							<p:column headerText="ID Existencia">
-								<h:outputText
-									value="#{metodoController.cambiarDatosExistencia(detalleDM.idExistencia).idExistencia}" />
-							</p:column>
-
-							<p:column headerText="Producto">
-								<h:outputText
-									value="#{metodoController.cambiarDatosExistencia(detalleDM.idExistencia).producto.nombrePr}" />
-							</p:column>
-
-							<p:column headerText="Cantidad">
-								<h:outputText value="#{detalleM.cantidadDmt}" />
-							</p:column>
-
-							<p:column headerText="Unidad de Medida">
-								<h:outputText
-									value="#{metodoController.cambiarDatosExistencia(detalleDM.idExistencia).unidadmedida.siglaUm}" />
-							</p:column>
-
-							<p:column headerText="Acciones">
-								<center>
-									<!-- **************************  Editar -> Boton Editar Temporal   *************************** -->
-									<p:commandLink process="tblExisMetodoEdit" icon="ui-icon-check">
-
-										<h:graphicImage value="/images/archivos/editar.png"
-											title="Modificar" style="border:0px solid #CAD6E0;"
-											width="35" height="35" />
-
-										<f:setPropertyActionListener
-											target="#{metodoController.detalleMetodo}"
-											value="#{detalleM}">
-										</f:setPropertyActionListener>
-
-									</p:commandLink>
-
-
-									<!-- **************************  Editar -> Boton Eliminar Temporal  *************************** -->
-
-
-									<p:commandLink process="tblExisMetodoEdit" icon="ui-icon-check">
-
-										<h:graphicImage value="/images/archivos/basurero.png"
-											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
-											height="35" />
-
-										<f:setPropertyActionListener
-											target="#{metodoController.detalleMetodo}"
-											value="#{detalleM}">
-										</f:setPropertyActionListener>
-
-									</p:commandLink>
-
-								</center>
-							</p:column>
-
-						</p:dataTable>
-
-						<center>
-
-							<h:panelGrid columns="2">
-
-								<p:commandButton value="Modificar" icon="fa fa-edit"
-									style="width: 115px; margin: 5px"
-									actionListener="#{metodoController.editMetodo}"
-									process="@this,formEditMetodo"
-									update="@this,@([id$=messagesForm],[id$=formprincipal])"
-									oncomplete="PF('filterMetodos').filter();">
-
-								</p:commandButton>
-
-								<p:commandButton value="Atrás " icon="fa fa-arrow-left"
-									style="width: 115px; margin: 5px"
-									onclick="PF('editMetodo').hide();"
-									process="@this,formEditMetodo"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditMetodo"
-									oncomplete="PF('filterMetodos').filter()">
-								</p:commandButton>
-
-							</h:panelGrid>
-
-						</center>
-
-					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-
 
 		</h:body>
 

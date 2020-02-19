@@ -13,7 +13,7 @@
 	<ui:define name="body">
 
 		<h:head>
- 
+
 			<script type="text/javascript">
 	
 		//<![CDATA[
@@ -145,7 +145,7 @@
 
 			</h:form>
 
-			<!-- Panel de Nuevo -->
+			<!-- Nuevo - Metodo Nuevo LAB  -->
 
 			<p:dialog id="panelNuevoLaboratorio" resizable="true"
 				draggable="false" widgetVar="nuevoLaboratorio" modal="true"
@@ -153,7 +153,7 @@
 				dynamic="true" header="Nuevo Laboratorio" width="135vh"
 				height="73vh">
 
-				<h:form id="formNuevoLaboratorio">
+				<h:form id="formNuevoLaboratorio" enctype="multipart/form-data">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -164,45 +164,48 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
+						<br />
+						<br />
+
 						<div class="ui-fluid">
 							<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;"
-								layout="grid">
+								layout="grid"
+								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
-								<p:outputLabel id="lblUnidad" for="unidad" value="Unidad: "
+
+								<p:outputLabel id="lblUnidad" for="unidad" value="Unidad: *"
 									style="color:white!important" />
 
 								<p:selectOneMenu id="unidad"
 									value="#{laboratorioController.unidadSelect}" effect="fold"
-									filter="true" filterMatchMode="contains" required="true"
-									requiredMessage="Ingrese la Unidad">
-
-									<f:selectItem itemLabel="Por favor seleccione" itemValue="" />
+									filter="true" filterMatchMode="contains">
+									<p:ajax event="focus" process="unidad" update="seleccionarImagen" />
+									<f:selectItem itemLabel="Por favor seleccione" itemValue="#{laboratorioController.unidadSelectEmpty}" />
 									<f:selectItems value="#{laboratorioController.unidades}"
 										itemLabel="#{uni.nombreU}" itemValue="#{uni}" var="uni">
 
 									</f:selectItems>
+
 								</p:selectOneMenu>
 
-								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: "
+								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: *"
 									style="color:white!important" />
 
 								<p:inputText id="nombre"
 									value="#{laboratorioController.nuevoLaboratorioLab.nombreL}"
-									required="true"
-									requiredMessage="Debe ingresar el nombre del Laboratorio"
 									size="30" maxlength="100">
+
+									<p:ajax event="keyup" update="seleccionarImagen" />
 								</p:inputText>
 
 								<p:outputLabel id="lblCentroCosto" for="centrocosto"
-									value="Centro de Costo: " style="color:white!important" />
+									value="Centro de Costo: *" style="color:white!important" />
 
 								<p:inputText id="centrocosto"
 									value="#{laboratorioController.nuevoLaboratorioLab.centrocostoL}"
-									required="true"
-									requiredMessage="Debe ingresar el centro de costo" size="30"
-									maxlength="20">
+									size="30" maxlength="20">
+									<p:ajax event="keyup" update="seleccionarImagen" />
 								</p:inputText>
 
 								<p:outputLabel id="lblResponsable" for="responsable"
@@ -257,38 +260,67 @@
 									value="#{laboratorioController.nuevoLaboratorioLab.leyendaOtL}"
 									maxlength="2000" rows="5" cols="30" />
 
+
+								<p:outputLabel id="lblPath" for="path" value="´Path: "
+									style="color:white!important" />
+
+								<p:outputLabel id="path"
+									value="#{laboratorioController.nuevoLaboratorioLab.path}" />
+
 							</p:panelGrid>
 						</div>
 
 						<br />
 						<center>
+							<p style="color: gray;">
+								<strong>Seleccionar Logo</strong>
+							</p>
+							<br />
+							<p:messages id="mensajeImg" showDetail="true" closable="true">
 
+							</p:messages>
+							<p:fileUpload id="seleccionarImagen"
+								fileUploadListener="#{laboratorioController.guardarImgTmp}"
+								mode="advanced" fileLimit="1" dragDropSupport="true" auto="true"
+								allowTypes="/(\.|\/)(jpe?g|png)$/" label="Seleccionar"
+								skinSimple="true" uploadLabel="Subir Archivo"
+								invalidFileMessage="Tipo de Archivo no Admitido"
+								invalidSizeMessage="Se permiten imagenes hasta 2mb"
+								cancelLabel="cancelar" sizeLimit="2000000"
+								fileLimitMessage="Solo puede Ingresar una Imagen"
+								update="@this,@([id$=mensajeImg],[id$=formPrincipal]),formNuevoLaboratorio"
+								process="@this,formNuevoLaboratorio"
+								disabled="#{laboratorioController.disabledButton() != true}" />
+
+						</center>
+
+						<br />
+						<center>
 							<h:panelGrid columns="2">
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
-									actionListener="#{laboratorioController.agregarLaboratorioLab}"
 									process="@this,formNuevoLaboratorio"
-									update="@this,@([id$=messagesForm],[id$=formPrincipal]),formNuevoLaboratorio"
-									oncomplete="PF('tblLaboratorio').filter()">
+									update="@this,@([id$=messagesForm])"
+									oncomplete="PF('tblLaboratorio').filter()"
+									actionListener="#{laboratorioController.guardarLab}">
 
 								</p:commandButton>
 
 								<p:commandButton value="Atrás "
 									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-									onclick="PF('nuevoLaboratorio').hide();" process="@none">
+									onclick="PF('nuevoLaboratorio').hide();" process="@none"
+									actionListener="#{laboratorioController.limpiarCampos}">
 
 								</p:commandButton>
 
 							</h:panelGrid>
-
 						</center>
-
 					</p:fieldset>
 				</h:form>
 			</p:dialog>
 
-			<!-- Panel de Modificar -->
+			<!-- Editar - Metodo Editar LAB  -->
 
 			<p:dialog id="panelModificarLaboratorio" resizable="true"
 				draggable="false" widgetVar="modificarLaboratorio" modal="true"
@@ -336,8 +368,6 @@
 
 									<p:inputText id="nombre"
 										value="#{laboratorioController.laboratorioLab.nombreL}"
-										required="true"
-										requiredMessage="Debe ingresar el nombre del Laboratorio"
 										size="30" maxlength="100">
 									</p:inputText>
 
@@ -403,19 +433,59 @@
 										value="#{laboratorioController.laboratorioLab.leyendaOtL}"
 										maxlength="2000" rows="5" cols="30" />
 
+									<p:outputLabel value="Ver Logo: " style="color:white!important" />
+
+
+									<p:commandLink icon="ui-icon-check"
+										update="@this,formMostrarImg"
+										onclick="PF('mostrarImg').show();">
+
+										<center>
+											<h:graphicImage value="/images/archivos/verMas.png"
+												title="Ver Logo" style="border:0px solid #CAD6E0;"
+												width="35" height="35" />
+										</center>
+									</p:commandLink>
+
 								</p:panelGrid>
+
 							</div>
+
 							<br />
+							<center>
+								<p style="color: gray;">
+									<strong>Seleccionar Logo</strong>
+								</p>
+								<br />
+								<p:fileUpload id="seleccionarImagen"
+									fileUploadListener="#{laboratorioController.modificarImgTmp}"
+									mode="advanced" fileLimit="1" dragDropSupport="true"
+									auto="true" allowTypes="/(\.|\/)(jpe?g|png)$/"
+									label="Seleccionar" skinSimple="true"
+									uploadLabel="Subir Archivo"
+									invalidFileMessage="Tipo de Archivo no Admitido"
+									invalidSizeMessage="Se permiten imagenes hasta 2mb"
+									cancelLabel="cancelar" sizeLimit="2000000"
+									fileLimitMessage="Solo puede Ingresar una Imagen"
+									update="@this,@([id$=messagesForm],[id$=formPrincipal],[id$=formMostrarImg])"
+									process="@this,nombre" />
+
+							</center>
+							<p style="color: red;">
+								<strong>Nota: Al ingresar una nueva imagen la anterior
+									sera reemplazada.</strong>
+							</p>
+
+							<br /> <br /> <br />
 
 							<center>
-
 								<h:panelGrid columns="2">
 
 									<p:commandButton value="Modificar" icon="fa fa-edit"
 										style="width: 115px; margin: 5px"
 										actionListener="#{laboratorioController.modificarLaboratorioLab}"
-										process="@this,formModificarLaboratorio"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarLaboratorio"
+										process="@this,formModificarLaboratorio,formMostrarImg"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarLaboratorio,formMostrarImg"
 										oncomplete="PF('tblLaboratorio').filter()">
 
 									</p:commandButton>
@@ -433,8 +503,24 @@
 				</h:form>
 			</p:dialog>
 
+			<!-- Editar - Metodo Mostrar Logo LAB  -->
 
-			<!-- Panel de Eliminar -->
+			<p:dialog id="panelMostrarImg" resizable="false" draggable="false"
+				widgetVar="mostrarImg" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" header="Logo"
+				width="25vh" height="15vh">
+
+				<h:form id="formMostrarImg">
+					<center>
+						<strong> <p:graphicImage
+								value="../images/laboratorio/#{laboratorioController.laboratorioLab.path}"
+								alt="El laboratorio no tiene asignado un Logo." cache="false" />
+						</strong>
+					</center>
+				</h:form>
+			</p:dialog>
+
+			<!-- Eliminar - Metodo Eliminar LAB  -->
 
 			<h:form id="eliminarLaboratorio">
 				<p:confirmDialog
@@ -457,7 +543,6 @@
 
 				</p:confirmDialog>
 
-
 			</h:form>
 
 		</h:body>
@@ -471,25 +556,7 @@
 			PF('statusDialog').hide();
 			}
 
-			
-
 		</script>
-
-		<style type="text/css">
-.ui-dialog-content {
-	max-width: 1500px !important;
-	max-height: 500px !important;
-	margin-bottom: 5px !important;
-}
-
-.ui-selectonemenu {
-	width: 50% !important;
-}
-
-.ui-selectonemenu-label {
-	width: 50% !important;
-}
-</style>
 
 	</ui:define>
 </ui:composition>

@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 
+import com.sun.org.apache.bcel.internal.generic.DDIV;
+
 import ec.edu.epn.laboratorioBJ.beans.DetalleMetodoDAO;
 import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
 import ec.edu.epn.laboratorioBJ.beans.MetodoDAO;
@@ -77,13 +79,20 @@ public class MetodoController implements Serializable {
 	private List<Existencia> existencias = new ArrayList<>();
 	private List<Existencia> filterExistencia;
 	private Existencia selectExistencia;
+	private Existencia selectExDMTemp;
 	private List<Existencia> tempExistencias = new ArrayList<>();
 
 	private List<Detallemetodo> detalleMetodos = new ArrayList<>();
 	private List<Detallemetodo> tempDetalleMetodos = new ArrayList<>();
 	private List<Detallemetodo> tempDetalleMetodosEdit = new ArrayList<>();
+	private List<Detallemetodo> dmAddEdit = new ArrayList<Detallemetodo>();
+	private List<Detallemetodo> dmDelete = new ArrayList<Detallemetodo>();
+
+	private Detallemetodo tempDetalleMetodoEdit;
+
 	private List<Detallemetodo> nuevoDetalleMetodos = new ArrayList<>();
 	private Detallemetodo nuevoDetalleMetodo;
+	private Detallemetodo nuevoDMTempEdit;
 	private Detallemetodo nuevoDetalleMetodoAux;
 	private Detallemetodo detalleMetodo;
 
@@ -111,16 +120,21 @@ public class MetodoController implements Serializable {
 			// Existencias
 			existencias = detalleMetodoI.listaExistencias(su.UNIDAD_USUARIO_LOGEADO);
 			selectExistencia = new Existencia();
+			selectExDMTemp = new Existencia();
 
 			// DetalleMetodo
 			nuevoDetalleMetodos.clear();
+			dmDelete.clear();
 			tempDetalleMetodos.clear();
 			tempDetalleMetodos = new ArrayList<>();
 
+			dmAddEdit.clear();
 			tempDetalleMetodosEdit.clear();
 			tempDetalleMetodosEdit = new ArrayList<>();
+			tempDetalleMetodoEdit = new Detallemetodo();
 
 			nuevoDetalleMetodo = new Detallemetodo();
+			nuevoDMTempEdit = new Detallemetodo();
 			detalleMetodo = new Detallemetodo();
 
 			tempExistencias = new ArrayList<Existencia>();
@@ -130,6 +144,8 @@ public class MetodoController implements Serializable {
 			e.printStackTrace();
 		}
 	}
+
+	/****** Tabla Metodos ****/
 
 	public void tblMetodos() {
 		try {
@@ -143,6 +159,7 @@ public class MetodoController implements Serializable {
 	}
 
 	/****** Mensajes Personalizados ****/
+
 	public void mensajeError(String mensaje) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -155,6 +172,58 @@ public class MetodoController implements Serializable {
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
+
+	/****** Limpiar Campos ****/
+
+	public void limpiarCampos() {
+
+		try {
+
+			// Metodo
+			metodo = new Metodo();
+			nuevoMetodo = new Metodo();
+			servicioSelect = new Servicio();
+
+			// Detalle Metodo
+			nuevoDetalleMetodos.clear();
+			tempDetalleMetodos.clear();
+			nuevoDetalleMetodo = new Detallemetodo();
+			detalleMetodo = new Detallemetodo();
+			nuevoDetalleMetodoAux = new Detallemetodo();
+			nuevoDetalleMetodo.setCantidadDmt(0);
+			nuevoDetalleMetodoAux.setCantidadDmt(0);
+
+			actualizarExistencias();
+			mensajeInfo("Se ha limpiado todo el formulario");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	/*
+	 * private boolean buscarMetodos(String valor) {
+	 * 
+	 * try { tblMetodos(); } catch (Exception e) {
+	 * 
+	 * e.printStackTrace(); }
+	 * 
+	 * boolean resultado = false; for (Metodo m : metodos) { if
+	 * (m.getNombreMt().equals(valor)) { resultado = true; break; } else {
+	 * resultado = false; } }
+	 * 
+	 * return resultado; }
+	 */
+
+	public void pasarNombre(String nombre) {
+		setNombreM(nombre);
+
+	}
+
+	/*************************** NUEVO METODO ***************************/
+	/****** Nuevo - Seleccionar Existencia ****/
 
 	public void seleccionarExistencia() {
 
@@ -183,7 +252,7 @@ public class MetodoController implements Serializable {
 
 	}
 
-	/****** Lista de Existencias ****/
+	/****** Nuevo - Listado Existencias ****/
 
 	public boolean buscarExistencia(String id) {
 
@@ -203,6 +272,8 @@ public class MetodoController implements Serializable {
 		return resultado;
 	}
 
+	/****** Nuevo - Agregar Detalle Temp ****/
+
 	public void agregarDetalleTemp() {
 
 		RequestContext context = RequestContext.getCurrentInstance();
@@ -212,14 +283,13 @@ public class MetodoController implements Serializable {
 			if (nuevoDetalleMetodo.getIdExistencia() == null) {
 				mensajeError("No ha seleccionado Ninguna Existencia");
 			} else {
-				double resultado;
-				double cantidadMo = nuevoDetalleMetodo.getCantidadDmt();
-				double cantidadE = existencia.getCantidadE().doubleValue();
 
-				resultado = cantidadE + cantidadMo;
+				float cantidadMo = nuevoDetalleMetodo.getCantidadDmt();
+				nuevoDetalleMetodo.setCantidadDmt(cantidadMo);
 
-				existencia.setCantidadE(BigDecimal.valueOf(resultado));
-				nuevoDetalleMetodo.setCantidadDmt(getExistencia().getCantidadE().floatValue());
+				String unidad = existencia.getUnidadmedida().getSiglaUm();
+
+				nuevoDetalleMetodo.setIdUmedida(unidad);
 
 				tempExistencias.add(getExistencia());
 				nuevoDetalleMetodos.add(nuevoDetalleMetodo);
@@ -240,7 +310,7 @@ public class MetodoController implements Serializable {
 
 	}
 
-	/****** Editar Temporal ****/
+	/****** Nuevo - Editar Temporal ****/
 
 	public void editarTemp() {
 
@@ -248,8 +318,8 @@ public class MetodoController implements Serializable {
 		for (Detallemetodo dm : nuevoDetalleMetodos) {
 			if (dm.getIdExistencia().equals(detalleMetodo.getIdExistencia())) {
 
-				mensajeInfo("Se ha editado el Mov. de Inventario (" + detalleMetodo.getIdExistencia() + ")");
-				context.execute("PF('editarMI').hide();");
+				mensajeInfo("Se ha editado el Detalle Método(" + detalleMetodo.getIdExistencia() + ")");
+				context.execute("PF('editarDetalleTemp').hide();");
 
 				break;
 			} else {
@@ -260,7 +330,7 @@ public class MetodoController implements Serializable {
 
 	}
 
-	/****** Eliminar Temporal ****/
+	/****** Nuevo- Eliminar Temporal ****/
 
 	public void eliminarTemp() {
 
@@ -275,35 +345,7 @@ public class MetodoController implements Serializable {
 
 	}
 
-	public void limpiarCampos() {
-
-		try {
-
-			// Metodo
-			metodo = new Metodo();
-			nuevoMetodo = new Metodo();
-			servicioSelect = new Servicio();
-
-			// Detalle Metodo
-			nuevoDetalleMetodos.clear();
-			tempDetalleMetodos.clear();
-			nuevoDetalleMetodo = new Detallemetodo();
-			detalleMetodo = new Detallemetodo();
-			nuevoDetalleMetodoAux = new Detallemetodo();
-			nuevoDetalleMetodo.setCantidadDmt(0);
-			nuevoDetalleMetodoAux.setCantidadDmt(0);
-
-			actualizarExistencias();
-			mensajeInfo("Se ha limpiado todo el formulario");
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	/****** Cargar Detalle Metodo ****/
+	/****** Nuevo - Cargar Detalle Metodo ****/
 
 	public void cargarDetalleMet(String id) {
 
@@ -311,19 +353,7 @@ public class MetodoController implements Serializable {
 
 	}
 
-	/****** Cargar Detalle Metodo - Edit ****/
-
-	public void cargarDetalleMetEdit(String id) {
-
-		tempDetalleMetodosEdit = detalleMetodoI.listaDetallesById(id);
-
-	}
-
-	/****** Busqueda de Existencias ****/
-	public Existencia cambiarDatosExistencia(String id) {
-		Existencia existenciatemp = detalleMetodoI.buscarExistencias(id);
-		return existenciatemp;
-	}
+	/****** Nuevo - Guardar Metodo ******/
 
 	public void guardarMetodo() {
 
@@ -384,6 +414,8 @@ public class MetodoController implements Serializable {
 		}
 	}
 
+	/****** Nuevo - Construccion ID Metodo ******/
+
 	public void getIdMetodo() {
 		try {
 
@@ -438,7 +470,7 @@ public class MetodoController implements Serializable {
 		}
 	}
 
-	/** Actualizar Existencias en la base de datos **/
+	/****** Nuevo - Actualizar Existencias BDD ******/
 	public void actualizarExistencias() {
 
 		for (Existencia existencia : tempExistencias) {
@@ -451,14 +483,12 @@ public class MetodoController implements Serializable {
 		}
 	}
 
-	/****** Cambiar Id de Movimientos Inventarios ****/
+	/****** Nuevo - Obtener Detalle Metodo ******/
 	public void obtenerIdDetalle(Metodo metodo) {
 		int i = 0;
 		for (Detallemetodo dm : nuevoDetalleMetodos) {
 
 			dm.setMetodo(metodo);
-
-			dm.setCantidadDmt(0);
 
 			nuevoDetalleMetodos.set(i, dm);
 
@@ -466,7 +496,7 @@ public class MetodoController implements Serializable {
 		}
 	}
 
-	/** Guarda MI en la base de datos **/
+	/****** Nuevo - Guardar Detalle Metodo ******/
 	public void guardarDetalleM() {
 
 		for (Detallemetodo dm : nuevoDetalleMetodos) {
@@ -479,7 +509,316 @@ public class MetodoController implements Serializable {
 		}
 	}
 
-	/** Eliminar Método **/
+	/*************************** EDITAR METODO ***************************/
+	/****** Editar - Seleccionar Existencia ******/
+	public void seleccionarExistenciaEdit() {
+
+		try {
+
+			if (buscarExistenciaEdit(selectExDMTemp.getIdExistencia()) == false) {
+
+				RequestContext context = RequestContext.getCurrentInstance();
+
+				getTempDetalleMetodoEdit().setIdExistencia(getSelectExDMTemp().getIdExistencia());
+
+				System.out.println("Existencia Seleccionada:" + selectExDMTemp.getIdExistencia());
+				mensajeInfo("Se seleccionó la Existencia (" + selectExDMTemp.getIdExistencia());
+				existencia = selectExDMTemp;
+				selectExDMTemp = new Existencia();
+				filterExistencia = new ArrayList<Existencia>();
+				context.execute("PF('listadoExTemp').hide();");
+
+			} else {
+				mensajeError("La existencia (" + selectExDMTemp.getIdExistencia() + ") ya ha sido seleccionada");
+				selectExDMTemp = new Existencia();
+			}
+
+		} catch (Exception e) {
+			mensajeError("No se ha seleccionado ninguna Existencia");
+			e.printStackTrace();
+		}
+
+	}
+
+	/****** Editar - Listado de Existencias ******/
+
+	public boolean buscarExistenciaEdit(String id) {
+
+		boolean resultado = false;
+
+		for (Detallemetodo detalleMetodos : tempDetalleMetodosEdit) {
+
+			if (detalleMetodos.getIdExistencia().equals(id)) {
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+
+		}
+
+		return resultado;
+	}
+
+	/****** Editar - Agregar Detalle Temp ******/
+
+	public void agregarDetalleTempEdit() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		try {
+
+			if (tempDetalleMetodoEdit.getIdExistencia() == null) {
+				mensajeError("No ha seleccionado Ninguna Existencia");
+			} else {
+
+				float cantidadMo = tempDetalleMetodoEdit.getCantidadDmt();
+				tempDetalleMetodoEdit.setCantidadDmt(cantidadMo);
+
+				String unidad = existencia.getUnidadmedida().getSiglaUm();
+				tempDetalleMetodoEdit.setIdUmedida(unidad);
+
+				tempExistencias.add(getExistencia());
+				tempDetalleMetodosEdit.add(tempDetalleMetodoEdit);
+				setTempDetalleMetodosEdit(tempDetalleMetodosEdit);
+				mensajeInfo("Se ha almacenado (" + tempDetalleMetodoEdit.getIdExistencia() + ") correctamente.");
+
+				tempDetalleMetodoEdit = new Detallemetodo();
+				existencia = new Existencia();
+				existencias = detalleMetodoI.listaExistencias(su.UNIDAD_USUARIO_LOGEADO);
+				tempExistencias = new ArrayList<Existencia>();
+				context.execute("PF('nuevaExTemp').hide();");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/****** Editar - Editar Detalle M. Temporal ******/
+
+	public void editDMTemp() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+		for (Detallemetodo dm : tempDetalleMetodosEdit) {
+			if (dm.getIdExistencia().equals(tempDetalleMetodoEdit.getIdExistencia())) {
+
+				mensajeInfo("Se ha editado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+				context.execute("PF('editDMTemp').hide();");
+
+				break;
+			} else {
+
+			}
+
+		}
+
+	}
+
+	/****** Nuevo- Eliminar Temporal ****/
+
+	public void eliminarDMTemp() {
+
+		try {
+			tempDetalleMetodosEdit.remove(tempDetalleMetodoEdit);
+			setListasTempDelete();
+			mensajeInfo("Se ha eliminado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+		} catch (Exception e) {
+			e.printStackTrace();
+			mensajeError("Ha ocurrido un error interno.");
+		}
+
+	}
+
+	/****** Editar - Editar Método ******/
+
+	public void editMetodo() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		cambiarIDDetalleM(metodo);
+		cambiarIDDetalleProAdd(metodo);
+
+		// Eliminar A la base de datos
+		eliminarDetallesM(dmDelete);
+
+		// Agregar A la base de datos
+		guardarDetalleM(dmAddEdit);
+
+		// Modificar A la base de datos
+		actualizarDetalleM(tempDetalleMetodosEdit);
+		actualizarMetodo(metodo);
+
+		mensajeInfo("El Método (" + metodo.getNombreMt() + ") se actualizado exitosamente");
+		tblMetodos();
+		context.execute("PF('editMetodo').hide();");
+
+	}
+
+	/****** Editar - Guardar Detalle M ******/
+
+	public void guardarDetalleM(List<Detallemetodo> dm) {
+
+		if (dm.size() == 0) {
+		} else {
+			for (Detallemetodo detalleM : dm) {
+				try {
+					detalleMetodoI.save(detalleM);
+				} catch (Exception e) {
+					System.out.println(e);
+
+				}
+
+			}
+		}
+
+	}
+
+	/****** Editar - Cargar Detalle Metodo ******/
+
+	public void cargarDetalleMetEdit(String id) {
+
+		tempDetalleMetodosEdit = detalleMetodoI.listaDetallesById(id);
+
+	}
+
+	/****** Editar - Cargar Detalle M ******/
+
+	public void cambiarIDDetalleM(Metodo m) {
+		System.out.println("Entra al setteo de Ids (cambiarIDDetallePro)");
+		int i = 0;
+		for (Detallemetodo dmE : tempDetalleMetodosEdit) {
+
+			dmE.setMetodo(m);
+			tempDetalleMetodosEdit.set(i, dmE);
+
+			i++;
+		}
+	}
+
+	/****** Editar - Cargar Detalle M ******/
+
+	public void cambiarIDDetalleProAdd(Metodo m) {
+		System.out.println("entra a la funcion cambiarIDDetalleMetodoADD");
+		int i = 0;
+		if (dmAddEdit.size() == 0) {
+			System.out.println("No hay registros que añadir");
+		} else {
+			for (Detallemetodo detalleME : dmAddEdit) {
+
+				detalleME.setMetodo(m);
+				dmAddEdit.set(i, detalleME);
+
+				i++;
+			}
+		}
+
+	}
+
+	/****** Editar - Editar Detalle M ******/
+
+	public void actualizarDetalleM(List<Detallemetodo> dm) {
+		System.out.println("Esta entrando a la funcion del editar detalle M");
+		for (Detallemetodo detalleM : dm) {
+			try {
+				detalleMetodoI.update(detalleM);
+			} catch (Exception e) {
+				System.out.println(e);
+				// e.printStackTrace();
+			}
+
+		}
+	}
+
+	/****** Editar - Editar Metodo ******/
+
+	public void actualizarMetodo(Metodo m) {
+		try {
+			metodoI.update(m);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/****** Editar - Eliminar Detalle M Temp ******/
+
+	public void eliminarDetallesM(List<Detallemetodo> dm) {
+		System.out.println("Registros que ingresan al Eliminar" + dm.size());
+		if (dm.size() == 0) {
+			System.out.println("No hay registros que Eliminar");
+		} else {
+			for (Detallemetodo d : dm) {
+				try {
+
+					detalleMetodoI.delete(d);
+					System.out.println("registros eliminados" + d.getIdExistencia());
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	/****** Editar - Listas de Eliminar ******/
+
+	public void setListasTempDelete() {
+
+		if (buscarDetalleMAdd(tempDetalleMetodoEdit)) {
+			dmAddEdit.remove(tempDetalleMetodoEdit);
+			System.out.println("Le quita del temporal de añadir");
+		} else {
+			dmDelete.add(tempDetalleMetodoEdit);
+			System.out.println("Entra al else" + tempDetalleMetodoEdit.getMetodo().getIdMetodo());
+		}
+
+	}
+
+	public void eliminarDetalleM() {
+		try {
+
+			// Seteo de listas temporales
+			setListasTempDelete();
+
+			detalleMetodos.remove(tempDetalleMetodoEdit);
+
+			mensajeInfo("Se ha eliminado el detalle Metodo (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			mensajeError("Ha ocurrido un error interno.");
+		}
+	}
+
+	public boolean buscarDetalleMAdd(Detallemetodo dM) {
+		// Realiza una busqueda en la lista temporal de Detalle Proforma
+		boolean resultado = false;
+
+		for (Detallemetodo dp : tempDetalleMetodosEdit) {
+
+			if (dp.equals(dM)) {
+				System.out.println("Encajan " + dp.getIdExistencia());
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+		}
+
+		return resultado;
+	}
+
+	/****** Busqueda de Existencias ******/
+	public Existencia cambiarDatosExistencia(String id) {
+		Existencia existenciatemp = detalleMetodoI.buscarExistencias(id);
+		return existenciatemp;
+	}
+
+	/*************************** ELIMINAR METODO ***************************/
+	/****** Eliminar Método ******/
 
 	public void eliminarMetodo() {
 
@@ -532,70 +871,7 @@ public class MetodoController implements Serializable {
 
 	}
 
-	/** Editar Método **/
-
-	public void editMetodo() {
-
-		RequestContext context = RequestContext.getCurrentInstance();
-
-		try {
-			if (metodo.getNombreMt().equals(getNombreM())) {
-
-				metodoI.update(metodo);
-				tblMetodos();
-				mensajeInfo("El Método (" + metodo.getNombreMt() + ") se actualizado exitosamente");
-
-				context.execute("PF('editMetodo').hide();");
-
-			} else if (buscarMetodos(metodo.getNombreMt()) == false) {
-
-				metodoI.update(metodo);
-				tblMetodos();
-				mensajeInfo("El Laboratorio (" + metodo.getNombreMt() + ") se actualizado exitosamente");
-
-				context.execute("PF('editMetodo').hide();");
-
-			} else {
-				tblMetodos();
-				mensajeError("El Método (" + metodo.getNombreMt() + ") ya existe");
-
-			}
-
-		} catch (Exception e) {
-
-			mensajeError("Ha ocurrido un problema");
-
-		}
-	}
-
-	private boolean buscarMetodos(String valor) {
-
-		try {
-			tblMetodos();
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
-
-		boolean resultado = false;
-		for (Metodo m : metodos) {
-			if (m.getNombreMt().equals(valor)) {
-				resultado = true;
-				break;
-			} else {
-				resultado = false;
-			}
-		}
-
-		return resultado;
-	}
-
-	public void pasarNombre(String nombre) {
-		setNombreM(nombre);
-
-	}
-
-	/****** Set y Get ****/
+	/*************************** SETT Y GETT ***************************/
 
 	public Metodo getMetodo() {
 		return metodo;
@@ -771,5 +1047,45 @@ public class MetodoController implements Serializable {
 
 	public void setTempDetalleMetodosEdit(List<Detallemetodo> tempDetalleMetodosEdit) {
 		this.tempDetalleMetodosEdit = tempDetalleMetodosEdit;
+	}
+
+	public Detallemetodo getTempDetalleMetodoEdit() {
+		return tempDetalleMetodoEdit;
+	}
+
+	public void setTempDetalleMetodoEdit(Detallemetodo tempDetalleMetodoEdit) {
+		this.tempDetalleMetodoEdit = tempDetalleMetodoEdit;
+	}
+
+	public Detallemetodo getNuevoDMTempEdit() {
+		return nuevoDMTempEdit;
+	}
+
+	public void setNuevoDMTempEdit(Detallemetodo nuevoDMTempEdit) {
+		this.nuevoDMTempEdit = nuevoDMTempEdit;
+	}
+
+	public Existencia getSelectExDMTemp() {
+		return selectExDMTemp;
+	}
+
+	public void setSelectExDMTemp(Existencia selectExDMTemp) {
+		this.selectExDMTemp = selectExDMTemp;
+	}
+
+	public List<Detallemetodo> getDmAddEdit() {
+		return dmAddEdit;
+	}
+
+	public void setDmAddEdit(List<Detallemetodo> dmAddEdit) {
+		this.dmAddEdit = dmAddEdit;
+	}
+
+	public List<Detallemetodo> getDmDelete() {
+		return dmDelete;
+	}
+
+	public void setDmDelete(List<Detallemetodo> dmDelete) {
+		this.dmDelete = dmDelete;
 	}
 }

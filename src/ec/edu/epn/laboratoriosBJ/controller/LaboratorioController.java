@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -15,12 +14,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 import ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
+import ec.edu.epn.laboratorioBJ.entities.Detallemetodo;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
+import ec.edu.epn.laboratorioBJ.entities.Metodo;
+import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.primefaces.event.FileUploadEvent;
 
 @ManagedBean(name = "laboratorioController")
 @SessionScoped
@@ -51,24 +64,30 @@ public class LaboratorioController implements Serializable {
 	private LaboratorioLab LaboratorioLab;
 	private String nombreL;
 	private UnidadLabo unidadSelect;
+	private UnidadLabo unidadSelectEmpty;
 	private List<UnidadLabo> unidades = new ArrayList<UnidadLabo>();
 	private UnidadLabo unidad;
 
 	private List<LaboratorioLab> filtrarLaboratorios;
 	private List<UnidadLabo> filtrarUnidades;
 
+	private UploadedFile file;
+	private FileUploadEvent fileUploadEvent;
+	private UploadedFile uploadedFile;
+
 	/** M…TODOS **/
 	@PostConstruct
 	public void init() {
 		try {
 
-			UnidadLabo uni = new UnidadLabo();
-			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			listaLaboratorioLab = laboratorioI.getListLabById(uni.getCodigoU());
-			setNuevoLaboratorioLab(new LaboratorioLab());
+			updateTable();
+			nuevoLaboratorioLab = new LaboratorioLab();
 
 			unidades = unidadI.getAll(UnidadLabo.class);
 			unidad = new UnidadLabo();
+
+			unidadSelect = new UnidadLabo();
+			unidadSelectEmpty = new UnidadLabo();
 
 		} catch (Exception e) {
 
@@ -102,39 +121,160 @@ public class LaboratorioController implements Serializable {
 
 	}
 
-	/****** Agregar Laboratorio ****/
+	/****** Nuevo - Nuevo Lab ****/
 
-	public void agregarLaboratorioLab() {
+	public void guardarLab() {
 
 		RequestContext context = RequestContext.getCurrentInstance();
 
 		try {
-			if (buscarLaboratorioLab(nuevoLaboratorioLab.getNombreL()) == true) {
+			if (disabledButton()) {
 
-				mensajeError("El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
+				if (buscarLaboratorioLab(nuevoLaboratorioLab.getNombreL()) == true) {
+
+					mensajeError("El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
+
+				} else if (nuevoLaboratorioLab.getPath() == null) {
+
+					mensajeError("Debe seleccionar una Imagen.");
+
+				} else {
+					cargarImg(getFileUploadEvent());
+					nuevoLaboratorioLab.setUnidad(unidadSelect);
+					laboratorioI.save(nuevoLaboratorioLab);
+					mensajeInfo(
+							"El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") se ha almacenado exitosamente");
+
+					updateTable();
+					nuevoLaboratorioLab = new LaboratorioLab();
+					unidadSelect = new UnidadLabo();
+					context.execute("PF('nuevoLaboratorio').hide();");
+				}
 
 			} else {
 
-				nuevoLaboratorioLab.setUnidad(unidadSelect);
-				laboratorioI.save(nuevoLaboratorioLab);
-				updateTable();
-
-				mensajeInfo("El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") se ha almacenado exitosamente");
-
-				nuevoLaboratorioLab = new LaboratorioLab();
-				unidadSelect = new UnidadLabo();
-				context.execute("PF('nuevoLaboratorio').hide();");
+				mensajeError("Debe llenar los campos obligatorios");
 			}
 
 		} catch (Exception e) {
 
 			mensajeError("Ha ocurrido un error");
+			e.printStackTrace();
 
 		}
 
 	}
 
-	/****** Modificar Laboratorio ****/
+	/****** Nuevo - Disable Button ****/
+
+	public boolean disabledButton() {
+
+		System.out.println("Centro de Costo:" + nuevoLaboratorioLab.getCentrocostoL());
+		System.out.println("uNIDAD:" + unidadSelect.getNombreU());
+		System.out.println("LABO:" + nuevoLaboratorioLab.getNombreL());
+
+		boolean resultado = false;
+
+		if (unidadSelect.getNombreU() == null) {
+
+			mensajeError("Debe Seleccionar la Unidad.");
+			resultado = false;
+		}
+
+		else {
+			resultado = true;
+		}
+		
+		if (nuevoLaboratorioLab.getNombreL() == null || nuevoLaboratorioLab.getNombreL().equals("")) {
+
+			mensajeError("Debe Ingresar el Nombre del Laboratorio.");
+			resultado = false;
+
+		} else {
+			resultado = true;
+		}
+		if (buscarLaboratorioLab(nuevoLaboratorioLab.getNombreL()) == true) {
+			mensajeError("El laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
+			resultado = false;
+
+		} else {
+			resultado = true;
+		}
+		if (nuevoLaboratorioLab.getCentrocostoL() == null || nuevoLaboratorioLab.getCentrocostoL().equals("")) {
+
+			mensajeError("Debe Ingresar el Centro de Costo.");
+			resultado = false;
+
+		} else {
+			resultado = true;
+		}
+
+		return resultado;
+
+	}
+
+	/****** Nuevo - Cargar Logo Lab ****/
+
+	public void cargarImg(FileUploadEvent event) throws IOException {
+
+		try {
+
+			String original = "¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷ÿŸ⁄€‹›ﬂ‡·‚„‰ÂÊÁËÈÍÎÏÌÓÔÒÚÛÙıˆ¯˘˙˚¸˝ˇ";
+
+			String ascii = "AAAAAAACEEEEIIIIDNOOOOOOUUUUYBaaaaaaaceeeeiiiionoooooouuuuyy";
+			String nuevoNombre = nuevoLaboratorioLab.getNombreL();
+			for (int i = 0; i < original.length(); i++) {
+				nuevoNombre = nuevoNombre.replace(original.charAt(i), ascii.charAt(i));
+
+			}
+
+			String url = "images/laboratorio/";
+			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+			String name = nuevoNombre
+					+ event.getFile().getFileName().substring(event.getFile().getFileName().lastIndexOf('.'));
+
+			File file = new File(path + url + name);
+
+			InputStream is = event.getFile().getInputstream();
+			OutputStream out = new FileOutputStream(file);
+			byte buf[] = new byte[2048];
+			int len;
+			while ((len = is.read(buf)) > 0)
+				out.write(buf, 0, len);
+
+			is.close();
+			out.close();
+
+			getNuevoLaboratorioLab().setPath(name);
+			mensajeInfo("La imagen (" + name + ") fue subida con Èxito.");
+
+			updateTable();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
+
+	/****** Nuevo - Logo Temp ****/
+
+	public void guardarImgTmp(FileUploadEvent event) throws IOException {
+
+		try {
+			setFileUploadEvent(event);
+			String name = nuevoLaboratorioLab.getNombreL()
+					+ event.getFile().getFileName().substring(event.getFile().getFileName().lastIndexOf('.'));
+			getNuevoLaboratorioLab().setPath(name);
+
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "La imagen fue cargada correctamente."));
+			// updateTable();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
+
+	/****** Modificar - Modificar Lab ****/
 
 	public void modificarLaboratorioLab() {
 
@@ -143,17 +283,23 @@ public class LaboratorioController implements Serializable {
 		try {
 			if (LaboratorioLab.getNombreL().equals(getNombreL())) {
 
+				System.out.println("ingresa al 1");
+
+				modificarImg(getFileUploadEvent());
 				laboratorioI.update(LaboratorioLab);
 				updateTable();
-				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente");
+				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente.");
 
 				context.execute("PF('modificarLaboratorio').hide();");
 
 			} else if (buscarLaboratorioLab(LaboratorioLab.getNombreL()) == false) {
 
+				System.out.println("ingresa al 2");
+
+				modificarImg(getFileUploadEvent());
 				laboratorioI.update(LaboratorioLab);
 				updateTable();
-				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente");
+				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente.");
 
 				context.execute("PF('modificarLaboratorio').hide();");
 
@@ -170,11 +316,114 @@ public class LaboratorioController implements Serializable {
 		}
 	}
 
-	/****** Eliminar Laboratorio ****/
+	/****** Nuevo - Logo Temp ****/
+
+	public void modificarImgTmp(FileUploadEvent event) throws IOException {
+
+		try {
+
+			setFileUploadEvent(event);
+			String name = LaboratorioLab.getNombreL()
+					+ event.getFile().getFileName().substring(event.getFile().getFileName().lastIndexOf('.'));
+			getNuevoLaboratorioLab().setPath(name);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
+
+	/****** Modificar - Modificar Logo Lab ****/
+
+	public void modificarImg(FileUploadEvent event) throws IOException {
+
+		try {
+
+			eliminarImg();
+
+			String original = "¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷ÿŸ⁄€‹›ﬂ‡·‚„‰ÂÊÁËÈÍÎÏÌÓÔÒÚÛÙıˆ¯˘˙˚¸˝ˇ";
+
+			String ascii = "AAAAAAACEEEEIIIIDNOOOOOOUUUUYBaaaaaaaceeeeiiiionoooooouuuuyy";
+			String nuevoNombre = LaboratorioLab.getNombreL();
+			for (int i = 0; i < original.length(); i++) {
+				nuevoNombre = nuevoNombre.replace(original.charAt(i), ascii.charAt(i));
+
+			}
+
+			String url = "images/laboratorio/";
+			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+			String name = nuevoNombre
+					+ event.getFile().getFileName().substring(event.getFile().getFileName().lastIndexOf('.'));
+
+			File file = new File(path + url + name);
+
+			String direccion = name;
+
+			InputStream is = event.getFile().getInputstream();
+			OutputStream out = new FileOutputStream(file);
+			byte buf[] = new byte[2048]; // 2mb
+			int len;
+			while ((len = is.read(buf)) > 0)
+				out.write(buf, 0, len);
+
+			is.close();
+			out.close();
+
+			LaboratorioLab.setPath(direccion);
+
+			mensajeInfo("La imagen (" + name + ") fue actualizada con Èxito");
+
+			updateTable();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+	}
+
+	/*
+	 * public String eliminarTildes(String texto) {
+	 * System.out.println("Entra al metodo: " + LaboratorioLab.getNombreL());
+	 * 
+	 * String original =
+	 * "¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷ÿŸ⁄€‹›ﬂ‡·‚„‰ÂÊÁËÈÍÎÏÌÓÔÒÚÛÙıˆ¯˘˙˚¸˝ˇ"; // Cadena
+	 * de caracteres ASCII que reemplazar·n los originales. String ascii =
+	 * "AAAAAAACEEEEIIIIDNOOOOOOUUUUYBaaaaaaaceeeeiiiionoooooouuuuyy"; String
+	 * salida = texto; for (int i = 0; i < original.length(); i++) { //
+	 * Reemplazamos los caracteres especiales.
+	 * 
+	 * salida = salida.replace(original.charAt(i), ascii.charAt(i));
+	 * 
+	 * } //salida = LaboratorioLab.getNombreL(); System.out.println("Salida: " +
+	 * salida); return salida; }
+	 */
+
+	/****** Modificar - Eliminar Logo Lab Anterior ****/
+
+	public void eliminarImg() {
+
+		String urlA = "images/laboratorio/";
+		String pathA = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+		String nameA = LaboratorioLab.getPath();
+
+		File fichero = new File(pathA + urlA + nameA);
+		eliminarFichero(fichero);
+
+	}
+
+	/****** Eliminar - Eliminar Laboratorio ****/
 
 	public void eliminarLaboratorioLab() {
 
 		try {
+			String url = "images/laboratorio/";
+			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+			String name = LaboratorioLab.getPath();
+
+			System.out.println("Este es el path : " + path + url + name);
+			System.out.println("Nombre de la imagen : " + name);
+
+			File fichero = new File(path + url + name);
+			eliminarFichero(fichero);
 
 			laboratorioI.delete(LaboratorioLab);
 			updateTable();
@@ -221,9 +470,37 @@ public class LaboratorioController implements Serializable {
 		return resultado;
 	}
 
+	/****** Pasar Nombre ****/
+
 	public void pasarNombre(String nombre, UnidadLabo uni) {
 		setNombreL(nombre);
 		unidad = uni;
+	}
+
+	public void limpiarCampos() {
+
+		try {
+
+			LaboratorioLab = new LaboratorioLab();
+			nuevoLaboratorioLab = new LaboratorioLab();
+			unidadSelect = new UnidadLabo();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void eliminarFichero(File fichero) {
+
+		if (!fichero.exists()) {
+			System.out.println("El archivo data no existe.");
+		} else {
+			fichero.delete();
+			System.out.println("El archivo data fue eliminado.");
+		}
+
 	}
 
 	/****** Getter y Setter de Estado Producto ****/
@@ -298,6 +575,38 @@ public class LaboratorioController implements Serializable {
 
 	public void setFiltrarUnidades(List<UnidadLabo> filtrarUnidades) {
 		this.filtrarUnidades = filtrarUnidades;
+	}
+
+	public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+
+	public UploadedFile getUploadedFile() {
+		return uploadedFile;
+	}
+
+	public void setUploadedFile(UploadedFile uploadedFile) {
+		this.uploadedFile = uploadedFile;
+	}
+
+	public FileUploadEvent getFileUploadEvent() {
+		return fileUploadEvent;
+	}
+
+	public void setFileUploadEvent(FileUploadEvent fileUploadEvent) {
+		this.fileUploadEvent = fileUploadEvent;
+	}
+
+	public UnidadLabo getUnidadSelectEmpty() {
+		return unidadSelectEmpty;
+	}
+
+	public void setUnidadSelectEmpty(UnidadLabo unidadSelectEmpty) {
+		this.unidadSelectEmpty = unidadSelectEmpty;
 	}
 
 }
