@@ -2,14 +2,8 @@ package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -17,33 +11,30 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
-import javax.faces.component.UIComponent;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.context.RequestContext;
 
+import com.sun.org.apache.bcel.internal.generic.DDIV;
+
+import ec.edu.epn.laboratorioBJ.beans.DetalleMetodoDAO;
 import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
-import ec.edu.epn.laboratorioBJ.beans.MovimientosInventarioDAO;
-import ec.edu.epn.laboratorioBJ.beans.OrdenInventarioDAO;
-import ec.edu.epn.laboratorioBJ.beans.SaldoExistenciaDAO;
-import ec.edu.epn.laboratorioBJ.beans.TipoOrdenInventarioDAO;
+import ec.edu.epn.laboratorioBJ.beans.MetodoDAO;
+import ec.edu.epn.laboratorioBJ.beans.ServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
+import ec.edu.epn.laboratorioBJ.entities.Detallemetodo;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
-import ec.edu.epn.laboratorioBJ.entities.Hidratacion;
-import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
-import ec.edu.epn.laboratorioBJ.entities.Ordeninventario;
-import ec.edu.epn.laboratorioBJ.entities.SaldoExistencia;
-import ec.edu.epn.laboratorioBJ.entities.Tipordeninv;
+import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
+import ec.edu.epn.laboratorioBJ.entities.Metodo;
+import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
-import ec.edu.epn.seguridad.VO.CambioClave;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "metodoController")
 @SessionScoped
+
 public class MetodoController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
@@ -53,138 +44,100 @@ public class MetodoController implements Serializable {
 	HttpSession session = request.getSession();
 	SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
 
-	/*****************************************************************************/
+	/****************************************************************************/
 
 	/** SERIVICIOS **/
 
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/MovimientosInventarioDAOImplement!ec.edu.epn.laboratorioBJ.beans.MovimientosInventarioDAO")
-	private MovimientosInventarioDAO movimientoInventarioI;
-
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/TipoOrdenInventarioDAOImplement!ec.edu.epn.laboratorioBJ.beans.TipoOrdenInventarioDAO")
-	private TipoOrdenInventarioDAO tipoOrdenInventarioI;
-
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ExistenciasDAOImplement!ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO")
-	private ExistenciasDAO existenciasI;
-
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/SaldoExistenciaDAOImplement!ec.edu.epn.laboratorioBJ.beans.SaldoExistenciaDAO")
-	private SaldoExistenciaDAO saldoExistenciaI;
-
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/OrdenInventarioDAOImplement!ec.edu.epn.laboratorioBJ.beans.OrdenInventarioDAO")
-	private OrdenInventarioDAO ordenInventarioI;
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/MetodoDAOImplement!ec.edu.epn.laboratorioBJ.beans.MetodoDAO")
+	private MetodoDAO metodoI;
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
 	private UnidadDAO unidadI;
 
-	/** Variables **/
-	private List<Movimientosinventario> movimientoInventarios = new ArrayList<>();
-	private List<Movimientosinventario> tempMovimientoInventarios = new ArrayList<>();
-	private List<Movimientosinventario> filtroMovimientoInventarios = new ArrayList<>();
-	private List<Movimientosinventario> nuevoMovimientoInventarios = new ArrayList<>();
-	private Movimientosinventario nuevoMovimientoInventario;
-	private Movimientosinventario nuevoMovimientoInventarioAux;
-	private Movimientosinventario movInventario;
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ServicioDAOImplement!ec.edu.epn.laboratorioBJ.beans.ServicioDAO")
+	private ServicioDAO servicioI;
 
-	/** Variables OrdenInv **/
-	private Ordeninventario ordeninventario;
-	private Ordeninventario nuevoOrdeninventario;
-	private List<Ordeninventario> ordenInventarios = new ArrayList<>();
-	private List<Ordeninventario> filterOrdenInventarios = new ArrayList<>();
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/DetalleMetodoDAOImplement!ec.edu.epn.laboratorioBJ.beans.DetalleMetodoDAO")
+	private DetalleMetodoDAO detalleMetodoI;
 
-	// select de Tipo Orden Inventario
-	private Tipordeninv tipoOrdenSelect;
-	private List<Tipordeninv> tipordeninvs = new ArrayList<Tipordeninv>();
-	private List<Tipordeninv> temptipordeninvs = new ArrayList<Tipordeninv>();
-	private Tipordeninv tipordeninv;
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ExistenciasDAOImplement!ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO")
+	private ExistenciasDAO existenciasI;
 
-	// existencias
-	private List<Existencia> existencias = new ArrayList<>();
-	private List<Existencia> transExistencias = new ArrayList<>();
-	private List<Existencia> tempExistencias = new ArrayList<>();
-	private List<Existencia> filtrarTransExistencias = new ArrayList<>();
-	private List<Existencia> filtrarExistencias = new ArrayList<>();
+	// Variables
+
+	private Metodo metodo;
+	private List<Metodo> metodos = new ArrayList<Metodo>();
+	private Metodo nuevoMetodo;
+	private List<Metodo> filterMetodos = new ArrayList<>();
+	private List<Metodo> nuevoMetodos = new ArrayList<>();
+	private List<Detallemetodo> tempDetalleMetodo = new ArrayList<>();
+
+	private Servicio servicioSelect;
+	private List<Servicio> servicios;
+
 	private Existencia existencia;
-	private Existencia existenciaAux;
+	private List<Existencia> existencias = new ArrayList<>();
+	private List<Existencia> filterExistencia;
 	private Existencia selectExistencia;
+	private Existencia selectExDMTemp;
+	private List<Existencia> tempExistencias = new ArrayList<>();
 
-	// saldo Existencia
-	private SaldoExistencia saldoExistencia;
-	private List<SaldoExistencia> saldoExistencias = new ArrayList<>();
+	private List<Detallemetodo> detalleMetodos = new ArrayList<>();
+	private List<Detallemetodo> tempDetalleMetodos = new ArrayList<>();
+	private List<Detallemetodo> tempDetalleMetodosEdit = new ArrayList<>();
+	private List<Detallemetodo> dmAddEdit = new ArrayList<Detallemetodo>();
+	private List<Detallemetodo> dmDelete = new ArrayList<Detallemetodo>();
 
-	// unidad
+	private Detallemetodo tempDetalleMetodoEdit;
+
+	private List<Detallemetodo> nuevoDetalleMetodos = new ArrayList<>();
+	private Detallemetodo nuevoDetalleMetodo;
+	private Detallemetodo nuevoDMTempEdit;
+	private Detallemetodo nuevoDetalleMetodoAux;
+	private Detallemetodo detalleMetodo;
+
+	private LaboratorioLab laboratorio;
+
 	UnidadLabo unidadLabo;
+	private String nombreM;
 
-	// id temporal
-	private String idTemporal;
-
-	// Num Aux
-	private int aux;
-
-	// fechaAuxFiltro
-	private String fechaFiltro;
-	private Date fechaFiltroAux;
-
-	/** METODO Init **/
+	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
-			// Long idUsuario = su.id_usuario_log;
-			// init movimiento inventario
-			// movimientoInventarioI.getAll(Movimientosinventario.class);
-			nuevoMovimientoInventarios = new ArrayList<>();
-			tempMovimientoInventarios = new ArrayList<>();
-			nuevoMovimientoInventario = new Movimientosinventario();
-			nuevoMovimientoInventarioAux = new Movimientosinventario();
-			movInventario = new Movimientosinventario();
-			nuevoMovimientoInventario.setCantidadMov(new BigDecimal(0));
-			nuevoMovimientoInventarioAux.setCantidadMov(new BigDecimal(0));
 
-			// System.out.println("Orde de inventarios consultadas: " +
-			// movimientoInventarios.size());
+			// Metodos
 
-			// init Orden inventario
+			metodo = new Metodo();
+			nuevoMetodo = new Metodo();
+			tblMetodos();
+
+			// Servicios
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
-			filterOrdenInventarios = ordenInventarios;
-			ordeninventario = new Ordeninventario();
-			nuevoOrdeninventario = new Ordeninventario();
-			System.out.println("Orde de inventarios consultadas: " + ordenInventarios.size());
-			nuevoOrdeninventario.setFechaingresoOi(new Date());
-			System.out.println("Fecha Orden: " + nuevoOrdeninventario.getFechaingresoOi());
+			servicios = servicioI.listaServicioUnidad(uni.getIdUnidad());
 
-			// init de Tipo Orden Inventario
-			temptipordeninvs = new ArrayList<Tipordeninv>();
-			tipordeninvs = tipoOrdenInventarioI.orderById();
-			llenarCombo();
-			tipordeninv = new Tipordeninv(); // existenciasI.reemplazarNullPresentacion();
-			tipoOrdenSelect = new Tipordeninv();
-
-			// init de Existencia
-			existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-			System.out.println("Existencias consultadas: " + existencias.size());
-			transExistencias = existencias;
-			System.out.println("Existencias transferencia consultadas: " + transExistencias.size());
-			// filtrarTransExistencias = existencias;
-			// filtrarExistencias = new ArrayList<Existencia>();
-			tempExistencias = new ArrayList<Existencia>();
+			// Existencias
+			existencias = detalleMetodoI.listaExistencias(su.UNIDAD_USUARIO_LOGEADO);
 			selectExistencia = new Existencia();
-			existencia = new Existencia();
-			existenciaAux = new Existencia();
+			selectExDMTemp = new Existencia();
 
-			// init de Saldo Existencia
-			saldoExistencia = new SaldoExistencia();
-			saldoExistencias = saldoExistenciaI.listaSaldoExistenciaAñoActual();
-			System.out.println("Saldo Existencias consultadas: " + saldoExistencias.size());
+			// DetalleMetodo
+			nuevoDetalleMetodos.clear();
+			dmDelete.clear();
+			tempDetalleMetodos.clear();
+			tempDetalleMetodos = new ArrayList<>();
 
-			// init Unidad
-			unidadLabo = ordenInventarioI.obtenerUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			nuevoOrdeninventario.setUnidad(unidadLabo);
+			dmAddEdit.clear();
+			tempDetalleMetodosEdit.clear();
+			tempDetalleMetodosEdit = new ArrayList<>();
+			tempDetalleMetodoEdit = new Detallemetodo();
 
-			// init id temporal
-			idTemporal = "1";
+			nuevoDetalleMetodo = new Detallemetodo();
+			nuevoDMTempEdit = new Detallemetodo();
+			detalleMetodo = new Detallemetodo();
 
-			// init aux
-			// aux = 0;
+			tempExistencias = new ArrayList<Existencia>();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -192,580 +145,21 @@ public class MetodoController implements Serializable {
 		}
 	}
 
-	/******
-	 * Agregar/Editar/Eliminar Movimiento de Inventario/Existencias a lista
-	 * temporal
-	 ****/
+	/****** Tabla Metodos ****/
 
-	public void holaMundo() {
-		RequestContext context = RequestContext.getCurrentInstance();
-		for (Movimientosinventario m : nuevoMovimientoInventarios) {
-			if (m.getIdExistencia().equals(movInventario.getIdExistencia())) {
-				
-				System.out.println("Obeservaciones: " + m.getObservacionesMov());
-				System.out.println("Envases: " + m.getEnvaseMov());
-				System.out.println("Este es el editar: " + movInventario.getEnvaseMov());
-				
-				context.execute("PF('editarMI').hide();");
-	
-				break;
-			} else {
-
-			}
-
-		}
-
-	}
-
-	public void validarSaldoEdit(FacesContext ctx, UIComponent component, BigDecimal value) throws ValidatorException {
-		// String prueba = value.toString();
-		Existencia e = cambiarDatosExistencia(movInventario.getIdExistencia());
-		double resultado;
-		double cantidadMo = value.doubleValue();
-		double cantidadE = e.getCantidadE().doubleValue();
-
-		if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
-
-			if (cantidadMo <= cantidadE) {
-				// Ajuste negativo a la existencia/Mov
-				resultado = cantidadE - cantidadMo;
-
-				e.setCantidadE(BigDecimal.valueOf(resultado));
-
-				movInventario.setSaldoE(e.getCantidadE());
-				movInventario.setDism(BigDecimal.valueOf(cantidadMo));
-				movInventario.setIncrem(new BigDecimal(0));
-
-				editarExistenciaTemporal(e);
-				return;
-
-			} else {
-				// mensajeError("La cantidad es mayor que el saldo existente");
-				throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error",
-						"La cantidad es mayor que el saldo existente"));
-			}
-
-		} else {
-
-			resultado = cantidadE + cantidadMo;
-
-			e.setCantidadE(BigDecimal.valueOf(resultado));
-
-			movInventario.setSaldoE(e.getCantidadE());
-			movInventario.setIncrem(BigDecimal.valueOf(cantidadMo));
-			movInventario.setDism(new BigDecimal(0));
-
-			editarExistenciaTemporal(e);
-
-			return;
-
-		}
-
-	}
-
-	public void editarExistenciaTemporal(Existencia value) {
-		int i = 0;
-		for (Existencia e : tempExistencias) {
-			if (e.getIdExistencia().equals(value.getIdExistencia())) {
-
-				// System.out.println("este es el saldo existencia sin editar: "
-				// + e.getCantidadE().doubleValue());
-				//
-				// System.out.println("este es la saldo modificado existencia: "
-				// + value.getCantidadE().doubleValue());
-
-				tempExistencias.set(i, value);
-
-				break;
-			} else {
-				i++;
-			}
-
-		}
-	}
-
-	public void limpiarCampos() {
-
+	public void tblMetodos() {
 		try {
-
-			nuevoMovimientoInventarios.clear();
-			tempMovimientoInventarios.clear();
-			nuevoMovimientoInventario = new Movimientosinventario();
-			movInventario = new Movimientosinventario();
-			nuevoMovimientoInventarioAux = new Movimientosinventario();
-			nuevoMovimientoInventario.setCantidadMov(new BigDecimal(0));
-			nuevoMovimientoInventarioAux.setCantidadMov(new BigDecimal(0));
-
-			// System.out.println("Orde de inventarios consultadas: " +
-			// movimientoInventarios.size());
-
-			// init Orden inventario
-			ordeninventario = new Ordeninventario();
-			nuevoOrdeninventario = new Ordeninventario();
-
-			// init de Tipo Orden Inventario
-			tipordeninv = new Tipordeninv();
-			tipoOrdenSelect = new Tipordeninv();
-
-			// init de Existencia
-			/*
-			 * existencias = movimientoInventarioI.listarExistenciaById(su.
-			 * UNIDAD_USUARIO_LOGEADO);
-			 * System.out.println("Existencias consultadas: " +
-			 * existencias.size()); transExistencias = existencias;
-			 * System.out.println("Existencias transferencia consultadas: " +
-			 * transExistencias.size());
-			 */
-			filtrarExistencias = new ArrayList<Existencia>();
-			filtrarTransExistencias = new ArrayList<Existencia>();
-			tempExistencias = new ArrayList<Existencia>();
-			selectExistencia = new Existencia();
-			existencia = new Existencia();
-			existenciaAux = new Existencia();
-
-			// init Unidad
-			unidadLabo = ordenInventarioI.obtenerUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			nuevoOrdeninventario.setUnidad(unidadLabo);
-
-			// aux = 1;
-
-			// init id temporal
-			// idTemporal = "1";
-
-			mensajeInfo("Se ha limpiado todo el formulario");
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	public void limpiarMI() {
-		System.out.println("Esta entrando a la funcion MO");
-		/*
-		 * nuevoMovimientoInventario = new Movimientosinventario();
-		 * movimientosinventario = new Movimientosinventario();
-		 * nuevoMovimientoInventario.setSaldoE(new BigDecimal(0));
-		 * nuevoMovimientoInventarioAux.setSaldoE(new BigDecimal(0));
-		 */
-	}
-
-	public void cargarMI(String id) {
-		tempMovimientoInventarios.clear();
-		System.out.println("Lista de MI id: " + id);
-		tempMovimientoInventarios = ordenInventarioI.listaMovimientoI(id);
-		System.out.println("Lista de MI: " + tempMovimientoInventarios.size());
-	}
-
-	public void agregarMovimiento() {
-
-		try {
-
-			RequestContext context = RequestContext.getCurrentInstance();
-
-			double resultado;
-			double cantidadMo = nuevoMovimientoInventario.getCantidadMov().doubleValue();
-			double cantidadE = existencia.getCantidadE().doubleValue();
-
-			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
-
-				if (cantidadMo <= cantidadE) {
-
-					// Ajuste negativo a la existencia/Mov
-					resultado = cantidadE - cantidadMo;
-
-					existencia.setCantidadE(BigDecimal.valueOf(resultado));
-					nuevoMovimientoInventario.setSaldoE(getExistencia().getCantidadE());
-					nuevoMovimientoInventario.setDism(BigDecimal.valueOf(cantidadMo));
-					nuevoMovimientoInventario.setIncrem(new BigDecimal(0));
-
-					System.out.println("Este es la nueva cantidad ajustada (Existencia): "
-							+ existencia.getCantidadE().doubleValue());
-					System.out.println("Este es la nueva cantidad ajustada (Mov Inventario): "
-							+ existencia.getCantidadE().doubleValue());
-
-					// Añadir a la lista temporal de Existenciass
-					tempExistencias.add(getExistencia());
-
-					nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
-					setMovimientoInventarios(nuevoMovimientoInventarios);
-					mensajeInfo(
-							"Se ha almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") correctamente.");
-
-					nuevoMovimientoInventario = new Movimientosinventario();
-					existencia = new Existencia();
-					context.execute("PF('ingresarMI').hide();");
-
-				} else {
-					mensajeError("La cantidad es mayor que el saldo existente");
-				}
-			} else {
-				// Ajuste positivo a la existencia/Mov
-
-				resultado = cantidadMo + cantidadE;
-				existencia.setCantidadE(BigDecimal.valueOf(resultado));
-				nuevoMovimientoInventario.setSaldoE(getExistencia().getCantidadE());
-				nuevoMovimientoInventario.setIncrem(BigDecimal.valueOf(cantidadMo));
-				nuevoMovimientoInventario.setDism(new BigDecimal(0));
-
-				System.out.println(
-						"Este es la nueva cantidad ajustada (Existencia): " + existencia.getCantidadE().doubleValue());
-				System.out.println("Este es la nueva cantidad ajustada (Mov Inventario): "
-						+ existencia.getCantidadE().doubleValue());
-
-				// Añadir a la lista temporal de Existencias
-				tempExistencias.add(getExistencia());
-
-				nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
-				setMovimientoInventarios(nuevoMovimientoInventarios);
-
-				mensajeInfo("Se ha almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") correctamente.");
-
-				nuevoMovimientoInventario = new Movimientosinventario();
-				existencia = new Existencia();
-
-				context.execute("PF('ingresarMI').hide();");
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public void agregarMovimientoTransf() {
-
-		RequestContext context = RequestContext.getCurrentInstance();
-
-		/** Ajuste del saldo existencia **/
-
-		double resultado;
-		double resultadoAux;
-		double cantidadMo = nuevoMovimientoInventario.getCantidadMov().doubleValue();
-		double cantidadMoAux = nuevoMovimientoInventarioAux.getCantidadMov().doubleValue();
-		double cantidadE = existencia.getCantidadE().doubleValue();
-		double cantidadEAux = existenciaAux.getCantidadE().doubleValue();
-
-		if (existencia.getUnidadmedida().getIdUmedida() == existenciaAux.getUnidadmedida().getIdUmedida()) {
-			System.out.println("Entra a la validacion");
-			cantidadMoAux = nuevoMovimientoInventario.getCantidadMov().doubleValue();
-			nuevoMovimientoInventarioAux.setCantidadMov(nuevoMovimientoInventario.getCantidadMov());
-
-		}
-
-		resultado = cantidadE - cantidadMo;
-		resultadoAux = cantidadEAux + cantidadMoAux;
-
-		// Setteo de objetos y listas
-
-		existencia.setCantidadE(BigDecimal.valueOf(resultado));
-		existenciaAux.setCantidadE(BigDecimal.valueOf(resultadoAux));
-
-		tempExistencias.add(getExistencia());
-		tempExistencias.add(getExistenciaAux());
-
-		nuevoMovimientoInventario.setSaldoE(getExistencia().getCantidadE());
-		nuevoMovimientoInventario.setIncrem(BigDecimal.valueOf(cantidadMo));
-		nuevoMovimientoInventario.setDism(new BigDecimal(0));
-
-		nuevoMovimientoInventarioAux.setSaldoE(getExistenciaAux().getCantidadE());
-		nuevoMovimientoInventarioAux.setIncrem(new BigDecimal(0));
-		nuevoMovimientoInventarioAux.setDism(BigDecimal.valueOf(cantidadMoAux));
-
-		nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
-
-		nuevoMovimientoInventarios.add(nuevoMovimientoInventarioAux);
-
-		setMovimientoInventarios(nuevoMovimientoInventarios);
-
-		mensajeInfo("Se han almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") y ("
-				+ nuevoMovimientoInventarioAux.getIdExistencia() + ") correctamente.");
-
-		nuevoMovimientoInventarioAux = new Movimientosinventario();
-		nuevoMovimientoInventario = new Movimientosinventario();
-
-		existencia = new Existencia();
-		existenciaAux = new Existencia();
-
-		nuevoMovimientoInventario.setCantidadMov(new BigDecimal(0));
-		nuevoMovimientoInventarioAux.setCantidadMov(new BigDecimal(0));
-
-		context.execute("PF('ingresarMITrans').hide();");
-
-	}
-
-	/** Guarda MI en la base de datos **/
-	public void guardarMovimientosInv() {
-		for (Movimientosinventario m : nuevoMovimientoInventarios) {
-			try {
-				movimientoInventarioI.save(m);
-			} catch (Exception e) {
-				System.out.println(e);
-				// e.printStackTrace();
-			}
-
-		}
-	}
-
-	/** Actualizar Existencias en la base de datos **/
-	public void actualizarExistencias() {
-		System.out.println(tempExistencias.size());
-		for (Existencia existencia : tempExistencias) {
-			try {
-				existenciasI.update(existencia);
-			} catch (Exception e) {
-				System.out.println(e);
-				// e.printStackTrace();
-			}
-
-		}
-	}
-
-	public void editarMovimiento() {
-
-		try {
-			double cantidadMo = movInventario.getCantidadMov().doubleValue();
-			double cantidadE = cambiarDatosExistencia(movInventario.getIdExistencia()).getCantidadE().doubleValue();
-			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
-
-				if (cantidadMo <= cantidadE) {
-					System.out.println("Entra a");
-					editarMovimientoTemporal();
-					// setMovimientoInventarios(nuevoMovimientoInventarios);
-
-				} else {
-					mensajeError("La cantidad es mayor que el saldo existente");
-				}
-			} else {
-				System.out.println("Entra a else");
-				editarMovimientoTemporal();
-				// setMovimientoInventarios(nuevoMovimientoInventarios);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public void editarMovimientoTemporal() {
-		int i = 0;
-		RequestContext context = RequestContext.getCurrentInstance();
-		System.out.println("Entra aL EDITAR");
-
-		for (Movimientosinventario m : nuevoMovimientoInventarios) {
-			if (m.getIdExistencia().equals(getMovInventario().getIdExistencia())) {
-				nuevoMovimientoInventarios.set(i, getMovInventario());
-
-				mensajeInfo("Se ha editado (" + getMovInventario().getIdExistencia() + ") correctamente.");
-
-				setMovInventario(new Movimientosinventario());
-
-				context.execute("PF('editarMI').hide();");
-				// context.update("formAgregarMI");
-				break;
-			} else {
-				i++;
-			}
-		}
-	}
-
-	public void eliminarMovimiento() {
-
-		try {
-			nuevoMovimientoInventarios.remove(movInventario);
-			setMovimientoInventarios(nuevoMovimientoInventarios);
-			mensajeInfo("Se ha eliminado el movimiento de Inventario (" + movInventario.getIdExistencia() + ")");
-		} catch (Exception e) {
-			e.printStackTrace();
-			mensajeError("Ha ocurrido un error interno.");
-		}
-
-	}
-
-	public String cambiarResponsable(String session) {
-		String nombre = "";
-
-		nuevoOrdeninventario.setResponsableOi(session);
-
-		if (nuevoOrdeninventario == null) {
-			nombre = "N/A";
-		} else {
-			nombre = nuevoOrdeninventario.getResponsableOi();
-		}
-
-		return nombre;
-	}
-
-	public long cambiarFecha(long session) {
-		// nuevoOrdeninventario.setFechaingresoOi(session);
-		Date fecha = new Date(session);
-		System.out.println("Si es long :v " + session);
-		System.out.println("Esta es la fecha: " + fecha);
-
-		return session;
-	}
-
-	public void llenarCombo() {
-
-		for (Tipordeninv tipordeninv : tipordeninvs) {
-			if (tipordeninv.getIdTipordeninv() == 1 || tipordeninv.getIdTipordeninv() == 2
-					|| tipordeninv.getIdTipordeninv() == 3 || tipordeninv.getIdTipordeninv() == 6
-					|| tipordeninv.getIdTipordeninv() == 7) {
-
-				temptipordeninvs.add(tipordeninv);
-				System.out.println("Se ha agregado: " + tipordeninv.getNombreToi());
-
-			}
-		}
-
-	}
-
-	/******
-	 * Agregar/Editar/Eliminar en lista real
-	 ****/
-	public void agregarOrdenI() {
-		try {
-
-			/** Creacion del IdOrdenInv **/
-			obtenerIdOrdenId();
-
-			/** Seteo de Selects (ComboBox) **/
-			OrdenISelect();
-
-			/** Seteo de Ids en la lista de Movimientos Inventarios **/
-			cambiarIdMov(nuevoOrdeninventario);
-
-			/** GUARDAR **/
-			ordenInventarioI.save(nuevoOrdeninventario);
-			guardarMovimientosInv();
-			actualizarExistencias();
-
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
-
-			mensajeInfo("El orden de inventario ( " + nuevoOrdeninventario.getIdOrdeninventario()
-					+ " ) se ha almacenado exitosamente");
-
-			nuevoOrdeninventario = new Ordeninventario();
-			movimientoInventarios.clear();
-
-			// Llenar las listas con los nuevos registros
-			ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
-			existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-
+			metodos = metodoI.getListMetodos(uni.getCodigoU());
 		} catch (Exception e) {
-
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+			// TODO: handle exception
 		}
-	}
 
-	/* PENDIENTE */
-	public void buscar() {
-		System.out.println("Esta entrando al buscar");
-	}
-
-	public void OrdenISelect() {
-		// set de TipoOrdenInventario
-		nuevoOrdeninventario.setTipordeninv(tipoOrdenSelect);
-
-	}
-
-	/****** Metodo para construir el id ****/
-	public void obtenerIdOrdenId() {
-		try {
-			/** Creacion del Obtener fecha **/
-			String fecha = obtenerFecha();
-			// String fecha = "2020-05-05";
-			String[] partsFecha = fecha.split("-");
-			String anio = partsFecha[0];
-
-			/** Creacion del IdOrdenInv **/
-			String codigoAux = ordenInventarioI.maxIdOrdenI(su.UNIDAD_USUARIO_LOGEADO, fecha);
-
-			if (codigoAux == null) {
-				codigoAux = ("DC-OI-0000-" + anio);
-			} else {
-				System.out.println("Problema resolvido");
-			}
-
-			System.out.println("Este es el id que trae: " + codigoAux);
-
-			String[] partsId = codigoAux.split("-");
-
-			String codigoCortado = partsId[2];
-			System.out.println("Este es el id convertido en numero: " + codigoCortado);
-
-			Integer codigo = Integer.parseInt(codigoCortado);
-			codigo = codigo + 1;
-			System.out.println("Este es el id oficial: " + codigo);
-
-			String codigoOrden = codigo.toString();
-			// nuevoExistencia.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			// nuevoOrdeninventario.getUnidad().setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			UnidadLabo uni = new UnidadLabo();
-
-			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-
-			unidadLabo = ordenInventarioI.obtenerUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			nuevoOrdeninventario.setUnidad(unidadLabo);
-
-			switch (codigoOrden.length()) {
-			case 1:
-				nuevoOrdeninventario
-						.setIdOrdeninventario(uni.getCodigoU() + "-OI-" + "0000" + codigoOrden + "-" + anio);
-				break;
-			case 2:
-				nuevoOrdeninventario.setIdOrdeninventario(uni.getCodigoU() + "-OI-" + "000" + codigoOrden + "-" + anio);
-				break;
-			case 3:
-				nuevoOrdeninventario.setIdOrdeninventario(uni.getCodigoU() + "-OI-" + "00" + codigoOrden + "-" + anio);
-				break;
-			case 4:
-				nuevoOrdeninventario.setIdOrdeninventario(uni.getCodigoU() + "-OI-" + "0" + codigoOrden + "-" + anio); // DC-E-2217
-				break;
-			case 5:
-				nuevoOrdeninventario.setIdOrdeninventario(uni.getCodigoU() + "-OI-" + codigoOrden + "-" + anio); // DC-E-2217
-				break;
-
-			default:
-				break;
-			}
-
-			System.out.println("Este es el nuevo id: " + nuevoOrdeninventario.getIdOrdeninventario());
-		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
-		}
-	}
-
-	/****** Cambiar Id de Movimientos Inventarios ****/
-	public void cambiarIdMov(Ordeninventario ordeninventario) {
-		int i = 0;
-		for (Movimientosinventario movimientosinventario : nuevoMovimientoInventarios) {
-
-			movimientosinventario.setOrdeninventario(ordeninventario);
-			movimientosinventario.setFechaMi(ordeninventario.getFechaingresoOi());
-			movimientosinventario.setCantidadDmt(0);
-
-			nuevoMovimientoInventarios.set(i, movimientosinventario);
-			// movimientoInventarios = nuevoMovimientoInventarios;
-
-			i++;
-		}
-	}
-
-	/****** Cambiar valor de tabla ****/
-	public Existencia cambiarDatosExistencia(String id) {
-		Existencia existenciatemp = movimientoInventarioI.buscarExistenciaById(id);
-		return existenciatemp;
 	}
 
 	/****** Mensajes Personalizados ****/
+
 	public void mensajeError(String mensaje) {
 
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -773,174 +167,78 @@ public class MetodoController implements Serializable {
 	}
 
 	public void mensajeInfo(String mensaje) {
-		FacesContext context = FacesContext.getCurrentInstance();
 
+		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
-	/****** Manejo de paneles ****/
-	public void cambiarPanel() {
+	/****** Limpiar Campos ****/
 
-		RequestContext context = RequestContext.getCurrentInstance();
-		if (getIdTemporal().equals("1")) {
-			mensajeError("Debe seleccionar un tipo de Inventario");
-		} else if (getIdTemporal().equals("7")) {
+	public void limpiarCampos() {
 
-			context.execute("PF('ingresarMITrans').show();");
-			System.out.println("Este es tranferencia");
-		} else {
-			try {
-				context.execute("PF('ingresarMI').show();");
-				// System.out.println("este es el cambio de combo" +
-				// getTipoOrdenSelect().getNombreToi());
-			} catch (Exception e) {
-				e.printStackTrace();
-				mensajeError("Debe seleccionar un tipo de Inventario");
-			}
-
-		}
-
-	}
-
-	public void validarPanelRegistro() {
-		try {
-			String fecha = obtenerFecha();
-			String mes = obtenerMes();
-
-			String[] parts = fecha.split("-");
-
-			String anio = parts[0];
-			String m = parts[1];
-
-			if (buscarFechaSaldoEx(anio, m) == false) {
-
-				mensajeError("No estan registrado el mes (" + mes + ") Cierre Saldo existecia mensual");
-				System.out.println("Esta entrando a la funcion");
-
-			} else {
-
-				RequestContext context = RequestContext.getCurrentInstance();
-				context.execute("PF('nuevoMI').show();");
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			mensajeError("Ha ocurrido un error");
-		}
-	}
-
-	public boolean buscarExistencia(String id) {
-		boolean resultado = false;
-
-		for (Movimientosinventario movimientosinventario : nuevoMovimientoInventarios) {
-			if (movimientosinventario.getIdExistencia().equals(id)) {
-				resultado = true;
-				break;
-			} else {
-				resultado = false;
-			}
-
-		}
-
-		return resultado;
-	}
-
-	public boolean buscarMovInv() {
-		return true;
-	}
-
-	/****** Metodos de existencias ****/
-	public void auxPanel(int a) {
 		try {
 
-			setAux(a);
-			System.out.println("Este es el valor que trae: " + getAux());
+			// Metodo
+			metodo = new Metodo();
+			nuevoMetodo = new Metodo();
+			servicioSelect = new Servicio();
+
+			// Detalle Metodo
+			nuevoDetalleMetodos.clear();
+			tempDetalleMetodos.clear();
+			nuevoDetalleMetodo = new Detallemetodo();
+			detalleMetodo = new Detallemetodo();
+			nuevoDetalleMetodoAux = new Detallemetodo();
+			nuevoDetalleMetodo.setCantidadDmt(0);
+			nuevoDetalleMetodoAux.setCantidadDmt(0);
+
+			actualizarExistencias();
+			mensajeInfo("Se ha limpiado todo el formulario");
 
 		} catch (Exception e) {
+
 			e.printStackTrace();
 		}
 
 	}
 
-	public void cargarExistencias(String idPanel) {
+	/*
+	 * private boolean buscarMetodos(String valor) {
+	 * 
+	 * try { tblMetodos(); } catch (Exception e) {
+	 * 
+	 * e.printStackTrace(); }
+	 * 
+	 * boolean resultado = false; for (Metodo m : metodos) { if
+	 * (m.getNombreMt().equals(valor)) { resultado = true; break; } else {
+	 * resultado = false; } }
+	 * 
+	 * return resultado; }
+	 */
 
-		try {
-
-			if (idPanel.equals("7")) {
-				transExistencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-				filtrarTransExistencias = transExistencias;
-				System.out.println("Existencias transferencia consultadas: " + transExistencias.size());
-
-			} else {
-				existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-				filtrarExistencias = existencias;
-				System.out.println("Existencias consultadas: " + existencias.size());
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void pasarNombre(String nombre) {
+		setNombreM(nombre);
 
 	}
+
+	/*************************** NUEVO METODO ***************************/
+	/****** Nuevo - Seleccionar Existencia ****/
 
 	public void seleccionarExistencia() {
 
 		try {
-			RequestContext context = RequestContext.getCurrentInstance();
 
 			if (buscarExistencia(selectExistencia.getIdExistencia()) == false) {
 
-				System.out.println("Este es el auxiliar de panel: " + getAux());
+				RequestContext context = RequestContext.getCurrentInstance();
+				getNuevoDetalleMetodo().setIdExistencia(getSelectExistencia().getIdExistencia());
 
-				if (getIdTemporal().equals("7")) {
-					if (getAux() == 2) {
-
-						if (validarExistenciaTransf(existencia, selectExistencia) == true) {
-							getNuevoMovimientoInventarioAux().setIdExistencia(getSelectExistencia().getIdExistencia());
-							mensajeInfo("Se seleccionó la Existencia de bodega de destino ("
-									+ selectExistencia.getIdExistencia() + ")");
-
-							setExistenciaAux(selectExistencia);
-							selectExistencia = new Existencia();
-							filtrarTransExistencias = new ArrayList<Existencia>();
-							setAux(0);
-							context.execute("PF('listadoExTransf').hide();");
-						} else {
-							mensajeError("La existencia seleccionada (" + selectExistencia.getIdExistencia()
-									+ ") no coincide con la existencia de origen (" + existencia.getIdExistencia()
-									+ ")");
-						}
-
-					} else if (getAux() == 1) {
-
-						if (validarExistenciaTransf(existenciaAux, selectExistencia) == true) {
-							getNuevoMovimientoInventario().setIdExistencia(getSelectExistencia().getIdExistencia());
-							mensajeInfo("Se seleccionó la Existencia de bodega de origen ("
-									+ selectExistencia.getIdExistencia());
-
-							setExistencia(selectExistencia);
-							selectExistencia = new Existencia();
-							filtrarTransExistencias = new ArrayList<Existencia>();
-							setAux(0);
-							context.execute("PF('listadoExTransf').hide();");
-						} else {
-							mensajeError("La existencia seleccionada (" + selectExistencia.getIdExistencia()
-									+ ") no coincide con la existencia de origen (" + existenciaAux.getIdExistencia()
-									+ ")");
-						}
-
-					}
-				} else {
-					getNuevoMovimientoInventario().setIdExistencia(getSelectExistencia().getIdExistencia());
-					mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
-
-					setExistencia(selectExistencia);
-					selectExistencia = new Existencia();
-					filtrarExistencias = new ArrayList<Existencia>();
-					context.execute("PF('listadoEx').hide();");
-				}
+				mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
+				existencia = selectExistencia;
+				selectExistencia = new Existencia();
+				filterExistencia = new ArrayList<Existencia>();
+				context.execute("PF('listadoEx').hide();");
 
 			} else {
 				mensajeError("La existencia (" + selectExistencia.getIdExistencia() + ") ya ha sido seleccionada");
@@ -954,119 +252,16 @@ public class MetodoController implements Serializable {
 
 	}
 
-	public boolean validarExistenciaTransf(Existencia e, Existencia seleccionE) {
+	/****** Nuevo - Listado Existencias ****/
 
-		boolean resultado;
-
-		if (e.getIdExistencia() == null) {
-
-			resultado = true;
-
-		} else if (e.getPresentacion().getNombrePrs().equals(seleccionE.getPresentacion().getNombrePrs())
-				&& e.getEstadoproducto().getNombreEstp().equals(seleccionE.getEstadoproducto().getNombreEstp())
-				&& e.getGrado().getNombreGr().equals(seleccionE.getGrado().getNombreGr())
-				&& e.getPosgiro().getNombrePg().equals(seleccionE.getPosgiro().getNombrePg())
-				&& e.getConcentracion().getNombreCon().equals(seleccionE.getConcentracion().getNombreCon())) {
-
-			resultado = true;
-
-		} else {
-			resultado = false;
-		}
-
-		return resultado;
-	}
-
-	public void cargarExistenciasTemp() {
-		RequestContext context = RequestContext.getCurrentInstance();
-		if (existencia.getIdExistencia() == null) {
-			mensajeError("Debe seleccionar una existencia");
-		} else {
-			tempExistencias.clear();
-			tempExistencias.add(getExistencia());
-			System.out.println("Este es el id de existencia: " + getExistencia().getIdExistencia());
-			System.out.println("Este es el id de existencia: " + tempExistencias.size());
-			// PF('tblexis')
-			// context.execute("PF('tblexis')");
-			context.execute("PF('verEx').show();");
-
-		}
-
-	}
-
-	public void prueba() {
-		mensajeInfo("esto funca");
-	}
-
-	/****** Setear valos de combo para validacion ****/
-	public void cambiarCombo(String id) {
-		// System.out.println("Este es valor que trae: " + id);
-		setIdTemporal(id);
-		// System.out.println("Este es valor setteado: " + getIdTemporal());
-	}
-
-	/****** Metodos de manejo de fechas ****/
-
-	public String obtenerFecha() {
-
-		Calendar calendar = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		String date = sdf.format(calendar.getTime());
-
-		String[] parts = date.split("-");
-
-		String dia = parts[2];
-
-		System.out.println("Fecha de hoy: " + date);
-		System.out.println("Este es el dia: " + dia);
-
-		if (dia.equals("31")) {
-			calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - 1);
-			System.out.println("Fecha de hoy restada un dia: " + sdf.format(calendar.getTime()));
-
-			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-			System.out.println("Fecha de hoy restado el mes: " + sdf.format(calendar.getTime()));
-
-		} else {
-			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-			System.out.println(
-					"Fecha de hoy restado el mes sin tomar en cuenta el dia: " + sdf.format(calendar.getTime()));
-		}
-
-		System.out.println("Fecha restada: " + sdf.format(calendar.getTime()));
-
-		String fecha = sdf.format(calendar.getTime());
-
-		return fecha;
-
-	}
-
-	public String obtenerMes() {
-		Calendar calendar = Calendar.getInstance();
-
-		SimpleDateFormat mes = new SimpleDateFormat("MMMM");
-
-		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-
-		// System.out.println("Fecha: " + mes.format(calendar.getTime()));
-
-		String fecha = mes.format(calendar.getTime());
-
-		return fecha;
-	}
-
-	private boolean buscarFechaSaldoEx(String anio, String mes) {
+	public boolean buscarExistencia(String id) {
 
 		boolean resultado = false;
 
-		int a = Integer.parseInt(anio);
-		int m = Integer.parseInt(mes);
+		for (Detallemetodo detalleMetodos : nuevoDetalleMetodos) {
 
-		for (SaldoExistencia saldoExistencia : saldoExistencias) {
-			if (saldoExistencia.getId().getAnio() == a && saldoExistencia.getId().getMes() == m) {
+			if (detalleMetodos.getIdExistencia().equals(id)) {
 				resultado = true;
-				saldoExistencia = new SaldoExistencia();
 				break;
 			} else {
 				resultado = false;
@@ -1077,118 +272,661 @@ public class MetodoController implements Serializable {
 		return resultado;
 	}
 
-	public void cambiarFechaFiltro() {
-		String fecha = new SimpleDateFormat("dd-MM-yyyy").format(getFechaFiltroAux());
-		setFechaFiltro(fecha);
-		System.out.println("Esta es la fecha del filtro: " + fecha);
-	}
-	
+	/****** Nuevo - Agregar Detalle Temp ****/
 
-    public boolean filterByDate(Object value, Object filter, Locale locale) {
+	public void agregarDetalleTemp() {
 
-        if( filter == null ) {
-            return true;
-        }
+		RequestContext context = RequestContext.getCurrentInstance();
 
-        if( value == null ) {
-            return false;
-        }
+		try {
 
-        return DateUtils.truncatedEquals((Date) filter, (Date) value, Calendar.DATE);
-    }
+			if (nuevoDetalleMetodo.getIdExistencia() == null) {
+				mensajeError("No ha seleccionado Ninguna Existencia");
+			} else {
 
-	public boolean disabledSelectItem() {
-		if (nuevoMovimientoInventarios.size() == 0) {
-			return true;
-		} else {
-			return false;
+				float cantidadMo = nuevoDetalleMetodo.getCantidadDmt();
+				nuevoDetalleMetodo.setCantidadDmt(cantidadMo);
+
+				String unidad = existencia.getUnidadmedida().getSiglaUm();
+
+				nuevoDetalleMetodo.setIdUmedida(unidad);
+
+				tempExistencias.add(getExistencia());
+				nuevoDetalleMetodos.add(nuevoDetalleMetodo);
+				setDetalleMetodos(nuevoDetalleMetodos);
+
+				mensajeInfo("Se ha almacenado (" + nuevoDetalleMetodo.getIdExistencia() + ") correctamente.");
+
+				nuevoDetalleMetodo = new Detallemetodo();
+				existencia = new Existencia();
+				existencias = detalleMetodoI.listaExistencias(su.UNIDAD_USUARIO_LOGEADO);
+				tempExistencias = new ArrayList<Existencia>();
+				context.execute("PF('nuevaExistencia').hide();");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 	}
-	// Settear valores dentro de tablas i formularios
 
-	/*
-	 * get and set
-	 */
+	/****** Nuevo - Editar Temporal ****/
 
-	public List<Movimientosinventario> getMovimientoInventarios() {
-		return movimientoInventarios;
+	public void editarTemp() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+		for (Detallemetodo dm : nuevoDetalleMetodos) {
+			if (dm.getIdExistencia().equals(detalleMetodo.getIdExistencia())) {
+
+				mensajeInfo("Se ha editado el Detalle Método(" + detalleMetodo.getIdExistencia() + ")");
+				context.execute("PF('editarDetalleTemp').hide();");
+
+				break;
+			} else {
+
+			}
+
+		}
+
 	}
 
-	public void setMovimientoInventarios(List<Movimientosinventario> movimientoInventarios) {
-		this.movimientoInventarios = movimientoInventarios;
+	/****** Nuevo- Eliminar Temporal ****/
+
+	public void eliminarTemp() {
+
+		try {
+			nuevoDetalleMetodos.remove(detalleMetodo);
+			setDetalleMetodos(nuevoDetalleMetodos);
+			mensajeInfo("Se ha eliminado el Detalle Método (" + detalleMetodo.getIdExistencia() + ")");
+		} catch (Exception e) {
+			e.printStackTrace();
+			mensajeError("Ha ocurrido un error interno.");
+		}
+
 	}
 
-	public Movimientosinventario getNuevoMovimientoInventario() {
-		return nuevoMovimientoInventario;
+	/****** Nuevo - Cargar Detalle Metodo ****/
+
+	public void cargarDetalleMet(String id) {
+
+		tempDetalleMetodos = detalleMetodoI.listaDetallesById(id);
+
 	}
 
-	public void setNuevoMovimientoInventario(Movimientosinventario nuevoMovimientoInventario) {
-		this.nuevoMovimientoInventario = nuevoMovimientoInventario;
+	/****** Nuevo - Guardar Metodo ******/
+
+	public void guardarMetodo() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		try {
+
+			if (nuevoMetodo.getNombreMt() == "") {
+
+				mensajeError("Ingrese el Método");
+
+			} else if (servicioSelect == null) {
+
+				mensajeError("Seleccione el Servicio");
+
+			} else if (nuevoDetalleMetodos.size() == 0) {
+
+				mensajeError("Debe ingresar Detalle Metodo");
+
+			} else {
+
+				/** ID Metodo **/
+				getIdMetodo();
+				nuevoMetodo.setServicio(servicioSelect);
+				metodoI.save(nuevoMetodo);
+
+				/** ID Detalle Metodo **/
+				obtenerIdDetalle(nuevoMetodo);
+				guardarDetalleM();
+
+				/** ID ORD INV - MOV INV **/
+
+				mensajeInfo("El Método (" + nuevoMetodo.getIdMetodo() + ") se ha almacenado exitosamente");
+				context.execute("PF('nuevoMetodo').hide();");
+
+				// Limpiar Campos y actualizar
+				actualizarExistencias();
+				tblMetodos();
+				servicioSelect = new Servicio();
+				nuevoMetodo = new Metodo();
+				nuevoDetalleMetodos.clear();
+				tempDetalleMetodos.clear();
+				nuevoDetalleMetodo = new Detallemetodo();
+				detalleMetodo = new Detallemetodo();
+				nuevoDetalleMetodoAux = new Detallemetodo();
+				nuevoDetalleMetodo.setCantidadDmt(0);
+				nuevoDetalleMetodoAux.setCantidadDmt(0);
+
+				existencias = detalleMetodoI.listaExistencias(su.UNIDAD_USUARIO_LOGEADO);
+				tempExistencias = new ArrayList<Existencia>();
+				selectExistencia = new Existencia();
+			}
+
+		} catch (Exception e) {
+
+			mensajeError("Ha ocurrido un error");
+			e.printStackTrace();
+		}
 	}
 
-	public Tipordeninv getTipoOrdenSelect() {
-		return tipoOrdenSelect;
+	/****** Nuevo - Construccion ID Metodo ******/
+
+	public void getIdMetodo() {
+		try {
+
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+
+			/** Creacion del ID **/
+			String codigoAux = metodoI.maxIdMetodo(su.UNIDAD_USUARIO_LOGEADO);
+
+			if (codigoAux == null) {
+				codigoAux = (uni.getCodigoU() + "-M0000");
+			}
+
+			String[] partsId = codigoAux.split("-M", 2);
+
+			partsId = partsId[1].split("-");
+
+			String codigoCortado = partsId[0];
+
+			Integer codigo = Integer.parseInt(codigoCortado);
+			codigo = codigo + 1;
+
+			Long id = su.id_usuario_log;
+
+			String codigoMetodo = codigo.toString();
+			nuevoMetodo.setAuxIdmetodo(id.intValue());
+
+			switch (codigoMetodo.length()) {
+
+			case 1:
+				nuevoMetodo.setIdMetodo(uni.getCodigoU() + "-M" + "000" + codigoMetodo);
+
+				break;
+			case 2:
+				nuevoMetodo.setIdMetodo(uni.getCodigoU() + "-M" + "00" + codigoMetodo);
+				break;
+			case 3:
+				nuevoMetodo.setIdMetodo(uni.getCodigoU() + "-M" + "0" + codigoMetodo);
+				break;
+			case 4:
+				nuevoMetodo.setIdMetodo(uni.getCodigoU() + "-M" + codigoMetodo);
+
+				break;
+
+			default:
+				break;
+			}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error");
+			e.printStackTrace();
+		}
 	}
 
-	public void setTipoOrdenSelect(Tipordeninv tipoOrdenSelect) {
-		this.tipoOrdenSelect = tipoOrdenSelect;
+	/****** Nuevo - Actualizar Existencias BDD ******/
+	public void actualizarExistencias() {
+
+		for (Existencia existencia : tempExistencias) {
+			try {
+				existenciasI.update(existencia);
+			} catch (Exception e) {
+
+			}
+
+		}
 	}
 
-	public List<Tipordeninv> getTipordeninvs() {
-		return tipordeninvs;
+	/****** Nuevo - Obtener Detalle Metodo ******/
+	public void obtenerIdDetalle(Metodo metodo) {
+		int i = 0;
+		for (Detallemetodo dm : nuevoDetalleMetodos) {
+
+			dm.setMetodo(metodo);
+
+			nuevoDetalleMetodos.set(i, dm);
+
+			i++;
+		}
 	}
 
-	public void setTipordeninvs(List<Tipordeninv> tipordeninvs) {
-		this.tipordeninvs = tipordeninvs;
+	/****** Nuevo - Guardar Detalle Metodo ******/
+	public void guardarDetalleM() {
+
+		for (Detallemetodo dm : nuevoDetalleMetodos) {
+			try {
+				detalleMetodoI.save(dm);
+			} catch (Exception e) {
+
+			}
+
+		}
 	}
 
-	public Tipordeninv getTipordeninv() {
-		return tipordeninv;
+	/*************************** EDITAR METODO ***************************/
+	/****** Editar - Seleccionar Existencia ******/
+	public void seleccionarExistenciaEdit() {
+
+		try {
+
+			if (buscarExistenciaEdit(selectExDMTemp.getIdExistencia()) == false) {
+
+				RequestContext context = RequestContext.getCurrentInstance();
+
+				getTempDetalleMetodoEdit().setIdExistencia(getSelectExDMTemp().getIdExistencia());
+
+				System.out.println("Existencia Seleccionada:" + selectExDMTemp.getIdExistencia());
+				mensajeInfo("Se seleccionó la Existencia (" + selectExDMTemp.getIdExistencia());
+				existencia = selectExDMTemp;
+				selectExDMTemp = new Existencia();
+				filterExistencia = new ArrayList<Existencia>();
+				context.execute("PF('listadoExTemp').hide();");
+
+			} else {
+				mensajeError("La existencia (" + selectExDMTemp.getIdExistencia() + ") ya ha sido seleccionada");
+				selectExDMTemp = new Existencia();
+			}
+
+		} catch (Exception e) {
+			mensajeError("No se ha seleccionado ninguna Existencia");
+			e.printStackTrace();
+		}
+
 	}
 
-	public void setTipordeninv(Tipordeninv tipordeninv) {
-		this.tipordeninv = tipordeninv;
+	/****** Editar - Listado de Existencias ******/
+
+	public boolean buscarExistenciaEdit(String id) {
+
+		boolean resultado = false;
+
+		for (Detallemetodo detalleMetodos : tempDetalleMetodosEdit) {
+
+			if (detalleMetodos.getIdExistencia().equals(id)) {
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+
+		}
+
+		return resultado;
 	}
 
-	public List<Movimientosinventario> getNuevoMovimientoInventarios() {
-		return nuevoMovimientoInventarios;
+	/****** Editar - Agregar Detalle Temp ******/
+
+	public void agregarDetalleTempEdit() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		try {
+
+			if (tempDetalleMetodoEdit.getIdExistencia() == null) {
+				mensajeError("No ha seleccionado Ninguna Existencia");
+			} else {
+
+				float cantidadMo = tempDetalleMetodoEdit.getCantidadDmt();
+				tempDetalleMetodoEdit.setCantidadDmt(cantidadMo);
+
+				String unidad = existencia.getUnidadmedida().getSiglaUm();
+				tempDetalleMetodoEdit.setIdUmedida(unidad);
+
+				tempExistencias.add(getExistencia());
+				tempDetalleMetodosEdit.add(tempDetalleMetodoEdit);
+				setTempDetalleMetodosEdit(tempDetalleMetodosEdit);
+				mensajeInfo("Se ha almacenado (" + tempDetalleMetodoEdit.getIdExistencia() + ") correctamente.");
+
+				tempDetalleMetodoEdit = new Detallemetodo();
+				existencia = new Existencia();
+				existencias = detalleMetodoI.listaExistencias(su.UNIDAD_USUARIO_LOGEADO);
+				tempExistencias = new ArrayList<Existencia>();
+				context.execute("PF('nuevaExTemp').hide();");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
-	public void setNuevoMovimientoInventarios(List<Movimientosinventario> nuevoMovimientoInventarios) {
-		this.nuevoMovimientoInventarios = nuevoMovimientoInventarios;
+	/****** Editar - Editar Detalle M. Temporal ******/
+
+	public void editDMTemp() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+		for (Detallemetodo dm : tempDetalleMetodosEdit) {
+			if (dm.getIdExistencia().equals(tempDetalleMetodoEdit.getIdExistencia())) {
+
+				mensajeInfo("Se ha editado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+				context.execute("PF('editDMTemp').hide();");
+
+				break;
+			} else {
+
+			}
+
+		}
+
 	}
 
-	public List<Existencia> getExistencias() {
-		return existencias;
+	/****** Nuevo- Eliminar Temporal ****/
+
+	public void eliminarDMTemp() {
+
+		try {
+			tempDetalleMetodosEdit.remove(tempDetalleMetodoEdit);
+			setListasTempDelete();
+			mensajeInfo("Se ha eliminado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+		} catch (Exception e) {
+			e.printStackTrace();
+			mensajeError("Ha ocurrido un error interno.");
+		}
+
 	}
 
-	public void setExistencias(List<Existencia> existencias) {
-		this.existencias = existencias;
+	/****** Editar - Editar Método ******/
+
+	public void editMetodo() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		cambiarIDDetalleM(metodo);
+		cambiarIDDetalleProAdd(metodo);
+
+		// Eliminar A la base de datos
+		eliminarDetallesM(dmDelete);
+
+		// Agregar A la base de datos
+		guardarDetalleM(dmAddEdit);
+
+		// Modificar A la base de datos
+		actualizarDetalleM(tempDetalleMetodosEdit);
+		actualizarMetodo(metodo);
+
+		mensajeInfo("El Método (" + metodo.getNombreMt() + ") se actualizado exitosamente");
+		tblMetodos();
+		context.execute("PF('editMetodo').hide();");
+
 	}
 
-	public List<Movimientosinventario> getFiltroMovimientoInventarios() {
-		return filtroMovimientoInventarios;
+	/****** Editar - Guardar Detalle M ******/
+
+	public void guardarDetalleM(List<Detallemetodo> dm) {
+
+		if (dm.size() == 0) {
+		} else {
+			for (Detallemetodo detalleM : dm) {
+				try {
+					detalleMetodoI.save(detalleM);
+				} catch (Exception e) {
+					System.out.println(e);
+
+				}
+
+			}
+		}
+
 	}
 
-	public void setFiltroMovimientoInventarios(List<Movimientosinventario> filtroMovimientoInventarios) {
-		this.filtroMovimientoInventarios = filtroMovimientoInventarios;
+	/****** Editar - Cargar Detalle Metodo ******/
+
+	public void cargarDetalleMetEdit(String id) {
+
+		tempDetalleMetodosEdit = detalleMetodoI.listaDetallesById(id);
+
 	}
 
-	public List<Existencia> getFiltrarExistencias() {
-		return filtrarExistencias;
+	/****** Editar - Cargar Detalle M ******/
+
+	public void cambiarIDDetalleM(Metodo m) {
+		System.out.println("Entra al setteo de Ids (cambiarIDDetallePro)");
+		int i = 0;
+		for (Detallemetodo dmE : tempDetalleMetodosEdit) {
+
+			dmE.setMetodo(m);
+			tempDetalleMetodosEdit.set(i, dmE);
+
+			i++;
+		}
 	}
 
-	public void setFiltrarExistencias(List<Existencia> filtrarExistencias) {
-		this.filtrarExistencias = filtrarExistencias;
+	/****** Editar - Cargar Detalle M ******/
+
+	public void cambiarIDDetalleProAdd(Metodo m) {
+		System.out.println("entra a la funcion cambiarIDDetalleMetodoADD");
+		int i = 0;
+		if (dmAddEdit.size() == 0) {
+			System.out.println("No hay registros que añadir");
+		} else {
+			for (Detallemetodo detalleME : dmAddEdit) {
+
+				detalleME.setMetodo(m);
+				dmAddEdit.set(i, detalleME);
+
+				i++;
+			}
+		}
+
 	}
 
-	public Existencia getSelectExistencia() {
-		return selectExistencia;
+	/****** Editar - Editar Detalle M ******/
+
+	public void actualizarDetalleM(List<Detallemetodo> dm) {
+		System.out.println("Esta entrando a la funcion del editar detalle M");
+		for (Detallemetodo detalleM : dm) {
+			try {
+				detalleMetodoI.update(detalleM);
+			} catch (Exception e) {
+				System.out.println(e);
+				// e.printStackTrace();
+			}
+
+		}
 	}
 
-	public void setSelectExistencia(Existencia selectExistencia) {
-		this.selectExistencia = selectExistencia;
+	/****** Editar - Editar Metodo ******/
+
+	public void actualizarMetodo(Metodo m) {
+		try {
+			metodoI.update(m);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/****** Editar - Eliminar Detalle M Temp ******/
+
+	public void eliminarDetallesM(List<Detallemetodo> dm) {
+		System.out.println("Registros que ingresan al Eliminar" + dm.size());
+		if (dm.size() == 0) {
+			System.out.println("No hay registros que Eliminar");
+		} else {
+			for (Detallemetodo d : dm) {
+				try {
+
+					detalleMetodoI.delete(d);
+					System.out.println("registros eliminados" + d.getIdExistencia());
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	/****** Editar - Listas de Eliminar ******/
+
+	public void setListasTempDelete() {
+
+		if (buscarDetalleMAdd(tempDetalleMetodoEdit)) {
+			dmAddEdit.remove(tempDetalleMetodoEdit);
+			System.out.println("Le quita del temporal de añadir");
+		} else {
+			dmDelete.add(tempDetalleMetodoEdit);
+			System.out.println("Entra al else" + tempDetalleMetodoEdit.getMetodo().getIdMetodo());
+		}
+
+	}
+
+	public void eliminarDetalleM() {
+		try {
+
+			// Seteo de listas temporales
+			setListasTempDelete();
+
+			detalleMetodos.remove(tempDetalleMetodoEdit);
+
+			mensajeInfo("Se ha eliminado el detalle Metodo (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			mensajeError("Ha ocurrido un error interno.");
+		}
+	}
+
+	public boolean buscarDetalleMAdd(Detallemetodo dM) {
+		// Realiza una busqueda en la lista temporal de Detalle Proforma
+		boolean resultado = false;
+
+		for (Detallemetodo dp : tempDetalleMetodosEdit) {
+
+			if (dp.equals(dM)) {
+				System.out.println("Encajan " + dp.getIdExistencia());
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+		}
+
+		return resultado;
+	}
+
+	/****** Busqueda de Existencias ******/
+	public Existencia cambiarDatosExistencia(String id) {
+		Existencia existenciatemp = detalleMetodoI.buscarExistencias(id);
+		return existenciatemp;
+	}
+
+	/*************************** ELIMINAR METODO ***************************/
+	/****** Eliminar Método ******/
+
+	public void eliminarMetodo() {
+
+		try {
+
+			obtenerIdDetalleMetodo(metodo.getIdMetodo());
+
+			eliminarDetalleMetodo(detalleMetodos);
+			metodoI.delete(getMetodo());
+			metodos.remove(metodo);
+			mensajeInfo("El Método (" + metodo.getNombreMt() + ") se ha eliminado correctamente.");
+
+			tblMetodos();
+
+		} catch (Exception e) {
+
+			if (e.getMessage() == "Transaction rolled back") {
+
+				mensajeError("La tabla Método (" + metodo.getNombreMt() + ") tiene relación con otra tabla.");
+
+			} else {
+
+				mensajeError("Ha ocurrido un problema.");
+			}
+
+		}
+
+	}
+
+	public void obtenerIdDetalleMetodo(String id) {
+
+		detalleMetodos.clear();
+		detalleMetodos = detalleMetodoI.listaDetallesById(id);
+
+	}
+
+	public void eliminarDetalleMetodo(List<Detallemetodo> dm) {
+
+		if (dm.size() == 0) {
+
+		} else {
+			for (Detallemetodo dms : dm) {
+				try {
+					detalleMetodoI.delete(dms);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+	}
+
+	/*************************** SETT Y GETT ***************************/
+
+	public Metodo getMetodo() {
+		return metodo;
+	}
+
+	public void setMetodo(Metodo metodo) {
+		this.metodo = metodo;
+	}
+
+	public List<Metodo> getMetodos() {
+		return metodos;
+	}
+
+	public void setMetodos(List<Metodo> metodos) {
+		this.metodos = metodos;
+	}
+
+	public Metodo getNuevoMetodo() {
+		return nuevoMetodo;
+	}
+
+	public void setNuevoMetodo(Metodo nuevoMetodo) {
+		this.nuevoMetodo = nuevoMetodo;
+	}
+
+	public List<Metodo> getFilterMetodos() {
+		return filterMetodos;
+	}
+
+	public void setFilterMetodos(List<Metodo> filterMetodos) {
+		this.filterMetodos = filterMetodos;
+	}
+
+	public List<Metodo> getNuevoMetodos() {
+		return nuevoMetodos;
+	}
+
+	public void setNuevoMetodos(List<Metodo> nuevoMetodos) {
+		this.nuevoMetodos = nuevoMetodos;
+	}
+
+	public List<Servicio> getServicios() {
+		return servicios;
+	}
+
+	public void setServicios(List<Servicio> servicios) {
+		this.servicios = servicios;
+	}
+
+	public Servicio getServicioSelect() {
+		return servicioSelect;
+	}
+
+	public void setServicioSelect(Servicio servicioSelect) {
+		this.servicioSelect = servicioSelect;
 	}
 
 	public Existencia getExistencia() {
@@ -1199,84 +937,76 @@ public class MetodoController implements Serializable {
 		this.existencia = existencia;
 	}
 
-	public SaldoExistencia getSaldoExistencia() {
-		return saldoExistencia;
+	public List<Existencia> getExistencias() {
+		return existencias;
 	}
 
-	public void setSaldoExistencia(SaldoExistencia saldoExistencia) {
-		this.saldoExistencia = saldoExistencia;
+	public void setExistencias(List<Existencia> existencias) {
+		this.existencias = existencias;
 	}
 
-	public List<SaldoExistencia> getSaldoExistencias() {
-		return saldoExistencias;
+	public List<Existencia> getFilterExistencia() {
+		return filterExistencia;
 	}
 
-	public void setSaldoExistencias(List<SaldoExistencia> saldoExistencias) {
-		this.saldoExistencias = saldoExistencias;
+	public void setFilterExistencia(List<Existencia> filterExistencia) {
+		this.filterExistencia = filterExistencia;
 	}
 
-	public String getIdTemporal() {
-		return idTemporal;
+	public Existencia getSelectExistencia() {
+		return selectExistencia;
 	}
 
-	public void setIdTemporal(String idTemporal) {
-		this.idTemporal = idTemporal;
+	public void setSelectExistencia(Existencia selectExistencia) {
+		this.selectExistencia = selectExistencia;
 	}
 
-	public Ordeninventario getNuevoOrdeninventario() {
-		return nuevoOrdeninventario;
+	public Detallemetodo getNuevoDetalleMetodoAux() {
+		return nuevoDetalleMetodoAux;
 	}
 
-	public void setNuevoOrdeninventario(Ordeninventario nuevoOrdeninventario) {
-		this.nuevoOrdeninventario = nuevoOrdeninventario;
+	public void setNuevoDetalleMetodoAux(Detallemetodo nuevoDetalleMetodoAux) {
+		this.nuevoDetalleMetodoAux = nuevoDetalleMetodoAux;
 	}
 
-	public Ordeninventario getOrdeninventario() {
-		return ordeninventario;
+	public Detallemetodo getDetalleMetodo() {
+		return detalleMetodo;
 	}
 
-	public void setOrdeninventario(Ordeninventario ordeninventario) {
-		this.ordeninventario = ordeninventario;
+	public void setDetalleMetodo(Detallemetodo detalleMetodo) {
+		this.detalleMetodo = detalleMetodo;
 	}
 
-	public List<Ordeninventario> getOrdenInventarios() {
-		return ordenInventarios;
+	public List<Detallemetodo> getNuevoDetalleMetodos() {
+		return nuevoDetalleMetodos;
 	}
 
-	public void setOrdenInventarios(List<Ordeninventario> ordenInventarios) {
-		this.ordenInventarios = ordenInventarios;
+	public void setNuevoDetalleMetodos(List<Detallemetodo> nuevoDetalleMetodos) {
+		this.nuevoDetalleMetodos = nuevoDetalleMetodos;
 	}
 
-	public List<Ordeninventario> getFilterOrdenInventarios() {
-		return filterOrdenInventarios;
+	public List<Detallemetodo> getTempDetalleMetodos() {
+		return tempDetalleMetodos;
 	}
 
-	public void setFilterOrdenInventarios(List<Ordeninventario> filterOrdenInventarios) {
-		this.filterOrdenInventarios = filterOrdenInventarios;
+	public void setTempDetalleMetodos(List<Detallemetodo> tempDetalleMetodos) {
+		this.tempDetalleMetodos = tempDetalleMetodos;
 	}
 
-	public UnidadLabo getUnidadLabo() {
-		return unidadLabo;
+	public List<Detallemetodo> getDetalleMetodos() {
+		return detalleMetodos;
 	}
 
-	public void setUnidadLabo(UnidadLabo unidadLabo) {
-		this.unidadLabo = unidadLabo;
+	public void setDetalleMetodos(List<Detallemetodo> detalleMetodos) {
+		this.detalleMetodos = detalleMetodos;
 	}
 
-	public List<Tipordeninv> getTemptipordeninvs() {
-		return temptipordeninvs;
+	public Detallemetodo getNuevoDetalleMetodo() {
+		return nuevoDetalleMetodo;
 	}
 
-	public void setTemptipordeninvs(List<Tipordeninv> temptipordeninvs) {
-		this.temptipordeninvs = temptipordeninvs;
-	}
-
-	public List<Movimientosinventario> getTempMovimientoInventarios() {
-		return tempMovimientoInventarios;
-	}
-
-	public void setTempMovimientoInventarios(List<Movimientosinventario> tempMovimientoInventarios) {
-		this.tempMovimientoInventarios = tempMovimientoInventarios;
+	public void setNuevoDetalleMetodo(Detallemetodo nuevoDetalleMetodo) {
+		this.nuevoDetalleMetodo = nuevoDetalleMetodo;
 	}
 
 	public List<Existencia> getTempExistencias() {
@@ -1287,68 +1017,75 @@ public class MetodoController implements Serializable {
 		this.tempExistencias = tempExistencias;
 	}
 
-	public Movimientosinventario getNuevoMovimientoInventarioAux() {
-		return nuevoMovimientoInventarioAux;
+	public List<Detallemetodo> getTempDetalleMetodo() {
+		return tempDetalleMetodo;
 	}
 
-	public void setNuevoMovimientoInventarioAux(Movimientosinventario nuevoMovimientoInventarioAux) {
-		this.nuevoMovimientoInventarioAux = nuevoMovimientoInventarioAux;
+	public void setTempDetalleMetodo(List<Detallemetodo> tempDetalleMetodo) {
+		this.tempDetalleMetodo = tempDetalleMetodo;
 	}
 
-	public Existencia getExistenciaAux() {
-		return existenciaAux;
+	public LaboratorioLab getLaboratorio() {
+		return laboratorio;
 	}
 
-	public void setExistenciaAux(Existencia existenciaAux) {
-		this.existenciaAux = existenciaAux;
+	public void setLaboratorio(LaboratorioLab laboratorio) {
+		this.laboratorio = laboratorio;
 	}
 
-	public int getAux() {
-		return aux;
+	public String getNombreM() {
+		return nombreM;
 	}
 
-	public void setAux(int aux) {
-		this.aux = aux;
+	public void setNombreM(String nombreM) {
+		this.nombreM = nombreM;
 	}
 
-	public String getFechaFiltro() {
-		return fechaFiltro;
+	public List<Detallemetodo> getTempDetalleMetodosEdit() {
+		return tempDetalleMetodosEdit;
 	}
 
-	public void setFechaFiltro(String fechaFiltro) {
-		this.fechaFiltro = fechaFiltro;
+	public void setTempDetalleMetodosEdit(List<Detallemetodo> tempDetalleMetodosEdit) {
+		this.tempDetalleMetodosEdit = tempDetalleMetodosEdit;
 	}
 
-	public Date getFechaFiltroAux() {
-		return fechaFiltroAux;
+	public Detallemetodo getTempDetalleMetodoEdit() {
+		return tempDetalleMetodoEdit;
 	}
 
-	public void setFechaFiltroAux(Date fechaFiltroAux) {
-		this.fechaFiltroAux = fechaFiltroAux;
+	public void setTempDetalleMetodoEdit(Detallemetodo tempDetalleMetodoEdit) {
+		this.tempDetalleMetodoEdit = tempDetalleMetodoEdit;
 	}
 
-	public List<Existencia> getTransExistencias() {
-		return transExistencias;
+	public Detallemetodo getNuevoDMTempEdit() {
+		return nuevoDMTempEdit;
 	}
 
-	public void setTransExistencias(List<Existencia> transExistencias) {
-		this.transExistencias = transExistencias;
+	public void setNuevoDMTempEdit(Detallemetodo nuevoDMTempEdit) {
+		this.nuevoDMTempEdit = nuevoDMTempEdit;
 	}
 
-	public List<Existencia> getFiltrarTransExistencias() {
-		return filtrarTransExistencias;
+	public Existencia getSelectExDMTemp() {
+		return selectExDMTemp;
 	}
 
-	public void setFiltrarTransExistencias(List<Existencia> filtrarTransExistencias) {
-		this.filtrarTransExistencias = filtrarTransExistencias;
+	public void setSelectExDMTemp(Existencia selectExDMTemp) {
+		this.selectExDMTemp = selectExDMTemp;
 	}
 
-	public Movimientosinventario getMovInventario() {
-		return movInventario;
+	public List<Detallemetodo> getDmAddEdit() {
+		return dmAddEdit;
 	}
 
-	public void setMovInventario(Movimientosinventario movInventario) {
-		this.movInventario = movInventario;
+	public void setDmAddEdit(List<Detallemetodo> dmAddEdit) {
+		this.dmAddEdit = dmAddEdit;
 	}
 
+	public List<Detallemetodo> getDmDelete() {
+		return dmDelete;
+	}
+
+	public void setDmDelete(List<Detallemetodo> dmDelete) {
+		this.dmDelete = dmDelete;
+	}
 }
