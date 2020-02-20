@@ -48,21 +48,6 @@
 
 					<br />
 
-					<!-- Boton De Nuevo -->
-					<center>
-						<p:commandLink process="@this" icon="ui-icon-check"
-							onclick="PF('nuevoPro').show()" update="@this,formAgregarPro">
-
-							<h:graphicImage value="/images/archivos/agregar.png"
-								title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
-								height="35" />
-							<p>
-								<strong>Nuevo</strong>
-							</p>
-						</p:commandLink>
-
-					</center>
-
 					<p:fieldset legend="Buscar Proformas"
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
@@ -79,6 +64,33 @@
 										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
 										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width:60%"
 										layout="grid">
+
+										<h:outputLabel value="Fecha desde: "
+											style="color:white!important; font-size: 17px" />
+										<p:calendar id="fechaInicio"
+											value="#{proformaController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Inicial Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="24">
+											<p:ajax event="dateSelect" update="fechaFinal" />
+											<p:ajax event="keyup" update="fechaFinal" />
+										</p:calendar>
+
+										<h:outputLabel value="Fecha hasta: "
+											style="color:white!important; font-size: 17px" />
+										<p:calendar id="fechaFinal"
+											disabled="#{proformaController.disabledSelectItem() != true}"
+											value="#{proformaController.fechaFinal}"
+											mindate="#{proformaController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es" required="true"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Final Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="24">
+
+										</p:calendar>
 
 										<p:outputLabel value="ID Proforma:" for="idProforma"
 											style="color:white!important" />
@@ -107,40 +119,17 @@
 										<p:inputText id="ruc_ci"
 											value="#{proformaController.cliente.rucCl}" size="24" />
 
-										<h:outputLabel value="Fecha desde: "
-											style="color:white!important; font-size: 17px" />
-										<p:calendar id="fechaInicio"
-											value="#{proformaController.fechaInicio}"
-											pattern="dd/MM/yyyy" locale="es"
-											onkeypress="return permite(event, 'none')"
-											requiredMessage="Fecha Inicial Requerida" navigator="true"
-											effect="fadeIn" effectDuration="100" showOn="button"
-											size="24">
-											<p:ajax event="dateSelect" update="fechaFinal" />
-											<p:ajax event="keyup" update="fechaFinal" />
-										</p:calendar>
 
-										<h:outputLabel value="Fecha hasta: "
-											style="color:white!important; font-size: 17px" />
-										<p:calendar id="fechaFinal"
-											disabled="#{proformaController.disabledSelectItem() != true}"
-											value="#{proformaController.fechaFinal}"
-											mindate="#{proformaController.fechaInicio}"
-											pattern="dd/MM/yyyy" locale="es" required="true"
-											onkeypress="return permite(event, 'none')"
-											requiredMessage="Fecha Final Requerida" navigator="true"
-											effect="fadeIn" effectDuration="100" showOn="button"
-											size="24">
-
-										</p:calendar>
 									</p:panelGrid>
 
 									<br /> <br />
 
+									<p:panelGrid columns="2" style="width:200px "
+										columnClasses="ui-grid-col-2" layout="grid"
+										styleClass="ui-panelgrid-blank">
 
-									<center>
 										<p:commandLink
-											actionListener="#{proformaController.buscarProforma}"
+											actionListener="#{proformaController.buscarAllProformas}"
 											update="@([id$=tblProforma]),@([id$=messagesForm])"
 											process="@this,formBuscar">
 
@@ -149,7 +138,24 @@
 												style="border:0px solid #CAD6E0;" width="35" height="35 " />
 										</p:commandLink>
 
-									</center>
+										<p:commandLink
+											actionListener="#{proformaController.buscarAllProformas}"
+											update="@([id$=tblProforma]),@([id$=messagesForm])"
+											process="@this,formBuscar">
+
+											<center>
+												<p:graphicImage value="/images/archivos/imprimir.png"
+													height="35px" width="35px" title="Generar Reporte" />
+											</center>
+										</p:commandLink>
+
+
+
+
+									</p:panelGrid>
+
+
+
 
 									<br />
 								</div>
@@ -203,82 +209,6 @@
 
 							<p:column headerText="Estado">
 								<h:outputText value="#{proforma.estadoPo}" />
-							</p:column>
-
-							<p:column headerText="Estado">
-								<p:commandLink update="@this,formEditarEstado"
-									process="@this,tblProforma" icon="ui-icon-check"
-									action="#{proformaController.validarEstadoPro(proforma, 'editarEstado')}">
-
-									<h:outputText value="Editar estado" />
-
-									<f:setPropertyActionListener
-										target="#{proformaController.proforma}" value="#{proforma}">
-									</f:setPropertyActionListener>
-								</p:commandLink>
-
-							</p:column>
-
-							<p:column headerText="Detalle">
-								<center>
-
-									<p:commandLink update="@this,formVerPro"
-										process="@this,tblProforma" icon="ui-icon-check"
-										action="#{proformaController.cargarDetalleProforma(proforma.idProforma)}"
-										oncomplete="PF('verPro').show();">
-
-										<h:graphicImage value="/images/archivos/verMas.png"
-											title="Ver Proforma" style="border:0px solid #CAD6E0;"
-											width="35" height="35" />
-
-
-										<f:setPropertyActionListener
-											target="#{proformaController.proforma}" value="#{proforma}">
-										</f:setPropertyActionListener>
-									</p:commandLink>
-
-								</center>
-
-
-							</p:column>
-
-							<p:column headerText="Acciones">
-								<center>
-
-									<!-- **************************  Boton Editar   *************************** -->
-									<p:commandLink icon="ui-icon-check" process="@this,tblProforma"
-										action="#{proformaController.cargarDetalleProformaEdit(proforma.idProforma)}"
-										oncomplete="PF('editarPro').show();" update="formEditarPro">
-
-										<h:graphicImage value="/images/archivos/editar.png"
-											title="Modificar" style="border:0px solid #CAD6E0;"
-											width="35" height="35" />
-
-										<f:setPropertyActionListener
-											target="#{proformaController.proforma}" value="#{proforma}">
-										</f:setPropertyActionListener>
-
-
-									</p:commandLink>
-
-									<!-- **************************  Boton Eliminar   *************************** -->
-
-
-									<p:commandLink process="@this,tblProforma" icon="ui-icon-check"
-										action="#{proformaController.validarEstadoPro(proforma, 'cdEliminarPro')}">
-
-										<h:graphicImage value="/images/archivos/basurero.png"
-											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
-											height="35" />
-
-
-										<f:setPropertyActionListener
-											target="#{proformaController.proforma}" value="#{proforma}">
-										</f:setPropertyActionListener>
-
-									</p:commandLink>
-
-								</center>
 							</p:column>
 
 						</p:dataTable>

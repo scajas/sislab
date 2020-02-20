@@ -8,10 +8,11 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:v="http://validators.epn.edu.ec.com"
 	xmlns:ps="http://primefaces.org/apark"
-	xmlns:pe="http://primefaces.org/ui/extensions">
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:rich="http://primefaces.org/ui">
 
 
-	<ui:define name="pageTitle">Proforma</ui:define>
+	<ui:define name="pageTitle">Orde Interna</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -41,7 +42,7 @@
 			<h:form id="formprincipal">
 
 				<p:remoteCommand name="rc"
-					action="#{proformaController.limpiarTodosCampos()}"
+					action="#{ordenInternaController.limpiarTodosCampos()}"
 					update="formprincipal" />
 
 				<p:panel>
@@ -51,7 +52,7 @@
 					<!-- Boton De Nuevo -->
 					<center>
 						<p:commandLink process="@this" icon="ui-icon-check"
-							onclick="PF('nuevoPro').show()" update="@this,formAgregarPro">
+							onclick="PF('nuevoOT').show()" update="@this,formAgregarOT">
 
 							<h:graphicImage value="/images/archivos/agregar.png"
 								title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
@@ -63,7 +64,7 @@
 
 					</center>
 
-					<p:fieldset legend="Buscar Proformas"
+					<p:fieldset legend="Buscar Orden Interna"
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -80,37 +81,31 @@
 										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width:60%"
 										layout="grid">
 
-										<p:outputLabel value="ID Proforma:" for="idProforma"
+										<p:outputLabel value="Orden Trabajo:" for="idOT"
 											style="color:white!important" />
-										<p:inputText id="idProforma"
-											value="#{proformaController.proformaBuscar.idProforma}"
+										<p:inputText id="idOT"
+											value="#{ordenInternaController.buscarOrdenTrabajo.idOrden}"
 											size="24" />
-
-										<p:outputLabel value="Estado:" for="estado"
-											style="color:white!important" />
-										<p:selectOneMenu id="estado"
-											value="#{proformaController.proformaBuscar.estadoPo}"
-											size="24">
-											<f:selectItem itemLabel="Seleccione..." itemValue="" />
-											<f:selectItem itemLabel="Aceptada" itemValue="Aceptada" />
-											<f:selectItem itemLabel="Pendiente" itemValue="Pendiente" />
-											<f:selectItem itemLabel="Rechazada" itemValue="Rechazada" />
-										</p:selectOneMenu>
 
 										<p:outputLabel value="Cliente:" for="cliente"
 											style="color:white!important" />
 										<p:inputText id="cliente"
-											value="#{proformaController.cliente.nombreCl}" size="24" />
+											value="#{ordenInternaController.cliente.nombreCl}" size="24" />
 
-										<p:outputLabel value="RUC/Cédula:" for="ruc_ci"
+										<p:outputLabel value="Cédula: " for="cedula"
 											style="color:white!important" />
-										<p:inputText id="ruc_ci"
-											value="#{proformaController.cliente.rucCl}" size="24" />
+										<p:inputText id="cedula"
+											value="#{ordenInternaController.cliente.cedula}" size="24" />
+
+										<p:outputLabel value="RUC:" for="ruc"
+											style="color:white!important" />
+										<p:inputText id="ruc"
+											value="#{ordenInternaController.cliente.rucCl}" size="24" />
 
 										<h:outputLabel value="Fecha desde: "
 											style="color:white!important; font-size: 17px" />
 										<p:calendar id="fechaInicio"
-											value="#{proformaController.fechaInicio}"
+											value="#{ordenInternaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es"
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Inicial Requerida" navigator="true"
@@ -123,9 +118,9 @@
 										<h:outputLabel value="Fecha hasta: "
 											style="color:white!important; font-size: 17px" />
 										<p:calendar id="fechaFinal"
-											disabled="#{proformaController.disabledSelectItem() != true}"
-											value="#{proformaController.fechaFinal}"
-											mindate="#{proformaController.fechaInicio}"
+											disabled="#{ordenInternaController.disabledSelectItem() != true}"
+											value="#{ordenInternaController.fechaFinal}"
+											mindate="#{ordenInternaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es" required="true"
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Final Requerida" navigator="true"
@@ -140,8 +135,8 @@
 
 									<center>
 										<p:commandLink
-											actionListener="#{proformaController.buscarProforma}"
-											update="@([id$=tblProforma]),@([id$=messagesForm])"
+											actionListener="#{ordenInternaController.buscarOrdenTrabajos}"
+											update="@([id$=tblOrden]),@([id$=messagesForm])"
 											process="@this,formBuscar">
 
 											<h:graphicImage value="/images/archivos/busqueda.png"
@@ -154,6 +149,8 @@
 									<br />
 								</div>
 							</h:form>
+
+
 						</center>
 					</p:fieldset>
 					<br />
@@ -165,8 +162,8 @@
 						border-style: double;
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-						<p:dataTable id="tblProforma"
-							value="#{proformaController.proformas}" var="proforma"
+						<p:dataTable id="tblOrden"
+							value="#{ordenInternaController.listaOrdenTrabajo}" var="ordenT"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -177,63 +174,78 @@
 							paginatorPosition="bottom">
 
 
-							<p:column headerText="Id Proforma">
-								<h:outputText value="#{proforma.idProforma}" />
-							</p:column>
-
-							<p:column headerText="Fecha">
-								<h:outputText value="#{proforma.fecha}" />
+							<p:column headerText="Id OT">
+								<h:outputText value="#{ordenT.idOrden}" />
 							</p:column>
 
 							<p:column headerText="Cliente">
-								<h:outputText value="#{proforma.cliente.nombreCl}" />
+								<h:outputText value="#{ordenT.cliente.nombreCl}" />
 							</p:column>
 
-							<p:column headerText="SubTotal">
-								<h:outputText value="#{proforma.subtotalPo}" />
+							<p:column headerText="F. Recep.">
+								<h:outputText
+									value="#{ordenInternaController.cambioFecha(ordenT.fechaordenOt)}" />
 							</p:column>
 
-							<p:column headerText="IVA">
-								<h:outputText value="#{proforma.ivaPo}" />
+							<p:column headerText="F. Entrega">
+								<h:outputText
+									value="#{ordenInternaController.cambioFecha(ordenT.fechaentregaOt)}" />
 							</p:column>
 
-							<p:column headerText="Total">
-								<h:outputText value="#{proforma.totalPo}" />
+							<p:column headerText="F. Cierre">
+								<h:outputText
+									value="#{ordenInternaController.cambioFecha(ordenT.fechaCierre)}" />
 							</p:column>
 
-							<p:column headerText="Estado">
-								<h:outputText value="#{proforma.estadoPo}" />
+							<p:column headerText="Descr. Cliente">
+								<h:outputText value="#{ordenT.responsableOt}" />
 							</p:column>
 
-							<p:column headerText="Estado">
-								<p:commandLink update="@this,formEditarEstado"
-									process="@this,tblProforma" icon="ui-icon-check"
-									action="#{proformaController.validarEstadoPro(proforma, 'editarEstado')}">
+							<p:column headerText="Fecha cierre">
+								<p:commandLink update="@this,formEditarFechaCierre"
+									process="@this,tblOrden" icon="ui-icon-check"
+									action="#{ordenInternaController.validarEstadoOT(ordenT, 'editarFechaCierre')}">
 
-									<h:outputText value="Editar estado" />
+									<h:outputText value="Fecha Cierre" />
 
 									<f:setPropertyActionListener
-										target="#{proformaController.proforma}" value="#{proforma}">
+										target="#{ordenInternaController.ordenTrabajo}"
+										value="#{ordenT}">
 									</f:setPropertyActionListener>
 								</p:commandLink>
 
 							</p:column>
 
-							<p:column headerText="Detalle">
+							<p:column headerText="Fecha Entrega">
+								<p:commandLink update="@this,formEditarFechaEntrega"
+									process="@this,tblOrden" icon="ui-icon-check"
+									action="#{ordenInternaController.validarFechaEntregaOT(ordenT, 'editarFechaEntrega')}">
+
+									<h:outputText value="Fecha Entrega" />
+
+									<f:setPropertyActionListener
+										target="#{ordenInternaController.ordenTrabajo}"
+										value="#{ordenT}">
+									</f:setPropertyActionListener>
+								</p:commandLink>
+
+							</p:column>
+
+							<p:column headerText="Ver ordens">
 								<center>
 
-									<p:commandLink update="@this,formVerPro"
-										process="@this,tblProforma" icon="ui-icon-check"
-										action="#{proformaController.cargarDetalleProforma(proforma.idProforma)}"
-										oncomplete="PF('verPro').show();">
+									<p:commandLink update="@this,formVerOT"
+										process="@this,tblOrden" icon="ui-icon-check"
+										action="#{ordenInternaController.cargarDetalleOT(ordenT.idOrden)}"
+										onsuccess="PF('verOT').show();">
 
 										<h:graphicImage value="/images/archivos/verMas.png"
-											title="Ver Proforma" style="border:0px solid #CAD6E0;"
+											title="Ver Orden" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
-
 										<f:setPropertyActionListener
-											target="#{proformaController.proforma}" value="#{proforma}">
+											target="#{ordenInternaController.ordenTrabajo}"
+											value="#{ordenT}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
 
@@ -246,35 +258,19 @@
 								<center>
 
 									<!-- **************************  Boton Editar   *************************** -->
-									<p:commandLink icon="ui-icon-check" process="@this,tblProforma"
-										action="#{proformaController.cargarDetalleProformaEdit(proforma.idProforma)}"
-										oncomplete="PF('editarPro').show();" update="formEditarPro">
+									<p:commandLink icon="ui-icon-check" process="@this,tblOrden"
+										action="#{ordenInternaController.cargarDetalleProformaEdit(ordenT.idOrden)}"
+										oncomplete="PF('editarOT').show();" update="formEditarOT">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
 
 										<f:setPropertyActionListener
-											target="#{proformaController.proforma}" value="#{proforma}">
+											target="#{ordenInternaController.ordenTrabajo}"
+											value="#{ordenT}">
 										</f:setPropertyActionListener>
 
-
-									</p:commandLink>
-
-									<!-- **************************  Boton Eliminar   *************************** -->
-
-
-									<p:commandLink process="@this,tblProforma" icon="ui-icon-check"
-										action="#{proformaController.validarEstadoPro(proforma, 'cdEliminarPro')}">
-
-										<h:graphicImage value="/images/archivos/basurero.png"
-											title="Eliminar" style="border:0px solid #CAD6E0;" width="35"
-											height="35" />
-
-
-										<f:setPropertyActionListener
-											target="#{proformaController.proforma}" value="#{proforma}">
-										</f:setPropertyActionListener>
 
 									</p:commandLink>
 
@@ -291,15 +287,16 @@
 
 			</h:form>
 
+
 			<!-- **************************  Panel - Dialogo de Registrar Nuevo   *************************** -->
 
-			<p:dialog id="panelNuevoPro" resizable="true" widgetVar="nuevoPro"
+			<p:dialog id="panelNuevoOT" resizable="true" widgetVar="nuevoOT"
 				modal="true" showEffect="explode" hideEffect="fade"
 				responsive="true" dynamic="true" width="150vh" height="73vh"
-				header="Agregar Movimiento Inventario">
+				header="Agregar Orden de Trabajo">
 
 
-				<h:form id="formAgregarPro">
+				<h:form id="formAgregarOT">
 					<div class="ui-fluid">
 						<p:fieldset
 							style="border-radius: 10px 10px 10px 10px;
@@ -381,12 +378,13 @@
 														<p:outputLabel value="Nombre: " for="clienteNom"
 															style="color:white!important" />
 														<p:inputText id="clienteNom"
-															value="#{proformaController.cliente.nombreCl}" size="24" />
+															value="#{ordenInternaController.cliente.nombreCl}"
+															size="24" />
 
 														<p:outputLabel value="RUC/Cédula:" for="ruc_ci"
 															style="color:white!important" />
 														<p:inputText id="ruc_ci"
-															value="#{proformaController.cliente.rucCl}" size="24" />
+															value="#{ordenInternaController.cliente.rucCl}" size="24" />
 
 													</p:panelGrid>
 												</div>
@@ -395,7 +393,7 @@
 													<p:commandButton icon="fa fa-search-plus"
 														style="border:none;text-align: left; width: 110px;"
 														value="Buscar" process="@this, ruc_ci, clienteNom "
-														actionListener="#{proformaController.buscarClientes}"
+														actionListener="#{ordenInternaController.buscarClientes}"
 														onsuccess="PF('listadoCli').show()">
 													</p:commandButton>
 												</div>
@@ -421,47 +419,54 @@
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-											<p:panelGrid columns="4" layout="grid" style="border:none;">
-
-												<p:outputLabel for="fecha" value="Fecha: "
-													style="font-weight:bold" />
-												<p:outputLabel id="fecha"
-													value="#{proformaController.cambioFecha(proformaController.nuevoProforma.fecha)}" />
-
-											</p:panelGrid>
-
 											<p:panelGrid columns="4" layout="grid"
 												styleClass="ui-noborder" style="border:none;">
 
 												<p:outputLabel for="cliente" value="Cliente: "
 													style="font-weight:bold" />
 												<p:outputLabel id="cliente"
-													value="#{proformaController.nuevoProforma.cliente.nombreCl}" />
-
-												<p:outputLabel for="telefono" value="Telefono: "
-													style="font-weight:bold" />
-												<p:outputLabel id="telefono"
-													value="#{proformaController.nuevoProforma.cliente.telefonoCl}" />
-
-												<p:outputLabel for="ruc" value="Ruc: "
-													style="font-weight:bold" />
-												<p:outputLabel id="ruc"
-													value="#{proformaController.nuevoProforma.cliente.rucCl}" />
-
-												<p:outputLabel for="ci" value="CI: "
-													style="font-weight:bold" />
-												<p:outputLabel id="ci"
-													value="#{proformaController.nuevoProforma.cliente.cedula}" />
-
-												<p:outputLabel for="direccion" value="Dirección: "
-													style="font-weight:bold" />
-												<p:outputLabel id="direccion"
-													value="#{proformaController.nuevoProforma.cliente.direccionCl}" />
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
 
 												<p:outputLabel for="contacto" value="Contacto: "
 													style="font-weight:bold" />
 												<p:outputLabel id="contacto"
-													value="#{proformaController.nuevoProforma.representantePo}" />
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
+
+											</p:panelGrid>
+
+											<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+												<p:outputLabel for="direccion" value="Dirección: "
+													style="font-weight:bold" />
+												<p:outputLabel id="direccion"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
+
+											</p:panelGrid>
+
+											<p:panelGrid columns="4" layout="grid"
+												styleClass="ui-noborder" style="border:none;">
+
+												<p:outputLabel for="telefono" value="Telefono: "
+													style="font-weight:bold" />
+												<p:outputLabel id="telefono"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
+
+												<p:outputLabel for="fax" value="Fax: "
+													style="font-weight:bold" />
+												<p:outputLabel id="fax"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.faxCl}" />
+
+												<p:outputLabel for="descCliente" value="Descr. C: "
+													style="font-weight:bold" />
+												<p:inputTextarea id="descCliente" autoResize="false"
+													value="#{ordenInternaController.nuevoOrdenTrabajo.responsableOt}" />
+
+												<p:outputLabel for="fecha" value="Fecha: "
+													style="font-weight:bold" />
+												<p:outputLabel id="fecha"
+													value="#{ordenInternaController.cambioFecha(ordenInternaController.nuevoOrdenTrabajo.fechaordenOt)}" />
+
+
 
 											</p:panelGrid>
 
@@ -480,10 +485,10 @@
 							<br />
 							<center>
 								<p:commandButton value="Agregar" icon="fa fa-plus"
-									title="Agregar Nuevo Detalle Proforma"
+									title="Agregar Detalle Orden Trabajo"
 									style="width: 125px; border-radius: 3px 3px 3px 3px;"
 									process="@this"
-									actionListener="#{proformaController.validarCliente}"
+									actionListener="#{ordenInternaController.validarCliente}"
 									update="@this,@([id$=messagesForm])">
 
 								</p:commandButton>
@@ -499,51 +504,55 @@
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-									<p:panel id="detallePro" header="Detalle Proforma">
+									<p:panel id="detallePro" header="Detalle Orden Trabajo">
 										<p:dataTable id="tblDetallePro"
-											value="#{proformaController.detalleProformas}"
-											var="detallePro" sortBy="#{detallePro.totalservicioPo}"
+											value="#{ordenInternaController.listaDetalleOrden}"
+											var="detalleOT" sortBy="#{detalleOT.idServicio}"
 											emptyMessage="No se han registrado detalles de proforma, clic en el boton agregar para registrar.">
 
-
-											<p:column headerText="ID">
-												<h:outputText value="#{detallePro.servicio.idServicio}" />
-											</p:column>
-
 											<p:column headerText="Servicio">
-												<h:outputText value="#{detallePro.servicio.nombreS}" />
+												<h:outputText
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
 											</p:column>
 
 											<p:column headerText="Método">
-												<h:outputText value="#{detallePro.metodo.nombreMt}" />
+												<h:outputText
+													value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
 											</p:column>
 
 											<p:column headerText="Unidad/Laboratorio">
 												<h:outputText
-													value="#{detallePro.servicio.laboratorio.nombreL}" />
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
 											</p:column>
 
-											<p:column headerText="Cantidad">
-												<h:outputText value="#{detallePro.cantidadPo}" />
+											<p:column headerText="Responsable">
+												<h:outputText value="#{detalleOT.personal.nombresPe}" />
 											</p:column>
 
-											<p:column headerText="V. U.">
-												<h:outputText value="#{detallePro.servicio.precioS}" />
+											<p:column headerText="h/T">
+												<h:outputText value="#{detalleOT.horasTrabajo}" />
 											</p:column>
 
-											<p:column headerText="T. S.">
-												<h:outputText value="#{detallePro.totalservicioPo}" />
+											<p:column headerText="F. Inicio">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
 											</p:column>
+
+											<p:column headerText="F. Fin">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+											</p:column>
+
 
 											<p:column headerText="Acciones">
 												<center>
 
 													<!-- **************************  Boton Editar   *************************** -->
 													<p:commandLink icon="ui-icon-check"
-														oncomplete="PF('editarDetallePro').show();"
-														action="#{proformaController.guardarTempDetallePro}"
-														actionListener="#{proformaController.cambiarIdTempPanel(0,0)}"
-														update="formEditarDetallePro">
+														oncomplete="PF('editarDetalleOT').show();"
+														action="#{ordenInternaController.guardarTempDetalleOT()}"
+														actionListener="#{ordenInternaController.cambiarIdTempPanel(0,0)}"
+														update="formEditarDetalleOT">
 
 														<h:graphicImage value="/images/archivos/editar.png"
 															title="Modificar" style="border:0px solid #CAD6E0;"
@@ -551,8 +560,8 @@
 
 
 														<f:setPropertyActionListener
-															target="#{proformaController.detalleProforma}"
-															value="#{detallePro}">
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
 													</p:commandLink>
@@ -561,8 +570,8 @@
 
 
 													<p:commandLink process="@this" icon="ui-icon-check"
-														onclick="PF('cdEliminarDetallePro').show();"
-														actionListener="#{proformaController.cambiarIdTempPanel(0,0)}">
+														onclick="PF('cdEliminarDetalleOT').show();"
+														actionListener="#{ordenInternaController.cambiarIdTempPanel(0,0)}">
 
 														<h:graphicImage value="/images/archivos/basurero.png"
 															title="Eliminar" style="border:0px solid #CAD6E0;"
@@ -570,8 +579,8 @@
 
 
 														<f:setPropertyActionListener
-															target="#{proformaController.detalleProforma}"
-															value="#{detallePro}">
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
 													</p:commandLink>
@@ -579,29 +588,6 @@
 												</center>
 											</p:column>
 
-											<p:columnGroup type="footer">
-												<p:row>
-													<p:column colspan="6" style="text-align:right"
-														footerText="Sub Total:" />
-													<p:column
-														footerText="#{proformaController.nuevoProforma.subtotalPo}" />
-
-												</p:row>
-
-												<p:row>
-													<p:column colspan="6" style="text-align:right"
-														footerText="IVA (#{proformaController.nuevoProforma.cliente.tipocliente.ivaTcl} %): " />
-													<p:column
-														footerText="#{proformaController.nuevoProforma.ivaPo}" />
-												</p:row>
-
-												<p:row>
-													<p:column colspan="6" style="text-align:right"
-														footerText="Total: " />
-													<p:column
-														footerText="#{proformaController.nuevoProforma.totalPo}" />
-												</p:row>
-											</p:columnGroup>
 										</p:dataTable>
 									</p:panel>
 
@@ -627,7 +613,8 @@
 										<p:outputLabel value="Observaciones: " for="observaciones"
 											style="color:white!important" />
 										<p:inputText id="observaciones"
-											value="#{proformaController.nuevoProforma.obserPo}" size="24" />
+											value="#{ordenInternaController.nuevoOrdenTrabajo.observOt}"
+											size="24" />
 
 									</p:panelGrid>
 
@@ -642,15 +629,15 @@
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Confirmar" icon="fa fa-save"
-										process="@this,formAgregarPro"
-										disabled="#{proformaController.disabledButton() != true}"
-										update="formConfirmaNuevaProforma"
-										onsuccess="PF('cdConfirmarProforma').show();">
+										process="@this,formAgregarOT"
+										disabled="#{ordenInternaController.disabledButton() != true}"
+										update="formConfirmarNuevoOT"
+										onsuccess="PF('cdConfirmarOT').show();">
 
 									</p:commandButton>
 
 									<p:commandButton style="width: 150px; margin: 10px"
-										icon=" fa fa-arrow-left" onclick="PF('nuevoPro').hide();"
+										icon=" fa fa-arrow-left" onclick="PF('nuevoOT').hide();"
 										process="@none" value="Atras">
 
 									</p:commandButton>
@@ -664,14 +651,14 @@
 			</p:dialog>
 
 
-			<!-- **************************  Panel - Agregar Detalle Proforma  *************************** -->
-			<p:dialog id="panelNuevoDetallePro" resizable="true"
-				widgetVar="detallePro" modal="true" showEffect="explode"
+			<!-- **************************  Panel - Agregar Detalle Orden  *************************** -->
+			<p:dialog id="panelNuevoDetalleOT" resizable="true"
+				widgetVar="detalleOT" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
-				height="73vh" header="Agregar Detalle Proforma">
+				height="73vh" header="Agregar Detalle Orden">
 
 
-				<h:form id="formDetallePro">
+				<h:form id="formDetalleOT">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -696,18 +683,18 @@
 									legend="Servicio">
 
 									<p:dataTable id="tblServicio"
-										value="#{proformaController.servicios}" var="serv"
+										value="#{ordenInternaController.servicios}" var="serv"
 										widgetVar="filterServiciosTable"
 										emptyMessage="No se pudo encontrar ninguna coincidencia"
-										filteredValue="#{proformaController.filtroServicios}" rows="5"
-										paginator="true"
+										filteredValue="#{ordenInternaController.filtroServicios}"
+										rows="5" paginator="true"
 										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 										rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 										rowKey="#{serv.idServicio}"
-										selection="#{proformaController.nuevodetalleProforma.servicio}"
+										selection="#{ordenInternaController.nuevoServicio}"
 										selectionMode="single">
 										<p:ajax event="rowSelect"
-											listener="#{proformaController.validarDetallePro}"
+											listener="#{ordenInternaController.validarDetalleOT}"
 											update="@([id$=messagesForm])" />
 
 										<p:column headerText="ID" filterBy="#{serv.idServicio}"
@@ -728,14 +715,7 @@
 
 									</p:dataTable>
 									<br />
-									<center>
-										<p:commandButton icon="fa fa-search-plus"
-											style="border:none;text-align: left; width: 150px;"
-											value="Todos los Servicios" process="@this"
-											actionListener="#{proformaController.cargarAllServicios}"
-											onsuccess="PF('listadoServ').show()">
-										</p:commandButton>
-									</center>
+
 								</p:fieldset>
 							</div>
 
@@ -765,51 +745,107 @@
 													<p:outputLabel for="servicio" value="Servicio: "
 														style="color:white!important" />
 													<p:outputLabel id="servicio"
-														value="#{proformaController.nuevodetalleProforma.servicio.nombreS}"
+														value="#{ordenInternaController.nuevoServicio.nombreS}"
 														size="30" maxlength="100" />
-
-
-													<p:outputLabel for="metodo" value="Método: "
-														style="color:white!important" />
-													<p:selectOneMenu id="metodo"
-														value="#{proformaController.nuevodetalleProforma.metodo}">
-														<f:selectItem itemLabel="Ninguno..."
-															itemValue="#{proformaController.metodoNA}" />
-														<f:selectItems value="#{proformaController.metodos}"
-															itemLabel="#{metodo.nombreMt}" itemValue="#{metodo}"
-															var="metodo">
-														</f:selectItems>
-													</p:selectOneMenu>
 
 													<p:outputLabel for="laboratorio" value="Laboratorio: "
 														style="color:white!important" />
 													<p:outputLabel id="laboratorio"
-														value="#{proformaController.nuevodetalleProforma.servicio.laboratorio.nombreL}"
+														value="#{ordenInternaController.nuevoServicio.laboratorio.nombreL}"
 														size="30" maxlength="100" />
 
-													<p:outputLabel for="precio" value="Precio UNIT.: "
+													<p:outputLabel for="metodo" value="Método: "
 														style="color:white!important" />
-													<p:outputLabel id="precio"
-														value="#{proformaController.nuevodetalleProforma.servicio.precioS}"
+													<p:selectOneMenu id="metodo"
+														value="#{ordenInternaController.nuevoDetalleOrden.idMetodo}">
+														<f:selectItem itemLabel="Ninguno..."
+															itemValue="#{ordenInternaController.metodoNA.idMetodo}" />
+														<f:selectItems value="#{ordenInternaController.metodos}"
+															itemLabel="#{metodo.nombreMt}"
+															itemValue="#{metodo.idMetodo}" var="metodo">
+														</f:selectItems>
+													</p:selectOneMenu>
+
+
+
+												</p:panelGrid>
+											</center>
+											<br />
+
+										</div>
+
+
+									</p:fieldset>
+
+									<p:fieldset
+										style="border-radius: 10px 10px 10px 10px;
+										-moz-border-radius: 10px 10px 10px 10px;
+										-webkit-border-radius: 10px 10px 10px 10px;
+										border: 0px solid #000000;
+										border-style: double;
+										border-width: 1px;
+										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+										legend="Informacion Personal">
+
+										<div class="ui-fluid">
+
+											<center>
+												<p:commandButton icon="fa fa-search-plus"
+													style="border:none;text-align: left; width: 150px;"
+													value="Buscar Personal" process="@this"
+													actionListener="#{ordenInternaController.cargarPersonal(0)}"
+													onsuccess="PF('listadoPer').show()">
+												</p:commandButton>
+											</center>
+											<br />
+											<center>
+												<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+													style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+													layout="grid">
+
+													<p:outputLabel for="personal" value="Personal: "
+														style="color:white!important" />
+													<p:outputLabel id="personal"
+														value="#{ordenInternaController.nuevoDetalleOrden.personal.nombresPe}"
 														size="30" maxlength="100" />
 
-													<p:outputLabel for="cantidad" value="Cantidad: "
+													<p:outputLabel value="Horas/Trabajo: " for="ht"
 														style="color:white!important" />
-													<p:inputNumber id="cantidad"
-														value="#{proformaController.nuevodetalleProforma.cantidadPo}"
+													<p:inputNumber id="ht"
+														value="#{ordenInternaController.nuevoDetalleOrden.horasTrabajo}"
 														required="true" emptyValue="zero"
 														requiredMessage="Debe ingresar la cantidad" size="30"
 														maxlength="100">
-														<p:ajax event="keyup" async="false"
-															listener="#{proformaController.calcularTotal}" />
-														<p:ajax event="keyup" async="false" update="totalPro" />
+
 													</p:inputNumber>
 
-													<p:outputLabel for="totalPro" value="Total Servicio: "
-														style="color:white!important" />
-													<h:outputText id="totalPro"
-														value="#{proformaController.nuevodetalleProforma.totalservicioPo}" />
+													<h:outputLabel value="Fecha inicio: "
+														style="color:white!important; font-size: 17px" />
+													<p:calendar id="fechaInicio"
+														value="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
+														pattern="dd/MM/yyyy" locale="es"
+														onkeypress="return permite(event, 'none')"
+														requiredMessage="Fecha Inicial Requerida" navigator="true"
+														effect="fadeIn" effectDuration="100" showOn="button"
+														size="24">
+														<p:ajax event="dateSelect" update="fechaFinal" />
+														<p:ajax event="keyup" update="fechaFinal" />
+													</p:calendar>
 
+													<h:outputLabel value="Fecha fin: "
+														style="color:white!important; font-size: 17px" />
+													<p:calendar id="fechaFinal"
+														disabled="#{ordenInternaController.disabledDate() != true}"
+														value="#{ordenInternaController.nuevoDetalleOrden.fechaFinAnalisis}"
+														mindate="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
+														pattern="dd/MM/yyyy" locale="es" required="true"
+														onkeypress="return permite(event, 'none')"
+														requiredMessage="Fecha Final Requerida" navigator="true"
+														effect="fadeIn" effectDuration="100" showOn="button"
+														size="24">
+
+													</p:calendar>
 												</p:panelGrid>
 											</center>
 											<br />
@@ -834,14 +870,14 @@
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
-									actionListener="#{proformaController.agregarDetallePro}"
-									process="@this,formDetallePro"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formDetallePro">
+									actionListener="#{ordenInternaController.agregarDetalleOT}"
+									process="@this,formDetalleOT"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formDetalleOT">
 								</p:commandButton>
 
 								<p:commandButton value="Atrás "
 									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-									onclick="PF('detallePro').hide();" process="@none">
+									onclick="PF('detalleOT').hide();" process="@none">
 
 								</p:commandButton>
 
@@ -855,14 +891,14 @@
 				</h:form>
 			</p:dialog>
 
-			<!-- **************************  Panel - Ver Proforma  *************************** -->
-			<p:dialog id="panelVerPro" resizable="true" widgetVar="verPro"
+			<!-- **************************  Panel - Ver Orden Trabajo  *************************** -->
+			<p:dialog id="panelVerOT" resizable="true" widgetVar="verOT"
 				modal="true" showEffect="explode" hideEffect="fade"
 				responsive="true" dynamic="true" width="140vh" height="73vh"
-				header="Proforma y Detalle Proforma">
+				header="Orden de Trabajo">
 
 
-				<h:form id="formVerPro">
+				<h:form id="formVerOT">
 					<div class="ui-fluid">
 						<p:fieldset
 							style="border-radius: 10px 10px 10px 10px;
@@ -929,21 +965,21 @@
 											border-style: double;
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-								legend="Proforma">
+								legend="Orden Trabajo">
 
 								<center>
 
 									<p:panelGrid columns="4" layout="grid" style="border:none;">
 
-										<p:outputLabel for="id" value="ID Proforma: "
+										<p:outputLabel for="id" value="Orden: "
 											style="font-weight:bold" />
 										<p:outputLabel id="id"
-											value="#{proformaController.proforma.idProforma}" />
+											value="#{ordenInternaController.ordenTrabajo.idOrden}" />
 
-										<p:outputLabel for="fecha" value="Fecha: "
+										<p:outputLabel for="fecha" value="Fecha cierre: "
 											style="font-weight:bold" />
 										<p:outputLabel id="fecha"
-											value="#{proformaController.cambioFecha(proformaController.proforma.fecha)}" />
+											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
 
 									</p:panelGrid>
 
@@ -953,31 +989,56 @@
 										<p:outputLabel for="cliente" value="Cliente: "
 											style="font-weight:bold" />
 										<p:outputLabel id="cliente"
-											value="#{proformaController.proforma.cliente.nombreCl}" />
-
-										<p:outputLabel for="telefono" value="Telefono: "
-											style="font-weight:bold" />
-										<p:outputLabel id="telefono"
-											value="#{proformaController.proforma.cliente.telefonoCl}" />
-
-										<p:outputLabel for="ruc" value="Ruc: "
-											style="font-weight:bold" />
-										<p:outputLabel id="ruc"
-											value="#{proformaController.proforma.cliente.rucCl}" />
-
-										<p:outputLabel for="ci" value="CI: " style="font-weight:bold" />
-										<p:outputLabel id="ci"
-											value="#{proformaController.proforma.cliente.cedula}" />
-
-										<p:outputLabel for="direccion" value="Dirección: "
-											style="font-weight:bold" />
-										<p:outputLabel id="direccion"
-											value="#{proformaController.proforma.cliente.direccionCl}" />
+											value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
 
 										<p:outputLabel for="contacto" value="Contacto: "
 											style="font-weight:bold" />
 										<p:outputLabel id="contacto"
-											value="#{proformaController.proforma.representantePo}" />
+											value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+										<p:outputLabel for="direccion" value="Dirección: "
+											style="font-weight:bold" />
+										<p:outputLabel id="direccion"
+											value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
+										style="border:none;">
+
+										<p:outputLabel for="telefono" value="Telefono: "
+											style="font-weight:bold" />
+										<p:outputLabel id="telefono"
+											value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
+
+										<p:outputLabel for="fax" value="Fax: "
+											style="font-weight:bold" />
+										<p:outputLabel id="fax"
+											value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
+
+										<p:outputLabel for="descCliente" value="Descr. C: "
+											style="font-weight:bold" />
+										<p:outputLabel id="descCliente"
+											value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
+										style="border:none;">
+
+										<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+											style="font-weight:bold" />
+										<p:outputLabel id="fechaRec"
+											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
+
+										<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+											style="font-weight:bold" />
+										<p:outputLabel id="fechaEntrega"
+											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
 
 									</p:panelGrid>
 								</center>
@@ -994,68 +1055,70 @@
 											border-style: double;
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-								legend="Detalle Proforma">
+								legend="Detalle Orden">
 
 
-								<p:dataTable id="tblVerDetallePro"
-									value="#{proformaController.detalleProformasTemp}"
-									var="detallePro" sortBy="#{detallePro.totalservicioPo}"
+								<p:dataTable id="tblVerDetalleOT"
+									value="#{ordenInternaController.listaDetalleOrdenTemp}"
+									var="detalleOT" sortBy="#{detalleOT.idServicio}"
 									emptyMessage="No se han registrado detalles de proforma.">
 
 
-									<p:column headerText="ID">
-										<h:outputText value="#{detallePro.servicio.idServicio}" />
-									</p:column>
-
 									<p:column headerText="Servicio">
-										<h:outputText value="#{detallePro.servicio.nombreS}" />
+										<h:outputText
+											value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
 									</p:column>
 
 									<p:column headerText="Método">
-										<h:outputText value="#{detallePro.metodo.nombreMt}" />
+										<h:outputText
+											value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
 									</p:column>
 
 									<p:column headerText="Unidad/Laboratorio">
 										<h:outputText
-											value="#{detallePro.servicio.laboratorio.nombreL}" />
+											value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
 									</p:column>
 
-									<p:column headerText="Cantidad">
-										<h:outputText value="#{detallePro.cantidadPo}" />
+									<p:column headerText="Responsable">
+										<h:outputText value="#{detalleOT.personal.nombresPe}" />
 									</p:column>
 
-									<p:column headerText="V. U.">
-										<h:outputText value="#{detallePro.servicio.precioS}" />
+									<p:column headerText="h/T">
+										<h:outputText value="#{detalleOT.horasTrabajo}" />
 									</p:column>
 
-									<p:column headerText="Total">
-										<center>
-											<h:outputText value="#{detallePro.totalservicioPo}" />
-										</center>
+									<p:column headerText="F. Inicio">
+										<h:outputText
+											value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
 									</p:column>
 
-									<p:columnGroup type="footer">
-										<p:row>
-											<p:column colspan="6" style="text-align:right"
-												footerText="Sub Total:" />
-											<p:column
-												footerText="#{proformaController.proforma.subtotalPo}" />
-
-										</p:row>
-
-										<p:row>
-											<p:column colspan="6" style="text-align:right"
-												footerText="IVA (#{proformaController.proforma.cliente.tipocliente.ivaTcl} %): " />
-											<p:column footerText="#{proformaController.proforma.ivaPo}" />
-										</p:row>
-
-										<p:row>
-											<p:column colspan="6" style="text-align:right"
-												footerText="Total: " />
-											<p:column footerText="#{proformaController.proforma.totalPo}" />
-										</p:row>
-									</p:columnGroup>
+									<p:column headerText="F. Fin">
+										<h:outputText
+											value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+									</p:column>
 								</p:dataTable>
+
+							</p:fieldset>
+
+							<br />
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+								legend="Responsable">
+
+								<p:panelGrid layout="grid" columns="1" style="border:none;">
+
+									<p:outputLabel id="responsable"
+										value="#{ordenInternaController.ordenTrabajo.responsableOt}"
+										size="24" />
+
+								</p:panelGrid>
 
 							</p:fieldset>
 
@@ -1070,10 +1133,33 @@
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-								<p:panelGrid layout="grid" columns="1">
+								<p:panelGrid layout="grid" columns="1" style="border:none;">
+
+									<p:outputLabel id="leyenda"
+										value="#{ordenInternaController.ordenTrabajo.idUsuario}"
+										size="24" />
+
+								</p:panelGrid>
+
+							</p:fieldset>
+
+							<br />
+
+							<p:fieldset
+								style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+								legend="Observaciones">
+
+								<p:panelGrid layout="grid" columns="1" style="border:none;">
 
 									<p:outputLabel id="observaciones"
-										value="#{proformaController.proforma.obserPo}" size="24" />
+										value="#{ordenInternaController.ordenTrabajo.observOt}"
+										size="24" />
 
 								</p:panelGrid>
 
@@ -1084,16 +1170,23 @@
 
 								<br /> <br />
 
-								<h:panelGrid columns="2">
+								<h:panelGrid columns="3">
 
 									<p:commandButton style="width: 150px; margin: 10px"
-										value="Imprimir" icon="fa fa-save" process="@this"
-										action="#{proformaController.abrirProforma}">
+										value="Imprimir OT" icon="fa fa-save" process="@this"
+										action="#{ordenInternaController.abrirProforma()}">
+
+									</p:commandButton>
+
+									<p:commandButton style="width: 180px; margin: 10px"
+										value="Imprimir Formato Descarga" icon="fa fa-save"
+										process="@this"
+										action="#{ordenInternaController.abrirProforma()}">
 
 									</p:commandButton>
 
 									<p:commandButton style="width: 150px; margin: 10px"
-										icon=" fa fa-arrow-left" onclick="PF('verPro').hide();"
+										icon=" fa fa-arrow-left" onclick="PF('verOT').hide();"
 										process="@none" value="Atras">
 
 									</p:commandButton>
@@ -1106,15 +1199,15 @@
 				</h:form>
 			</p:dialog>
 
-			<!-- **************************  Panel - Editar Proforma   *************************** -->
+			<!-- **************************  Panel - Editar Orden Trabajo   *************************** -->
 
-			<p:dialog id="panelEditarPro" resizable="true" widgetVar="editarPro"
+			<p:dialog id="panelEditarOT" resizable="true" widgetVar="editarOT"
 				modal="true" showEffect="explode" hideEffect="fade"
 				responsive="true" dynamic="true" width="142vh" height="73vh"
-				header="Editar Proforma">
+				header="Editar Orden Trabajo">
 
 
-				<h:form id="formEditarPro">
+				<h:form id="formEditarOT">
 					<div class="ui-fluid">
 						<p:fieldset
 							style="border-radius: 10px 10px 10px 10px;
@@ -1135,35 +1228,83 @@
 											border-style: double;
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
-								legend="Editar Proforma">
+								legend="Editar Orden Trabajo">
 
 								<div class="ui-fluid">
 									<center>
-										<p:panelGrid columns="4" layout="grid"
-											styleClass="ui-noborder,pnlGridAjusteDivs"
-											style="border:none;">
+										<p:panelGrid columns="4" layout="grid" style="border:none;">
 
-											<p:outputLabel for="id" value="Id Proforma: "
+											<p:outputLabel for="id" value="Orden: "
 												style="font-weight:bold" />
 											<p:outputLabel id="id"
-												value="#{proformaController.proforma.idProforma}" />
+												value="#{ordenInternaController.ordenTrabajo.idOrden}" />
 
-											<p:outputLabel for="fecha" value="Fecha: "
+											<p:outputLabel for="fecha" value="Fecha cierre: "
 												style="font-weight:bold" />
 											<p:outputLabel id="fecha"
-												value="#{proformaController.cambioFecha(proformaController.proforma.fecha)}" />
+												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
+
+										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid"
+											styleClass="ui-noborder" style="border:none;">
 
 											<p:outputLabel for="cliente" value="Cliente: "
 												style="font-weight:bold" />
 											<p:outputLabel id="cliente"
-												value="#{proformaController.proforma.cliente.nombreCl}" />
+												value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
 
 											<p:outputLabel for="contacto" value="Contacto: "
 												style="font-weight:bold" />
 											<p:outputLabel id="contacto"
-												value="#{proformaController.proforma.representantePo}" />
+												value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
 
 										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+											<p:outputLabel for="direccion" value="Dirección: "
+												style="font-weight:bold" />
+											<p:outputLabel id="direccion"
+												value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
+
+										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid"
+											styleClass="ui-noborder" style="border:none;">
+
+											<p:outputLabel for="telefono" value="Telefono: "
+												style="font-weight:bold" />
+											<p:outputLabel id="telefono"
+												value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
+
+											<p:outputLabel for="fax" value="Fax: "
+												style="font-weight:bold" />
+											<p:outputLabel id="fax"
+												value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
+
+											<p:outputLabel for="descCliente" value="Descr. C: "
+												style="font-weight:bold" />
+											<p:inputTextarea id="descCliente" autoResize="false"
+												value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
+
+										</p:panelGrid>
+
+										<p:panelGrid columns="4" layout="grid"
+											styleClass="ui-noborder" style="border:none;">
+
+											<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+												style="font-weight:bold" />
+											<p:outputLabel id="fechaRec"
+												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
+
+											<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+												style="font-weight:bold" />
+											<p:outputLabel id="fechaEntrega"
+												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
+
+										</p:panelGrid>
+
 									</center>
 								</div>
 
@@ -1177,9 +1318,9 @@
 							<center>
 								<p:commandButton value="Agregar" icon="fa fa-plus"
 									title="Agregar Nuevo Detalle Proforma"
-									actionListener="#{proformaController.cambiarIdTempPanel(1,1)}"
+									actionListener="#{ordenInternaController.cambiarIdTempPanel(1,1)}"
 									style="width: 125px; border-radius: 3px 3px 3px 3px;"
-									onsuccess="PF('detallePro').show();" process="@this"
+									onsuccess="PF('detalleOT').show();" process="@this"
 									update="@this,@([id$=messagesForm])">
 
 								</p:commandButton>
@@ -1195,40 +1336,44 @@
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-									<p:panel id="detallePro" header="Detalle Proforma">
-										<p:dataTable id="tblDetallePro"
-											value="#{proformaController.detalleProformas}"
-											var="detallePro" sortBy="#{detallePro.totalservicioPo}"
+									<p:panel id="detalleOT" header="Detalle Orden Trabajo">
+										<p:dataTable id="tblDetalleOT"
+											value="#{ordenInternaController.listaDetalleOrden}"
+											var="detalleOT" sortBy="#{detalleOT.idServicio}"
 											emptyMessage="No se han registrado detalles de proforma, clic en el boton agregar para registrar.">
 
 
-											<p:column headerText="ID">
-												<h:outputText value="#{detallePro.servicio.idServicio}" />
-											</p:column>
-
 											<p:column headerText="Servicio">
-												<h:outputText value="#{detallePro.servicio.nombreS}" />
+												<h:outputText
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
 											</p:column>
 
 											<p:column headerText="Método">
-												<h:outputText value="#{detallePro.metodo.nombreMt}" />
+												<h:outputText
+													value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
 											</p:column>
 
 											<p:column headerText="Unidad/Laboratorio">
 												<h:outputText
-													value="#{detallePro.servicio.laboratorio.nombreL}" />
+													value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
 											</p:column>
 
-											<p:column headerText="Cantidad">
-												<h:outputText value="#{detallePro.cantidadPo}" />
+											<p:column headerText="Responsable">
+												<h:outputText value="#{detalleOT.personal.nombresPe}" />
 											</p:column>
 
-											<p:column headerText="V. U.">
-												<h:outputText value="#{detallePro.servicio.precioS}" />
+											<p:column headerText="h/T">
+												<h:outputText value="#{detalleOT.horasTrabajo}" />
 											</p:column>
 
-											<p:column headerText="T. S.">
-												<h:outputText value="#{detallePro.totalservicioPo}" />
+											<p:column headerText="F. Inicio">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+											</p:column>
+
+											<p:column headerText="F. Fin">
+												<h:outputText
+													value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
 											</p:column>
 
 											<p:column headerText="Acciones">
@@ -1236,9 +1381,9 @@
 
 													<!-- **************************  Boton Editar   *************************** -->
 													<p:commandLink icon="ui-icon-check"
-														oncomplete="PF('editarDetallePro').show();"
-														update="formEditarDetallePro"
-														actionListener="#{proformaController.cambiarIdTempPanel(1,2)}">
+														oncomplete="PF('editarDetalleOT').show();"
+														update="formEditarDetalleOT"
+														actionListener="#{ordenInternaController.cambiarIdTempPanel(1,2)}">
 
 														<h:graphicImage value="/images/archivos/editar.png"
 															title="Modificar" style="border:0px solid #CAD6E0;"
@@ -1246,8 +1391,8 @@
 
 
 														<f:setPropertyActionListener
-															target="#{proformaController.detalleProforma}"
-															value="#{detallePro}">
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
 													</p:commandLink>
@@ -1256,8 +1401,8 @@
 
 
 													<p:commandLink process="@this" icon="ui-icon-check"
-														action="#{proformaController.cambiarIdTempPanel(1,2)}"
-														onclick="PF('cdEliminarDetallePro').show();">
+														action="#{ordenInternaController.cambiarIdTempPanel(1,2)}"
+														onclick="PF('cdEliminarDetalleOT').show();">
 
 														<h:graphicImage value="/images/archivos/basurero.png"
 															title="Eliminar" style="border:0px solid #CAD6E0;"
@@ -1265,8 +1410,8 @@
 
 
 														<f:setPropertyActionListener
-															target="#{proformaController.detalleProforma}"
-															value="#{detallePro}">
+															target="#{ordenInternaController.detalleOrden}"
+															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
 													</p:commandLink>
@@ -1274,28 +1419,7 @@
 												</center>
 											</p:column>
 
-											<p:columnGroup type="footer">
-												<p:row>
-													<p:column colspan="6" style="text-align:right"
-														footerText="Sub Total:" />
-													<p:column
-														footerText="#{proformaController.proforma.subtotalPo}" />
 
-												</p:row>
-
-												<p:row>
-													<p:column colspan="6" style="text-align:right"
-														footerText="IVA (#{proformaController.proforma.cliente.tipocliente.ivaTcl} %): " />
-													<p:column footerText="#{proformaController.proforma.ivaPo}" />
-												</p:row>
-
-												<p:row>
-													<p:column colspan="6" style="text-align:right"
-														footerText="Total: " />
-													<p:column
-														footerText="#{proformaController.proforma.totalPo}" />
-												</p:row>
-											</p:columnGroup>
 										</p:dataTable>
 									</p:panel>
 
@@ -1315,19 +1439,18 @@
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Modificar" icon="fa fa-save"
-										process="@this,formEditarPro"
-										disabled="#{proformaController.disabledButton() != true}"
-										update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarPro"
-										actionListener="#{proformaController.editarPro}"
-										onsuccess="PF('editarPro').hide();">
+										process="@this,formEditarOT"
+										disabled="#{ordenInternaController.disabledButton() != true}"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarOT"
+										actionListener="#{ordenInternaController.editarPro}"
+										onsuccess="PF('editarOT').hide();">
 
 									</p:commandButton>
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										icon=" fa fa-arrow-left"
 										action="#{proformaController.limpiarTodosCampos}"
-										onclick="PF('editarPro').hide();" process="@none"
-										value="Atras">
+										onclick="PF('editarOT').hide();" process="@none" value="Atras">
 
 									</p:commandButton>
 
@@ -1340,13 +1463,13 @@
 			</p:dialog>
 
 			<!-- **************************  Panel -  Editar Detalle Proforma   *************************** -->
-			<p:dialog id="panelEditarDetallePro" resizable="true"
-				widgetVar="editarDetallePro" modal="true" showEffect="explode"
+			<p:dialog id="panelEditarDetalleOT" resizable="true"
+				widgetVar="editarDetalleOT" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true" width="80vh"
 				height="40vh" header="Editar Detalle Proforma">
 
 
-				<h:form id="formEditarDetallePro">
+				<h:form id="formEditarDetalleOT">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -1377,51 +1500,89 @@
 											<p:outputLabel for="servicio" value="Servicio: "
 												style="color:white!important" />
 											<p:outputLabel id="servicio"
-												value="#{proformaController.detalleProforma.servicio.nombreS}"
+												value="#{ordenInternaController.servicio(ordenInternaController.detalleOrden.idServicio).nombreS}"
 												size="30" maxlength="100" />
 
-											<p:outputLabel for="metodo" value="Método: "
+											<p:outputLabel for="metodo" value="Metodo: "
 												style="color:white!important" />
-											<p:selectOneMenu id="metodo"
-												value="#{proformaController.detalleProforma.metodo}">
-												<f:selectItem itemLabel="Ninguno..."
-													itemValue="#{proformaController.metodoNA}" />
-												<f:selectItems value="#{proformaController.metodos}"
-													itemLabel="#{metodo.nombreMt}" itemValue="#{metodo}"
-													var="metodo">
-												</f:selectItems>
-											</p:selectOneMenu>
-
-											<p:outputLabel for="laboratorio" value="Laboratorio: "
-												style="color:white!important" />
-											<p:outputLabel id="laboratorio"
-												value="#{proformaController.detalleProforma.servicio.laboratorio.nombreL}"
+											<p:outputLabel id="metodo"
+												value="#{ordenInternaController.metodo(ordenInternaController.detalleOrden.idMetodo)}"
 												size="30" maxlength="100" />
 
-											<p:outputLabel for="precio" value="Precio UNIT.: "
+											<p:outputLabel for="muestra" value="Muestra: "
 												style="color:white!important" />
-											<p:outputLabel id="precio"
-												value="#{proformaController.detalleProforma.servicio.precioS}"
+											<p:outputLabel id="muestra"
+												value="#{ordenInternaController.detalleOrden.muestra.idMuestra}"
 												size="30" maxlength="100" />
 
-											<p:outputLabel for="cantidad" value="Cantidad: "
-												style="color:white!important" />
-											<p:inputNumber id="cantidad"
-												value="#{proformaController.detalleProforma.cantidadPo}"
-												emptyValue="zero" size="30" maxlength="100"
-												validator="#{proformaController.validarCantidad}">
-
-												<p:ajax event="keyup" async="false"
-													listener="#{proformaController.calcularTotalEdit}" />
-												<p:ajax event="keyup" async="false" update="totalPro" />
-											</p:inputNumber>
-
-											<p:outputLabel for="totalPro" value="Total Servicio: "
-												style="color:white!important" />
-											<h:outputText id="totalPro"
-												value="#{proformaController.detalleProforma.totalservicioPo}" />
 
 										</p:panelGrid>
+										<br />
+
+										<center>
+											<p:commandButton icon="fa fa-search-plus"
+												style="border:none;text-align: left; width: 150px;"
+												value="Buscar Personal" process="@this"
+												actionListener="#{ordenInternaController.cargarPersonal(1)}"
+												onsuccess="PF('listadoPer').show()">
+											</p:commandButton>
+										</center>
+										<br />
+
+										<center>
+											<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+												columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+												style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+												layout="grid">
+
+												<p:outputLabel for="resonsable" value="Responsable: "
+													style="color:white!important" />
+												<p:outputLabel id="resonsable"
+													value="#{ordenInternaController.detalleOrden.personal.nombresPe}"
+													size="30" maxlength="100" />
+
+												<p:outputLabel value="Horas/Trabajo: " for="ht"
+													style="color:white!important" />
+												<p:inputNumber id="ht"
+													value="#{ordenInternaController.detalleOrden.horasTrabajo}"
+													required="true" emptyValue="zero"
+													requiredMessage="Debe ingresar la cantidad" size="30"
+													maxlength="100">
+
+												</p:inputNumber>
+
+												<h:outputLabel value="Fecha inicio: "
+													style="color:white!important; font-size: 17px" />
+												<p:calendar id="fechaInicio"
+													value="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
+													pattern="dd/MM/yyyy" locale="es"
+													onkeypress="return permite(event, 'none')"
+													requiredMessage="Fecha Inicial Requerida" navigator="true"
+													effect="fadeIn" effectDuration="100" showOn="button"
+													size="24">
+													<p:ajax event="dateSelect" update="fechaFinal" />
+													<p:ajax event="keyup" update="fechaFinal" />
+												</p:calendar>
+
+												<h:outputLabel value="Fecha fin: "
+													style="color:white!important; font-size: 17px" />
+												<p:calendar id="fechaFinal"
+													disabled="#{ordenInternaController.disabledDateEdit() != true}"
+													value="#{ordenInternaController.detalleOrden.fechaFinAnalisis}"
+													mindate="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
+													pattern="dd/MM/yyyy" locale="es" required="true"
+													onkeypress="return permite(event, 'none')"
+													requiredMessage="Fecha Final Requerida" navigator="true"
+													effect="fadeIn" effectDuration="100" showOn="button"
+													size="24">
+
+												</p:calendar>
+											</p:panelGrid>
+										</center>
+										<br />
+
+
+
 									</center>
 
 
@@ -1429,27 +1590,21 @@
 
 							</div>
 						</div>
-
-
-
-
 						<br />
-
-
 						<center>
 
 							<h:panelGrid columns="2">
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
-									actionListener="#{proformaController.editarDetallePro()}"
-									process="@form,formEditarDetallePro"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDetallePro">
+									actionListener="#{ordenInternaController.editarDetalleOT}"
+									process="@form,formEditarDetalleOT"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDetalleOT">
 								</p:commandButton>
 
 								<p:commandButton value="Atrás "
 									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
-									onclick="PF('editarDetallePro').hide();" process="@none">
+									onclick="PF('editarDetalleOT').hide();" process="@none">
 
 								</p:commandButton>
 
@@ -1496,15 +1651,15 @@
 							<div class="ui-fluid" align="center">
 
 								<p:dataTable id="tblClientes"
-									value="#{proformaController.clientes}" var="cliente"
+									value="#{ordenInternaController.clientes}" var="cliente"
 									widgetVar="filterClientesTable"
 									emptyMessage="No se pudo encontrar ninguna coincidencia"
-									filteredValue="#{proformaController.filtroClientes}" rows="7"
-									paginator="true"
+									filteredValue="#{ordenInternaController.filtroClientes}"
+									rows="7" paginator="true"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 									rowKey="#{cliente.idCliente}"
-									selection="#{proformaController.selectCliente}"
+									selection="#{ordenInternaController.selectCliente}"
 									selectionMode="single">
 
 									<p:column headerText="Cliente" filterBy="#{cliente.nombreCl}">
@@ -1540,8 +1695,8 @@
 
 									<p:commandButton icon="fa fa-save" value="Seleccionar"
 										process="@this,tblClientes"
-										action="#{proformaController.seleccionarCliente}"
-										update="@([id$=messagesForm],[id$=formAgregarPro])"
+										action="#{ordenInternaController.seleccionarCliente}"
+										update="@([id$=messagesForm],[id$=formAgregarOT])"
 										onsuccess="PF('listadoCli').hide()">
 
 									</p:commandButton>
@@ -1554,14 +1709,14 @@
 				</h:form>
 			</p:dialog>
 
-			<!-- **************************  Panel - Listado de Todos los Servicios ************************** -->
-			<p:dialog id="panelListadoServ" resizable="true"
-				widgetVar="listadoServ" modal="true" showEffect="explode"
+			<!-- **************************  Panel - Listado Personal ************************** -->
+			<p:dialog id="panelListadoPer" resizable="true"
+				widgetVar="listadoPer" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
 				height="73vh" header="Listado de Servicios">
 
 
-				<h:form id="formListadoServ">
+				<h:form id="formListadoPer">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -1578,40 +1733,39 @@
 						<center>
 
 							<p:commandButton process="@this" icon="fa fa-refresh"
-								value="Cargar Servicios" update="@this, tblAllServicios"
-								oncomplete="PF('filterAllServiciosTable').filter();">
+								value="Cargar Servicios" update="@this, tblPersonal"
+								oncomplete="PF('filterPersonalTable').filter();">
 							</p:commandButton>
 
 							<br /> <br />
 
 							<div class="ui-fluid" align="center">
 
-								<p:dataTable id="tblAllServicios"
-									value="#{proformaController.allServicios}" var="servicio"
-									widgetVar="filterAllServiciosTable"
+								<p:dataTable id="tblPersonal"
+									value="#{ordenInternaController.personalLabs}" var="personal"
+									widgetVar="filterPersonalTable"
 									emptyMessage="No se pudo encontrar ninguna coincidencia"
-									filteredValue="#{proformaController.filtroAllServicios}"
+									filteredValue="#{ordenInternaController.filtroPersonalLabs}"
 									rows="8" paginator="true"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
-									rowKey="#{servicio.idServicio}"
-									selection="#{proformaController.selectServicio}"
+									rowKey="#{personal.idPersonal}"
+									selection="#{ordenInternaController.personalLab}"
 									selectionMode="single">
 
-									<p:column headerText="ID" filterBy="#{servicio.idServicio}"
+									<p:column headerText="ID" filterBy="#{personal.idPersonal}"
 										filterMatchMode="contains">
-										<h:outputText value="#{servicio.idServicio}" />
+										<h:outputText value="#{personal.idPersonal}" />
 									</p:column>
 
-									<p:column headerText="Nombre" filterBy="#{servicio.nombreS}"
-										filterMatchMode="contains">
-										<h:outputText value="#{servicio.nombreS}" />
+									<p:column headerText="Nombre Analista"
+										filterBy="#{personal.nombresPe}" filterMatchMode="contains">
+										<h:outputText value="#{personal.nombresPe}" />
 									</p:column>
 
 									<p:column headerText="Laboratorio"
-										filterBy="#{servicio.laboratorio.nombreL}"
-										filterMatchMode="contains">
-										<h:outputText value="#{servicio.laboratorio.nombreL}" />
+										filterBy="#{personal.idUnidad}" filterMatchMode="contains">
+										<h:outputText value="#{personal.idUnidad}" />
 									</p:column>
 
 
@@ -1624,9 +1778,10 @@
 								<h:panelGrid columns="1">
 
 									<p:commandButton icon="fa fa-save" value="Seleccionar"
-										process="@this,tblAllServicios"
-										action="#{proformaController.seleccionarServicio}"
-										update="@([id$=messagesForm])">
+										process="@this,tblPersonal"
+										action="#{ordenInternaController.seleccionarPersonal}"
+										update="@([id$=messagesForm])"
+										onsuccess="PF('listadoPer').hide()">
 
 									</p:commandButton>
 
@@ -1638,14 +1793,14 @@
 				</h:form>
 			</p:dialog>
 
-			<!-- **************************  Panel - Editar Estado Proforma ************************** -->
-			<p:dialog id="panelEditarEstado" resizable="true"
-				widgetVar="editarEstado" modal="true" showEffect="explode"
+			<!-- **************************  Panel - Editar Fecha Cierre ************************** -->
+			<p:dialog id="panelEditarFechaCierre" resizable="true"
+				widgetVar="editarFechaCierre" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true" width="55vh"
-				height="35vh" header="Listado de Clientes">
+				height="35vh" header="Editar Fecha Cierre">
 
 
-				<h:form id="formEditarEstado">
+				<h:form id="formEditarFechaCierre">
 
 					<p:fieldset
 						style="border-radius: 10px 10px 10px 10px;
@@ -1664,27 +1819,24 @@
 								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
 									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
 
-									<p:outputLabel for="proforma" value="Proforma: "
+									<p:outputLabel for="orden" value="Id Orden: "
 										style="color:white!important" />
-									<p:outputLabel id="proforma"
-										value="#{proformaController.proforma.idProforma}" size="30"
-										maxlength="100" />
+									<p:outputLabel id="orden"
+										value="#{ordenInternaController.ordenTrabajo.idOrden}"
+										size="30" maxlength="100" />
 
-									<p:outputLabel for="estado" value="Estado: "
-										style="color:white!important" />
-									<p:selectOneMenu id="estado"
-										value="#{proformaController.proforma.estadoPo}">
-										<f:selectItem itemLabel="Pendiente" itemValue="Pendiente" />
-										<f:selectItem itemLabel="Aceptada" itemValue="Aceptada" />
-										<f:selectItem itemLabel="Rechazada" itemValue="Rechazada" />
+									<h:outputLabel value="Fecha Cierre: "
+										style="color:white!important; font-size: 17px" />
+									<p:calendar id="fechaCierre"
+										value="#{ordenInternaController.ordenTrabajo.fechaCierre}"
+										maxdate="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
+										pattern="dd/MM/yyyy" locale="es"
+										onkeypress="return permite(event, 'none')"
+										requiredMessage="Fecha Requerida" navigator="true"
+										effect="fadeIn" effectDuration="100" showOn="button" size="24">
 
-									</p:selectOneMenu>
+									</p:calendar>
 
-									<p:outputLabel id="lvlmotivo" for="motivo" value="Motivo: "
-										style="color:white!important" />
-									<p:inputTextarea id="motivo"
-										value="#{proformaController.proforma.motivoEstadopo}"
-										size="24" />
 
 								</p:panelGrid>
 							</div>
@@ -1697,15 +1849,91 @@
 							<h:panelGrid columns="2">
 
 								<p:commandButton icon="fa fa-save" value="Guardar"
-									process="@this,formEditarEstado"
-									actionListener="#{proformaController.editarEstado}"
+									process="@this,formEditarFechaCierre"
+									actionListener="#{ordenInternaController.editarEstado}"
 									update="@([id$=messagesForm],[id$=formprincipal])"
-									onsuccess="PF('editarEstado').hide()">
+									onsuccess="PF('editarFechaCierre').hide()">
 
 								</p:commandButton>
 
 								<p:commandButton icon="fa fa-close" value="Cancelar"
-									onclick="PF('editarEstado').hide()">
+									onclick="PF('editarFechaCierre').hide()">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+						<br />
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Editar Fecha Entrega ************************** -->
+			<p:dialog id="panelEditarFechaEntrega" resizable="true"
+				widgetVar="editarFechaEntrega" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="55vh"
+				height="35vh" header="Editar Fecha Entrega">
+
+
+				<h:form id="formEditarFechaEntrega">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+
+
+						<center>
+							<div class="ui-fluid">
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas">
+
+									<p:outputLabel for="orden" value="Id Orden: "
+										style="color:white!important" />
+									<p:outputLabel id="orden"
+										value="#{ordenInternaController.ordenTrabajo.idOrden}"
+										size="30" maxlength="100" />
+
+									<h:outputLabel value="Fecha Entrega: "
+										style="color:white!important; font-size: 17px" />
+									<p:calendar id="fechaEntrega"
+										value="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
+										mindate="#{ordenInternaController.ordenTrabajo.fechaCierre}"
+										pattern="dd/MM/yyyy" locale="es"
+										onkeypress="return permite(event, 'none')"
+										requiredMessage="Fecha Requerida" navigator="true"
+										effect="fadeIn" effectDuration="100" showOn="button" size="24">
+
+									</p:calendar>
+
+
+								</p:panelGrid>
+							</div>
+						</center>
+
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton icon="fa fa-save" value="Guardar"
+									process="@this,formEditarFechaEntrega"
+									actionListener="#{ordenInternaController.editarEstado}"
+									update="@([id$=messagesForm],[id$=formprincipal])"
+									onsuccess="PF('editarFechaEntrega').hide()">
+
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-close" value="Cancelar"
+									onclick="PF('editarFechaEntrega').hide()">
 
 								</p:commandButton>
 
@@ -1720,19 +1948,19 @@
 			<!-- **************************  Panel - Eliminar Detalle Pro************************** -->
 			<h:form id="formEliminarDetallePro">
 				<p:confirmDialog
-					message="Esta seguro(a) que desea eliminar el detalle proforma"
+					message="Esta seguro(a) que desea eliminar el detalle de orden de trabajo"
 					header="Eliminar M.I." severity="warn"
-					widgetVar="cdEliminarDetallePro">
+					widgetVar="cdEliminarDetalleOT">
 					<center>
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdEliminarDetallePro').hide();"
-							actionListener="#{proformaController.eliminarDetallePro}"
-							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarPro" />
+							onsuccess="PF('cdEliminarDetalleOT').hide();"
+							actionListener="#{ordenInternaController.eliminarDetalleOT}"
+							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdEliminarDetallePro').hide();" type="button" />
+							onclick="PF('cdEliminarDetalleOT').hide();" type="button" />
 
 					</center>
 
@@ -1767,7 +1995,7 @@
 
 			<!-- **************************  Panel - Panel de error ************************** -->
 			<h:form id="formError">
-				<p:confirmDialog message="NO se puede hacer cambios en la Proforma"
+				<p:confirmDialog message="La orden ya ha sido cerrada."
 					header="Mensaje..." severity="warn" widgetVar="cdPanelError">
 					<center>
 
@@ -1780,15 +2008,29 @@
 
 			</h:form>
 
-			<!-- **************************  Panel de vizualizacion - Confirmar Nueva Proforma   ************************** -->
+			<h:form id="formErrorFecha">
+				<p:confirmDialog message="Debe de registar la fecha de cierre."
+					header="Mensaje..." severity="warn" widgetVar="cdPanelErrorFecha">
+					<center>
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdPanelErrorFecha').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+			</h:form>
+
+			<!-- **************************  Panel de vizualizacion - Confirmar Nuevo Orden   ************************** -->
 
 			<p:confirmDialog
-				message="Esta seguro(a) que desea guardar la proforma con los siguientes datos: "
-				header="Confirmar Proforma." severity="warn"
-				widgetVar="cdConfirmarProforma">
+				message="Esta seguro(a) que desea guardar el orden con los siguientes datos: "
+				header="Confirmar Orden Trabajo." severity="warn"
+				widgetVar="cdConfirmarOT">
 
 				<center>
-					<h:form id="formConfirmaNuevaProforma">
+					<h:form id="formConfirmarNuevoOT">
 
 						<p:panelGrid columns="2" layout="grid"
 							styleClass="ui-panelgrid-blank"
@@ -1798,40 +2040,40 @@
 							<p:outputLabel for="cliente" value="Cliente: "
 								style="color:white!important" />
 							<p:outputLabel id="cliente"
-								value="#{proformaController.nuevoProforma.cliente.nombreCl}" />
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
+
+							<p:outputLabel for="direccion" value="Direccion: "
+								style="color:white!important" />
+							<p:outputLabel id="direccion"
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
+
+							<p:outputLabel for="fax" value="Fax:  "
+								style="color:white!important" />
+							<p:outputLabel id="fax"
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.faxCl}" />
 
 							<p:outputLabel for="telefono" value="Telefono: "
 								style="color:white!important" />
 							<p:outputLabel id="telefono"
-								value="#{proformaController.nuevoProforma.cliente.telefonoCl}" />
-
-							<p:outputLabel for="ruc" value="Ruc: "
-								style="color:white!important" />
-							<p:outputLabel id="ruc"
-								value="#{proformaController.nuevoProforma.cliente.rucCl}" />
-
-							<p:outputLabel for="ci" value="CI: "
-								style="color:white!important" />
-							<p:outputLabel id="ci"
-								value="#{proformaController.nuevoProforma.cliente.cedula}" />
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
 
 							<p:outputLabel for="contacto" value="Contacto: "
 								style="color:white!important" />
 							<p:outputLabel id="contacto"
-								value="#{proformaController.nuevoProforma.cliente.contactoCl}" />
+								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
 
 						</p:panelGrid>
 
 						<br />
 
 						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdConfirmarProforma').hide();"
-							actionListener="#{proformaController.guardarProforma}"
-							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarPro,formDetallePro" />
+							onsuccess="PF('cdConfirmarOT').hide();"
+							actionListener="#{ordenInternaController.guardarOT}"
+							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT,formDetalleOT" />
 
 
 						<p:commandButton value="Cancelar"
-							onclick="PF('cdConfirmarProforma').hide();" type="button" />
+							onclick="PF('cdConfirmarOT').hide();" type="button" />
 					</h:form>
 				</center>
 

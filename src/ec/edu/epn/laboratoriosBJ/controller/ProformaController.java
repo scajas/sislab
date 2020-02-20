@@ -1,5 +1,6 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
@@ -14,6 +15,7 @@ import javax.ejb.RemoveException;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
@@ -21,6 +23,7 @@ import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.jdom.IllegalAddException;
 import org.primefaces.context.RequestContext;
 import ec.edu.epn.laboratorioBJ.beans.ClienteDAO;
 import ec.edu.epn.laboratorioBJ.beans.DetalleProDAO;
@@ -92,6 +95,7 @@ public class ProformaController implements Serializable {
 	/* Detalle Proforma */
 	private DetalleProforma detalleProforma;
 	private DetalleProforma detalleProformaTemp;
+	private DetalleProforma selectDetalleProforma;
 	private DetalleProforma nuevodetalleProforma;
 	private List<DetalleProforma> detalleProformas = new ArrayList<DetalleProforma>();
 	private List<DetalleProforma> detalleProformasTemp = new ArrayList<DetalleProforma>();
@@ -117,12 +121,14 @@ public class ProformaController implements Serializable {
 	/* Metodo */
 	private List<Metodo> metodos = new ArrayList<Metodo>();
 	private Metodo metodoSelect;
+	private Metodo metodoNA;
 
 	/* Variables adicionales */
 	private Date fechaInicio;
 	private Date fechaFinal;
 	private int tempId;
 	private int tempId2;
+	private int tempIdServ;
 
 	/** METODO Init **/
 	@PostConstruct
@@ -149,6 +155,7 @@ public class ProformaController implements Serializable {
 			/** Detalle Proforma **/
 			nuevodetalleProforma = new DetalleProforma();
 			detalleProforma = new DetalleProforma();
+			selectDetalleProforma = new DetalleProforma();
 			detalleProformasAdd.clear();
 			detalleProformasDelete.clear();
 			// Seteo de valores a 0 para la vista
@@ -156,6 +163,10 @@ public class ProformaController implements Serializable {
 
 			/** Cliente **/
 			cliente = new Cliente();
+			selectServicio = new Servicio();
+			setTempIdServ(0);
+			metodoNA = proformaI.findMetodoById("120");
+			System.err.println("Este es el metodo: " + metodoNA.getNombreMt());
 
 			/** Valores Adicionales **/
 			fechaInicio = null;
@@ -212,6 +223,8 @@ public class ProformaController implements Serializable {
 			detalleProformas.clear();
 			detalleProformasAdd.clear();
 			detalleProformasDelete.clear();
+
+			setTempIdServ(0);
 
 			/** Valores Adicionales **/
 			fechaInicio = null;
@@ -285,6 +298,25 @@ public class ProformaController implements Serializable {
 		mensajeInfo("Se ha modificado la proforma (" + proforma.getIdProforma() + ")");
 	}
 
+	public void abrirProforma() {
+
+		try {
+
+			/*
+			 * HttpSession sesion=request.getSession();
+			 * session.setAttribute("Hola", "Hola");
+			 */
+
+			FacesContext contex = FacesContext.getCurrentInstance();
+			contex.getExternalContext().getSessionMap().put("id", proforma.getIdProforma());
+
+			contex.getExternalContext().redirect("/SisLab/pages/printProforma.jsf");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Me voy al carajo, no funciona esta redireccion");
+		}
+	}
+
 	public void eliminarProforma() {
 		try {
 			cargarDetalleProforma(proforma.getIdProforma());
@@ -328,6 +360,23 @@ public class ProformaController implements Serializable {
 			proformaBuscar.setCliente(getCliente());
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 			proformas = proformaI.listaProformaByUnidadLab(uni.getCodigoU(), 1, proformaBuscar, fechaInicio,
+					fechaFinal);
+
+			System.out.println("Estos son todos los registros que trae " + proformas.size());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void buscarAllProformas() {
+
+		try {
+			UnidadLabo uni = new UnidadLabo();
+			proformaBuscar.setCliente(getCliente());
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			proformas = proformaI.listaAllProformas(uni.getCodigoU(), 1, proformaBuscar, fechaInicio,
 					fechaFinal);
 
 			System.out.println("Estos son todos los registros que trae " + proformas.size());
@@ -468,6 +517,16 @@ public class ProformaController implements Serializable {
 
 	public void agregarDetallePro() {
 		RequestContext context = RequestContext.getCurrentInstance();
+
+		if (getTempIdServ() == 1) {
+			System.out.println("Este es servicio precio : " + nuevodetalleProforma.getCantidadPo());
+			System.out.println("Este es servicio precio : " + servicio.getPrecioS());
+
+			nuevodetalleProforma.setServicio(servicio); // setteo del servicio
+														// temporarl para la
+														// tabla todo
+		}
+
 		if (validarCantidadPro()) {
 			/** Seteo de valores **/
 			nuevodetalleProforma.setValorunitarioPo(nuevodetalleProforma.getServicio().getPrecioS());
@@ -685,17 +744,18 @@ public class ProformaController implements Serializable {
 
 	}
 
-	public boolean buscarDetalleProTemp(DetalleProforma detalleProforma) {
+	public boolean buscarDetallePro(DetalleProforma detallePro) {
 		// Realiza una busqueda en la lista temporal de Detalle Proforma
 		boolean resultado = false;
-		System.out.println("Este es el del formulario: " + detalleProforma.getServicio().getNombreS());
+		System.out.println("Este es el del formulario: " + detallePro.getServicio().getIdServicio());
 		System.out.println("Este es el detallePro: " + detalleProformas.size());
 
 		for (DetalleProforma dp : detalleProformas) {
-			System.out.println("Este es el que encontro: " + dp.getServicio().getNombreS());
+			System.out.println("Este es el que encontro: " + dp.getServicio().getIdServicio());
 
-			if (dp.getServicio().getNombreS().equals(detalleProforma.getServicio().getNombreS())) {
-				System.out.println("EEncajan " + dp.getServicio().getNombreS());
+			if (dp.getServicio().getIdServicio().equals(detallePro.getServicio().getIdServicio())) {
+				System.out.println("Encajan " + dp.getServicio().getIdServicio() + " y "
+						+ detallePro.getServicio().getIdServicio());
 				resultado = true;
 				break;
 			} else {
@@ -743,13 +803,84 @@ public class ProformaController implements Serializable {
 
 	}
 
+	public void cargarAllServicios() {
+		try {
+
+			allServicios = servicioI.getAll(Servicio.class);
+			filtroAllServicios = allServicios;
+			System.out.println("Estos son los servicios que trae: " + allServicios.size());
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error.");
+			e.printStackTrace();
+		}
+
+	}
+
+	public void seleccionarServicio() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		try {
+
+			if (buscarServicio(selectServicio) == false) {
+
+				setServicio(selectServicio);
+				nuevodetalleProforma.setServicio(getSelectServicio());
+
+				System.out.println(nuevodetalleProforma.getServicio().getPrecioS() + " este es el sevicio actual");
+				mensajeInfo("El servicio " + selectServicio.getIdServicio() + " se ha seleccionado.");
+				cargarMetodo(nuevodetalleProforma);
+				context.update("formDetallePro");
+				context.execute("PF('listadoServ').hide()");
+				setTempIdServ(1);
+
+			} else {
+				mensajeError("El servicio " + selectServicio.getNombreS() + " ya esta agregado.");
+				throw new Exception("Error");
+			}
+
+		} catch (Exception e) {
+			// mensajeError("Ha ocurrido un error.");
+			e.printStackTrace();
+		}
+
+	}
+
+	public boolean buscarServicio(Servicio servicio) {
+		boolean resultado = false;
+		System.out.println("Este es el del formulario: " + servicio.getIdServicio());
+		System.out.println("Este es el detallePro: " + detalleProformas.size());
+
+		for (DetalleProforma dp : detalleProformas) {
+			System.out.println("Este es el que encontro: " + dp.getServicio().getIdServicio());
+
+			if (dp.getServicio().getIdServicio().equals(servicio.getIdServicio())) {
+				System.out.println("Encajan " + dp.getServicio().getIdServicio() + " y " + servicio.getIdServicio());
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+		}
+
+		return resultado;
+	}
+
+	public void validarAllDetallePro() {
+
+		if (buscarDetallePro(selectDetalleProforma) == true) {
+			mensajeError("El servicio " + selectDetalleProforma.getServicio().getNombreS() + " ya esta agregado.");
+		}
+
+	}
+
 	public void validarDetallePro() {
 		RequestContext context = RequestContext.getCurrentInstance();
-		if (buscarDetalleProTemp(nuevodetalleProforma) == true) {
+		if (buscarDetallePro(nuevodetalleProforma) == true) {
 			mensajeError("El servicio " + nuevodetalleProforma.getServicio().getNombreS() + " ya esta agregado.");
 		} else {
-			cargarMetodo();
+			cargarMetodo(nuevodetalleProforma);
 			System.out.println("Esta entrando al else");
+			setTempIdServ(0);
 			context.update("formDetallePro");
 		}
 
@@ -758,7 +889,9 @@ public class ProformaController implements Serializable {
 	public boolean validarCantidadPro() {
 		// String prueba = value.toString();
 
-		System.out.println("Este es la cantidad que trae: " + nuevodetalleProforma);
+		System.out.println("Este es la cantidad que trae: " + nuevodetalleProforma.getCantidadPo());
+		System.out.println("Este es el servicio que trae: " + nuevodetalleProforma.getServicio().getPrecioS());
+		System.out.println("Este es el servicio que trae: " + nuevodetalleProforma.getServicio().getIdServicio());
 
 		if (nuevodetalleProforma.getServicio().getPrecioS() == 0) {
 			return true;
@@ -776,11 +909,12 @@ public class ProformaController implements Serializable {
 
 	}
 
-	public void cargarMetodo() {
+	public void cargarMetodo(DetalleProforma detalleProforma) {
 		try {
 
-			System.out.println("Esta entrando a la funcion de metodo");
-			metodos = proformaI.listarMetodosByIdServicio(getNuevodetalleProforma().getServicio().getIdServicio());
+			System.out
+					.println("Esta entrando a la funcion de metodo: " + detalleProforma.getServicio().getIdServicio());
+			metodos = proformaI.listarMetodosByIdServicio(detalleProforma.getServicio().getIdServicio());
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
@@ -1158,6 +1292,30 @@ public class ProformaController implements Serializable {
 
 	public void setTempId2(int tempId2) {
 		this.tempId2 = tempId2;
+	}
+
+	public DetalleProforma getSelectDetalleProforma() {
+		return selectDetalleProforma;
+	}
+
+	public void setSelectDetalleProforma(DetalleProforma selectDetalleProforma) {
+		this.selectDetalleProforma = selectDetalleProforma;
+	}
+
+	public int getTempIdServ() {
+		return tempIdServ;
+	}
+
+	public void setTempIdServ(int tempIdServ) {
+		this.tempIdServ = tempIdServ;
+	}
+
+	public Metodo getMetodoNA() {
+		return metodoNA;
+	}
+
+	public void setMetodoNA(Metodo metodoNA) {
+		this.metodoNA = metodoNA;
 	}
 
 }
