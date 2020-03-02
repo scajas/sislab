@@ -817,8 +817,7 @@ public class MovimientoInventarioController implements Serializable {
 			if (buscarFechaSaldoEx(anio, m) == false) {
 
 				mensajeError("No estan registrado el mes (" + mes + ") Cierre Saldo existecia mensual");
-				System.out.println("Esta entrando a la funcion");
-
+			
 			} else {
 
 				RequestContext context = RequestContext.getCurrentInstance();
@@ -1076,6 +1075,7 @@ public class MovimientoInventarioController implements Serializable {
 		int m = Integer.parseInt(mes);
 
 		for (SaldoExistencia saldoExistencia : saldoExistencias) {
+			
 			if (saldoExistencia.getId().getAnio() == a && saldoExistencia.getId().getMes() == m) {
 				resultado = true;
 				saldoExistencia = new SaldoExistencia();
