@@ -57,7 +57,7 @@ import net.sf.jasperreports.engine.JasperReport;
 @SessionScoped
 
 public class CompraController implements Serializable, Validator {
- 
+
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
 	FacesContext fc = FacesContext.getCurrentInstance();
@@ -92,7 +92,7 @@ public class CompraController implements Serializable, Validator {
 	private Compra compra;
 	private List<Compra> compras = new ArrayList<Compra>();
 	private Compra nuevaCompra;
-	private List<Compra> filterCompras = new ArrayList<>();
+	private List<Compra> filterCompras;
 	private StreamedContent streamFile = null;
 	private List<Compra> nuevaCompras = new ArrayList<>();
 
@@ -132,15 +132,14 @@ public class CompraController implements Serializable, Validator {
 	public void init() {
 		try {
 
-			UnidadLabo uni = new UnidadLabo();
-			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			compras = compraI.getListCompras(uni.getCodigoU());
+			tblCompras();
 			compra = new Compra();
 			nuevaCompra = new Compra();
-			// nuevaCompra.setFechaCo(new Date());
-			// System.out.println("Fecha Co:" + nuevaCompra.getFechaCo());
 
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 			ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
+
 			ordeninventario = new Ordeninventario();
 			nuevoOrdeninventario = new Ordeninventario();
 
@@ -164,6 +163,13 @@ public class CompraController implements Serializable, Validator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void tblCompras() throws Exception {
+
+		UnidadLabo uni = new UnidadLabo();
+		uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+		compras = compraI.getListCompras(uni.getCodigoU());
 	}
 
 	/****** Mensajes Personalizados ****/
@@ -278,6 +284,7 @@ public class CompraController implements Serializable, Validator {
 
 			// compras
 			compra = new Compra();
+
 			nuevaCompra = new Compra();
 			proveedorSelect = new ProveedorLab();
 
@@ -327,7 +334,7 @@ public class CompraController implements Serializable, Validator {
 
 		try {
 
-			System.out.println("Fecha de Ingreso OI:" + nuevoOrdeninventario.getFechaingresoOi());
+			System.out.println("tabla Ajuste Inventario" + nuevoMovimientoInventarios.size());
 			if (nuevaCompra.getDescrCompra() == ("")) {
 
 				mensajeError("Ingrese la Descripción");
@@ -347,6 +354,9 @@ public class CompraController implements Serializable, Validator {
 			} else if (nuevoOrdeninventario.getFechaingresoOi() == null) {
 
 				mensajeError("Ingrese la feha de Ingreso");
+			} else if (nuevoMovimientoInventarios.size() == 0){
+				
+				mensajeError("Debe ingresar al menos 1 Movimiento de Inventario");
 			}
 
 			else {

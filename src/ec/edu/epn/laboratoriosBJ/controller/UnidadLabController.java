@@ -10,12 +10,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-
 
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
@@ -38,159 +36,143 @@ public class UnidadLabController implements Serializable {
 	/** SERIVICIOS **/
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
 	private UnidadDAO unidadI;// I (interface)
-	
-	
-	
+
 	private UnidadLabo unidad;
-	private List<UnidadLabo> listaUnidadLabo = new ArrayList<UnidadLabo>();
+	private List<UnidadLabo> unidades = new ArrayList<UnidadLabo>();
 	private UnidadLabo nuevoUnidad;
 	private String nombreTP;
 	private List<UnidadLabo> filtroUnidad;
-	
+
 	@PostConstruct
 	public void init() {
 		try {
-			
-			setListaUnidadLab(unidadI.getAll(UnidadLabo.class));
-			setNuevoUnidad(new UnidadLabo());
-			unidad = new UnidadLabo();
+
+			unidades = unidadI.getAll(UnidadLabo.class);
 			nuevoUnidad = new UnidadLabo();
-		    
+			unidad = new UnidadLabo();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	//****** Modificar Unidad********//
-		public void modificarUnidad(ActionEvent event) {
-			
-				try {
-					if (unidad.getNombreU().equals(getNombreTP())) {
-						unidadI.update(unidad);
-						listaUnidadLabo = unidadI.getAll(UnidadLabo.class);
 
-						RequestContext context = RequestContext.getCurrentInstance();
-						context.execute("PF('modificarUnidad')");
+	/****** Mensajes Personalizados ****/
+	public void mensajeError(String mensaje) {
 
-						FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Unidad actualizada exitosamente"));
-
-					} else if (buscarUnidad(unidad.getNombreU()) == false) {
-						unidadI.update(unidad);
-						listaUnidadLabo = unidadI.getAll(UnidadLabo.class);
-
-						RequestContext context = RequestContext.getCurrentInstance();
-						context.execute("PF('modificarUnidad')");
-
-						FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Unidad actualizada exitosamente"));
-					} else {
-						
-						listaUnidadLabo = unidadI.getAll(UnidadLabo.class);
-						FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-								new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error", "La Unidad ya existe."));
-					}
-
-				} catch (Exception e) {
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Ha ocurrido un error"));
-				}
-			}
-		
-		
-		//************Agregar Unidad************//
-		
-		public void agregarUnidad(ActionEvent event) {
-
-			try {
-				if (buscarUnidad(nuevoUnidad.getNombreU()) == true) {
-
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", "Esta Unidad ya existe."));
-					
-					nuevoUnidad = new UnidadLabo();
-
-				} else {
-					unidadI.save(nuevoUnidad);
-					listaUnidadLabo = unidadI.getAll(UnidadLabo.class);
-
-					FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-							new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-									"La Unidad se ha almacenado exitosamente"));
-
-					nuevoUnidad = new UnidadLabo();
-				}
-
-			} catch (Exception e) {
-				FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", ""));
-			}
-			
-		}
-		
-		//****** Eliminar Unidad ****//*
-
-				public void eliminarUnidad(ActionEvent event) {
-
-					try {
-
-						unidadI.delete(unidad);
-						listaUnidadLabo = unidadI.getAll(UnidadLabo.class);
-
-						FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-								new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-										"La Unidad se ha eliminado correctamente"));
-
-					} catch (Exception e) {
-
-						if (e.getMessage() == "Transaction rolled back") {
-							FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-									new FacesMessage(FacesMessage.SEVERITY_FATAL, "NO SE PUEDE ELIMINAR EL REGISTRO!",
-											"Ha ocurrido un error interno, comuniquese con el personal DGIP"));
-						} else {
-							FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-									new FacesMessage(FacesMessage.SEVERITY_FATAL, "ERROR!", ""));
-						}
-
-					}
-
-				}
-				
-				//****** Busqueda de Unidad ****//*
-
-				private boolean buscarUnidad(String valor) {
-					try {
-						listaUnidadLabo = unidadI.getAll(UnidadLabo.class);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					boolean resultado = false;
-					for (UnidadLabo uni : listaUnidadLabo) {
-						if (uni.getNombreU().trim().equals(valor.trim())) {
-							resultado = true;
-							break;
-						} else {
-							resultado = false;
-						}
-					}
-					
-					return resultado;
-				}
-
-				public void pasarNombre(String nombre) {
-					setNombreTP(nombre);
-				}
-		
-		
-
-	public List<UnidadLabo> getListaUnidadLab() {
-		return listaUnidadLabo;
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
 	}
 
-	public void setListaUnidadLab(List<UnidadLabo> listaUnidadLabo) {
-		this.listaUnidadLabo = listaUnidadLabo;
+	public void mensajeInfo(String mensaje) {
+
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+
+	}
+
+	// ************Agregar Unidad************//
+
+	public void nuevoUnidad() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+
+		try {
+			if (buscarUnidad(nuevoUnidad.getNombreU()) == true) {
+
+				mensajeError("La Unidad (" + nuevoUnidad.getNombreU() + ") ya existe.");
+		
+			} else {
+
+				unidadI.save(nuevoUnidad);
+				mensajeInfo("La Unidad (" + nuevoUnidad.getNombreU() + ") se ha almacenado correctamente.");
+				nuevoUnidad = new UnidadLabo();
+				unidades = unidadI.getAll(UnidadLabo.class);
+				context.execute("PF('nuevoUnidad').hide();");
+			}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error");
+		}
+
+	}
+
+	// ****** Modificar Unidad********//
+	public void modificarUnidad() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		try {
+			if (unidad.getNombreU().equals(getNombreTP())) {
+
+				unidadI.update(unidad);
+				unidades = unidadI.getAll(UnidadLabo.class);
+				mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha actualizado exitosamente.");
+				context.execute("PF('modificarUnidad')");
+
+			} else if (buscarUnidad(unidad.getNombreU()) == false) {
+
+				unidadI.update(unidad);
+				unidades = unidadI.getAll(UnidadLabo.class);
+				mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha actualizado exitosamente.");
+				context.execute("PF('modificarUnidad')");
+
+			} else {
+
+				unidades = unidadI.getAll(UnidadLabo.class);
+				mensajeError("La Unidad (" + unidad.getNombreU() + ") ya existe.");
+			}
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error");
+		}
+	}
+
+	// ****** Eliminar Unidad ****//*
+
+	public void eliminarUnidad() {
+
+		try {
+
+			unidadI.delete(unidad);
+			unidades = unidadI.getAll(UnidadLabo.class);
+
+			mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha eliminado correctamente.");
+
+		} catch (Exception e) {
+
+			if (e.getMessage() == "Transaction rolled back") {
+				mensajeError("La tabla Unidad (" + unidad.getNombreU() + ") tiene relación con otra tabla.");
+			} else {
+				mensajeError("Ha ocurrido un problema.");
+			}
+
+		}
+
+	}
+
+	// ****** Busqueda de Unidad ****//*
+
+	private boolean buscarUnidad(String valor) {
+		try {
+			unidades = unidadI.getAll(UnidadLabo.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		boolean resultado = false;
+		for (UnidadLabo uni : unidades) {
+			if (uni.getNombreU().equals(valor)) {
+				resultado = true;
+				break;
+			} else {
+				resultado = false;
+			}
+		}
+
+		return resultado;
+	}
+
+	public void pasarNombre(String nombre) {
+		setNombreTP(nombre);
 	}
 
 	public UnidadLabo getNuevoUnidad() {
@@ -225,6 +207,12 @@ public class UnidadLabController implements Serializable {
 		this.filtroUnidad = filtroUnidad;
 	}
 
-	
-	
+	public List<UnidadLabo> getUnidades() {
+		return unidades;
+	}
+
+	public void setUnidades(List<UnidadLabo> unidades) {
+		this.unidades = unidades;
+	}
+
 }

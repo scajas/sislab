@@ -31,7 +31,6 @@
 	</script>
 		</h:head>
 
-
 		<h:body>
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
@@ -123,7 +122,6 @@
 
 									<!-- **************************  Boton Eliminar   *************************** -->
 
-
 									<p:commandLink process="@this" icon="ui-icon-check"
 										onclick="PF('eliminarLaboratorio').show();">
 
@@ -180,8 +178,10 @@
 								<p:selectOneMenu id="unidad"
 									value="#{laboratorioController.unidadSelect}" effect="fold"
 									filter="true" filterMatchMode="contains">
-									<p:ajax event="focus" process="unidad" update="seleccionarImagen" />
-									<f:selectItem itemLabel="Por favor seleccione" itemValue="#{laboratorioController.unidadSelectEmpty}" />
+									<p:ajax event="focus" process="unidad"
+										update="seleccionarImagen" />
+									<f:selectItem itemLabel="Por favor seleccione"
+										itemValue="#{laboratorioController.unidadSelectEmpty}" />
 									<f:selectItems value="#{laboratorioController.unidades}"
 										itemLabel="#{uni.nombreU}" itemValue="#{uni}" var="uni">
 
@@ -232,7 +232,6 @@
 
 								<p:outputLabel id="lblTelefono" for="telefono"
 									value="Teléfono: " style="color:white!important" />
-
 								<p:inputMask id="telefono"
 									value="#{laboratorioController.nuevoLaboratorioLab.telefonoL}"
 									maxlength="15" size="30" mask="999-9999">
@@ -240,7 +239,6 @@
 
 								<p:outputLabel id="lblFax" for="fax" value="Fax: "
 									style="color:white!important" />
-
 								<p:inputMask id="fax"
 									value="#{laboratorioController.nuevoLaboratorioLab.faxL}"
 									maxlength="15" size="30" mask="999-9999">
@@ -248,22 +246,18 @@
 
 								<p:outputLabel id="lblLeyendaPro" for="leyendaPro"
 									value="Leyenda Proforma: " style="color:white!important" />
-
 								<p:inputTextarea id="leyendaPro"
 									value="#{laboratorioController.nuevoLaboratorioLab.leyendaprofL}"
 									maxlength="2000" rows="5" cols="30" />
 
 								<p:outputLabel id="lblLeyendaOrd" for="leyendaOrd"
 									value="Leyenda Orden T: " style="color:white!important" />
-
 								<p:inputTextarea id="leyendaOrd"
 									value="#{laboratorioController.nuevoLaboratorioLab.leyendaOtL}"
 									maxlength="2000" rows="5" cols="30" />
 
-
-								<p:outputLabel id="lblPath" for="path" value="´Path: "
+								<p:outputLabel id="lblPath" for="path" value="Path: "
 									style="color:white!important" />
-
 								<p:outputLabel id="path"
 									value="#{laboratorioController.nuevoLaboratorioLab.path}" />
 
@@ -456,6 +450,7 @@
 								<p style="color: gray;">
 									<strong>Seleccionar Logo</strong>
 								</p>
+								<p:messages id="mensajeImg" showDetail="true" closable="true" />
 								<br />
 								<p:fileUpload id="seleccionarImagen"
 									fileUploadListener="#{laboratorioController.modificarImgTmp}"
@@ -467,9 +462,8 @@
 									invalidSizeMessage="Se permiten imagenes hasta 2mb"
 									cancelLabel="cancelar" sizeLimit="2000000"
 									fileLimitMessage="Solo puede Ingresar una Imagen"
-									update="@this,@([id$=messagesForm],[id$=formPrincipal],[id$=formMostrarImg])"
+									update="@this,@([id$=mensajeImg],[id$=formPrincipal],[id$=formMostrarImg])"
 									process="@this,nombre" />
-
 							</center>
 							<p style="color: red;">
 								<strong>Nota: Al ingresar una nueva imagen la anterior
