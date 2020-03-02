@@ -106,10 +106,11 @@
 
 									<br /> <br />
 
-									<p:dataTable>
-										<p:column>
-											<center>
-												<p:commandLink
+
+									<table width="200" style="BORDER: #000000 0px solid;"
+										align="center">
+										<tr align="center">
+											<td><p:commandLink
 													actionListener="#{reporteProformaController.buscarCliente}"
 													update="@([id$=tblProforma]),@([id$=messagesForm])"
 													process="@this,formBuscar">
@@ -122,27 +123,25 @@
 														<strong>Buscar</strong>
 													</p>
 
-												</p:commandLink>
-											</center>
+												</p:commandLink></td>
 
-										</p:column>
-										
-										<p:commandLink oncomplete="PF('repoServicio').show();"
-											id="btnGenerarReporte"
-											update="@([id$=dialogReporteServ], [id$=pdfView])"
-											actionListener="#{reporteProformaController.generarPDF}">
+											<td><p:commandLink
+													oncomplete="PF('repoServicio').show();"
+													id="btnGenerarReporte"
+													update="@([id$=dialogReporteServ], [id$=pdfView])"
+													actionListener="#{reporteProformaController.generarPDF}">
 
-											<p:graphicImage value="/images/archivos/imprimir.png"
-												height="35px" width="35px" title="Generar Reporte" />
+													<p:graphicImage value="/images/archivos/imprimir.png"
+														height="35px" width="35px" title="Generar Reporte" />
 
-											<p>
-												<strong>Reporte</strong>
-											</p>
+													<p>
+														<strong>Reporte</strong>
+													</p>
 
-										</p:commandLink>
+												</p:commandLink></td>
+										</tr>
+									</table>
 
-
-									</p:dataTable>
 									<br /> <br />
 								</div>
 							</h:form>

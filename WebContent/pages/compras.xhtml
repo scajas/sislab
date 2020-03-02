@@ -9,7 +9,7 @@
 	xmlns:v="http://validators.epn.edu.ec.com"
 	xmlns:ps="http://primefaces.org/apark">
 
- 
+
 	<ui:define name="pageTitle">Compras</ui:define>
 	<ui:define name="body">
 
@@ -85,7 +85,7 @@
 							paginatorPosition="bottom">
 
 							<p:column headerText="ID Compra " filterBy="#{compra.idCompra}"
-								filterMatchMode="contains" style="width: 12%"
+								filterMatchMode="contains" style="width:12%"
 								filterStyle="width: 70%">
 								<h:outputText value="#{compra.idCompra}" />
 							</p:column>
@@ -96,18 +96,18 @@
 							</p:column>
 
 							<p:column headerText="Fecha" filterBy="#{compra.fechaCo}"
-								filterMatchMode="contains" style="width: 8%"
-								filterStyle="width: 80%">
+								style="width: 8%" filterStyle="width: 80%">
 								<h:outputText value="#{compra.fechaCo}" />
 							</p:column>
 
 							<p:column headerText="Monto" filterBy="#{compra.montoCo}"
-								style="width: 6%" filterStyle="width: 50%">
+								style="width: 6%" filterStyle="width:50%">
 								<h:outputText value="#{compra.montoCo}" />
 							</p:column>
 
 							<p:column headerText="Proveedor"
-								filterBy="#{compra.proveedor.nombrePv}">
+								filterBy="#{compra.proveedor.nombrePv}"
+								filterMatchMode="contains">
 								<h:outputText value="#{compra.proveedor.nombrePv}" />
 							</p:column>
 

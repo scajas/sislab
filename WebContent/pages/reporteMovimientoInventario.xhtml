@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="pageTitle">Reporte Movimiento Inventario</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+		<h:body onload="rc();">
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+			<h:form id="formprincipal">
+
+				<p:remoteCommand name="rc"
+					action="#{reporteMovInvController.limpiarCampos()}" />
+
+				<p:panel>
+					<p:fieldset legend="Buscar"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						<center>
+							<h:form id="formBuscar">
+
+								<div class="ui-fluid">
+
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 65%"
+										layout="grid">
+
+										<p:outputLabel id="lblExistencia" for="existencia"
+											value="ID Existencia: " style="color:white!important" />
+										<p:inputText id="existencia"
+											value="#{reporteMovInvController.existencia.idExistencia}"
+											required="true" requiredMessage="Seleccione una Existencia" />
+
+										<p:outputLabel value="Seleccionar Existencia: "
+											style="color:white!important" />
+
+										<p:commandLink onclick="PF('listadoEx').show();"
+											update="formListadoEx" process="@none">
+											<center>
+												<h:graphicImage value="/images/archivos/busqueda.png"
+													class="btn bt-success" title="Buscar"
+													style="border:0px solid #CAD6E0;" width="20" height="20" />
+
+												<p>Existencias</p>
+											</center>
+										</p:commandLink>
+
+										<p:outputLabel id="lblNombrePro" for="nombrePro"
+											value="Nombre: " style="color:white!important" />
+										<p:outputLabel id="nombrePro"
+											value="#{reporteMovInvController.existencia.producto.nombrePr}" />
+
+										<p:outputLabel id="lblUnidad" for="unidad" value="Unidad M: "
+											style="color:white!important" />
+										<p:outputLabel id="unidad"
+											value="#{reporteMovInvController.existencia.unidadmedida.siglaUm}" />
+
+										<h:outputLabel value="Fecha desde: *"
+											style="color:white!important; font-size: 17px" />
+										<p:calendar id="fechaInicio"
+											value="#{reporteMovInvController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es"
+											onkeypress="return permite(event, 'none')" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="24">
+											<p:ajax event="dateSelect" update="fechaFinal" />
+											<p:ajax event="keyup" update="fechaFinal" />
+										</p:calendar>
+
+										<h:outputLabel value="Fecha hasta: *"
+											style="color:white!important; font-size: 17px" />
+										<p:calendar id="fechaFinal"
+											disabled="#{reporteMovInvController.disabledSelectItem() != true}"
+											value="#{reporteMovInvController.fechaFinal}"
+											mindate="#{reporteMovInvController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es"
+											onkeypress="return permite(event, 'none')" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="24">
+
+										</p:calendar>
+
+									</p:panelGrid>
+								</div>
+								<br />
+								<br />
+
+								<center>
+									<p:commandLink
+										actionListener="#{reporteMovInvController.buscar}"
+										update="@([id$=tblMovInv]),@([id$=messagesForm])"
+										process="@this,existencia,fechaInicio,fechaFinal">
+
+										<h:graphicImage value="/images/archivos/busqueda.png"
+											class="btn bt-success" title="Buscar"
+											style="border:0px solid #CAD6E0;" width="35" height="35 " />
+
+										<p>
+											<strong>Buscar</strong>
+										</p>
+
+									</p:commandLink>
+								</center>
+
+
+								<br />
+								<br />
+							</h:form>
+						</center>
+					</p:fieldset>
+					<br />
+					<p:dataTable id="tblMovInv" var="mov"
+						emptyMessage="No se pudo encontrar ninguna coincidencia" rows="10"
+						paginator="true"
+						value="#{reporteMovInvController.movimientoInventarios}"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15"
+						style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+						paginatorPosition="bottom">
+
+						<p:column headerText="Orden de Inventario" style="width: 12%">
+							<h:outputText value="#{mov.ordeninventario.idOrdeninventario}" />
+						</p:column>
+
+						<p:column headerText="Producto" style="width: 12%">
+							<h:outputText
+								value="#{reporteMovInvController.cambiarDatosExistencia(mov.idExistencia).producto.nombrePr}" />
+						</p:column>
+
+						<p:column headerText="F. de Ingreso" style="width: 6%">
+							<h:outputText value="#{mov.fechaMi}" />
+						</p:column>
+
+						<p:column headerText="Responsable" style="width: 12%">
+							<h:outputText value="#{mov.ordeninventario.responsableOi}" />
+						</p:column>
+
+						<p:column headerText="Tipo de Orden de Inv" style="width: 10%">
+							<h:outputText
+								value="#{mov.ordeninventario.tipordeninv.nombreToi}" />
+						</p:column>
+
+						<p:column headerText="Cantidad Mov." style="width: 8%">
+							<h:outputText value="#{mov.cantidadMov}" />
+						</p:column>
+
+						<p:column headerText="Observación" style="width: 12%">
+							<h:outputText value="#{mov.observacionesMov}" />
+						</p:column>
+
+					</p:dataTable>
+
+					<br />
+					<br />
+
+				</p:panel>
+
+			</h:form>
+
+			<!-- ****************************************************  Panel - Listado Existencias ***************************************************** -->
+
+			<p:dialog id="panelListadoEx" resizable="true" widgetVar="listadoEx"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="150vh" height="75vh"
+				header="Listado de Existencias">
+
+				<h:form id="formListadoEx">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<br />
+						<br />
+						<center>
+
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Existencas" update="@this, tblExistencias"
+								oncomplete="PF('filterExistenciasTable').filter();">
+							</p:commandButton>
+
+							<br /> <br />
+						</center>
+						<p:dataTable id="tblExistencias"
+							value="#{reporteMovInvController.existencias}" var="existencia"
+							widgetVar="filterExistenciasTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							filteredValue="#{reporteMovInvController.filtrarExistencias}"
+							rows="5" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+							rowKey="#{existencia.idExistencia}"
+							selection="#{reporteMovInvController.selectExistencia}"
+							selectionMode="single">
+
+							<p:column headerText="ID Producto"
+								filterBy="#{existencia.producto.idProducto}"
+								filterStyle="width: 80%">
+								<h:outputText value="#{existencia.producto.idProducto}" />
+							</p:column>
+
+							<p:column headerText="ID Existencia"
+								filterBy="#{existencia.idExistencia}" filterMatchMode="contains"
+								filterStyle="width: 80%">
+								<h:outputText value="#{existencia.idExistencia}" />
+							</p:column>
+
+							<p:column headerText="Producto"
+								filterBy="#{existencia.producto.nombrePr}"
+								filterMatchMode="contains" filterStyle="width: 80%">
+								<h:outputText value="#{existencia.producto.nombrePr}" />
+							</p:column>
+
+							<p:column headerText="Saldo Neto"
+								filterBy="#{existencia.cantidadE}" filterMatchMode="contains"
+								filterStyle="width: 80%">
+								<h:outputText value="#{existencia.cantidadE}" />
+							</p:column>
+
+							<p:column headerText="U.M."
+								filterBy="#{existencia.unidadmedida.siglaUm}"
+								filterMatchMode="contains" filterStyle="width: 40%"
+								style="width: 8%">
+								<h:outputText value="#{existencia.unidadmedida.siglaUm}" />
+							</p:column>
+
+							<p:column headerText="Bodega"
+								filterBy="#{existencia.bodega.nombreBg}"
+								filterStyle="width: 80%">
+								<h:outputText value="#{existencia.bodega.nombreBg}" />
+							</p:column>
+
+							<p:column headerText="Ubicación" filterBy="#{existencia.ubicaE}"
+								filterMatchMode="contains" filterStyle="width: 80%">
+								<h:outputText value="#{existencia.ubicaE}" />
+							</p:column>
+
+							<p:column headerText="Característica"
+								filterBy="#{existencia.caracteristica.nombreCr}"
+								filterMatchMode="contains" filterStyle="width: 80%">
+								<h:outputText value="#{existencia.caracteristica.nombreCr}" />
+							</p:column>
+
+						</p:dataTable>
+
+						<br />
+						<br />
+
+						<center>
+
+							<h:panelGrid columns="1">
+
+								<p:commandButton icon="fa fa-save" value="Seleccionar"
+									process="@this,tblExistencias"
+									action="#{reporteMovInvController.seleccionarExistencia}"
+									update="@([id$=messagesForm],[id$=formprincipal])">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+		    PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
+		</script>
+
+	</ui:define>
+</ui:composition>

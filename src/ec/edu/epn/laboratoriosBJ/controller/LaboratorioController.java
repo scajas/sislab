@@ -14,16 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
-import ec.edu.epn.laboratorioBJ.entities.Detallemetodo;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
-import ec.edu.epn.laboratorioBJ.entities.Metodo;
-import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
@@ -141,6 +136,7 @@ public class LaboratorioController implements Serializable {
 				} else {
 					cargarImg(getFileUploadEvent());
 					nuevoLaboratorioLab.setUnidad(unidadSelect);
+
 					laboratorioI.save(nuevoLaboratorioLab);
 					mensajeInfo(
 							"El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") se ha almacenado exitosamente");
@@ -169,10 +165,6 @@ public class LaboratorioController implements Serializable {
 
 	public boolean disabledButton() {
 
-		System.out.println("Centro de Costo:" + nuevoLaboratorioLab.getCentrocostoL());
-		System.out.println("uNIDAD:" + unidadSelect.getNombreU());
-		System.out.println("LABO:" + nuevoLaboratorioLab.getNombreL());
-
 		boolean resultado = false;
 
 		if (unidadSelect.getNombreU() == null) {
@@ -184,7 +176,7 @@ public class LaboratorioController implements Serializable {
 		else {
 			resultado = true;
 		}
-		
+
 		if (nuevoLaboratorioLab.getNombreL() == null || nuevoLaboratorioLab.getNombreL().equals("")) {
 
 			mensajeError("Debe Ingresar el Nombre del Laboratorio.");
@@ -283,8 +275,6 @@ public class LaboratorioController implements Serializable {
 		try {
 			if (LaboratorioLab.getNombreL().equals(getNombreL())) {
 
-				System.out.println("ingresa al 1");
-
 				modificarImg(getFileUploadEvent());
 				laboratorioI.update(LaboratorioLab);
 				updateTable();
@@ -293,8 +283,6 @@ public class LaboratorioController implements Serializable {
 				context.execute("PF('modificarLaboratorio').hide();");
 
 			} else if (buscarLaboratorioLab(LaboratorioLab.getNombreL()) == false) {
-
-				System.out.println("ingresa al 2");
 
 				modificarImg(getFileUploadEvent());
 				laboratorioI.update(LaboratorioLab);
@@ -326,6 +314,9 @@ public class LaboratorioController implements Serializable {
 			String name = LaboratorioLab.getNombreL()
 					+ event.getFile().getFileName().substring(event.getFile().getFileName().lastIndexOf('.'));
 			getNuevoLaboratorioLab().setPath(name);
+
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "La imagen fue actualizada correctamente."));
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -380,23 +371,6 @@ public class LaboratorioController implements Serializable {
 
 	}
 
-	/*
-	 * public String eliminarTildes(String texto) {
-	 * System.out.println("Entra al metodo: " + LaboratorioLab.getNombreL());
-	 * 
-	 * String original =
-	 * "¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷ÿŸ⁄€‹›ﬂ‡·‚„‰ÂÊÁËÈÍÎÏÌÓÔÒÚÛÙıˆ¯˘˙˚¸˝ˇ"; // Cadena
-	 * de caracteres ASCII que reemplazar·n los originales. String ascii =
-	 * "AAAAAAACEEEEIIIIDNOOOOOOUUUUYBaaaaaaaceeeeiiiionoooooouuuuyy"; String
-	 * salida = texto; for (int i = 0; i < original.length(); i++) { //
-	 * Reemplazamos los caracteres especiales.
-	 * 
-	 * salida = salida.replace(original.charAt(i), ascii.charAt(i));
-	 * 
-	 * } //salida = LaboratorioLab.getNombreL(); System.out.println("Salida: " +
-	 * salida); return salida; }
-	 */
-
 	/****** Modificar - Eliminar Logo Lab Anterior ****/
 
 	public void eliminarImg() {
@@ -418,9 +392,6 @@ public class LaboratorioController implements Serializable {
 			String url = "images/laboratorio/";
 			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
 			String name = LaboratorioLab.getPath();
-
-			System.out.println("Este es el path : " + path + url + name);
-			System.out.println("Nombre de la imagen : " + name);
 
 			File fichero = new File(path + url + name);
 			eliminarFichero(fichero);
@@ -495,10 +466,10 @@ public class LaboratorioController implements Serializable {
 	public static void eliminarFichero(File fichero) {
 
 		if (!fichero.exists()) {
-			System.out.println("El archivo data no existe.");
+
 		} else {
 			fichero.delete();
-			System.out.println("El archivo data fue eliminado.");
+
 		}
 
 	}

@@ -292,10 +292,12 @@ public class ProformaController implements Serializable {
 		// Modificar A la base de datos
 		actualizarDetallePro(detalleProformas);
 		actualizarProforma(proforma);
+		
+		mensajeInfo("Se ha modificado la proforma (" + proforma.getIdProforma() + ")");
 
 		limpiarTodosCampos();
 
-		mensajeInfo("Se ha modificado la proforma (" + proforma.getIdProforma() + ")");
+		
 	}
 
 	public void abrirProforma() {
