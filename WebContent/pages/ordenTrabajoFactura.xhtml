@@ -12,7 +12,7 @@
 	xmlns:rich="http://primefaces.org/ui">
 
 
-	<ui:define name="pageTitle">Orde Interna</ui:define>
+	<ui:define name="pageTitle">Orde Trabajo desde Factura</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -42,7 +42,7 @@
 			<h:form id="formprincipal">
 
 				<p:remoteCommand name="rc"
-					action="#{ordenInternaController.limpiarTodosCampos()}"
+					action="#{ordenFacturaController.limpiarTodosCampos()}"
 					update="formprincipal" />
 
 				<p:panel>
@@ -64,7 +64,7 @@
 
 					</center>
 
-					<p:fieldset legend="Buscar Orden Interna"
+					<p:fieldset legend="Buscar Orden"
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -84,28 +84,53 @@
 										<p:outputLabel value="Orden Trabajo:" for="idOT"
 											style="color:white!important" />
 										<p:inputText id="idOT"
-											value="#{ordenInternaController.buscarOrdenTrabajo.idOrden}"
+											value="#{ordenFacturaController.buscarOrdenTrabajo.idOrden}"
 											size="24" />
+
+										<p:outputLabel value="Proforma:" for="idPro"
+											style="color:white!important" />
+										<p:inputText id="idPro"
+											value="#{ordenFacturaController.buscarOrdenTrabajo.idFactura}"
+											size="24" />
+
+									</p:panelGrid>
+
+									<br />
+
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.50);text-align: left; width:60%"
+										layout="grid">
 
 										<p:outputLabel value="Cliente:" for="cliente"
 											style="color:white!important" />
 										<p:inputText id="cliente"
-											value="#{ordenInternaController.cliente.nombreCl}" size="24" />
+											value="#{ordenFacturaController.cliente.nombreCl}" size="24" />
+
+
+									</p:panelGrid>
+
+									<br />
+
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width:60%"
+										layout="grid">
 
 										<p:outputLabel value="Cédula: " for="cedula"
 											style="color:white!important" />
 										<p:inputText id="cedula"
-											value="#{ordenInternaController.cliente.cedula}" size="24" />
+											value="#{ordenFacturaController.cliente.cedula}" size="24" />
 
 										<p:outputLabel value="RUC:" for="ruc"
 											style="color:white!important" />
 										<p:inputText id="ruc"
-											value="#{ordenInternaController.cliente.rucCl}" size="24" />
+											value="#{ordenFacturaController.cliente.rucCl}" size="24" />
 
 										<h:outputLabel value="Fecha desde: "
 											style="color:white!important; font-size: 17px" />
 										<p:calendar id="fechaInicio"
-											value="#{ordenInternaController.fechaInicio}"
+											value="#{ordenFacturaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es"
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Inicial Requerida" navigator="true"
@@ -118,9 +143,9 @@
 										<h:outputLabel value="Fecha hasta: "
 											style="color:white!important; font-size: 17px" />
 										<p:calendar id="fechaFinal"
-											disabled="#{ordenInternaController.disabledSelectItem() != true}"
-											value="#{ordenInternaController.fechaFinal}"
-											mindate="#{ordenInternaController.fechaInicio}"
+											disabled="#{ordenFacturaController.disabledSelectItem() != true}"
+											value="#{ordenFacturaController.fechaFinal}"
+											mindate="#{ordenFacturaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es" required="true"
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Final Requerida" navigator="true"
@@ -135,7 +160,7 @@
 
 									<center>
 										<p:commandLink
-											actionListener="#{ordenInternaController.buscarOrdenTrabajos}"
+											actionListener="#{ordenFacturaController.buscarOrdenTrabajos}"
 											update="@([id$=tblOrden]),@([id$=messagesForm])"
 											process="@this,formBuscar">
 
@@ -163,7 +188,7 @@
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 						<p:dataTable id="tblOrden"
-							value="#{ordenInternaController.listaOrdenTrabajo}" var="ordenT"
+							value="#{ordenFacturaController.listaOrdenTrabajo}" var="ordenT"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -174,11 +199,15 @@
 							paginatorPosition="bottom">
 
 							<f:facet name="header">
-								Ordenes de Trabajo desde Cero
+								Ordenes de Trabajo desde Factura
 							</f:facet>
 
 							<p:column headerText="Id OT">
 								<h:outputText value="#{ordenT.idOrden}" />
+							</p:column>
+
+							<p:column headerText="Id OT">
+								<h:outputText value="#{ordenT.idFactura}" />
 							</p:column>
 
 							<p:column headerText="Cliente">
@@ -187,32 +216,32 @@
 
 							<p:column headerText="F. Recep.">
 								<h:outputText
-									value="#{ordenInternaController.cambioFecha(ordenT.fechaordenOt)}" />
+									value="#{ordenFacturaController.cambioFecha(ordenT.fechaordenOt)}" />
 							</p:column>
 
 							<p:column headerText="F. Entrega">
 								<h:outputText
-									value="#{ordenInternaController.cambioFecha(ordenT.fechaentregaOt)}" />
+									value="#{ordenFacturaController.cambioFecha(ordenT.fechaentregaOt)}" />
 							</p:column>
 
 							<p:column headerText="F. Cierre">
 								<h:outputText
-									value="#{ordenInternaController.cambioFecha(ordenT.fechaCierre)}" />
+									value="#{ordenFacturaController.cambioFecha(ordenT.fechaCierre)}" />
 							</p:column>
 
-							<p:column headerText="Descr. Cliente">
-								<h:outputText value="#{ordenT.responsableOt}" />
+							<p:column headerText="#M">
+								<h:outputText value="#{ordenT.numeromuestraOt}" />
 							</p:column>
 
 							<p:column headerText="Fecha cierre">
 								<p:commandLink update="@this,formEditarFechaCierre"
 									process="@this,tblOrden" icon="ui-icon-check"
-									action="#{ordenInternaController.validarEstadoOT(ordenT, 'editarFechaCierre')}">
+									action="#{ordenFacturaController.validarEstadoOT(ordenT, 'editarFechaCierre')}">
 
 									<h:outputText value="Fecha Cierre" />
 
 									<f:setPropertyActionListener
-										target="#{ordenInternaController.ordenTrabajo}"
+										target="#{ordenFacturaController.ordenTrabajo}"
 										value="#{ordenT}">
 									</f:setPropertyActionListener>
 								</p:commandLink>
@@ -222,12 +251,12 @@
 							<p:column headerText="Fecha Entrega">
 								<p:commandLink update="@this,formEditarFechaEntrega"
 									process="@this,tblOrden" icon="ui-icon-check"
-									action="#{ordenInternaController.validarFechaEntregaOT(ordenT, 'editarFechaEntrega')}">
+									action="#{ordenFacturaController.validarFechaEntregaOT(ordenT, 'editarFechaEntrega')}">
 
 									<h:outputText value="Fecha Entrega" />
 
 									<f:setPropertyActionListener
-										target="#{ordenInternaController.ordenTrabajo}"
+										target="#{ordenFacturaController.ordenTrabajo}"
 										value="#{ordenT}">
 									</f:setPropertyActionListener>
 								</p:commandLink>
@@ -239,7 +268,7 @@
 
 									<p:commandLink update="@this,formVerOT"
 										process="@this,tblOrden" icon="ui-icon-check"
-										actionListener="#{ordenInternaController.cargarDetalleOT(ordenT.idOrden)}"
+										actionListener="#{ordenFacturaController.cargarDetalleOT(ordenT.idOrden)}"
 										onsuccess="PF('verOT').show();">
 
 										<h:graphicImage value="/images/archivos/verMas.png"
@@ -247,7 +276,7 @@
 											width="35" height="35" />
 
 										<f:setPropertyActionListener
-											target="#{ordenInternaController.ordenTrabajo}"
+											target="#{ordenFacturaController.ordenTrabajo}"
 											value="#{ordenT}">
 										</f:setPropertyActionListener>
 									</p:commandLink>
@@ -262,7 +291,7 @@
 
 									<!-- **************************  Boton Editar   *************************** -->
 									<p:commandLink icon="ui-icon-check" process="@this,tblOrden"
-										action="#{ordenInternaController.cargarDetalleProformaEdit(ordenT, 'editarOT')}"
+										action="#{ordenFacturaController.cargarDetalleProformaEdit(ordenT, 'editarOT')}"
 										update="formEditarOT">
 
 										<h:graphicImage value="/images/archivos/editar.png"
@@ -270,7 +299,7 @@
 											width="35" height="35" />
 
 										<f:setPropertyActionListener
-											target="#{ordenInternaController.ordenTrabajo}"
+											target="#{ordenFacturaController.ordenTrabajo}"
 											value="#{ordenT}">
 										</f:setPropertyActionListener>
 
@@ -309,109 +338,28 @@
 						border-style: double;
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-							<center>
-								<div class="ui-g">
-									<div class="ui-g-4"></div>
 
-									<div class="ui-g-4">
-										<table>
-											<tr>
-												<td class="EncabezadoTitulo" align="center" colspan="2">
-													<p:outputLabel value="ESCUELA POLITÉCNICA NACIONAL"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 15px; " />
-												</td>
-											</tr>
 
-											<tr>
-												<td class="EncabezadoTitulo2" align="center" colspan="2">
-													<p:outputLabel
-														value="Campús Politécnico J. Rubén Orellana R."
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-											<tr>
-												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel
-														value="Ladrón de Guevara E11-253 y Andalucia"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-											<tr>
-												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel value="Telf.: 2976 300"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-											<tr>
-												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel value="P.O. Box: 17-01-2759 / QUITO-ECUADOR"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-
-										</table>
-									</div>
-									<div class="ui-g-4"></div>
-								</div>
-								<br /> <br />
-							</center>
-
-							<!-- Buscar Cliente -->
+							<!-- Buscar Facturas -->
 
 							<p:accordionPanel>
-								<p:tab title="⠀⠀⠀">
+								<p:tab title="Encabezado Orden Trabajo">
 									<center>
-										<p:fieldset legend="Buscar Cliente"
-											style="border-radius: 10px 10px 10px 10px;
-											-moz-border-radius: 10px 10px 10px 10px;
-											-webkit-border-radius: 10px 10px 10px 10px;
-											border: 0px solid #000000;
-											border-style: double;
-											border-width: 1px;
-											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-											<br />
-
-											<div class="ui-g">
-												<div class="ui-g-10">
-													<p:panelGrid layout="grid" columns="4"
-														styleClass="ui-panelgrid-blank"
-														columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
-														style="border: solid;border-width: 1px; border-color: #E6E6E6;text-align: left;">
-
-														<p:outputLabel value="Nombre: " for="clienteNom"
-															style="color:white!important" />
-														<p:inputText id="clienteNom"
-															value="#{ordenInternaController.cliente.nombreCl}"
-															size="24" />
-
-														<p:outputLabel value="RUC/Cédula:" for="ruc_ci"
-															style="color:white!important" />
-														<p:inputText id="ruc_ci"
-															value="#{ordenInternaController.cliente.rucCl}" size="24" />
-
-													</p:panelGrid>
-												</div>
-
-												<div class="ui-g-2">
-													<p:commandButton icon="fa fa-search-plus"
-														style="border:none;text-align: left; width: 110px;"
-														value="Buscar" process="@this, ruc_ci, clienteNom "
-														actionListener="#{ordenInternaController.buscarClientes}"
-														onsuccess="PF('listadoCli').show()">
-													</p:commandButton>
-												</div>
-											</div>
-
-
-											<br />
-
-										</p:fieldset>
 
 										<br />
 
+										<p:commandButton icon="fa fa-search-plus"
+											style="border:none;text-align: center; width: 180px;"
+											value="Buscar Facturas" process="@this"
+											actionListener="#{ordenFacturaController.buscarFacturas}"
+											onsuccess="PF('listadoF').show()">
+										</p:commandButton>
+
+										<br /> <br />
+
 									</center>
 
-									<!-- Datos de usuario cargado -->
+									<!-- Datos de factura cargado -->
 									<center>
 										<p:fieldset
 											style="border-radius: 10px 10px 10px 10px;
@@ -425,15 +373,31 @@
 											<p:panelGrid columns="4" layout="grid"
 												styleClass="ui-noborder" style="border:none;">
 
+												<p:outputLabel for="proforma" value="Proforma: "
+													style="font-weight:bold" />
+												<p:outputLabel id="proforma"
+													value="#{ordenFacturaController.factura.idProforma}" />
+
+												<p:outputLabel for="factura" value="Factura: "
+													style="font-weight:bold" />
+												<p:outputLabel id="factura"
+													value="#{ordenFacturaController.factura.idFactura}" />
+
+											</p:panelGrid>
+
+
+											<p:panelGrid columns="4" layout="grid"
+												styleClass="ui-noborder" style="border:none;">
+
 												<p:outputLabel for="cliente" value="Cliente: "
 													style="font-weight:bold" />
 												<p:outputLabel id="cliente"
-													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
+													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
 
-												<p:outputLabel for="contacto" value="Contacto: "
+												<p:outputLabel for="descCliente" value="Descr. C: "
 													style="font-weight:bold" />
-												<p:outputLabel id="contacto"
-													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
+												<p:outputLabel id="descCliente"
+													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
 
 											</p:panelGrid>
 
@@ -442,7 +406,7 @@
 												<p:outputLabel for="direccion" value="Dirección: "
 													style="font-weight:bold" />
 												<p:outputLabel id="direccion"
-													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
+													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
 
 											</p:panelGrid>
 
@@ -452,22 +416,22 @@
 												<p:outputLabel for="telefono" value="Telefono: "
 													style="font-weight:bold" />
 												<p:outputLabel id="telefono"
-													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
+													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
 
 												<p:outputLabel for="fax" value="Fax: "
 													style="font-weight:bold" />
 												<p:outputLabel id="fax"
-													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.faxCl}" />
-
-												<p:outputLabel for="descCliente" value="Descr. C: "
-													style="font-weight:bold" />
-												<p:inputTextarea id="descCliente" autoResize="false"
-													value="#{ordenInternaController.nuevoOrdenTrabajo.responsableOt}" />
+													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.faxCl}" />
 
 												<p:outputLabel for="fecha" value="Fecha: "
 													style="font-weight:bold" />
 												<p:outputLabel id="fecha"
-													value="#{ordenInternaController.cambioFecha(ordenInternaController.nuevoOrdenTrabajo.fechaordenOt)}" />
+													value="#{ordenFacturaController.cambioFecha(ordenFacturaController.nuevoOrdenTrabajo.fechaordenOt)}" />
+
+												<p:outputLabel for="muestras" value="Nro. Muestras: "
+													style="font-weight:bold" />
+												<p:outputLabel id="muestras"
+													value="#{ordenFacturaController.nuevoOrdenTrabajo.numeromuestraOt}" />
 
 
 
@@ -491,7 +455,7 @@
 									title="Agregar Detalle Orden Trabajo"
 									style="width: 125px; border-radius: 3px 3px 3px 3px;"
 									process="@this"
-									actionListener="#{ordenInternaController.validarCliente}"
+									actionListener="#{ordenFacturaController.validarCliente}"
 									update="@this,@([id$=messagesForm])">
 
 								</p:commandButton>
@@ -509,23 +473,23 @@
 
 									<p:panel id="detallePro" header="Detalle Orden Trabajo">
 										<p:dataTable id="tblDetallePro"
-											value="#{ordenInternaController.listaDetalleOrden}"
+											value="#{ordenFacturaController.listaDetalleOrden}"
 											var="detalleOT" sortBy="#{detalleOT.idServicio}"
 											emptyMessage="No se han registrado detalles de proforma, clic en el boton agregar para registrar.">
 
 											<p:column headerText="Servicio">
 												<h:outputText
-													value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
+													value="#{ordenFacturaController.servicio(detalleOT.idServicio).nombreS}" />
 											</p:column>
 
 											<p:column headerText="Método">
 												<h:outputText
-													value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
+													value="#{ordenFacturaController.metodo(detalleOT.idMetodo)}" />
 											</p:column>
 
 											<p:column headerText="Unidad/Laboratorio">
 												<h:outputText
-													value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
+													value="#{ordenFacturaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
 											</p:column>
 
 											<p:column headerText="Responsable">
@@ -538,12 +502,12 @@
 
 											<p:column headerText="F. Inicio">
 												<h:outputText
-													value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+													value="#{ordenFacturaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
 											</p:column>
 
 											<p:column headerText="F. Fin">
 												<h:outputText
-													value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+													value="#{ordenFacturaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
 											</p:column>
 
 
@@ -553,8 +517,8 @@
 													<!-- **************************  Boton Editar   *************************** -->
 													<p:commandLink icon="ui-icon-check"
 														oncomplete="PF('editarDetalleOT').show();"
-														action="#{ordenInternaController.guardarTempDetalleOT()}"
-														actionListener="#{ordenInternaController.cambiarIdTempPanel(0,0)}"
+														action="#{ordenFacturaController.guardarTempDetalleOT()}"
+														actionListener="#{ordenFacturaController.cambiarIdTempPanel(0,0)}"
 														update="formEditarDetalleOT">
 
 														<h:graphicImage value="/images/archivos/editar.png"
@@ -563,7 +527,7 @@
 
 
 														<f:setPropertyActionListener
-															target="#{ordenInternaController.detalleOrden}"
+															target="#{ordenFacturaController.detalleOrden}"
 															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
@@ -574,7 +538,7 @@
 
 													<p:commandLink process="@this" icon="ui-icon-check"
 														onclick="PF('cdEliminarDetalleOT').show();"
-														actionListener="#{ordenInternaController.cambiarIdTempPanel(0,0)}">
+														actionListener="#{ordenFacturaController.cambiarIdTempPanel(0,0)}">
 
 														<h:graphicImage value="/images/archivos/basurero.png"
 															title="Eliminar" style="border:0px solid #CAD6E0;"
@@ -582,7 +546,7 @@
 
 
 														<f:setPropertyActionListener
-															target="#{ordenInternaController.detalleOrden}"
+															target="#{ordenFacturaController.detalleOrden}"
 															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
@@ -616,7 +580,7 @@
 										<p:outputLabel value="Observaciones: " for="observaciones"
 											style="color:white!important" />
 										<p:inputText id="observaciones"
-											value="#{ordenInternaController.nuevoOrdenTrabajo.observOt}"
+											value="#{ordenFacturaController.nuevoOrdenTrabajo.observOt}"
 											size="24" />
 
 									</p:panelGrid>
@@ -633,7 +597,7 @@
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Confirmar" icon="fa fa-save"
 										process="@this,formAgregarOT"
-										disabled="#{ordenInternaController.disabledButton() != true}"
+										disabled="#{ordenFacturaController.disabledButton() != true}"
 										update="formConfirmarNuevoOT"
 										onsuccess="PF('cdConfirmarOT').show();">
 
@@ -686,18 +650,18 @@
 									legend="Servicio">
 
 									<p:dataTable id="tblServicio"
-										value="#{ordenInternaController.servicios}" var="serv"
+										value="#{ordenFacturaController.servicios}" var="serv"
 										widgetVar="filterServiciosTable"
 										emptyMessage="No se pudo encontrar ninguna coincidencia"
-										filteredValue="#{ordenInternaController.filtroServicios}"
+										filteredValue="#{ordenFacturaController.filtroServicios}"
 										rows="5" paginator="true"
 										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 										rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 										rowKey="#{serv.idServicio}"
-										selection="#{ordenInternaController.nuevoServicio}"
+										selection="#{ordenFacturaController.nuevoServicio}"
 										selectionMode="single">
 										<p:ajax event="rowSelect"
-											listener="#{ordenInternaController.validarDetalleOT}"
+											listener="#{ordenFacturaController.validarDetalleOT}"
 											update="@([id$=messagesForm])" />
 
 										<p:column headerText="ID" filterBy="#{serv.idServicio}"
@@ -748,22 +712,22 @@
 													<p:outputLabel for="servicio" value="Servicio: "
 														style="color:white!important" />
 													<p:outputLabel id="servicio"
-														value="#{ordenInternaController.nuevoServicio.nombreS}"
+														value="#{ordenFacturaController.nuevoServicio.nombreS}"
 														size="30" maxlength="100" />
 
 													<p:outputLabel for="laboratorio" value="Laboratorio: "
 														style="color:white!important" />
 													<p:outputLabel id="laboratorio"
-														value="#{ordenInternaController.nuevoServicio.laboratorio.nombreL}"
+														value="#{ordenFacturaController.nuevoServicio.laboratorio.nombreL}"
 														size="30" maxlength="100" />
 
 													<p:outputLabel for="metodo" value="Método: "
 														style="color:white!important" />
 													<p:selectOneMenu id="metodo"
-														value="#{ordenInternaController.nuevoDetalleOrden.idMetodo}">
+														value="#{ordenFacturaController.nuevoDetalleOrden.idMetodo}">
 														<f:selectItem itemLabel="Ninguno..."
-															itemValue="#{ordenInternaController.metodoNA.idMetodo}" />
-														<f:selectItems value="#{ordenInternaController.metodos}"
+															itemValue="#{ordenFacturaController.metodoNA.idMetodo}" />
+														<f:selectItems value="#{ordenFacturaController.metodos}"
 															itemLabel="#{metodo.nombreMt}"
 															itemValue="#{metodo.idMetodo}" var="metodo">
 														</f:selectItems>
@@ -796,9 +760,9 @@
 												<p:commandButton icon="fa fa-search-plus"
 													style="border:none;text-align: left; width: 150px;"
 													value="Buscar Personal" process="@this"
-													actionListener="#{ordenInternaController.cargarPersonal(0)}"
+													actionListener="#{ordenFacturaController.cargarPersonal(0)}"
 													onsuccess="PF('listadoPer').show()"
-													disabled="#{ordenInternaController.disabledButtonPer() != true}">
+													disabled="#{ordenFacturaController.disabledButtonPer() != true}">
 												</p:commandButton>
 											</center>
 											<br />
@@ -811,13 +775,13 @@
 													<p:outputLabel for="personal" value="Personal: "
 														style="color:white!important" />
 													<p:outputLabel id="personal"
-														value="#{ordenInternaController.nuevoDetalleOrden.personal.nombresPe}"
+														value="#{ordenFacturaController.nuevoDetalleOrden.personal.nombresPe}"
 														size="30" maxlength="100" />
 
 													<p:outputLabel value="Horas/Trabajo: " for="ht"
 														style="color:white!important" />
 													<p:inputNumber id="ht"
-														value="#{ordenInternaController.nuevoDetalleOrden.horasTrabajo}"
+														value="#{ordenFacturaController.nuevoDetalleOrden.horasTrabajo}"
 														required="true" emptyValue="zero"
 														requiredMessage="Debe ingresar la cantidad" size="30"
 														maxlength="100">
@@ -827,7 +791,7 @@
 													<h:outputLabel value="Fecha inicio: "
 														style="color:white!important; font-size: 17px" />
 													<p:calendar id="fechaInicio"
-														value="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
+														value="#{ordenFacturaController.nuevoDetalleOrden.fechaInicioAnalisis}"
 														pattern="dd/MM/yyyy" locale="es"
 														onkeypress="return permite(event, 'none')"
 														requiredMessage="Fecha Inicial Requerida" navigator="true"
@@ -840,9 +804,9 @@
 													<h:outputLabel value="Fecha fin: "
 														style="color:white!important; font-size: 17px" />
 													<p:calendar id="fechaFinal"
-														disabled="#{ordenInternaController.disabledDate() != true}"
-														value="#{ordenInternaController.nuevoDetalleOrden.fechaFinAnalisis}"
-														mindate="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
+														disabled="#{ordenFacturaController.disabledDate() != true}"
+														value="#{ordenFacturaController.nuevoDetalleOrden.fechaFinAnalisis}"
+														mindate="#{ordenFacturaController.nuevoDetalleOrden.fechaInicioAnalisis}"
 														pattern="dd/MM/yyyy" locale="es" required="true"
 														onkeypress="return permite(event, 'none')"
 														requiredMessage="Fecha Final Requerida" navigator="true"
@@ -874,7 +838,7 @@
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
-									actionListener="#{ordenInternaController.agregarDetalleOT}"
+									actionListener="#{ordenFacturaController.agregarDetalleOT}"
 									process="@this,formDetalleOT"
 									update="@this,@([id$=messagesForm],[id$=formprincipal]),formDetalleOT">
 								</p:commandButton>
@@ -978,12 +942,12 @@
 										<p:outputLabel for="id" value="Orden: "
 											style="font-weight:bold" />
 										<p:outputLabel id="id"
-											value="#{ordenInternaController.ordenTrabajo.idOrden}" />
+											value="#{ordenFacturaController.ordenTrabajo.idOrden}" />
 
 										<p:outputLabel for="fecha" value="Fecha cierre: "
 											style="font-weight:bold" />
 										<p:outputLabel id="fecha"
-											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
+											value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaCierre)}" />
 
 									</p:panelGrid>
 
@@ -993,12 +957,12 @@
 										<p:outputLabel for="cliente" value="Cliente: "
 											style="font-weight:bold" />
 										<p:outputLabel id="cliente"
-											value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
+											value="#{ordenFacturaController.ordenTrabajo.cliente.nombreCl}" />
 
 										<p:outputLabel for="contacto" value="Contacto: "
 											style="font-weight:bold" />
 										<p:outputLabel id="contacto"
-											value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
+											value="#{ordenFacturaController.ordenTrabajo.cliente.contactoCl}" />
 
 									</p:panelGrid>
 
@@ -1007,7 +971,7 @@
 										<p:outputLabel for="direccion" value="Dirección: "
 											style="font-weight:bold" />
 										<p:outputLabel id="direccion"
-											value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
+											value="#{ordenFacturaController.ordenTrabajo.cliente.direccionCl}" />
 
 									</p:panelGrid>
 
@@ -1017,17 +981,17 @@
 										<p:outputLabel for="telefono" value="Telefono: "
 											style="font-weight:bold" />
 										<p:outputLabel id="telefono"
-											value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
+											value="#{ordenFacturaController.ordenTrabajo.cliente.telefonoCl}" />
 
 										<p:outputLabel for="fax" value="Fax: "
 											style="font-weight:bold" />
 										<p:outputLabel id="fax"
-											value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
+											value="#{ordenFacturaController.ordenTrabajo.cliente.faxCl}" />
 
 										<p:outputLabel for="descCliente" value="Descr. C: "
 											style="font-weight:bold" />
 										<p:outputLabel id="descCliente"
-											value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
+											value="#{ordenFacturaController.ordenTrabajo.responsableOt}" />
 
 									</p:panelGrid>
 
@@ -1037,12 +1001,12 @@
 										<p:outputLabel for="fechaRec" value="Fecha de recepción: "
 											style="font-weight:bold" />
 										<p:outputLabel id="fechaRec"
-											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
+											value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaordenOt)}" />
 
 										<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
 											style="font-weight:bold" />
 										<p:outputLabel id="fechaEntrega"
-											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
+											value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaentregaOt)}" />
 
 									</p:panelGrid>
 								</center>
@@ -1063,24 +1027,24 @@
 
 
 								<p:dataTable id="tblVerDetalleOT"
-									value="#{ordenInternaController.listaDetalleOrdenTemp}"
+									value="#{ordenFacturaController.listaDetalleOrdenTemp}"
 									var="detalleOT" sortBy="#{detalleOT.idServicio}"
 									emptyMessage="No se han registrado detalles de proforma.">
 
 
 									<p:column headerText="Servicio">
 										<h:outputText
-											value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
+											value="#{ordenFacturaController.servicio(detalleOT.idServicio).nombreS}" />
 									</p:column>
 
 									<p:column headerText="Método">
 										<h:outputText
-											value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
+											value="#{ordenFacturaController.metodo(detalleOT.idMetodo)}" />
 									</p:column>
 
 									<p:column headerText="Unidad/Laboratorio">
 										<h:outputText
-											value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
+											value="#{ordenFacturaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
 									</p:column>
 
 									<p:column headerText="Responsable">
@@ -1093,12 +1057,12 @@
 
 									<p:column headerText="F. Inicio">
 										<h:outputText
-											value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+											value="#{ordenFacturaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
 									</p:column>
 
 									<p:column headerText="F. Fin">
 										<h:outputText
-											value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+											value="#{ordenFacturaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
 									</p:column>
 								</p:dataTable>
 
@@ -1117,7 +1081,7 @@
 								legend="Responsable">
 
 								<p:dataTable id="tblPersonalTemp"
-									value="#{ordenInternaController.tempPersonalLabs}"
+									value="#{ordenFacturaController.tempPersonalLabs}"
 									var="personal"
 									emptyMessage="No se pudo encontrar ninguna coincidencia">
 
@@ -1172,7 +1136,7 @@
 								<p:panelGrid layout="grid" columns="1" style="border:none;">
 
 									<p:outputLabel id="observaciones"
-										value="#{ordenInternaController.ordenTrabajo.observOt}"
+										value="#{ordenFacturaController.ordenTrabajo.observOt}"
 										size="24" />
 
 								</p:panelGrid>
@@ -1188,13 +1152,13 @@
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Imprimir OT" icon="fa fa-save" process="@this"
-										action="#{ordenInternaController.abrirOT()}">
+										action="#{ordenFacturaController.abrirOT()}">
 
 									</p:commandButton>
 
 									<p:commandButton style="width: 180px; margin: 10px"
 										value="Imprimir Formato Descarga" icon="fa fa-save"
-										process="@this" action="#{ordenInternaController.abrirOT()}">
+										process="@this" action="#{ordenFacturaController.abrirOT()}">
 
 									</p:commandButton>
 
@@ -1250,12 +1214,12 @@
 											<p:outputLabel for="id" value="Orden: "
 												style="font-weight:bold" />
 											<p:outputLabel id="id"
-												value="#{ordenInternaController.ordenTrabajo.idOrden}" />
+												value="#{ordenFacturaController.ordenTrabajo.idOrden}" />
 
 											<p:outputLabel for="fecha" value="Fecha cierre: "
 												style="font-weight:bold" />
 											<p:outputLabel id="fecha"
-												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
+												value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaCierre)}" />
 
 										</p:panelGrid>
 
@@ -1265,12 +1229,12 @@
 											<p:outputLabel for="cliente" value="Cliente: "
 												style="font-weight:bold" />
 											<p:outputLabel id="cliente"
-												value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
+												value="#{ordenFacturaController.ordenTrabajo.cliente.nombreCl}" />
 
 											<p:outputLabel for="contacto" value="Contacto: "
 												style="font-weight:bold" />
 											<p:outputLabel id="contacto"
-												value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
+												value="#{ordenFacturaController.ordenTrabajo.cliente.contactoCl}" />
 
 										</p:panelGrid>
 
@@ -1279,7 +1243,7 @@
 											<p:outputLabel for="direccion" value="Dirección: "
 												style="font-weight:bold" />
 											<p:outputLabel id="direccion"
-												value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
+												value="#{ordenFacturaController.ordenTrabajo.cliente.direccionCl}" />
 
 										</p:panelGrid>
 
@@ -1289,17 +1253,17 @@
 											<p:outputLabel for="telefono" value="Telefono: "
 												style="font-weight:bold" />
 											<p:outputLabel id="telefono"
-												value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
+												value="#{ordenFacturaController.ordenTrabajo.cliente.telefonoCl}" />
 
 											<p:outputLabel for="fax" value="Fax: "
 												style="font-weight:bold" />
 											<p:outputLabel id="fax"
-												value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
+												value="#{ordenFacturaController.ordenTrabajo.cliente.faxCl}" />
 
 											<p:outputLabel for="descCliente" value="Descr. C: "
 												style="font-weight:bold" />
 											<p:inputTextarea id="descCliente" autoResize="false"
-												value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
+												value="#{ordenFacturaController.ordenTrabajo.responsableOt}" />
 
 										</p:panelGrid>
 
@@ -1309,12 +1273,12 @@
 											<p:outputLabel for="fechaRec" value="Fecha de recepción: "
 												style="font-weight:bold" />
 											<p:outputLabel id="fechaRec"
-												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
+												value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaordenOt)}" />
 
 											<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
 												style="font-weight:bold" />
 											<p:outputLabel id="fechaEntrega"
-												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
+												value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaentregaOt)}" />
 
 										</p:panelGrid>
 
@@ -1331,7 +1295,7 @@
 							<center>
 								<p:commandButton value="Agregar" icon="fa fa-plus"
 									title="Agregar Nuevo Detalle Proforma"
-									actionListener="#{ordenInternaController.cambiarIdTempPanel(1,1)}"
+									actionListener="#{ordenFacturaController.cambiarIdTempPanel(1,1)}"
 									style="width: 125px; border-radius: 3px 3px 3px 3px;"
 									onsuccess="PF('detalleOT').show();" process="@this"
 									update="@this,@([id$=messagesForm])">
@@ -1351,24 +1315,24 @@
 
 									<p:panel id="detalleOT" header="Detalle Orden Trabajo">
 										<p:dataTable id="tblDetalleOT"
-											value="#{ordenInternaController.listaDetalleOrden}"
+											value="#{ordenFacturaController.listaDetalleOrden}"
 											var="detalleOT" sortBy="#{detalleOT.idServicio}"
 											emptyMessage="No se han registrado detalles de proforma, clic en el boton agregar para registrar.">
 
 
 											<p:column headerText="Servicio">
 												<h:outputText
-													value="#{ordenInternaController.servicio(detalleOT.idServicio).nombreS}" />
+													value="#{ordenFacturaController.servicio(detalleOT.idServicio).nombreS}" />
 											</p:column>
 
 											<p:column headerText="Método">
 												<h:outputText
-													value="#{ordenInternaController.metodo(detalleOT.idMetodo)}" />
+													value="#{ordenFacturaController.metodo(detalleOT.idMetodo)}" />
 											</p:column>
 
 											<p:column headerText="Unidad/Laboratorio">
 												<h:outputText
-													value="#{ordenInternaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
+													value="#{ordenFacturaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
 											</p:column>
 
 											<p:column headerText="Responsable">
@@ -1381,12 +1345,12 @@
 
 											<p:column headerText="F. Inicio">
 												<h:outputText
-													value="#{ordenInternaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+													value="#{ordenFacturaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
 											</p:column>
 
 											<p:column headerText="F. Fin">
 												<h:outputText
-													value="#{ordenInternaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+													value="#{ordenFacturaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
 											</p:column>
 
 											<p:column headerText="Acciones">
@@ -1396,7 +1360,7 @@
 													<p:commandLink icon="ui-icon-check"
 														oncomplete="PF('editarDetalleOT').show();"
 														update="formEditarDetalleOT"
-														actionListener="#{ordenInternaController.cambiarIdTempPanel(1,2)}">
+														actionListener="#{ordenFacturaController.cambiarIdTempPanel(1,2)}">
 
 														<h:graphicImage value="/images/archivos/editar.png"
 															title="Modificar" style="border:0px solid #CAD6E0;"
@@ -1404,7 +1368,7 @@
 
 
 														<f:setPropertyActionListener
-															target="#{ordenInternaController.detalleOrden}"
+															target="#{ordenFacturaController.detalleOrden}"
 															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
@@ -1414,7 +1378,7 @@
 
 
 													<p:commandLink process="@this" icon="ui-icon-check"
-														action="#{ordenInternaController.cambiarIdTempPanel(1,2)}"
+														action="#{ordenFacturaController.cambiarIdTempPanel(1,2)}"
 														onclick="PF('cdEliminarDetalleOT').show();">
 
 														<h:graphicImage value="/images/archivos/basurero.png"
@@ -1423,7 +1387,7 @@
 
 
 														<f:setPropertyActionListener
-															target="#{ordenInternaController.detalleOrden}"
+															target="#{ordenFacturaController.detalleOrden}"
 															value="#{detalleOT}">
 														</f:setPropertyActionListener>
 
@@ -1453,9 +1417,9 @@
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Modificar" icon="fa fa-save"
 										process="@this,formEditarOT"
-										disabled="#{ordenInternaController.disabledButton() != true}"
+										disabled="#{ordenFacturaController.disabledButton() != true}"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarOT"
-										actionListener="#{ordenInternaController.editarPro}"
+										actionListener="#{ordenFacturaController.editarPro}"
 										onsuccess="PF('editarOT').hide();">
 
 									</p:commandButton>
@@ -1513,19 +1477,19 @@
 											<p:outputLabel for="servicio" value="Servicio: "
 												style="color:white!important" />
 											<p:outputLabel id="servicio"
-												value="#{ordenInternaController.servicio(ordenInternaController.detalleOrden.idServicio).nombreS}"
+												value="#{ordenFacturaController.servicio(ordenFacturaController.detalleOrden.idServicio).nombreS}"
 												size="30" maxlength="100" />
 
 											<p:outputLabel for="metodo" value="Metodo: "
 												style="color:white!important" />
 											<p:outputLabel id="metodo"
-												value="#{ordenInternaController.metodo(ordenInternaController.detalleOrden.idMetodo)}"
+												value="#{ordenFacturaController.metodo(ordenFacturaController.detalleOrden.idMetodo)}"
 												size="30" maxlength="100" />
 
 											<p:outputLabel for="muestra" value="Muestra: "
 												style="color:white!important" />
 											<p:outputLabel id="muestra"
-												value="#{ordenInternaController.detalleOrden.muestra.idMuestra}"
+												value="#{ordenFacturaController.detalleOrden.muestra.idMuestra}"
 												size="30" maxlength="100" />
 
 
@@ -1536,7 +1500,7 @@
 											<p:commandButton icon="fa fa-search-plus"
 												style="border:none;text-align: left; width: 150px;"
 												value="Buscar Personal" process="@this"
-												actionListener="#{ordenInternaController.cargarPersonal(1)}"
+												actionListener="#{ordenFacturaController.cargarPersonal(1)}"
 												onsuccess="PF('listadoPer').show()">
 											</p:commandButton>
 										</center>
@@ -1551,13 +1515,13 @@
 												<p:outputLabel for="resonsable" value="Responsable: "
 													style="color:white!important" />
 												<p:outputLabel id="resonsable"
-													value="#{ordenInternaController.detalleOrden.personal.nombresPe}"
+													value="#{ordenFacturaController.detalleOrden.personal.nombresPe}"
 													size="30" maxlength="100" />
 
 												<p:outputLabel value="Horas/Trabajo: " for="ht"
 													style="color:white!important" />
 												<p:inputNumber id="ht"
-													value="#{ordenInternaController.detalleOrden.horasTrabajo}"
+													value="#{ordenFacturaController.detalleOrden.horasTrabajo}"
 													required="true" emptyValue="zero"
 													requiredMessage="Debe ingresar la cantidad" size="30"
 													maxlength="100">
@@ -1567,7 +1531,7 @@
 												<h:outputLabel value="Fecha inicio: "
 													style="color:white!important; font-size: 17px" />
 												<p:calendar id="fechaInicio"
-													value="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
+													value="#{ordenFacturaController.detalleOrden.fechaInicioAnalisis}"
 													pattern="dd/MM/yyyy" locale="es"
 													onkeypress="return permite(event, 'none')"
 													requiredMessage="Fecha Inicial Requerida" navigator="true"
@@ -1580,9 +1544,9 @@
 												<h:outputLabel value="Fecha fin: "
 													style="color:white!important; font-size: 17px" />
 												<p:calendar id="fechaFinal"
-													disabled="#{ordenInternaController.disabledDateEdit() != true}"
-													value="#{ordenInternaController.detalleOrden.fechaFinAnalisis}"
-													mindate="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
+													disabled="#{ordenFacturaController.disabledDateEdit() != true}"
+													value="#{ordenFacturaController.detalleOrden.fechaFinAnalisis}"
+													mindate="#{ordenFacturaController.detalleOrden.fechaInicioAnalisis}"
 													pattern="dd/MM/yyyy" locale="es" required="true"
 													onkeypress="return permite(event, 'none')"
 													requiredMessage="Fecha Final Requerida" navigator="true"
@@ -1610,7 +1574,7 @@
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
-									actionListener="#{ordenInternaController.editarDetalleOT}"
+									actionListener="#{ordenFacturaController.editarDetalleOT}"
 									process="@form,formEditarDetalleOT"
 									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDetalleOT">
 								</p:commandButton>
@@ -1664,15 +1628,15 @@
 							<div class="ui-fluid" align="center">
 
 								<p:dataTable id="tblClientes"
-									value="#{ordenInternaController.clientes}" var="cliente"
+									value="#{ordenFacturaController.clientes}" var="cliente"
 									widgetVar="filterClientesTable"
 									emptyMessage="No se pudo encontrar ninguna coincidencia"
-									filteredValue="#{ordenInternaController.filtroClientes}"
+									filteredValue="#{ordenFacturaController.filtroClientes}"
 									rows="7" paginator="true"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 									rowKey="#{cliente.idCliente}"
-									selection="#{ordenInternaController.selectCliente}"
+									selection="#{ordenFacturaController.selectCliente}"
 									selectionMode="single">
 
 									<p:column headerText="Cliente" filterBy="#{cliente.nombreCl}">
@@ -1708,9 +1672,96 @@
 
 									<p:commandButton icon="fa fa-save" value="Seleccionar"
 										process="@this,tblClientes"
-										action="#{ordenInternaController.seleccionarCliente}"
+										action="#{ordenFacturaController.seleccionarCliente}"
 										update="@([id$=messagesForm],[id$=formAgregarOT])"
 										onsuccess="PF('listadoCli').hide()">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Listado Clientes ************************** -->
+			<p:dialog id="panelListadoF" resizable="true" widgetVar="listadoF"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="150vh" height="73vh"
+				header="Listado de Facturas Pagadas">
+
+
+				<h:form id="formListadoF">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Facturas" update="@this, tblFacturas"
+								oncomplete="PF('filterFacturasTable').filter();">
+							</p:commandButton>
+
+							<br /> <br />
+
+							<div class="ui-fluid" align="center">
+
+								<p:dataTable id="tblFacturas"
+									value="#{ordenFacturaController.lazyModel}" var="factura"
+									lazy="true"
+									emptyMessage="No se pudo encontrar ninguna coincidencia"
+									rows="7" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+									rowKey="#{factura.idFactura}"
+									selection="#{ordenFacturaController.selectFactura}"
+									selectionMode="single">
+
+									<p:column headerText="ID Factura"
+										filterBy="#{factura.idFactura}">
+										<h:outputText value="#{factura.idFactura}" />
+									</p:column>
+
+									<p:column headerText="ID Proforma"
+										filterBy="#{factura.idProforma}" filterMatchMode="contains">
+										<h:outputText value="#{factura.idProforma}" />
+									</p:column>
+
+									<p:column headerText="Fecha" filterBy="#{factura.fechafacF}">
+										<h:outputText value="#{factura.fechafacF}" />
+									</p:column>
+
+									<p:column headerText="Estado"
+										filterBy="#{factura.idEstadoFactura}"
+										filterMatchMode="contains">
+										<h:outputText value="#{factura.idEstadoFactura}" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="1">
+
+									<p:commandButton icon="fa fa-save" value="Seleccionar"
+										process="@this,tblFacturas"
+										action="#{ordenFacturaController.seleccionarFactura()}"
+										update="@([id$=messagesForm],[id$=formAgregarOT])"
+										onsuccess="PF('listadoF').hide()">
 
 									</p:commandButton>
 
@@ -1755,15 +1806,15 @@
 							<div class="ui-fluid" align="center">
 
 								<p:dataTable id="tblPersonal"
-									value="#{ordenInternaController.personalLabs}" var="personal"
+									value="#{ordenFacturaController.personalLabs}" var="personal"
 									widgetVar="filterPersonalTable"
 									emptyMessage="No se pudo encontrar ninguna coincidencia"
-									filteredValue="#{ordenInternaController.filtroPersonalLabs}"
+									filteredValue="#{ordenFacturaController.filtroPersonalLabs}"
 									rows="8" paginator="true"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 									rowKey="#{personal.idPersonal}"
-									selection="#{ordenInternaController.personalLab}"
+									selection="#{ordenFacturaController.personalLab}"
 									selectionMode="single">
 
 									<p:column headerText="ID" filterBy="#{personal.idPersonal}"
@@ -1792,7 +1843,7 @@
 
 									<p:commandButton icon="fa fa-save" value="Seleccionar"
 										process="@this,tblPersonal"
-										action="#{ordenInternaController.seleccionarPersonal}"
+										action="#{ordenFacturaController.seleccionarPersonal}"
 										update="@([id$=messagesForm])"
 										onsuccess="PF('listadoPer').hide()">
 
@@ -1835,14 +1886,14 @@
 									<p:outputLabel for="orden" value="Id Orden: "
 										style="color:white!important" />
 									<p:outputLabel id="orden"
-										value="#{ordenInternaController.ordenTrabajo.idOrden}"
+										value="#{ordenFacturaController.ordenTrabajo.idOrden}"
 										size="30" maxlength="100" />
 
 									<h:outputLabel value="Fecha Cierre: "
 										style="color:white!important; font-size: 17px" />
 									<p:calendar id="fechaCierre"
-										value="#{ordenInternaController.ordenTrabajo.fechaCierre}"
-										maxdate="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
+										value="#{ordenFacturaController.ordenTrabajo.fechaCierre}"
+										maxdate="#{ordenFacturaController.ordenTrabajo.fechaentregaOt}"
 										pattern="dd/MM/yyyy" locale="es"
 										onkeypress="return permite(event, 'none')"
 										requiredMessage="Fecha Requerida" navigator="true"
@@ -1863,7 +1914,7 @@
 
 								<p:commandButton icon="fa fa-save" value="Guardar"
 									process="@this,formEditarFechaCierre"
-									actionListener="#{ordenInternaController.editarEstado}"
+									actionListener="#{ordenFacturaController.editarEstado}"
 									update="@([id$=messagesForm],[id$=formprincipal])"
 									onsuccess="PF('editarFechaCierre').hide()">
 
@@ -1911,14 +1962,14 @@
 									<p:outputLabel for="orden" value="Id Orden: "
 										style="color:white!important" />
 									<p:outputLabel id="orden"
-										value="#{ordenInternaController.ordenTrabajo.idOrden}"
+										value="#{ordenFacturaController.ordenTrabajo.idOrden}"
 										size="30" maxlength="100" />
 
 									<h:outputLabel value="Fecha Entrega: "
 										style="color:white!important; font-size: 17px" />
 									<p:calendar id="fechaEntrega"
-										value="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
-										mindate="#{ordenInternaController.ordenTrabajo.fechaCierre}"
+										value="#{ordenFacturaController.ordenTrabajo.fechaentregaOt}"
+										mindate="#{ordenFacturaController.ordenTrabajo.fechaCierre}"
 										pattern="dd/MM/yyyy" locale="es"
 										onkeypress="return permite(event, 'none')"
 										requiredMessage="Fecha Requerida" navigator="true"
@@ -1939,7 +1990,7 @@
 
 								<p:commandButton icon="fa fa-save" value="Guardar"
 									process="@this,formEditarFechaEntrega"
-									actionListener="#{ordenInternaController.editarEstado}"
+									actionListener="#{ordenFacturaController.editarEstado}"
 									update="@([id$=messagesForm],[id$=formprincipal])"
 									onsuccess="PF('editarFechaEntrega').hide()">
 
@@ -1968,7 +2019,7 @@
 
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdEliminarDetalleOT').hide();"
-							actionListener="#{ordenInternaController.eliminarDetalleOT}"
+							actionListener="#{ordenFacturaController.eliminarDetalleOT}"
 							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT" />
 
 
@@ -2029,27 +2080,27 @@
 							<p:outputLabel for="cliente" value="Cliente: "
 								style="color:white!important" />
 							<p:outputLabel id="cliente"
-								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
+								value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
 
 							<p:outputLabel for="direccion" value="Direccion: "
 								style="color:white!important" />
 							<p:outputLabel id="direccion"
-								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
+								value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
 
 							<p:outputLabel for="fax" value="Fax:  "
 								style="color:white!important" />
 							<p:outputLabel id="fax"
-								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.faxCl}" />
+								value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.faxCl}" />
 
 							<p:outputLabel for="telefono" value="Telefono: "
 								style="color:white!important" />
 							<p:outputLabel id="telefono"
-								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
+								value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
 
 							<p:outputLabel for="contacto" value="Contacto: "
 								style="color:white!important" />
 							<p:outputLabel id="contacto"
-								value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
+								value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
 
 						</p:panelGrid>
 
@@ -2057,7 +2108,7 @@
 
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdConfirmarOT').hide();"
-							actionListener="#{ordenInternaController.guardarOT}"
+							actionListener="#{ordenFacturaController.guardarOT}"
 							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT,formDetalleOT" />
 
 

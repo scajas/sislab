@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -25,11 +26,16 @@ import javax.servlet.http.HttpSession;
 
 import org.jdom.IllegalAddException;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
+import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import com.sun.media.sound.DLSInstrument;
 
+import ec.edu.epn.catalogos.beans.facultadDAO;
+import ec.edu.epn.facturacion.entities.Factura;
 import ec.edu.epn.laboratorioBJ.beans.ClienteDAO;
 import ec.edu.epn.laboratorioBJ.beans.DetalleOrdenDAO;
 import ec.edu.epn.laboratorioBJ.beans.DetalleProDAO;
@@ -57,10 +63,10 @@ import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 import javax.faces.application.FacesMessage;
 
-@ManagedBean(name = "ordenInternaController")
+@ManagedBean(name = "ordenFacturaController")
 @SessionScoped
 
-public class OrdenInternaController implements Serializable {
+public class OrdenTrabajoFacturaController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 1L;
@@ -138,6 +144,13 @@ public class OrdenInternaController implements Serializable {
 	private List<Cliente> clientes = new ArrayList<Cliente>();
 	private List<Cliente> filtroClientes = new ArrayList<Cliente>();
 
+	/* Factura */
+	private Factura factura;
+	private Factura selectFactura;
+	private List<Factura> facturas = new ArrayList<Factura>();
+	private List<Factura> filtroFacturas = new ArrayList<Factura>();
+	private LazyDataModel<Factura> lazyModel;
+
 	/* Servicio */
 	private Servicio servicio;
 	private Servicio nuevoServicio;
@@ -185,6 +198,10 @@ public class OrdenInternaController implements Serializable {
 
 			/** Personal **/
 			personalLab = new PersonalLab();
+
+			/** Factura **/
+			factura = new Factura();
+			selectFactura = new Factura();
 
 			/** Cliente **/
 			cliente = new Cliente();
@@ -259,6 +276,12 @@ public class OrdenInternaController implements Serializable {
 			cliente = new Cliente();
 			clientes = new ArrayList<Cliente>();
 			filtroClientes = new ArrayList<Cliente>();
+
+			// factura
+			factura = new Factura();
+			selectFactura = new Factura();
+			facturas = new ArrayList<Factura>();
+			filtroFacturas = new ArrayList<Factura>();
 
 			disabledSelectItem();
 
@@ -377,11 +400,8 @@ public class OrdenInternaController implements Serializable {
 			UnidadLabo uni = new UnidadLabo();
 			buscarOrdenTrabajo.setCliente(getCliente());
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			listaOrdenTrabajo = ordenTrabajoI.listarOTInternaByUnidadLab(uni.getCodigoU(), 1, buscarOrdenTrabajo,
+			listaOrdenTrabajo = ordenTrabajoI.listarOTFacturaByUnidadLab(uni.getCodigoU(), 1, buscarOrdenTrabajo,
 					fechaInicio, fechaFinal);
-			// proformas = proformaI.listaProformaByUnidadLab(uni.getCodigoU(),
-			// 1, proformaBuscar, fechaInicio,
-			// fechaFinal);
 
 			System.out.println("Estos son todos los registros que trae " + listaOrdenTrabajo.size());
 		} catch (Exception e) {
@@ -906,7 +926,7 @@ public class OrdenInternaController implements Serializable {
 
 	}
 
-	/* Metodos Detalle Pro */
+	/* Metodos Detalle OT */
 
 	public void buscarClientes() {
 		try {
@@ -940,6 +960,66 @@ public class OrdenInternaController implements Serializable {
 		RequestContext context = RequestContext.getCurrentInstance();
 		if (nuevoOrdenTrabajo.getCliente() == null) {
 			mensajeError("Debe buscar un cliente y seleccionarlo");
+		} else {
+			cargarServicios();
+			cambiarIdTempPanel(0, 0);
+			context.execute("PF('detalleOT').show();");
+		}
+	}
+
+	/*** Factura *****/
+	public void buscarFacturas() {
+		try {
+//			Long idUser = su.id_usuario_log;
+//			facturas = ordenTrabajoI.listarFacturasPagadas(su.UNIDAD_USUARIO_LOGEADO, idUser.intValue());
+//			filtroFacturas = facturas;
+//
+//			System.out.println("Registros de Facturas: " + facturas.size());
+			
+			this.lazyModel = new LazyDataModel<Factura>() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public List<Factura> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+						Map<String, Object> filters) {
+					setRowCount(ordenTrabajoI.getTotalRegistros().intValue());
+					
+					return ordenTrabajoI.listarFacturasPagadas(first, pageSize, sortField, SortOrder.ASCENDING.equals(sortOrder), 1, 1);
+//					List<Factura> facturas = ordenTrabajoI.listarFacturasPagadasFiltro(first, pageSize, sortField, filters, SortOrder.ASCENDING.equals(sortOrder), 1, 1);
+//			        setRowCount(ordenTrabajoI.countFacturas(filters));
+//			        return facturas;
+				}
+				
+				
+			};
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error.");
+			e.printStackTrace();
+		}
+	}
+
+	public void seleccionarFactura() {
+
+		try {
+
+			nuevoOrdenTrabajo.setIdFactura(selectFactura.getIdFactura());
+			factura = selectFactura;
+			nuevoOrdenTrabajo.setCliente(ordenTrabajoI.buscarClienteById(selectFactura.getIdCliente()));
+			// mensajeInfo("Se ha seleccionado al cliente: " + nuev);
+			selectFactura = new Factura();
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error.");
+			e.printStackTrace();
+		}
+	}
+
+	public void validarFactura() {
+
+		RequestContext context = RequestContext.getCurrentInstance();
+		if (nuevoOrdenTrabajo.getIdFactura() == null) {
+			mensajeError("Debe buscar una factura y seleccionarla para poder continuar");
 		} else {
 			cargarServicios();
 			cambiarIdTempPanel(0, 0);
@@ -1370,6 +1450,46 @@ public class OrdenInternaController implements Serializable {
 
 	public void setTempPersonalLabs(List<PersonalLab> tempPersonalLabs) {
 		this.tempPersonalLabs = tempPersonalLabs;
+	}
+
+	public Factura getFactura() {
+		return factura;
+	}
+
+	public void setFactura(Factura factura) {
+		this.factura = factura;
+	}
+
+	public Factura getSelectFactura() {
+		return selectFactura;
+	}
+
+	public void setSelectFactura(Factura selectFactura) {
+		this.selectFactura = selectFactura;
+	}
+
+	public List<Factura> getFacturas() {
+		return facturas;
+	}
+
+	public void setFacturas(List<Factura> facturas) {
+		this.facturas = facturas;
+	}
+
+	public List<Factura> getFiltroFacturas() {
+		return filtroFacturas;
+	}
+
+	public void setFiltroFacturas(List<Factura> filtroFacturas) {
+		this.filtroFacturas = filtroFacturas;
+	}
+
+	public LazyDataModel<Factura> getLazyModel() {
+		return lazyModel;
+	}
+
+	public void setLazyModel(LazyDataModel<Factura> lazyModel) {
+		this.lazyModel = lazyModel;
 	}
 
 }
