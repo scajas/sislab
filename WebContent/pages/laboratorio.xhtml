@@ -187,6 +187,8 @@
 
 									</f:selectItems>
 
+									<p:ajax event="itemSelect"
+										update="nota1,nota2,nota3,url,correo,telefonoU,direccionU" />
 								</p:selectOneMenu>
 
 								<p:outputLabel id="lblNombre" for="nombre" value="Nombre: *"
@@ -204,7 +206,7 @@
 
 								<p:inputText id="centrocosto"
 									value="#{laboratorioController.nuevoLaboratorioLab.centrocostoL}"
-									size="30" maxlength="20">
+									size="30" maxlength="20" placeholder="ejm. B.18.15.11">
 									<p:ajax event="keyup" update="seleccionarImagen" />
 								</p:inputText>
 
@@ -221,27 +223,30 @@
 
 								<p:inputText id="email"
 									value="#{laboratorioController.nuevoLaboratorioLab.emailL}"
-									maxlength="50" size="30">
+									maxlength="50" size="30" placeholder="ejemplo@yahoo.com">
 								</p:inputText>
 
 								<p:outputLabel id="lblDireccion" for="direccion"
 									value="Dirección: " style="color:white!important" />
 								<p:inputTextarea id="direccion"
 									value="#{laboratorioController.nuevoLaboratorioLab.direccionL}"
-									maxlength="100" rows="5" cols="30" />
+									maxlength="100" rows="5" cols="30"
+									placeholder="ejm. Av. de La Prensa" />
 
 								<p:outputLabel id="lblTelefono" for="telefono"
 									value="Teléfono: " style="color:white!important" />
 								<p:inputMask id="telefono"
 									value="#{laboratorioController.nuevoLaboratorioLab.telefonoL}"
-									maxlength="15" size="30" mask="999-9999">
+									maxlength="15" size="30" mask="999-9999"
+									placeholder="ejm. 123-4567">
 								</p:inputMask>
 
 								<p:outputLabel id="lblFax" for="fax" value="Fax: "
 									style="color:white!important" />
 								<p:inputMask id="fax"
 									value="#{laboratorioController.nuevoLaboratorioLab.faxL}"
-									maxlength="15" size="30" mask="999-9999">
+									maxlength="15" size="30" mask="999-9999"
+									placeholder="ejm. 123-4567">
 								</p:inputMask>
 
 								<p:outputLabel id="lblLeyendaPro" for="leyendaPro"
@@ -255,6 +260,40 @@
 								<p:inputTextarea id="leyendaOrd"
 									value="#{laboratorioController.nuevoLaboratorioLab.leyendaOtL}"
 									maxlength="2000" rows="5" cols="30" />
+
+								<p:outputLabel id="lblNota1" for="nota1" value="Nota 1: "
+									style="color:white!important" />
+								<p:inputTextarea id="nota1"
+									value="#{laboratorioController.nuevoLaboratorioLab.nota1}"
+									maxlength="2000" rows="5" cols="30" />
+
+								<p:outputLabel id="lblnota2" for="nota2" value="Nota 2: "
+									style="color:white!important" />
+								<p:inputTextarea id="nota2"
+									value="#{laboratorioController.nuevoLaboratorioLab.nota2}"
+									maxlength="2000" rows="5" cols="30" />
+
+								<p:outputLabel id="lblnota3" for="nota3" value="Nota 3: "
+									style="color:white!important" />
+								<p:inputTextarea id="nota3"
+									value="#{laboratorioController.nuevoLaboratorioLab.nota3}"
+									maxlength="2000" rows="5" cols="30" />
+
+								<p:outputLabel value="URL: " style="color:white!important" />
+								<h:outputText id="url"
+									value="#{laboratorioController.unidadSelect.url}" />
+
+								<p:outputLabel value="Correo: " style="color:white!important" />
+								<h:outputText id="correo"
+									value="#{laboratorioController.unidadSelect.emailCont1U}" />
+
+								<p:outputLabel value="Telefono: " style="color:white!important" />
+								<h:outputText id="telefonoU"
+									value="#{laboratorioController.unidadSelect.telefonoU}" />
+
+								<p:outputLabel value="Dirección: " style="color:white!important" />
+								<h:outputText id="direccionU"
+									value="#{laboratorioController.unidadSelect.direccionU}" />
 
 								<p:outputLabel id="lblPath" for="path" value="Path: "
 									style="color:white!important" />
@@ -427,21 +466,65 @@
 										value="#{laboratorioController.laboratorioLab.leyendaOtL}"
 										maxlength="2000" rows="5" cols="30" />
 
-									<p:outputLabel value="Ver Logo: " style="color:white!important" />
+									<p:outputLabel id="lblNota1" for="nota1" value="Nota 1: "
+										style="color:white!important" />
+									<p:inputTextarea id="nota1"
+										value="#{laboratorioController.laboratorioLab.nota1}"
+										maxlength="2000" rows="5" cols="30" />
+
+									<p:outputLabel id="lblnota2" for="nota2" value="Nota 2: "
+										style="color:white!important" />
+									<p:inputTextarea id="nota2"
+										value="#{laboratorioController.laboratorioLab.nota2}"
+										maxlength="2000" rows="5" cols="30" />
+
+									<p:outputLabel id="lblnota3" for="nota3" value="Nota 3: "
+										style="color:white!important" />
+									<p:inputTextarea id="nota3"
+										value="#{laboratorioController.laboratorioLab.nota3}"
+										maxlength="2000" rows="5" cols="30" />
+
+									<p:outputLabel id="lblCorreoU" for="correoU" value="Correo : "
+										style="color:white!important" />
+
+									<p:outputLabel id="correoU"
+										value="#{laboratorioController.laboratorioLab.unidad.emailCont1U}" />
+
+									<p:outputLabel id="lbltelefonoU" for="telefonoU"
+										value="Teléfono : " style="color:white!important" />
+
+									<p:outputLabel id="telefonoU"
+										value="#{laboratorioController.laboratorioLab.unidad.telefonoU}" />
+
+									<p:outputLabel id="lblDireccionU" for="direccionU"
+										value="Dirección: " style="color:white!important" />
+
+									<p:outputLabel id="direccionU"
+										value="#{laboratorioController.laboratorioLab.unidad.direccionU}" />
+
+									<p:outputLabel id="lblUrl" for="url" value="Url: "
+										style="color:white!important" />
+
+									<p:outputLabel id="url"
+										value="#{laboratorioController.laboratorioLab.unidad.url}" />
 
 
-									<p:commandLink icon="ui-icon-check"
-										update="@this,formMostrarImg"
-										onclick="PF('mostrarImg').show();">
 
-										<center>
-											<h:graphicImage value="/images/archivos/verMas.png"
-												title="Ver Logo" style="border:0px solid #CAD6E0;"
-												width="35" height="35" />
-										</center>
-									</p:commandLink>
+									<p:outputLabel value="Logotipo: " style="color:white!important" />
+
+									<p:graphicImage
+										title="#{laboratorioController.laboratorioLab.path}"
+										width="95%" height="100%"
+										value="../images/laboratorio/#{laboratorioController.laboratorioLab.path}"
+										alt="No ha ingresado una imagen." cache="false"
+										style="display: block; margin: 0px auto;">
+
+									</p:graphicImage>
+
 
 								</p:panelGrid>
+
+
 
 							</div>
 
@@ -478,8 +561,8 @@
 									<p:commandButton value="Modificar" icon="fa fa-edit"
 										style="width: 115px; margin: 5px"
 										actionListener="#{laboratorioController.modificarLaboratorioLab}"
-										process="@this,formModificarLaboratorio,formMostrarImg"
-										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarLaboratorio,formMostrarImg"
+										process="@this,formModificarLaboratorio"
+										update="@this,@([id$=messagesForm],[id$=formPrincipal]),formModificarLaboratorio"
 										oncomplete="PF('tblLaboratorio').filter()">
 
 									</p:commandButton>
@@ -494,23 +577,6 @@
 							</center>
 						</center>
 					</p:fieldset>
-				</h:form>
-			</p:dialog>
-
-			<!-- Editar - Metodo Mostrar Logo LAB  -->
-
-			<p:dialog id="panelMostrarImg" resizable="false" draggable="false"
-				widgetVar="mostrarImg" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true" header="Logo"
-				width="25vh" height="15vh">
-
-				<h:form id="formMostrarImg">
-					<center>
-						<strong> <p:graphicImage
-								value="../images/laboratorio/#{laboratorioController.laboratorioLab.path}"
-								alt="El laboratorio no tiene asignado un Logo." cache="false" />
-						</strong>
-					</center>
 				</h:form>
 			</p:dialog>
 

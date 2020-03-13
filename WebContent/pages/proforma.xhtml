@@ -42,7 +42,7 @@
 
 				<p:remoteCommand name="rc"
 					action="#{proformaController.limpiarTodosCampos()}"
-					update="formprincipal" />
+					update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarPro" />
 
 				<p:panel>
 
@@ -50,7 +50,7 @@
 
 					<!-- Boton De Nuevo -->
 					<center>
-						<p:commandLink process="@this" icon="ui-icon-check"
+						<p:commandLink process="@this" icon="ui-icon-check" actionListener="#{proformaController.limpiarTodosCampos}"
 							onclick="PF('nuevoPro').show()" update="@this,formAgregarPro">
 
 							<h:graphicImage value="/images/archivos/agregar.png"
@@ -84,7 +84,7 @@
 											style="color:white!important" />
 										<p:inputText id="idProforma"
 											value="#{proformaController.proformaBuscar.idProforma}"
-											size="24" />
+											size="24" placeholder="ejm. DC-P001-2010" />
 
 										<p:outputLabel value="Estado:" for="estado"
 											style="color:white!important" />
@@ -100,12 +100,15 @@
 										<p:outputLabel value="Cliente:" for="cliente"
 											style="color:white!important" />
 										<p:inputText id="cliente"
-											value="#{proformaController.cliente.nombreCl}" size="24" />
+											value="#{proformaController.cliente.nombreCl}" size="24"
+											placeholder="Nombre del Cliente
+											" />
 
 										<p:outputLabel value="RUC/Cédula:" for="ruc_ci"
 											style="color:white!important" />
 										<p:inputText id="ruc_ci"
-											value="#{proformaController.cliente.rucCl}" size="24" />
+											value="#{proformaController.cliente.rucCl}" size="24"
+											placeholder="Ingrese el RUc" />
 
 										<h:outputLabel value="Fecha desde: "
 											style="color:white!important; font-size: 17px" />
@@ -137,16 +140,19 @@
 
 									<br /> <br />
 
-
 									<center>
 										<p:commandLink
 											actionListener="#{proformaController.buscarProforma}"
 											update="@([id$=tblProforma]),@([id$=messagesForm])"
-											process="@this,formBuscar">
+											process="@this,formBuscar"
+											oncomplete="PF('filterProformaTable').filter()">
 
 											<h:graphicImage value="/images/archivos/busqueda.png"
-												class="btn bt-success" title="Buscar"
-												style="border:0px solid #CAD6E0;" width="35" height="35 " />
+												title="Buscar" style="border:0px solid #CAD6E0;" width="35"
+												height="35 " />
+											<p>
+												<strong>Buscar</strong>
+											</p>
 										</p:commandLink>
 
 									</center>
@@ -168,44 +174,61 @@
 						<p:dataTable id="tblProforma"
 							value="#{proformaController.proformas}" var="proforma"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
-							rows="10" paginator="true"
+							rows="10" paginator="true" widgetVar="filterProformaTable"
+							filteredValue="#{proformaController.filtroProformas}"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-
-							<p:column headerText="Id Proforma">
+							<p:column headerText="ID Proforma"
+								filterBy="#{proforma.idProforma}" filterMatchMode="contains"
+								style="width:12%" filterStyle="width: 80%">
 								<h:outputText value="#{proforma.idProforma}" />
 							</p:column>
 
-							<p:column headerText="Fecha">
+							<p:column headerText="Fecha" filterBy="#{proforma.fecha}"
+								style="width:8%" filterStyle="width: 80%"
+								filterMatchMode="contains">
 								<h:outputText value="#{proforma.fecha}" />
 							</p:column>
 
-							<p:column headerText="Cliente">
+							<p:column headerText="Cliente"
+								filterBy="#{proforma.cliente.nombreCl}" filterStyle="width: 80%"
+								filterMatchMode="contains">
 								<h:outputText value="#{proforma.cliente.nombreCl}" />
 							</p:column>
 
-							<p:column headerText="SubTotal">
-								<h:outputText value="#{proforma.subtotalPo}" />
+							<p:column headerText="SubTotal" style="width:6%"
+								filterStyle="width: 60%" filterBy="#{proforma.subtotalPo}"
+								filterMatchMode="contains">
+								<h:outputText
+									value="#{proformaController.cambiarFormatoDouble(proforma.subtotalPo)}" />
 							</p:column>
 
-							<p:column headerText="IVA">
-								<h:outputText value="#{proforma.ivaPo}" />
+							<p:column headerText="IVA" filterBy="#{proforma.ivaPo}"
+								filterMatchMode="contains" style="width:5%"
+								filterStyle="width: 60%">
+								<h:outputText
+									value="#{proformaController.cambiarFormatoDouble(proforma.ivaPo)}" />
 							</p:column>
 
-							<p:column headerText="Total">
-								<h:outputText value="#{proforma.totalPo}" />
+							<p:column headerText="Total" filterBy="#{proforma.totalPo}"
+								filterMatchMode="contains" style="width:7%"
+								filterStyle="width: 60%">
+								<h:outputText
+									value="#{proformaController.cambiarFormatoDouble(proforma.totalPo)}" />
 							</p:column>
 
-							<p:column headerText="Estado">
+							<p:column headerText="Estado" filterBy="#{proforma.estadoPo}"
+								filterMatchMode="contains" style="width:9%"
+								filterStyle="width: 60%">
 								<h:outputText value="#{proforma.estadoPo}" />
 							</p:column>
 
-							<p:column headerText="Estado">
+							<p:column headerText="Estado" style="width:9%">
 								<p:commandLink update="@this,formEditarEstado"
 									process="@this,tblProforma" icon="ui-icon-check"
 									action="#{proformaController.validarEstadoPro(proforma, 'editarEstado')}">
@@ -219,7 +242,7 @@
 
 							</p:column>
 
-							<p:column headerText="Detalle">
+							<p:column headerText="Detalle" style="width:6%">
 								<center>
 
 									<p:commandLink update="@this,formVerPro"
@@ -242,13 +265,13 @@
 
 							</p:column>
 
-							<p:column headerText="Acciones">
+							<p:column headerText="Acciones" style="width:9%">
 								<center>
 
 									<!-- **************************  Boton Editar   *************************** -->
 									<p:commandLink icon="ui-icon-check" process="@this,tblProforma"
-										action="#{proformaController.cargarDetalleProformaEdit(proforma.idProforma)}"
-										oncomplete="PF('editarPro').show();" update="formEditarPro">
+										action="#{proformaController.validarEstadoProEdit(proforma, 'editarPro')}"
+										update="formEditarPro">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
@@ -421,7 +444,9 @@
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-											<p:panelGrid columns="4" layout="grid" style="border:none;">
+
+											<p:panelGrid columns="4" layout="grid"
+												style="border:none; text-align:left;">
 
 												<p:outputLabel for="fecha" value="Fecha: "
 													style="font-weight:bold" />
@@ -431,7 +456,7 @@
 											</p:panelGrid>
 
 											<p:panelGrid columns="4" layout="grid"
-												styleClass="ui-noborder" style="border:none;">
+												style="text-align:left; border-style: none;">
 
 												<p:outputLabel for="cliente" value="Cliente: "
 													style="font-weight:bold" />
@@ -528,11 +553,11 @@
 											</p:column>
 
 											<p:column headerText="V. U.">
-												<h:outputText value="#{detallePro.servicio.precioS}" />
+												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
 											</p:column>
 
 											<p:column headerText="T. S.">
-												<h:outputText value="#{detallePro.totalservicioPo}" />
+												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
 											</p:column>
 
 											<p:column headerText="Acciones">
@@ -584,7 +609,7 @@
 													<p:column colspan="6" style="text-align:right"
 														footerText="Sub Total:" />
 													<p:column
-														footerText="#{proformaController.nuevoProforma.subtotalPo}" />
+														footerText="#{proformaController.cambiarFormatoDouble(proformaController.nuevoProforma.subtotalPo)}" />
 
 												</p:row>
 
@@ -592,14 +617,14 @@
 													<p:column colspan="6" style="text-align:right"
 														footerText="IVA (#{proformaController.nuevoProforma.cliente.tipocliente.ivaTcl} %): " />
 													<p:column
-														footerText="#{proformaController.nuevoProforma.ivaPo}" />
+														footerText="#{proformaController.cambiarFormatoDouble(proformaController.nuevoProforma.ivaPo)}" />
 												</p:row>
 
 												<p:row>
 													<p:column colspan="6" style="text-align:right"
 														footerText="Total: " />
 													<p:column
-														footerText="#{proformaController.nuevoProforma.totalPo}" />
+														footerText="#{proformaController.cambiarFormatoDouble(proformaController.nuevoProforma.totalPo)}" />
 												</p:row>
 											</p:columnGroup>
 										</p:dataTable>
@@ -638,7 +663,7 @@
 
 								<br /> <br />
 
-								<h:panelGrid columns="2">
+								<h:panelGrid columns="3">
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Confirmar" icon="fa fa-save"
@@ -646,6 +671,13 @@
 										disabled="#{proformaController.disabledButton() != true}"
 										update="formConfirmaNuevaProforma"
 										onsuccess="PF('cdConfirmarProforma').show();">
+
+									</p:commandButton>
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										value="Limpiar" icon="fa fa-save" process="@this"
+										action="#{proformaController.limpiarTodosCampos()}"
+										update="formprincipal">
 
 									</p:commandButton>
 
@@ -699,7 +731,7 @@
 										value="#{proformaController.servicios}" var="serv"
 										widgetVar="filterServiciosTable"
 										emptyMessage="No se pudo encontrar ninguna coincidencia"
-										filteredValue="#{proformaController.filtroServicios}" rows="5"
+										filteredValue="#{proformaController.filtroServicios}" rows="3"
 										paginator="true"
 										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 										rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
@@ -1025,12 +1057,14 @@
 									</p:column>
 
 									<p:column headerText="V. U.">
-										<h:outputText value="#{detallePro.servicio.precioS}" />
+										<h:outputText
+											value="#{proformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
 									</p:column>
 
 									<p:column headerText="Total">
 										<center>
-											<h:outputText value="#{detallePro.totalservicioPo}" />
+											<h:outputText
+												value="#{proformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
 										</center>
 									</p:column>
 
@@ -1039,20 +1073,22 @@
 											<p:column colspan="6" style="text-align:right"
 												footerText="Sub Total:" />
 											<p:column
-												footerText="#{proformaController.proforma.subtotalPo}" />
+												footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.subtotalPo)}" />
 
 										</p:row>
 
 										<p:row>
 											<p:column colspan="6" style="text-align:right"
 												footerText="IVA (#{proformaController.proforma.cliente.tipocliente.ivaTcl} %): " />
-											<p:column footerText="#{proformaController.proforma.ivaPo}" />
+											<p:column
+												footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.ivaPo)}" />
 										</p:row>
 
 										<p:row>
 											<p:column colspan="6" style="text-align:right"
 												footerText="Total: " />
-											<p:column footerText="#{proformaController.proforma.totalPo}" />
+											<p:column
+												footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.totalPo)}" />
 										</p:row>
 									</p:columnGroup>
 								</p:dataTable>
@@ -1224,11 +1260,11 @@
 											</p:column>
 
 											<p:column headerText="V. U.">
-												<h:outputText value="#{detallePro.servicio.precioS}" />
+												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
 											</p:column>
 
 											<p:column headerText="T. S.">
-												<h:outputText value="#{detallePro.totalservicioPo}" />
+												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
 											</p:column>
 
 											<p:column headerText="Acciones">
@@ -1279,21 +1315,21 @@
 													<p:column colspan="6" style="text-align:right"
 														footerText="Sub Total:" />
 													<p:column
-														footerText="#{proformaController.proforma.subtotalPo}" />
+														footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.subtotalPo)}" />
 
 												</p:row>
 
 												<p:row>
 													<p:column colspan="6" style="text-align:right"
-														footerText="IVA (#{proformaController.proforma.cliente.tipocliente.ivaTcl} %): " />
-													<p:column footerText="#{proformaController.proforma.ivaPo}" />
+														footerText="IVA (#{proformaController.cambiarFormatoDouble(proformaController.proforma.cliente.tipocliente.ivaTcl)} %): " />
+													<p:column footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.ivaPo)}" />
 												</p:row>
 
 												<p:row>
 													<p:column colspan="6" style="text-align:right"
 														footerText="Total: " />
 													<p:column
-														footerText="#{proformaController.proforma.totalPo}" />
+														footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.totalPo)}" />
 												</p:row>
 											</p:columnGroup>
 										</p:dataTable>
@@ -1767,7 +1803,7 @@
 
 			<!-- **************************  Panel - Panel de error ************************** -->
 			<h:form id="formError">
-				<p:confirmDialog message="NO se puede hacer cambios en la Proforma"
+				<p:confirmDialog message="No se puede hacer cambios en la Proforma"
 					header="Mensaje..." severity="warn" widgetVar="cdPanelError">
 					<center>
 
@@ -1783,45 +1819,46 @@
 			<!-- **************************  Panel de vizualizacion - Confirmar Nueva Proforma   ************************** -->
 
 			<p:confirmDialog
-				message="Esta seguro(a) que desea guardar la proforma con los siguientes datos: "
-				header="Confirmar Proforma." severity="warn"
+				message="¿Esta seguro(a) que desea guardar la proforma?"
+				header="Confirmar Proforma." severity="info"
 				widgetVar="cdConfirmarProforma">
 
 				<center>
+
 					<h:form id="formConfirmaNuevaProforma">
+						<p:panel>
+							<p:panelGrid columns="2" layout="grid"
+								styleClass="ui-panelgrid-blank"
+								columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+								style="border:none;text-align:left">
 
-						<p:panelGrid columns="2" layout="grid"
-							styleClass="ui-panelgrid-blank"
-							columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
-							style="border:none;">
+								<p:outputLabel for="cliente" value="Cliente: "
+									style="color:white!important" />
+								<p:outputLabel id="cliente"
+									value="#{proformaController.nuevoProforma.cliente.nombreCl}" />
 
-							<p:outputLabel for="cliente" value="Cliente: "
-								style="color:white!important" />
-							<p:outputLabel id="cliente"
-								value="#{proformaController.nuevoProforma.cliente.nombreCl}" />
+								<p:outputLabel for="telefono" value="Telefono: "
+									style="color:white!important" />
+								<p:outputLabel id="telefono"
+									value="#{proformaController.nuevoProforma.cliente.telefonoCl}" />
 
-							<p:outputLabel for="telefono" value="Telefono: "
-								style="color:white!important" />
-							<p:outputLabel id="telefono"
-								value="#{proformaController.nuevoProforma.cliente.telefonoCl}" />
+								<p:outputLabel for="ruc" value="Ruc: "
+									style="color:white!important" />
+								<p:outputLabel id="ruc"
+									value="#{proformaController.nuevoProforma.cliente.rucCl}" />
 
-							<p:outputLabel for="ruc" value="Ruc: "
-								style="color:white!important" />
-							<p:outputLabel id="ruc"
-								value="#{proformaController.nuevoProforma.cliente.rucCl}" />
+								<p:outputLabel for="ci" value="CI: "
+									style="color:white!important" />
+								<p:outputLabel id="ci"
+									value="#{proformaController.nuevoProforma.cliente.cedula}" />
 
-							<p:outputLabel for="ci" value="CI: "
-								style="color:white!important" />
-							<p:outputLabel id="ci"
-								value="#{proformaController.nuevoProforma.cliente.cedula}" />
+								<p:outputLabel for="contacto" value="Contacto: "
+									style="color:white!important" />
+								<p:outputLabel id="contacto"
+									value="#{proformaController.nuevoProforma.cliente.contactoCl}" />
 
-							<p:outputLabel for="contacto" value="Contacto: "
-								style="color:white!important" />
-							<p:outputLabel id="contacto"
-								value="#{proformaController.nuevoProforma.cliente.contactoCl}" />
-
-						</p:panelGrid>
-
+							</p:panelGrid>
+						</p:panel>
 						<br />
 
 						<p:commandButton value="Aceptar"
@@ -1851,11 +1888,6 @@
 			PF('statusDialog').hide();
 			}
 
-			function aiuda(){
-			console.log('TIMBREMOS :v');
-
-				}
-
 			PrimeFaces.locales['es'] = {
 		            closeText: 'Cerrar',
 		            prevText: 'Anterior',
@@ -1882,6 +1914,13 @@
 		            day: 'Día',
 		            allDayText: 'Todo el día'
 		        };
+
+			
+			window.onbeforeunload = function(event) {
+				rc();
+			    event.returnValue = "";
+			};
+			
 
 		</script>
 

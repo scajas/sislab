@@ -97,11 +97,16 @@ public class PrintProformaController implements Serializable {
 
 	private List<DetalleProforma> detalleProformasTemp = new ArrayList<DetalleProforma>();
 	private List<DetalleProforma> detalleProformas = new ArrayList<DetalleProforma>();
+	private DetalleProforma servicioDP;
 
-	private String path;
+	private String path = new String();
 
 	private LaboratorioLab titulo;
-	private String encabezado;
+	private String nota1;
+	private String nota2;
+	private String nota3;
+	private String nota4;
+	private String notaTitulo;
 
 	/** METODO Init **/
 	@PostConstruct
@@ -112,15 +117,9 @@ public class PrintProformaController implements Serializable {
 			detalleProformasTemp = proformaI.listarDetalleProByIdPro(id);
 			detalleProformas = detalleProformasTemp;
 
-			if (compararListas()) {
-				setPath(logoLab.getPath());
-				setEncabezado(titulo.getNombreL());
+			servicioDP = proformaI.getServicio(id);
 
-			} else {
-				setPath("buho.jpg");
-				setEncabezado("");
-			}
-
+			notaTitulo = new String();
 			// /** Proforma **/
 
 			Long iduser = su.id_usuario_log;
@@ -133,30 +132,28 @@ public class PrintProformaController implements Serializable {
 
 			titulo = new LaboratorioLab();
 
+			limpiarProforma();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	/* Metodos de Comprar Unidades x Lab - Logo */
+	/* Metodos de Comparar Unidades x Lab - Logo */
 
 	public boolean compararListas() {
 		boolean resultado = false;
 		for (DetalleProforma dp : detalleProformasTemp) {
 			for (DetalleProforma dpt : detalleProformas) {
-				// System.out.println("Esta comparando " +
-				// dp.getServicio().getLaboratorio().getIdLaboratorio() + "con "
-				// + dpt.getServicio().getLaboratorio().getIdLaboratorio());
+
 				if (dpt.getServicio().getLaboratorio().getIdLaboratorio() == dp.getServicio().getLaboratorio()
 						.getIdLaboratorio()) {
 					setLogoLab(dpt.getServicio().getLaboratorio());
-					setTitulo(dpt.getServicio().getLaboratorio());
 					resultado = true;
 				} else {
 					// resultado = false;
 					setLogoLab(dpt.getServicio().getLaboratorio());
-					setTitulo(dpt.getServicio().getLaboratorio());
+
 					// break;
 					return false;
 				}
@@ -165,21 +162,44 @@ public class PrintProformaController implements Serializable {
 		return resultado;
 	}
 
-	/* Metodos de limpieza de formularios */
-
 	public void limpiarProforma() {
 		try {
 			String id = obtenerVariable();
 			proforma = proformaI.buscarProformaById(id);
 			detalleProformasTemp = proformaI.listarDetalleProByIdPro(id);
 			detalleProformas = detalleProformasTemp;
-			if (compararListas()) {
-				setPath(logoLab.getPath());
-				setEncabezado(titulo.getNombreL());
+			
+			servicioDP = proformaI.getServicio(id);
 
+			System.out.println("Servicio de la lista:" + servicioDP.getServicio().getIdServicio());
+			System.out.println("Lab obtenido:" + servicioDP.getServicio().getLaboratorio().getNombreL());
+
+			if (unidad.getIdUnidad() == 1) {
+
+				if (compararListas()) {
+
+					setPath(logoLab.getPath());
+
+					setNotaTitulo("");
+					setNota1(getServicioDP().getServicio().getLaboratorio().getNota1());
+					setNota2(getServicioDP().getServicio().getLaboratorio().getNota2());
+					setNota3(getServicioDP().getServicio().getLaboratorio().getNota3());
+					setNota4("");
+
+				} else {
+					setPath("DECAB.png");
+
+					setNotaTitulo("F-PG-7.1-01-01");
+
+					setNota1(laboratorio.getUnidad().getNota1());
+					setNota2(laboratorio.getUnidad().getNota2());
+					setNota3(laboratorio.getUnidad().getNota3());
+					setNota4("");
+
+				}
 			} else {
+
 				setPath("buho.jpg");
-				setEncabezado("");
 			}
 
 			// /** Proforma **/
@@ -189,8 +209,6 @@ public class PrintProformaController implements Serializable {
 			setUnidad((UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO));
 
 			laboratorio = proformaI.obtenerLaboratorioByUsr(iduser.intValue(), su.UNIDAD_USUARIO_LOGEADO);
-
-			logoLab = new LaboratorioLab();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -214,11 +232,15 @@ public class PrintProformaController implements Serializable {
 	public void regresarPanelPro() {
 
 		try {
+
+			System.out.println("ingresa al metodo regresar");
 			FacesContext contex = FacesContext.getCurrentInstance();
 			// contex.getExternalContext().getSessionMap().put("id",
 			// proforma.getIdProforma());
 
 			contex.getExternalContext().redirect("/SisLab/pages/proforma.jsf");
+
+			limpiarProforma();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -232,7 +254,7 @@ public class PrintProformaController implements Serializable {
 			FacesContext contex = FacesContext.getCurrentInstance();
 			String id = contex.getExternalContext().getSessionMap().get("id").toString();
 
-			// System.out.println("Esto es el id trae: " + id);
+			System.out.println("Esto es el id trae: " + id);
 			return id;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -331,12 +353,52 @@ public class PrintProformaController implements Serializable {
 		this.titulo = titulo;
 	}
 
-	public String getEncabezado() {
-		return encabezado;
+	public String getNota1() {
+		return nota1;
 	}
 
-	public void setEncabezado(String encabezado) {
-		this.encabezado = encabezado;
+	public void setNota1(String nota1) {
+		this.nota1 = nota1;
+	}
+
+	public String getNota2() {
+		return nota2;
+	}
+
+	public void setNota2(String nota2) {
+		this.nota2 = nota2;
+	}
+
+	public String getNota3() {
+		return nota3;
+	}
+
+	public void setNota3(String nota3) {
+		this.nota3 = nota3;
+	}
+
+	public String getNota4() {
+		return nota4;
+	}
+
+	public void setNota4(String nota4) {
+		this.nota4 = nota4;
+	}
+
+	public String getNotaTitulo() {
+		return notaTitulo;
+	}
+
+	public void setNotaTitulo(String notaTitulo) {
+		this.notaTitulo = notaTitulo;
+	}
+
+	public DetalleProforma getServicioDP() {
+		return servicioDP;
+	}
+
+	public void setServicioDP(DetalleProforma servicioDP) {
+		this.servicioDP = servicioDP;
 	}
 
 }
