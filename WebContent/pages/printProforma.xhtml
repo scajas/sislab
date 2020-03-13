@@ -58,11 +58,10 @@
 									<tr>
 										<td />
 										<td align="center"><h:outputText
-												value="RUC:#{printProformaController.proforma.cliente.rucCl}"
+												value="RUC: 1750005620001 "
 												style="FONT-FAMILY: arial; FONT-SIZE: 10px;">
 											</h:outputText> <br /> <h:outputText
-												value="Direc.: #{printProformaController.unidad.direccionU}"
-												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												value="Direc.: Ladrón de Guevara E11-253 y Andalucía. Edif.17, 5to piso."
 												style="FONT-FAMILY: arial; FONT-SIZE: 10px;" /></td>
 									</tr>
 
@@ -74,10 +73,7 @@
 												value="ESCUELA POLITECNICA NACIONAL"
 												style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " />
 											<br /> <h:outputText
-												value="#{printProformaController.unidad.nombreU} "
-												style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " />
-											<br /> <h:outputText
-												value="#{printProformaController.encabezado} "
+												value="#{printProformaController.unidad.nombreU} #{printProformaController.unidad.siglaU} "
 												style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " />
 
 											<br /> <h:outputText
@@ -85,24 +81,38 @@
 												value=" Campus Politécnico José Rubén Orellana Ricaurte "
 												style="FONT-FAMILY: arial; FONT-SIZE: 14px; " /> <br /> <h:outputText
 												rendered="#{printProformaController.unidad.idUnidad != 2}"
-												value="Personas de Contacto: #{printProformaController.unidad.contacto1U}, #{printProformaController.unidad.contacto2U}"
+												value="Direc.: Pasaje Andalucía E12-A y Alfredo Mena Caamaño Telf.:2976300"
 												style="FONT-FAMILY: arial; FONT-SIZE: 14px; " /> <br /> <h:outputText
 												rendered="#{printProformaController.unidad.idUnidad != 2}"
-												value="Telf.: #{printProformaController.unidad.telCont2U}"
+												value="Personas de Contacto: #{printProformaController.unidad.contacto1U}. Telf.: #{printProformaController.unidad.telCont1U}. e-mail: #{printProformaController.unidad.emailCont1U}"
+												style="FONT-FAMILY: arial; FONT-SIZE: 14px; " /> <br /> <h:outputText
+												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												value=" #{printProformaController.unidad.contacto2U}. Telf.: #{printProformaController.unidad.telCont2U} . e-mail: #{printProformaController.unidad.emailCont2U}"
+												style="FONT-FAMILY: arial; FONT-SIZE: 14px; " /> <br /> <h:outputText
+												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												value="RUC: 1750005620001"
+												style="FONT-FAMILY: arial; FONT-SIZE: 14px;" /> <br /> <h:outputText
+												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												value="Quito- Ecuador"
 												style="FONT-FAMILY: arial; FONT-SIZE: 14px;" /> <br /></td>
-										<td align="center"><br /> <p:graphicImage
-												value="../images/laboratorio/#{printProformaController.path}"
-												alt="Sin imagen." cache="false" width="100px" height="100px" /><br /></td>
+										<td align="center"><br /> <h:graphicImage
+												alt="Imagen no encontrada."
+												value="../images/laboratorio/#{printProformaController.servicioDP.servicio.laboratorio.path}"
+												width="95%" height="100%" /></td>
+
 									</tr>
 								</table>
 							</div>
-							<br />
 
+							<br />
 							<div class="p-col">
 								<center>
+
 									<h:outputText value="PROFORMA"
 										style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 15px; " />
+
 								</center>
+								<br />
 								<table width="1000" style="BORDER: #000000 1px solid;"
 									align="center">
 									<tr align="justify">
@@ -196,7 +206,7 @@
 										<td align="left" width="20"><p:dataTable
 												id="tblVerDetalleProPrint"
 												value="#{printProformaController.detalleProformasTemp}"
-												var="detallePro" sortBy="#{detallePro.totalservicioPo}"
+												var="detallePro"
 												emptyMessage="No se han registrado detalles de proforma.">
 
 												<p:column headerText="Servicio">
@@ -207,18 +217,18 @@
 													<h:outputText value="#{detallePro.metodo.nombreMt}" />
 												</p:column>
 
-												<p:column headerText="Unidad/Laboratorio">
+												<p:column headerText="Unidad/Laboratorio" style="width: 15%">
 													<h:outputText
 														value="#{detallePro.servicio.laboratorio.nombreL}" />
 												</p:column>
 
-												<p:column headerText="Cant." style="width: 8%">
+												<p:column headerText="Cant." style="width: 6%">
 													<center>
 														<h:outputText value="#{detallePro.cantidadPo}" />
 													</center>
 												</p:column>
 
-												<p:column headerText="V. U." style="width: 8%">
+												<p:column headerText="V. Unitario." style="width: 8%">
 													<center>
 														<h:outputText
 															value="#{printProformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
@@ -260,54 +270,7 @@
 
 								</table>
 							</div>
-
 							<br /> <br />
-							<div class="p-col">
-								<table width="1000" style="BORDER: #000000 1px solid;">
-
-									<tr>
-										<td align="center"><h:outputText value="Notas:"
-												style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
-										<td align="left"><h:outputText
-												value="#{printProformaController.unidad.nota1} "
-												style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /><br /></td>
-
-									</tr>
-
-									<tr>
-
-										<td align="center"><h:outputText value="" /></td>
-										<td align="left"><h:outputText
-												value="#{printProformaController.unidad.nota2} "
-												style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /> <br /></td>
-
-									</tr>
-
-									<tr>
-										<td align="center"><h:outputText value="" /></td>
-										<td align="left"><h:outputText
-												value="#{printProformaController.laboratorio.leyendaprofL} "
-												style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
-									</tr>
-
-									<tr>
-										<td><h:outputText value="" /></td>
-										<td align="left"><h:outputText value="Forma de Pago:"
-												style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
-									</tr>
-
-									<tr>
-
-										<td align="center"><h:outputText value=""
-												style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
-										<td align="left"><h:outputText
-												value="#{printProformaController.unidad.nota3} "
-												style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /> <br /></td>
-									</tr>
-								</table>
-							</div>
-							<br /> <br /> 
-
 							<div class="p-col">
 								<table width="1000" align="center">
 									<tr align="center">
@@ -336,50 +299,100 @@
 
 								</table>
 							</div>
+
+							<br /> <br /> <br /> <br />
+
+
+							<div class="p-col">
+
+								<table width="1000">
+
+									<tr>
+										<td align="left"><h:outputText
+												value="#{printProformaController.notaTitulo}"
+												style="FONT-WEIGHT: bold;FONT-FAMILY: arial; FONT-SIZE: 15px; " /><br />
+											<br /> <br /></td>
+									</tr>
+
+									<tr>
+										<td align="left"><h:outputText
+												value="#{printProformaController.nota1} "
+												style="FONT-WEIGHT: bold;FONT-FAMILY: arial; FONT-SIZE: 15px; " /><br /></td>
+									</tr>
+									<tr>
+										<td align="left"><h:outputText
+												value="#{printProformaController.nota2} "
+												style="FONT-WEIGHT: bold;FONT-FAMILY: arial; FONT-SIZE: 15px; " /><br /></td>
+									</tr>
+									<tr>
+										<td align="left"><h:outputText
+												value="#{printProformaController.nota3} "
+												style="FONT-WEIGHT: bold;FONT-FAMILY: arial; FONT-SIZE: 15px; " /><br /></td>
+									</tr>
+									<tr>
+										<td align="left"><h:outputText
+												value="#{printProformaController.nota4} "
+												style="FONT-WEIGHT: bold;FONT-FAMILY: arial; FONT-SIZE: 15px; " /><br /></td>
+									</tr>
+
+								</table>
+							</div>
+							<br /> <br />
+
+							<div>
+
+								<table width="1000"
+									style="background-image: url(../images/Logobordes.png) !important; background-repeat: no-repeat; background-position: 0% !important; background-size: 1000px 100px">
+
+									<tr>
+										<td><h:graphicImage value="/images/proforma/gps.png"
+												width="15" height="15" /></td>
+										<td align="left"><h:outputText
+												value="#{printProformaController.unidad.direccionU}"
+												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
+									</tr>
+
+									<tr>
+										<td><h:graphicImage value="/images/proforma/mundo.png"
+												width="15" height="15" /></td>
+										<td align="left"><h:outputText
+												value="#{printProformaController.unidad.url}"
+												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
+									</tr>
+
+									<tr>
+										<td><h:graphicImage value="/images/proforma/email.png"
+												width="15" height="15" /></td>
+										<td align="left"><h:outputText
+												value="#{printProformaController.unidad.emailCont1U}"
+												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
+									</tr>
+
+									<tr>
+										<td><h:graphicImage value="/images/proforma/telefono.png"
+												width="15" height="15" /></td>
+										<td align="left"><h:outputText
+												rendered="#{printProformaController.unidad.idUnidad != 2}"
+												value="#{printProformaController.unidad.telefonoU}"
+												style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
+									</tr>
+
+								</table>
+
+							</div>
 						</center>
 
 						<br /> <br />
-						<div class="p-col-12" >
-							<table>
 
-								<tr>
-									<td><h:graphicImage value="/images/proforma/gps.png"
-											width="15" height="15" /></td>
-									<td align="left"><h:outputText
-											value="#{printProformaController.unidad.direccionU}"
-											rendered="#{printProformaController.unidad.idUnidad != 2}"
-											style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
-								</tr>
 
-								<tr>
-									<td><h:graphicImage value="/images/proforma/mundo.png"
-											width="15" height="15" /></td>
-									<td align="left"><h:outputText
-											value="#{printProformaController.unidad.emailCont2U}"
-											rendered="#{printProformaController.unidad.idUnidad != 2}"
-											style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
-								</tr>
 
-								<tr>
-									<td><h:graphicImage value="/images/proforma/email.png"
-											width="15" height="15" /></td>
-									<td align="left"><h:outputText
-											value="#{printProformaController.unidad.emailCont1U}"
-											rendered="#{printProformaController.unidad.idUnidad != 2}"
-											style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
-								</tr>
 
-								<tr>
-									<td><h:graphicImage value="/images/proforma/telefono.png"
-											width="15" height="15" /></td>
-									<td align="left"><h:outputText
-											rendered="#{printProformaController.unidad.idUnidad != 2}"
-											value="Telf.: #{printProformaController.unidad.telCont2U}"
-											style="FONT-FAMILY: arial; FONT-SIZE: 15px;" /></td>
-								</tr>
-							</table>
-						</div>
 					</div>
+
+
 				</h:form>
 
 				<div class="ui-fluid">
@@ -387,13 +400,31 @@
 						<h:panelGrid columns="2">
 
 							<p:commandButton style="width: 150px; margin: 10px"
-								value="Imprimir" icon="fa fa-print" >
+								value="Imprimir" icon="fa fa-print">
 								<p:printer target="formprincipal" />
 							</p:commandButton>
 
-							<p:commandButton style="width: 150px; margin: 10px"
-								icon=" fa fa-arrow-left" onclick="PF('cdCancelarPro').show();"
-								value="Cancelar"></p:commandButton>
+							<p:commandButton value="Cancelar" icon=" fa fa-arrow-left"
+								style="width: 150px; margin: 10px"
+								action="#{printProformaController.regresarPanelPro()}">
+								<p:confirm header="Cancelar"
+									message="¿Está seguro que desea regresar a la interfaz anterior?."
+									icon="fa fa-exclamation-triangle" />
+							</p:commandButton>
+
+							<p:confirmDialog global="true" showEffect="fade"
+								hideEffect="fade">
+								<center>
+									<p:commandButton value="Aceptar" type="button"
+										styleClass="ui-confirmdialog-yes" icon="fa fa-check-square-o"
+										style="width: 150px; margin: 10px" />
+									<p:commandButton value="Cancelar" type="button"
+										styleClass="ui-confirmdialog-no" icon="fa fa-window-close"
+										style="width: 150px; margin: 10px"
+										onclick="PF('cdCancelarPro').hide();" />
+								</center>
+							</p:confirmDialog>
+
 
 						</h:panelGrid>
 					</center>
@@ -402,32 +433,6 @@
 
 			</p:fieldset>
 
-			<!-- **************************  Panel - Confirmar regreso Pro ************************** -->
-			<h:form id="formCancelarPro">
-				<p:confirmDialog message="¿Esta seguro(a) que desea cancelar?"
-					header="Cancelar" severity="warn" widgetVar="cdCancelarPro">
-					<center>
-
-						<br /> <br />
-						<p:outputLabel
-							value="Si desea regresar a la interfaz de proformas de clic en Aceptar " />
-
-						<br /> <br /> <br />
-
-						<p:commandButton value="Aceptar"
-							action="#{printProformaController.regresarPanelPro}"
-							onsuccess="PF('cdCancelarPro').hide();" />
-
-
-						<p:commandButton value="Cancelar"
-							onclick="PF('cdCancelarPro').hide();" type="button" />
-
-					</center>
-
-				</p:confirmDialog>
-
-
-			</h:form>
 
 			<br />
 			<br />
@@ -443,11 +448,6 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
-
-			function aiuda(){
-			console.log('TIMBREMOS :v');
-
-				}
 
 			PrimeFaces.locales['es'] = {
 		            closeText: 'Cerrar',

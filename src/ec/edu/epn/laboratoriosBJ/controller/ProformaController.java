@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -195,7 +196,6 @@ public class ProformaController implements Serializable {
 		nuevoProforma.setFecha(new Date());
 
 		proformas = new ArrayList<Proforma>();
-
 	}
 
 	public void limpiarDetalleProforma() {
@@ -292,12 +292,11 @@ public class ProformaController implements Serializable {
 		// Modificar A la base de datos
 		actualizarDetallePro(detalleProformas);
 		actualizarProforma(proforma);
-		
+
 		mensajeInfo("Se ha modificado la proforma (" + proforma.getIdProforma() + ")");
 
 		limpiarTodosCampos();
 
-		
 	}
 
 	public void abrirProforma() {
@@ -358,28 +357,32 @@ public class ProformaController implements Serializable {
 	public void buscarProforma() {
 
 		try {
+
+			RequestContext context = RequestContext.getCurrentInstance();
+
 			UnidadLabo uni = new UnidadLabo();
 			proformaBuscar.setCliente(getCliente());
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 			proformas = proformaI.listaProformaByUnidadLab(uni.getCodigoU(), 1, proformaBuscar, fechaInicio,
 					fechaFinal);
+			filtroProformas = proformas;
 
 			System.out.println("Estos son todos los registros que trae " + proformas.size());
+			mensajeInfo("Resultados Obtenidos :" + proformas.size());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	public void buscarAllProformas() {
 
 		try {
 			UnidadLabo uni = new UnidadLabo();
 			proformaBuscar.setCliente(getCliente());
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			proformas = proformaI.listaAllProformas(uni.getCodigoU(), 1, proformaBuscar, fechaInicio,
-					fechaFinal);
+			proformas = proformaI.listaAllProformas(uni.getCodigoU(), 1, proformaBuscar, fechaInicio, fechaFinal);
 
 			System.out.println("Estos son todos los registros que trae " + proformas.size());
 		} catch (Exception e) {
@@ -511,6 +514,16 @@ public class ProformaController implements Serializable {
 		if (p.getEstadoPo().equals("Facturada")) {
 			context.execute("PF('cdPanelError').show();");
 		} else {
+			context.execute("PF('" + panel + "').show();");
+		}
+	}
+
+	public void validarEstadoProEdit(Proforma p, String panel) {
+		RequestContext context = RequestContext.getCurrentInstance();
+		if (p.getEstadoPo().equals("Facturada")) {
+			context.execute("PF('cdPanelError').show();");
+		} else {
+			cargarDetalleProformaEdit(p.getIdProforma());
 			context.execute("PF('" + panel + "').show();");
 		}
 	}
@@ -795,7 +808,10 @@ public class ProformaController implements Serializable {
 		try {
 
 			System.out.println("Esta entrando a la funcion");
-			servicios = proformaI.listarServiciosByLab("1");
+			UnidadLabo uni = new UnidadLabo();
+			Long iduser = su.id_usuario_log;
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			servicios = proformaI.listarServiciosByLab(su.UNIDAD_USUARIO_LOGEADO + "");
 			filtroServicios = servicios;
 
 		} catch (Exception e) {
@@ -1019,6 +1035,11 @@ public class ProformaController implements Serializable {
 		}
 
 		return nombre;
+	}
+	
+	public String cambiarFormatoDouble(double numero) {
+		DecimalFormat formato = new DecimalFormat("#.00");
+		return formato.format(numero);
 	}
 
 	/** Calcular IVA **/
