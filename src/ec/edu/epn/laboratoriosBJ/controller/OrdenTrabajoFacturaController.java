@@ -35,6 +35,7 @@ import org.primefaces.model.UploadedFile;
 import com.sun.media.sound.DLSInstrument;
 
 import ec.edu.epn.catalogos.beans.facultadDAO;
+import ec.edu.epn.facturacion.entities.EstadoFactura;
 import ec.edu.epn.facturacion.entities.Factura;
 import ec.edu.epn.laboratorioBJ.beans.ClienteDAO;
 import ec.edu.epn.laboratorioBJ.beans.DetalleOrdenDAO;
@@ -165,6 +166,12 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	private Metodo metodoSelect;
 	private Metodo metodoNA;
 
+	/* Muestra */
+	private List<Muestra> muestras = new ArrayList<Muestra>();
+	private List<Muestra> filtroMuestras = new ArrayList<Muestra>();
+	private Muestra muestra;
+	private Muestra muestraNA;
+
 	/* Variables adicionales */
 	private Date fechaInicio;
 	private Date fechaFinal;
@@ -172,6 +179,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	private int tempId2;
 	private int tempIdServ;
 	private int tempIdPer;
+	private int tempIdM;
 	private UploadedFile file;
 
 	/** METODO Init **/
@@ -239,6 +247,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		detalleOrden = new Detalleorden();
 		nuevoDetalleOrden.setHorasTrabajo(0);
 		nuevoServicio = new Servicio();
+		muestra = new Muestra();
 	}
 
 	public void limpiarTodosCampos() {
@@ -255,7 +264,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			/** Detalle Orden Trabajo **/
 			limpiarDetalleOT();
 			listaDetalleOrden.clear();
-			listaOrdenTrabajo = new ArrayList<OrdenTrabajo>();
+			// listaOrdenTrabajo = new ArrayList<OrdenTrabajo>();
 
 			setTempIdServ(0);
 			setTempIdPer(0);
@@ -283,12 +292,24 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			facturas = new ArrayList<Factura>();
 			filtroFacturas = new ArrayList<Factura>();
 
+			// Muestra
+			muestras.clear();
+
+			// Personal
+			personalLabs.clear();
+			personalLab = new PersonalLab();
+
 			disabledSelectItem();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void limpiarFormularios() {
+		limpiarTodosCampos();
+		mensajeInfo("Se han limpiado todos los campos");
 	}
 
 	/****** Metodos de Orden Trabajo ****/
@@ -304,6 +325,9 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			/** GUARDAR EN DB **/
 			ordenTrabajoI.save(nuevoOrdenTrabajo);
 			guardarDetalleOT(listaDetalleOrden);
+
+			/** agregar a la vista **/
+			listaOrdenTrabajo.add(nuevoOrdenTrabajo);
 
 			mensajeInfo("Se ha guardado el nuevo orden de trabajo con el id (" + nuevoOrdenTrabajo.getIdOrden() + ")");
 
@@ -351,7 +375,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			FacesContext contex = FacesContext.getCurrentInstance();
 			contex.getExternalContext().getSessionMap().put("idOT", ordenTrabajo.getIdOrden());
 
-			contex.getExternalContext().redirect("/SisLab/pages/printOrdenTrabajoInterna.jsf");
+			contex.getExternalContext().redirect("/SisLab/pages/printOrdenTrabajoFactura.jsf");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Me voy al carajo, no funciona esta redireccion");
@@ -434,16 +458,16 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 			/** Creacion del IdOrdenInv **/
 
-			String codigoAux = ordenTrabajoI.maxIdOTInterno(uni.getCodigoU(), fecha);
+			String codigoAux = ordenTrabajoI.maxIdOT(uni.getCodigoU(), fecha);
 
 			/* Validacion en caso cambie de año */
 			if (codigoAux == null) {
-				codigoAux = (uni.getCodigoU() + "-OTI0000-" + anio);
+				codigoAux = (uni.getCodigoU() + "-OT0000-" + anio);
 			}
 
 			System.out.println("Este es el id que trae: " + codigoAux);
 
-			String[] partsId = codigoAux.split("-OTI", 2);
+			String[] partsId = codigoAux.split("-OT", 2);
 
 			partsId = partsId[1].split("-");
 
@@ -461,7 +485,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			String codigoPro = codigo.toString();
 			/* Setteo de valores adicionales */
 			nuevoOrdenTrabajo.setEstadoOt("GENERADA");
-			nuevoOrdenTrabajo.setTipoOt("Interna");
+			nuevoOrdenTrabajo.setTipoOt("Externa Factura");
 			nuevoOrdenTrabajo.setIdUsuario(id.intValue());
 
 			// nuevoExistencia.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
@@ -474,16 +498,16 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 			switch (codigoPro.length()) {
 			case 1:
-				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OTI" + "000" + codigoPro + "-" + anio);
+				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OT" + "000" + codigoPro + "-" + anio);
 				break;
 			case 2:
-				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OTI" + "00" + codigoPro + "-" + anio);
+				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OT" + "00" + codigoPro + "-" + anio);
 				break;
 			case 3:
-				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OTI" + "0" + codigoPro + "-" + anio);
+				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OT" + "0" + codigoPro + "-" + anio);
 				break;
 			case 4:
-				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OTI" + codigoPro + "-" + anio);
+				nuevoOrdenTrabajo.setIdOrden(uni.getCodigoU() + "-OT" + codigoPro + "-" + anio);
 				break;
 
 			default:
@@ -499,11 +523,11 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 	public void cargarDetalleOT(String id) {
 		try {
-			llenarPersonalTemp(listaDetalleOrdenTemp);
 			System.out.println("Entra a la cargar de lista de detalleOt: " + id);
 			listaDetalleOrdenTemp.clear();
 			System.out.println("Lista de detallesPro id: " + id);
 			listaDetalleOrdenTemp = ordenTrabajoI.listarDetalleOrdenById(id);
+			llenarPersonalTemp(listaDetalleOrdenTemp);
 
 			System.out.println("Lista de detallePro: " + listaDetalleOrdenTemp.size());
 			System.out.println("Lista de personal: " + tempPersonalLabs.size());
@@ -511,6 +535,20 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			e.printStackTrace();
 		}
 
+	}
+
+	public int listarNumeroM(String idMuestra) {
+		int i = 1;
+		for (Detalleorden detalleorden : listaDetalleOrdenTemp) {
+			if (detalleorden.getMuestra().getIdMuestra().equals(idMuestra)) {
+				break;
+			} else {
+				i++;
+			}
+
+		}
+
+		return i;
 	}
 
 	public void llenarPersonalTemp(List<Detalleorden> detalleordens) {
@@ -576,8 +614,6 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	public void agregarDetalleOT() {
 		RequestContext context = RequestContext.getCurrentInstance();
 
-		Muestra muestra = ordenTrabajoI.muestraDefault();
-		nuevoDetalleOrden.setMuestra(muestra);
 		listaDetalleOrden.add(nuevoDetalleOrden);
 
 		if (getTempId() == 1) {
@@ -772,7 +808,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		try {
 
 			System.out.println("Esta entrando a la funcion");
-			servicios = ordenTrabajoI.listarServiciosByLabType(su.UNIDAD_USUARIO_LOGEADO, 5);
+			servicios = ordenTrabajoI.listarServiciosByPro(getFactura().getIdProforma());
 			filtroServicios = servicios;
 
 		} catch (Exception e) {
@@ -796,6 +832,26 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 	}
 
+	public void cargarMuestras(int idM) {
+		try {
+			setTempIdM(idM);
+			muestras = ordenTrabajoI.listarMuestraByFactura(nuevoOrdenTrabajo.getIdFactura());
+			filtroMuestras = muestras;
+			System.out.println("Estos son las muestras que trae: " + muestras.size());
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error.");
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void cambiarFecha() {
+		// TODO Auto-generated method stub
+		setFechaFinal(fechaInicio);
+
+	}
+
 	public void seleccionarPersonal() {
 		RequestContext context = RequestContext.getCurrentInstance();
 		try {
@@ -810,8 +866,31 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 			}
 
-			mensajeInfo("Se ha seleccionado al cliente: " + personalLab.getNombresPe());
+			mensajeInfo("Se ha seleccionado al analista: " + personalLab.getNombresPe());
 			personalLab = new PersonalLab();
+
+		} catch (Exception e) {
+			mensajeError("Ha ocurrido un error.");
+			e.printStackTrace();
+		}
+	}
+
+	public void seleccionarMuestra() {
+		RequestContext context = RequestContext.getCurrentInstance();
+		try {
+			if (tempIdM == 0) {
+				// formDetalleOT]
+				nuevoDetalleOrden.setMuestra(muestra);
+				context.update("formDetalleOT");
+
+			} else {
+				detalleOrden.setMuestra(muestra);
+				context.update("formEditarDetalleOT");
+
+			}
+
+			mensajeInfo("Se ha seleccionado al Muestra: " + muestra.getCodigoMCliente());
+			muestra = new Muestra();
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
@@ -955,43 +1034,47 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		}
 	}
 
-	public void validarCliente() {
+	public void validarSeleccionFactura() {
 
 		RequestContext context = RequestContext.getCurrentInstance();
-		if (nuevoOrdenTrabajo.getCliente() == null) {
-			mensajeError("Debe buscar un cliente y seleccionarlo");
+		if (nuevoOrdenTrabajo.getIdFactura() == null) {
+			mensajeError("Debe de buscar una factura para generar el Orden de Trabajo");
 		} else {
+			if (nuevoOrdenTrabajo.getNumeromuestraOt() == 0) {
+				nuevoDetalleOrden.setMuestra(ordenTrabajoI.muestraDefault());
+			}
 			cargarServicios();
 			cambiarIdTempPanel(0, 0);
 			context.execute("PF('detalleOT').show();");
+			context.update("formDetalleOT");
 		}
 	}
 
 	/*** Factura *****/
 	public void buscarFacturas() {
 		try {
-//			Long idUser = su.id_usuario_log;
-//			facturas = ordenTrabajoI.listarFacturasPagadas(su.UNIDAD_USUARIO_LOGEADO, idUser.intValue());
-//			filtroFacturas = facturas;
-//
-//			System.out.println("Registros de Facturas: " + facturas.size());
-			
-			this.lazyModel = new LazyDataModel<Factura>() {
-				private static final long serialVersionUID = 1L;
+			Long idUser = su.id_usuario_log;
+			facturas = ordenTrabajoI.listarFacturasPagadas(su.UNIDAD_USUARIO_LOGEADO, idUser.intValue());
+			filtroFacturas = facturas;
 
-				@Override
-				public List<Factura> load(int first, int pageSize, String sortField, SortOrder sortOrder,
-						Map<String, Object> filters) {
-					setRowCount(ordenTrabajoI.getTotalRegistros().intValue());
-					
-					return ordenTrabajoI.listarFacturasPagadas(first, pageSize, sortField, SortOrder.ASCENDING.equals(sortOrder), 1, 1);
-//					List<Factura> facturas = ordenTrabajoI.listarFacturasPagadasFiltro(first, pageSize, sortField, filters, SortOrder.ASCENDING.equals(sortOrder), 1, 1);
-//			        setRowCount(ordenTrabajoI.countFacturas(filters));
-//			        return facturas;
-				}
-				
-				
-			};
+			System.out.println("Registros de Facturas: " + facturas.size());
+
+			// this.lazyModel = new LazyDataModel<Factura>() {
+			// private static final long serialVersionUID = 1L;
+			//
+			// @Override
+			// public List<Factura> load(int first, int pageSize, String
+			// sortField, SortOrder sortOrder,
+			// Map<String, Object> filters) {
+			// setRowCount(ordenTrabajoI.getTotalRegistros().intValue());
+			//
+			// return ordenTrabajoI.listarFacturasPagadas(first, pageSize,
+			// sortField, SortOrder.ASCENDING.equals(sortOrder), 1, 1);
+			//
+			// }
+			//
+			//
+			// };
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
@@ -1005,7 +1088,11 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 			nuevoOrdenTrabajo.setIdFactura(selectFactura.getIdFactura());
 			factura = selectFactura;
+			muestras = ordenTrabajoI.listarMuestraByFactura(factura.getIdFactura());
+			nuevoOrdenTrabajo.setNumeromuestraOt(muestras.size());
+			muestras.clear();
 			nuevoOrdenTrabajo.setCliente(ordenTrabajoI.buscarClienteById(selectFactura.getIdCliente()));
+
 			// mensajeInfo("Se ha seleccionado al cliente: " + nuev);
 			selectFactura = new Factura();
 
@@ -1059,6 +1146,19 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		return nombre;
 	}
 
+	public Factura obtenerFactura(String idFactura) {
+
+		Factura f = new Factura();
+
+		f = ordenTrabajoI.buscarFacturaById(idFactura);
+
+		if (f == null) {
+			f.setIdProforma("N/A");
+		}
+
+		return f;
+	}
+
 	public String metodo(String id) {
 		String nombre = "";
 
@@ -1070,6 +1170,22 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			nombre = "N/A";
 		} else {
 			nombre = m.getNombreMt();
+		}
+
+		return nombre;
+	}
+
+	public String estadoF(String id) {
+		String nombre = "";
+
+		EstadoFactura e = new EstadoFactura();
+
+		e = ordenTrabajoI.buscarEstadoFById(id);
+
+		if (e == null) {
+			nombre = "N/A";
+		} else {
+			nombre = e.getNombreEf();
 		}
 
 		return nombre;
@@ -1134,11 +1250,32 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 	}
 
+	public boolean disabledButtonFac() {
+		if (listaDetalleOrden.size() != 0) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	public boolean disabledButtonM() {
+
+		if (nuevoOrdenTrabajo.getNumeromuestraOt() == 0) {
+			return false;
+		} else {
+
+			return true;
+		}
+
+	}
+
 	public boolean disabledDateEdit() {
 		if (detalleOrden.getFechaInicioAnalisis() == null) {
 			return false;
 		} else {
 			return true;
+			// formDetalleOT
 		}
 
 	}
@@ -1161,6 +1298,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		}
 		System.out.println("Se ha cambiado a: " + a);
 	}
+	
 
 	/****** Getter y Setter de Estado Producto ****/
 
@@ -1490,6 +1628,46 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 	public void setLazyModel(LazyDataModel<Factura> lazyModel) {
 		this.lazyModel = lazyModel;
+	}
+
+	public List<Muestra> getMuestras() {
+		return muestras;
+	}
+
+	public void setMuestras(List<Muestra> muestras) {
+		this.muestras = muestras;
+	}
+
+	public Muestra getMuestraNA() {
+		return muestraNA;
+	}
+
+	public void setMuestraNA(Muestra muestraNA) {
+		this.muestraNA = muestraNA;
+	}
+
+	public Muestra getMuestra() {
+		return muestra;
+	}
+
+	public void setMuestra(Muestra muestra) {
+		this.muestra = muestra;
+	}
+
+	public List<Muestra> getFiltroMuestras() {
+		return filtroMuestras;
+	}
+
+	public void setFiltroMuestras(List<Muestra> filtroMuestras) {
+		this.filtroMuestras = filtroMuestras;
+	}
+
+	public int getTempIdM() {
+		return tempIdM;
+	}
+
+	public void setTempIdM(int tempIdM) {
+		this.tempIdM = tempIdM;
 	}
 
 }
