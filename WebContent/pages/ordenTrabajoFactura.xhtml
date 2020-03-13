@@ -52,6 +52,7 @@
 					<!-- Boton De Nuevo -->
 					<center>
 						<p:commandLink process="@this" icon="ui-icon-check"
+							actionListener="#{ordenFacturaController.limpiarTodosCampos}"
 							onclick="PF('nuevoOT').show()" update="@this,formAgregarOT">
 
 							<h:graphicImage value="/images/archivos/agregar.png"
@@ -352,7 +353,8 @@
 											style="border:none;text-align: center; width: 180px;"
 											value="Buscar Facturas" process="@this"
 											actionListener="#{ordenFacturaController.buscarFacturas}"
-											onsuccess="PF('listadoF').show()">
+											onsuccess="PF('listadoF').show()"
+											disabled="#{ordenFacturaController.disabledButtonFac() != true}">
 										</p:commandButton>
 
 										<br /> <br />
@@ -370,67 +372,70 @@
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-											<p:panelGrid columns="4" layout="grid"
-												styleClass="ui-noborder" style="border:none;">
+											<p:panelGrid columns="4" styleClass="ui-noborder"
+												layout="grid" style="border:none;text-align: left">
 
-												<p:outputLabel for="proforma" value="Proforma: "
+												<h:outputText for="proforma" value="Proforma: "
 													style="font-weight:bold" />
-												<p:outputLabel id="proforma"
+												<h:outputText id="proforma"
 													value="#{ordenFacturaController.factura.idProforma}" />
 
-												<p:outputLabel for="factura" value="Factura: "
+												<h:outputText for="factura" value="Factura: "
 													style="font-weight:bold" />
-												<p:outputLabel id="factura"
+												<h:outputText id="factura"
 													value="#{ordenFacturaController.factura.idFactura}" />
 
 											</p:panelGrid>
 
 
 											<p:panelGrid columns="4" layout="grid"
-												styleClass="ui-noborder" style="border:none;">
+												styleClass="ui-noborder"
+												style="border:none;text-align: left">
 
-												<p:outputLabel for="cliente" value="Cliente: "
+												<h:outputText for="cliente" value="Cliente: "
 													style="font-weight:bold" />
-												<p:outputLabel id="cliente"
+												<h:outputText id="cliente"
 													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
 
-												<p:outputLabel for="descCliente" value="Descr. C: "
+												<h:outputText for="descCliente" value="Descr. C: "
 													style="font-weight:bold" />
-												<p:outputLabel id="descCliente"
+												<h:outputText id="descCliente"
 													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
 
 											</p:panelGrid>
 
-											<p:panelGrid columns="4" layout="grid" style="border:none;">
+											<p:panelGrid columns="4" layout="grid"
+												style="border:none;text-align: left">
 
-												<p:outputLabel for="direccion" value="Dirección: "
+												<h:outputText for="direccion" value="Dirección: "
 													style="font-weight:bold" />
-												<p:outputLabel id="direccion"
+												<h:outputText id="direccion"
 													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
 
 											</p:panelGrid>
 
 											<p:panelGrid columns="4" layout="grid"
-												styleClass="ui-noborder" style="border:none;">
+												styleClass="ui-noborder"
+												style="border:none;text-align: left">
 
-												<p:outputLabel for="telefono" value="Telefono: "
+												<h:outputText for="telefono" value="Telefono: "
 													style="font-weight:bold" />
-												<p:outputLabel id="telefono"
+												<h:outputText id="telefono"
 													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
 
-												<p:outputLabel for="fax" value="Fax: "
+												<h:outputText for="fax" value="Fax: "
 													style="font-weight:bold" />
-												<p:outputLabel id="fax"
+												<h:outputText id="fax"
 													value="#{ordenFacturaController.nuevoOrdenTrabajo.cliente.faxCl}" />
 
-												<p:outputLabel for="fecha" value="Fecha: "
+												<h:outputText for="fecha" value="Fecha: "
 													style="font-weight:bold" />
-												<p:outputLabel id="fecha"
+												<h:outputText id="fecha"
 													value="#{ordenFacturaController.cambioFecha(ordenFacturaController.nuevoOrdenTrabajo.fechaordenOt)}" />
 
-												<p:outputLabel for="muestras" value="Nro. Muestras: "
+												<h:outputText for="muestras" value="Nro. Muestras: "
 													style="font-weight:bold" />
-												<p:outputLabel id="muestras"
+												<h:outputText id="muestras"
 													value="#{ordenFacturaController.nuevoOrdenTrabajo.numeromuestraOt}" />
 
 
@@ -455,7 +460,7 @@
 									title="Agregar Detalle Orden Trabajo"
 									style="width: 125px; border-radius: 3px 3px 3px 3px;"
 									process="@this"
-									actionListener="#{ordenFacturaController.validarCliente}"
+									actionListener="#{ordenFacturaController.validarSeleccionFactura}"
 									update="@this,@([id$=messagesForm])">
 
 								</p:commandButton>
@@ -592,15 +597,21 @@
 
 								<br /> <br />
 
-								<h:panelGrid columns="2">
+								<h:panelGrid columns="3">
 
 									<p:commandButton style="width: 150px; margin: 10px"
-										value="Confirmar" icon="fa fa-save"
+										value="Guardar" icon="fa fa-save"
 										process="@this,formAgregarOT"
 										disabled="#{ordenFacturaController.disabledButton() != true}"
-										update="formConfirmarNuevoOT"
-										onsuccess="PF('cdConfirmarOT').show();">
+										actionListener="#{ordenFacturaController.guardarOT}"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT">
 
+									</p:commandButton>
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon="fa fa-bitbucket" value="Limpiar"
+										actionListener="#{ordenFacturaController.limpiarFormularios()}"
+										update="@this,@([id$=messagesForm]),formAgregarOT">
 									</p:commandButton>
 
 									<p:commandButton style="width: 150px; margin: 10px"
@@ -744,6 +755,8 @@
 
 									</p:fieldset>
 
+									<br />
+
 									<p:fieldset
 										style="border-radius: 10px 10px 10px 10px;
 										-moz-border-radius: 10px 10px 10px 10px;
@@ -756,15 +769,7 @@
 
 										<div class="ui-fluid">
 
-											<center>
-												<p:commandButton icon="fa fa-search-plus"
-													style="border:none;text-align: left; width: 150px;"
-													value="Buscar Personal" process="@this"
-													actionListener="#{ordenFacturaController.cargarPersonal(0)}"
-													onsuccess="PF('listadoPer').show()"
-													disabled="#{ordenFacturaController.disabledButtonPer() != true}">
-												</p:commandButton>
-											</center>
+
 											<br />
 											<center>
 												<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
@@ -774,9 +779,24 @@
 
 													<p:outputLabel for="personal" value="Personal: "
 														style="color:white!important" />
-													<p:outputLabel id="personal"
-														value="#{ordenFacturaController.nuevoDetalleOrden.personal.nombresPe}"
-														size="30" maxlength="100" />
+													<p:commandLink process="@this"
+														actionListener="#{ordenFacturaController.cargarPersonal(0)}"
+														onsuccess="PF('listadoPer').show()"
+														disabled="#{ordenFacturaController.disabledButtonPer() != true}">
+														<center>
+															<h:graphicImage value="/images/archivos/busqueda.png"
+																class="btn bt-success" title="Buscar"
+																style="border:0px solid #CAD6E0;" width="20" height="20" />
+
+
+															<p>
+																Seleccionar Personal: ( <strong> <h:outputText
+																		id="personal"
+																		value="#{ordenFacturaController.nuevoDetalleOrden.personal.nombresPe}"
+																		size="30" maxlength="100" /></strong> )
+															</p>
+														</center>
+													</p:commandLink>
 
 													<p:outputLabel value="Horas/Trabajo: " for="ht"
 														style="color:white!important" />
@@ -797,8 +817,10 @@
 														requiredMessage="Fecha Inicial Requerida" navigator="true"
 														effect="fadeIn" effectDuration="100" showOn="button"
 														size="24">
-														<p:ajax event="dateSelect" update="fechaFinal" />
-														<p:ajax event="keyup" update="fechaFinal" />
+														<p:ajax event="dateSelect" update="fechaFinal" listener="#{ordenFacturaController.cambiarFecha()}" async="false">
+														</p:ajax>
+														<p:ajax event="dateSelect" update="fechaFinal" async="false"/>
+														
 													</p:calendar>
 
 													<h:outputLabel value="Fecha fin: "
@@ -814,6 +836,28 @@
 														size="24">
 
 													</p:calendar>
+
+													<p:outputLabel value="Muestra: "
+														style="color:white!important" />
+													<p:commandLink process="@this"
+														actionListener="#{ordenFacturaController.cargarMuestras(0)}"
+														onsuccess="PF('listadoM').show()"
+														disabled="#{ordenFacturaController.disabledButtonM() != true}">
+														<center>
+															<h:graphicImage value="/images/archivos/busqueda.png"
+																class="btn bt-success" title="Buscar"
+																style="border:0px solid #CAD6E0;" width="20" height="20" />
+
+															<p>
+																Seleccionar Muestra: ( <strong> <h:outputText
+																		id="muestra"
+																		value="#{ordenFacturaController.nuevoDetalleOrden.muestra.idMuestra}"
+																		size="30" maxlength="100" /></strong> )
+															</p>
+														</center>
+													</p:commandLink>
+
+
 												</p:panelGrid>
 											</center>
 											<br />
@@ -822,6 +866,9 @@
 
 
 									</p:fieldset>
+
+									<br />
+
 
 								</div>
 							</div>
@@ -840,7 +887,8 @@
 									style="width: 115px; margin: 10px"
 									actionListener="#{ordenFacturaController.agregarDetalleOT}"
 									process="@this,formDetalleOT"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formDetalleOT">
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formDetalleOT"
+									onsuccess="PF('filterServiciosTable').filter();">
 								</p:commandButton>
 
 								<p:commandButton value="Atrás "
@@ -923,8 +971,6 @@
 								<br /> <br />
 							</center>
 
-
-
 							<p:fieldset
 								style="border-radius: 10px 10px 10px 10px;
 											-moz-border-radius: 10px 10px 10px 10px;
@@ -937,76 +983,82 @@
 
 								<center>
 
-									<p:panelGrid columns="4" layout="grid" style="border:none;">
+									<p:panelGrid columns="4" layout="grid"
+										style="border:none; text-align: left">
 
-										<p:outputLabel for="id" value="Orden: "
+										<h:outputText for="id" value="Orden: "
 											style="font-weight:bold" />
-										<p:outputLabel id="id"
+										<h:outputText id="id"
 											value="#{ordenFacturaController.ordenTrabajo.idOrden}" />
 
-										<p:outputLabel for="fecha" value="Fecha cierre: "
+										<h:outputText for="proforma" value="Proforma: "
 											style="font-weight:bold" />
-										<p:outputLabel id="fecha"
-											value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaCierre)}" />
+										<h:outputText id="proforma"
+											value="#{ordenFacturaController.obtenerFactura(ordenFacturaController.ordenTrabajo.idFactura).idProforma}" />
 
 									</p:panelGrid>
 
 									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
-										style="border:none;">
+										style="border:none;text-align: left">
 
-										<p:outputLabel for="cliente" value="Cliente: "
+										<h:outputText for="cliente" value="Cliente: "
 											style="font-weight:bold" />
-										<p:outputLabel id="cliente"
+										<h:outputText id="cliente"
 											value="#{ordenFacturaController.ordenTrabajo.cliente.nombreCl}" />
 
-										<p:outputLabel for="contacto" value="Contacto: "
+										<h:outputText for="contacto" value="Representante: "
 											style="font-weight:bold" />
-										<p:outputLabel id="contacto"
+										<h:outputText id="contacto"
 											value="#{ordenFacturaController.ordenTrabajo.cliente.contactoCl}" />
 
 									</p:panelGrid>
 
-									<p:panelGrid columns="4" layout="grid" style="border:none;">
+									<p:panelGrid columns="4" layout="grid"
+										style="border:none; text-align: left">
 
-										<p:outputLabel for="direccion" value="Dirección: "
+										<h:outputText for="direccion" value="Dirección: "
 											style="font-weight:bold" />
-										<p:outputLabel id="direccion"
+										<h:outputText id="direccion"
 											value="#{ordenFacturaController.ordenTrabajo.cliente.direccionCl}" />
 
 									</p:panelGrid>
 
 									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
-										style="border:none;">
+										style="border:none; text-align: left">
 
-										<p:outputLabel for="telefono" value="Telefono: "
+										<h:outputText for="telefono" value="Telefono: "
 											style="font-weight:bold" />
-										<p:outputLabel id="telefono"
+										<h:outputText id="telefono"
 											value="#{ordenFacturaController.ordenTrabajo.cliente.telefonoCl}" />
 
-										<p:outputLabel for="fax" value="Fax: "
-											style="font-weight:bold" />
-										<p:outputLabel id="fax"
+										<h:outputText for="fax" value="Fax: " style="font-weight:bold" />
+										<h:outputText id="fax"
 											value="#{ordenFacturaController.ordenTrabajo.cliente.faxCl}" />
-
-										<p:outputLabel for="descCliente" value="Descr. C: "
-											style="font-weight:bold" />
-										<p:outputLabel id="descCliente"
-											value="#{ordenFacturaController.ordenTrabajo.responsableOt}" />
 
 									</p:panelGrid>
 
 									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
-										style="border:none;">
+										style="border:none; text-align: left">
 
-										<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+										<h:outputText for="fechaRec" value="Fecha de recepción: "
 											style="font-weight:bold" />
-										<p:outputLabel id="fechaRec"
+										<h:outputText id="fechaRec"
 											value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaordenOt)}" />
 
-										<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+										<h:outputText for="fechaEntrega" value="Fecha de Entrega: "
 											style="font-weight:bold" />
-										<p:outputLabel id="fechaEntrega"
+										<h:outputText id="fechaEntrega"
 											value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaentregaOt)}" />
+
+										<h:outputText for="nMuestras" value="Nro. Muestras: "
+											style="font-weight:bold" />
+										<h:outputText id="nMuestras"
+											value="#{ordenFacturaController.ordenTrabajo.numeromuestraOt}" />
+
+										<h:outputText for="fechaCierre" value="Fecha de Cierre: "
+											style="font-weight:bold" />
+										<h:outputText id="fechaCierre"
+											value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaCierre)}" />
 
 									</p:panelGrid>
 								</center>
@@ -1026,11 +1078,26 @@
 								legend="Detalle Orden">
 
 
-								<p:dataTable id="tblVerDetalleOT"
+								<p:dataTable id="tblVerDetalleOT" scrollable="true"
+									scrollHeight="200"
 									value="#{ordenFacturaController.listaDetalleOrdenTemp}"
-									var="detalleOT" sortBy="#{detalleOT.idServicio}"
+									var="detalleOT" sortBy="#{detalleOT.muestra.idMuestra}"
 									emptyMessage="No se han registrado detalles de proforma.">
 
+									<p:column headerText="Nro" style="width: 4%">
+										<center>
+											<h:outputText
+												value="#{ordenFacturaController.listarNumeroM(detalleOT.muestra.idMuestra)}" />
+										</center>
+									</p:column>
+
+									<p:column headerText="ID Muestra" style="width: 10%">
+										<h:outputText value="#{detalleOT.muestra.idMuestra}" />
+									</p:column>
+
+									<p:column headerText="Muestra">
+										<h:outputText value="#{detalleOT.muestra.codigoMCliente}" />
+									</p:column>
 
 									<p:column headerText="Servicio">
 										<h:outputText
@@ -1042,7 +1109,7 @@
 											value="#{ordenFacturaController.metodo(detalleOT.idMetodo)}" />
 									</p:column>
 
-									<p:column headerText="Unidad/Laboratorio">
+									<p:column headerText="Laboratorio">
 										<h:outputText
 											value="#{ordenFacturaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
 									</p:column>
@@ -1051,16 +1118,18 @@
 										<h:outputText value="#{detalleOT.personal.nombresPe}" />
 									</p:column>
 
-									<p:column headerText="h/T">
-										<h:outputText value="#{detalleOT.horasTrabajo}" />
+									<p:column headerText="h/T" style="width: 4%">
+										<center>
+											<h:outputText value="#{detalleOT.horasTrabajo}" />
+										</center>
 									</p:column>
 
-									<p:column headerText="F. Inicio">
+									<p:column headerText="F. Inicio" style="width: 9%">
 										<h:outputText
 											value="#{ordenFacturaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
 									</p:column>
 
-									<p:column headerText="F. Fin">
+									<p:column headerText="F. Fin" style="width: 9%">
 										<h:outputText
 											value="#{ordenFacturaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
 									</p:column>
@@ -1148,17 +1217,11 @@
 
 								<br /> <br />
 
-								<h:panelGrid columns="3">
+								<h:panelGrid columns="2">
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Imprimir OT" icon="fa fa-save" process="@this"
 										action="#{ordenFacturaController.abrirOT()}">
-
-									</p:commandButton>
-
-									<p:commandButton style="width: 180px; margin: 10px"
-										value="Imprimir Formato Descarga" icon="fa fa-save"
-										process="@this" action="#{ordenFacturaController.abrirOT()}">
 
 									</p:commandButton>
 
@@ -1209,76 +1272,85 @@
 
 								<div class="ui-fluid">
 									<center>
-										<p:panelGrid columns="4" layout="grid" style="border:none;">
+										<p:panelGrid columns="4" layout="grid"
+											style="border:none; text-align: left">
 
-											<p:outputLabel for="id" value="Orden: "
+											<h:outputText for="id" value="Orden: "
 												style="font-weight:bold" />
-											<p:outputLabel id="id"
+											<h:outputText id="id"
 												value="#{ordenFacturaController.ordenTrabajo.idOrden}" />
 
-											<p:outputLabel for="fecha" value="Fecha cierre: "
+											<h:outputText for="proforma" value="Proforma: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fecha"
-												value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaCierre)}" />
+											<h:outputText id="proforma"
+												value="#{ordenFacturaController.obtenerFactura(ordenFacturaController.ordenTrabajo.idFactura).idProforma}" />
 
 										</p:panelGrid>
 
 										<p:panelGrid columns="4" layout="grid"
-											styleClass="ui-noborder" style="border:none;">
+											styleClass="ui-noborder" style="border:none;text-align: left">
 
-											<p:outputLabel for="cliente" value="Cliente: "
+											<h:outputText for="cliente" value="Cliente: "
 												style="font-weight:bold" />
-											<p:outputLabel id="cliente"
+											<h:outputText id="cliente"
 												value="#{ordenFacturaController.ordenTrabajo.cliente.nombreCl}" />
 
-											<p:outputLabel for="contacto" value="Contacto: "
+											<h:outputText for="contacto" value="Representante: "
 												style="font-weight:bold" />
-											<p:outputLabel id="contacto"
+											<h:outputText id="contacto"
 												value="#{ordenFacturaController.ordenTrabajo.cliente.contactoCl}" />
 
 										</p:panelGrid>
 
-										<p:panelGrid columns="4" layout="grid" style="border:none;">
+										<p:panelGrid columns="4" layout="grid"
+											style="border:none; text-align: left">
 
-											<p:outputLabel for="direccion" value="Dirección: "
+											<h:outputText for="direccion" value="Dirección: "
 												style="font-weight:bold" />
-											<p:outputLabel id="direccion"
+											<h:outputText id="direccion"
 												value="#{ordenFacturaController.ordenTrabajo.cliente.direccionCl}" />
 
 										</p:panelGrid>
 
 										<p:panelGrid columns="4" layout="grid"
-											styleClass="ui-noborder" style="border:none;">
+											styleClass="ui-noborder"
+											style="border:none; text-align: left">
 
-											<p:outputLabel for="telefono" value="Telefono: "
+											<h:outputText for="telefono" value="Telefono: "
 												style="font-weight:bold" />
-											<p:outputLabel id="telefono"
+											<h:outputText id="telefono"
 												value="#{ordenFacturaController.ordenTrabajo.cliente.telefonoCl}" />
 
-											<p:outputLabel for="fax" value="Fax: "
+											<h:outputText for="fax" value="Fax: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fax"
+											<h:outputText id="fax"
 												value="#{ordenFacturaController.ordenTrabajo.cliente.faxCl}" />
-
-											<p:outputLabel for="descCliente" value="Descr. C: "
-												style="font-weight:bold" />
-											<p:inputTextarea id="descCliente" autoResize="false"
-												value="#{ordenFacturaController.ordenTrabajo.responsableOt}" />
 
 										</p:panelGrid>
 
 										<p:panelGrid columns="4" layout="grid"
-											styleClass="ui-noborder" style="border:none;">
+											styleClass="ui-noborder"
+											style="border:none; text-align: left">
 
-											<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+											<h:outputText for="fechaRec" value="Fecha de recepción: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fechaRec"
+											<h:outputText id="fechaRec"
 												value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaordenOt)}" />
 
-											<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+											<h:outputText for="fechaEntrega" value="Fecha de Entrega: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fechaEntrega"
+											<h:outputText id="fechaEntrega"
 												value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaentregaOt)}" />
+
+											<h:outputText for="nMuestras" value="Nro. Muestras: "
+												style="font-weight:bold" />
+											<h:outputText id="nMuestras"
+												value="#{ordenFacturaController.ordenTrabajo.numeromuestraOt}" />
+
+											<h:outputText for="fechaCierre" value="Fecha de Cierre: "
+												style="font-weight:bold" />
+											<h:outputText id="fechaCierre"
+												value="#{ordenFacturaController.cambioFecha(ordenFacturaController.ordenTrabajo.fechaCierre)}" />
 
 										</p:panelGrid>
 
@@ -1287,21 +1359,6 @@
 
 							</p:fieldset>
 
-
-
-							<!-- Agregar -->
-
-							<br />
-							<center>
-								<p:commandButton value="Agregar" icon="fa fa-plus"
-									title="Agregar Nuevo Detalle Proforma"
-									actionListener="#{ordenFacturaController.cambiarIdTempPanel(1,1)}"
-									style="width: 125px; border-radius: 3px 3px 3px 3px;"
-									onsuccess="PF('detalleOT').show();" process="@this"
-									update="@this,@([id$=messagesForm])">
-
-								</p:commandButton>
-							</center>
 							<br />
 							<center>
 								<p:fieldset
@@ -1364,25 +1421,6 @@
 
 														<h:graphicImage value="/images/archivos/editar.png"
 															title="Modificar" style="border:0px solid #CAD6E0;"
-															width="35" height="35" />
-
-
-														<f:setPropertyActionListener
-															target="#{ordenFacturaController.detalleOrden}"
-															value="#{detalleOT}">
-														</f:setPropertyActionListener>
-
-													</p:commandLink>
-
-													<!-- **************************  Boton Eliminar   *************************** -->
-
-
-													<p:commandLink process="@this" icon="ui-icon-check"
-														action="#{ordenFacturaController.cambiarIdTempPanel(1,2)}"
-														onclick="PF('cdEliminarDetalleOT').show();">
-
-														<h:graphicImage value="/images/archivos/basurero.png"
-															title="Eliminar" style="border:0px solid #CAD6E0;"
 															width="35" height="35" />
 
 
@@ -1486,24 +1524,7 @@
 												value="#{ordenFacturaController.metodo(ordenFacturaController.detalleOrden.idMetodo)}"
 												size="30" maxlength="100" />
 
-											<p:outputLabel for="muestra" value="Muestra: "
-												style="color:white!important" />
-											<p:outputLabel id="muestra"
-												value="#{ordenFacturaController.detalleOrden.muestra.idMuestra}"
-												size="30" maxlength="100" />
-
-
 										</p:panelGrid>
-										<br />
-
-										<center>
-											<p:commandButton icon="fa fa-search-plus"
-												style="border:none;text-align: left; width: 150px;"
-												value="Buscar Personal" process="@this"
-												actionListener="#{ordenFacturaController.cargarPersonal(1)}"
-												onsuccess="PF('listadoPer').show()">
-											</p:commandButton>
-										</center>
 										<br />
 
 										<center>
@@ -1512,11 +1533,25 @@
 												style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
 												layout="grid">
 
-												<p:outputLabel for="resonsable" value="Responsable: "
+												<p:outputLabel value="Responsable: "
 													style="color:white!important" />
-												<p:outputLabel id="resonsable"
-													value="#{ordenFacturaController.detalleOrden.personal.nombresPe}"
-													size="30" maxlength="100" />
+												<p:commandLink process="@this"
+													actionListener="#{ordenFacturaController.cargarPersonal(1)}"
+													onsuccess="PF('listadoPer').show()">
+													<center>
+														<h:graphicImage value="/images/archivos/busqueda.png"
+															class="btn bt-success" title="Buscar"
+															style="border:0px solid #CAD6E0;" width="20" height="20" />
+
+
+														<p>
+															Seleccionar Personal: ( <strong> <h:outputText
+																	id="personal"
+																	value="#{ordenFacturaController.detalleOrden.personal.nombresPe}"
+																	size="30" maxlength="100" /></strong> )
+														</p>
+													</center>
+												</p:commandLink>
 
 												<p:outputLabel value="Horas/Trabajo: " for="ht"
 													style="color:white!important" />
@@ -1554,6 +1589,26 @@
 													size="24">
 
 												</p:calendar>
+
+												<p:outputLabel value="Muestra: "
+													style="color:white!important" />
+												<p:commandLink process="@this"
+													actionListener="#{ordenFacturaController.cargarMuestras(1)}"
+													onsuccess="PF('listadoM').show()">
+													<center>
+														<h:graphicImage value="/images/archivos/busqueda.png"
+															class="btn bt-success" title="Buscar"
+															style="border:0px solid #CAD6E0;" width="20" height="20" />
+
+														<p>
+															Seleccionar Muestra: ( <strong> <h:outputText
+																	id="muestra"
+																	value="#{ordenFacturaController.detalleOrden.muestra.idMuestra}"
+																	size="30" maxlength="100" /></strong> )
+														</p>
+													</center>
+												</p:commandLink>
+
 											</p:panelGrid>
 										</center>
 										<br />
@@ -1719,8 +1774,7 @@
 							<div class="ui-fluid" align="center">
 
 								<p:dataTable id="tblFacturas"
-									value="#{ordenFacturaController.lazyModel}" var="factura"
-									lazy="true"
+									value="#{ordenFacturaController.facturas}" var="factura"
 									emptyMessage="No se pudo encontrar ninguna coincidencia"
 									rows="7" paginator="true"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -1746,7 +1800,8 @@
 									<p:column headerText="Estado"
 										filterBy="#{factura.idEstadoFactura}"
 										filterMatchMode="contains">
-										<h:outputText value="#{factura.idEstadoFactura}" />
+										<h:outputText
+											value="#{ordenFacturaController.estadoF(factura.idEstadoFactura)}" />
 									</p:column>
 
 								</p:dataTable>
@@ -1777,7 +1832,7 @@
 			<p:dialog id="panelListadoPer" resizable="true"
 				widgetVar="listadoPer" modal="true" showEffect="explode"
 				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
-				height="73vh" header="Listado de Servicios">
+				height="73vh" header="Listado de Personal">
 
 
 				<h:form id="formListadoPer">
@@ -1846,6 +1901,95 @@
 										action="#{ordenFacturaController.seleccionarPersonal}"
 										update="@([id$=messagesForm])"
 										onsuccess="PF('listadoPer').hide()">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</center>
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Listado Muestra ************************** -->
+			<p:dialog id="panelListadoM" resizable="true" widgetVar="listadoM"
+				modal="true" showEffect="explode" hideEffect="fade"
+				responsive="true" dynamic="true" width="150vh" height="73vh"
+				header="Listado de Muestras">
+
+
+				<h:form id="formListadoM">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+							-moz-border-radius: 10px 10px 10px 10px;
+							-webkit-border-radius: 10px 10px 10px 10px;
+							border: 0px solid #000000;
+							border-style: double;
+							border-width: 1px;
+							border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+						<br />
+						<br />
+						<center>
+
+							<p:commandButton process="@this" icon="fa fa-refresh"
+								value="Cargar Muestras" update="@this, tblMuestra"
+								oncomplete="PF('filterMuestraTable').filter();">
+							</p:commandButton>
+
+							<br /> <br />
+
+							<div class="ui-fluid" align="center">
+
+								<p:dataTable id="tblMuestra"
+									value="#{ordenFacturaController.muestras}" var="muestra"
+									widgetVar="filterMuestraTable"
+									emptyMessage="No se pudo encontrar ninguna coincidencia"
+									filteredValue="#{ordenFacturaController.filtroMuestras}"
+									rows="8" paginator="true"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+									rowKey="#{muestra.idMuestra}"
+									selection="#{ordenFacturaController.muestra}"
+									selectionMode="single">
+
+									<p:column headerText="ID Muestra"
+										filterBy="#{muestra.idMuestra}" filterMatchMode="contains">
+										<h:outputText value="#{muestra.idMuestra}" />
+									</p:column>
+
+									<p:column headerText="ID Factura"
+										filterBy="#{muestra.idFactura}" filterMatchMode="contains">
+										<h:outputText value="#{muestra.idFactura}" />
+									</p:column>
+
+									<p:column headerText="Muestra"
+										filterBy="#{muestra.codigoMCliente}"
+										filterMatchMode="contains">
+										<h:outputText value="#{muestra.codigoMCliente}" />
+									</p:column>
+
+									<p:column headerText="Descripción Muestra"
+										filterBy="#{muestra.descrM}" filterMatchMode="contains">
+										<h:outputText value="#{muestra.descrM}" />
+									</p:column>
+
+								</p:dataTable>
+							</div>
+							<br /> <br />
+
+							<center>
+
+								<h:panelGrid columns="1">
+
+									<p:commandButton icon="fa fa-save" value="Seleccionar"
+										process="@this,tblMuestra"
+										action="#{ordenFacturaController.seleccionarMuestra()}"
+										update="@([id$=messagesForm])"
+										onsuccess="PF('listadoM').hide()">
 
 									</p:commandButton>
 
@@ -2109,7 +2253,7 @@
 						<p:commandButton value="Aceptar"
 							onsuccess="PF('cdConfirmarOT').hide();"
 							actionListener="#{ordenFacturaController.guardarOT}"
-							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT,formDetalleOT" />
+							update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT" />
 
 
 						<p:commandButton value="Cancelar"
@@ -2137,6 +2281,12 @@
 			console.log('TIMBREMOS :v');
 
 				}
+
+			window.onbeforeunload = function(event) {
+				rc();
+			    event.returnValue = "";
+			};
+			
 
 			PrimeFaces.locales['es'] = {
 		            closeText: 'Cerrar',
@@ -2173,6 +2323,10 @@
 	max-width: 1500px !important;
 	max-height: 500px !important;
 	margin-bottom: 5px !important;
+}
+
+.ui-datatable-scrollable-theadclone {
+	visibility: collapse;
 }
 </style>
 

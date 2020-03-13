@@ -238,7 +238,7 @@ public class OrdenInternaController implements Serializable {
 			/** Detalle Orden Trabajo **/
 			limpiarDetalleOT();
 			listaDetalleOrden.clear();
-			listaOrdenTrabajo = new ArrayList<OrdenTrabajo>();
+			//listaOrdenTrabajo = new ArrayList<OrdenTrabajo>();
 
 			setTempIdServ(0);
 			setTempIdPer(0);
@@ -268,6 +268,11 @@ public class OrdenInternaController implements Serializable {
 
 	}
 
+	public void limpiarFormularios() {
+		limpiarTodosCampos();
+		mensajeInfo("Se han limpiado todos los campos");
+	}
+
 	/****** Metodos de Orden Trabajo ****/
 
 	public void guardarOT() {
@@ -281,6 +286,9 @@ public class OrdenInternaController implements Serializable {
 			/** GUARDAR EN DB **/
 			ordenTrabajoI.save(nuevoOrdenTrabajo);
 			guardarDetalleOT(listaDetalleOrden);
+			
+			/** agregar a la vista **/
+			listaOrdenTrabajo.add(nuevoOrdenTrabajo);
 
 			mensajeInfo("Se ha guardado el nuevo orden de trabajo con el id (" + nuevoOrdenTrabajo.getIdOrden() + ")");
 
@@ -479,11 +487,12 @@ public class OrdenInternaController implements Serializable {
 
 	public void cargarDetalleOT(String id) {
 		try {
-			llenarPersonalTemp(listaDetalleOrdenTemp);
+
 			System.out.println("Entra a la cargar de lista de detalleOt: " + id);
 			listaDetalleOrdenTemp.clear();
 			System.out.println("Lista de detallesPro id: " + id);
 			listaDetalleOrdenTemp = ordenTrabajoI.listarDetalleOrdenById(id);
+			llenarPersonalTemp(listaDetalleOrdenTemp);
 
 			System.out.println("Lista de detallePro: " + listaDetalleOrdenTemp.size());
 			System.out.println("Lista de personal: " + tempPersonalLabs.size());

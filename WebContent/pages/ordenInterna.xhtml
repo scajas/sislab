@@ -309,57 +309,12 @@
 						border-style: double;
 						border-width: 1px;
 						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-							<center>
-								<div class="ui-g">
-									<div class="ui-g-4"></div>
 
-									<div class="ui-g-4">
-										<table>
-											<tr>
-												<td class="EncabezadoTitulo" align="center" colspan="2">
-													<p:outputLabel value="ESCUELA POLITÉCNICA NACIONAL"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 15px; " />
-												</td>
-											</tr>
-
-											<tr>
-												<td class="EncabezadoTitulo2" align="center" colspan="2">
-													<p:outputLabel
-														value="Campús Politécnico J. Rubén Orellana R."
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-											<tr>
-												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel
-														value="Ladrón de Guevara E11-253 y Andalucia"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-											<tr>
-												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel value="Telf.: 2976 300"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-											<tr>
-												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel value="P.O. Box: 17-01-2759 / QUITO-ECUADOR"
-														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
-												</td>
-											</tr>
-
-										</table>
-									</div>
-									<div class="ui-g-4"></div>
-								</div>
-								<br /> <br />
-							</center>
 
 							<!-- Buscar Cliente -->
 
 							<p:accordionPanel>
-								<p:tab title="⠀⠀⠀">
+								<p:tab title="Encabezado Orden Trabajo Interna">
 									<center>
 										<p:fieldset legend="Buscar Cliente"
 											style="border-radius: 10px 10px 10px 10px;
@@ -423,50 +378,50 @@
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
 											<p:panelGrid columns="4" layout="grid"
-												styleClass="ui-noborder" style="border:none;">
+												styleClass="ui-noborder" style="border:none;text-align: left">
 
-												<p:outputLabel for="cliente" value="Cliente: "
+												<h:outputText for="cliente" value="Cliente: "
 													style="font-weight:bold" />
-												<p:outputLabel id="cliente"
+												<h:outputText id="cliente"
 													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.nombreCl}" />
 
-												<p:outputLabel for="contacto" value="Contacto: "
+												<h:outputText for="contacto" value="Contacto: "
 													style="font-weight:bold" />
-												<p:outputLabel id="contacto"
+												<h:outputText id="contacto"
 													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.contactoCl}" />
 
 											</p:panelGrid>
 
-											<p:panelGrid columns="4" layout="grid" style="border:none;">
+											<p:panelGrid columns="4" layout="grid" style="border:none;text-align: left">
 
-												<p:outputLabel for="direccion" value="Dirección: "
+												<h:outputText for="direccion" value="Dirección: "
 													style="font-weight:bold" />
-												<p:outputLabel id="direccion"
+												<h:outputText id="direccion"
 													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.direccionCl}" />
 
 											</p:panelGrid>
 
 											<p:panelGrid columns="4" layout="grid"
-												styleClass="ui-noborder" style="border:none;">
+												styleClass="ui-noborder" style="border:none;text-align: left">
 
-												<p:outputLabel for="telefono" value="Telefono: "
+												<h:outputText for="telefono" value="Telefono: "
 													style="font-weight:bold" />
-												<p:outputLabel id="telefono"
+												<h:outputText id="telefono"
 													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.telefonoCl}" />
 
-												<p:outputLabel for="fax" value="Fax: "
+												<h:outputText for="fax" value="Fax: "
 													style="font-weight:bold" />
-												<p:outputLabel id="fax"
+												<h:outputText id="fax"
 													value="#{ordenInternaController.nuevoOrdenTrabajo.cliente.faxCl}" />
 
-												<p:outputLabel for="descCliente" value="Descr. C: "
+												<h:outputText for="descCliente" value="Descr. C: "
 													style="font-weight:bold" />
 												<p:inputTextarea id="descCliente" autoResize="false"
 													value="#{ordenInternaController.nuevoOrdenTrabajo.responsableOt}" />
 
-												<p:outputLabel for="fecha" value="Fecha: "
+												<h:outputText for="fecha" value="Fecha: "
 													style="font-weight:bold" />
-												<p:outputLabel id="fecha"
+												<h:outputText id="fecha"
 													value="#{ordenInternaController.cambioFecha(ordenInternaController.nuevoOrdenTrabajo.fechaordenOt)}" />
 
 
@@ -628,15 +583,21 @@
 
 								<br /> <br />
 
-								<h:panelGrid columns="2">
+								<h:panelGrid columns="3">
 
 									<p:commandButton style="width: 150px; margin: 10px"
-										value="Confirmar" icon="fa fa-save"
+										value="Guardar" icon="fa fa-save"
 										process="@this,formAgregarOT"
 										disabled="#{ordenInternaController.disabledButton() != true}"
-										update="formConfirmarNuevoOT"
-										onsuccess="PF('cdConfirmarOT').show();">
+										actionListener="#{ordenInternaController.guardarOT}"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarOT,formDetalleOT">
 
+									</p:commandButton>
+									
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon="fa fa-bitbucket" value="Limpiar"
+										actionListener="#{ordenInternaController.limpiarFormularios()}"
+										update="@this,@([id$=messagesForm]),formAgregarOT">
 									</p:commandButton>
 
 									<p:commandButton style="width: 150px; margin: 10px"
@@ -920,34 +881,34 @@
 										<table>
 											<tr>
 												<td class="EncabezadoTitulo" align="center" colspan="2">
-													<p:outputLabel value="ESCUELA POLITÉCNICA NACIONAL"
+													<h:outputText value="ESCUELA POLITÉCNICA NACIONAL"
 														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 15px; " />
 												</td>
 											</tr>
 
 											<tr>
 												<td class="EncabezadoTitulo2" align="center" colspan="2">
-													<p:outputLabel
+													<h:outputText
 														value="Campús Politécnico J. Rubén Orellana R."
 														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
 												</td>
 											</tr>
 											<tr>
 												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel
+													<h:outputText
 														value="Ladrón de Guevara E11-253 y Andalucia"
 														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
 												</td>
 											</tr>
 											<tr>
 												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel value="Telf.: 2976 300"
+													<h:outputText value="Telf.: 2976 300"
 														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
 												</td>
 											</tr>
 											<tr>
 												<td class="EncabezadoTitulo3" align="center" colspan="2">
-													<p:outputLabel value="P.O. Box: 17-01-2759 / QUITO-ECUADOR"
+													<h:outputText value="P.O. Box: 17-01-2759 / QUITO-ECUADOR"
 														style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 13px; " />
 												</td>
 											</tr>
@@ -973,75 +934,75 @@
 
 								<center>
 
-									<p:panelGrid columns="4" layout="grid" style="border:none;">
+									<p:panelGrid columns="4" layout="grid" style="border:none;text-align: left">
 
-										<p:outputLabel for="id" value="Orden: "
+										<h:outputText for="id" value="Orden: "
 											style="font-weight:bold" />
-										<p:outputLabel id="id"
+										<h:outputText id="id"
 											value="#{ordenInternaController.ordenTrabajo.idOrden}" />
 
-										<p:outputLabel for="fecha" value="Fecha cierre: "
+										<h:outputText for="fecha" value="Fecha cierre: "
 											style="font-weight:bold" />
-										<p:outputLabel id="fecha"
+										<h:outputText id="fecha"
 											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
 
 									</p:panelGrid>
 
 									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
-										style="border:none;">
+										style="border:none;text-align: left">
 
-										<p:outputLabel for="cliente" value="Cliente: "
+										<h:outputText for="cliente" value="Cliente: "
 											style="font-weight:bold" />
-										<p:outputLabel id="cliente"
+										<h:outputText id="cliente"
 											value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
 
-										<p:outputLabel for="contacto" value="Contacto: "
+										<h:outputText for="contacto" value="Contacto: "
 											style="font-weight:bold" />
-										<p:outputLabel id="contacto"
+										<h:outputText id="contacto"
 											value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
 
 									</p:panelGrid>
 
-									<p:panelGrid columns="4" layout="grid" style="border:none;">
+									<p:panelGrid columns="4" layout="grid" style="border:none;text-align: left">
 
-										<p:outputLabel for="direccion" value="Dirección: "
+										<h:outputText for="direccion" value="Dirección: "
 											style="font-weight:bold" />
-										<p:outputLabel id="direccion"
+										<h:outputText id="direccion"
 											value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
 
 									</p:panelGrid>
 
 									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
-										style="border:none;">
+										style="border:none;text-align: left">
 
-										<p:outputLabel for="telefono" value="Telefono: "
+										<h:outputText for="telefono" value="Telefono: "
 											style="font-weight:bold" />
-										<p:outputLabel id="telefono"
+										<h:outputText id="telefono"
 											value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
 
-										<p:outputLabel for="fax" value="Fax: "
+										<h:outputText for="fax" value="Fax: "
 											style="font-weight:bold" />
-										<p:outputLabel id="fax"
+										<h:outputText id="fax"
 											value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
 
-										<p:outputLabel for="descCliente" value="Descr. C: "
+										<h:outputText for="descCliente" value="Descr. C: "
 											style="font-weight:bold" />
-										<p:outputLabel id="descCliente"
+										<h:outputText id="descCliente"
 											value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
 
 									</p:panelGrid>
 
 									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
-										style="border:none;">
+										style="border:none;text-align: left">
 
-										<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+										<h:outputText for="fechaRec" value="Fecha de recepción: "
 											style="font-weight:bold" />
-										<p:outputLabel id="fechaRec"
+										<h:outputText id="fechaRec"
 											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
 
-										<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+										<h:outputText for="fechaEntrega" value="Fecha de Entrega: "
 											style="font-weight:bold" />
-										<p:outputLabel id="fechaEntrega"
+										<h:outputText id="fechaEntrega"
 											value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
 
 									</p:panelGrid>
@@ -1149,7 +1110,7 @@
 											border-width: 1px;
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 
-								<p:panelGrid layout="grid" columns="1" style="border:none;">
+								<p:panelGrid layout="grid" columns="1" style="border:none;text-align: left">
 
 									<p:outputLabel id="leyenda" value="Leyenda Unidad" size="24" />
 
@@ -1169,7 +1130,7 @@
 											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
 								legend="Observaciones">
 
-								<p:panelGrid layout="grid" columns="1" style="border:none;">
+								<p:panelGrid layout="grid" columns="1" style="border:none;text-align: left">
 
 									<p:outputLabel id="observaciones"
 										value="#{ordenInternaController.ordenTrabajo.observOt}"
@@ -1245,58 +1206,58 @@
 
 								<div class="ui-fluid">
 									<center>
-										<p:panelGrid columns="4" layout="grid" style="border:none;">
+										<p:panelGrid columns="4" layout="grid" style="border:none;text-align: left">
 
-											<p:outputLabel for="id" value="Orden: "
+											<h:outputText for="id" value="Orden: "
 												style="font-weight:bold" />
-											<p:outputLabel id="id"
+											<h:outputText id="id"
 												value="#{ordenInternaController.ordenTrabajo.idOrden}" />
 
-											<p:outputLabel for="fecha" value="Fecha cierre: "
+											<h:outputText for="fecha" value="Fecha cierre: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fecha"
+											<h:outputText id="fecha"
 												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaCierre)}" />
 
 										</p:panelGrid>
 
 										<p:panelGrid columns="4" layout="grid"
-											styleClass="ui-noborder" style="border:none;">
+											styleClass="ui-noborder" style="border:none;text-align: left">
 
-											<p:outputLabel for="cliente" value="Cliente: "
+											<h:outputText for="cliente" value="Cliente: "
 												style="font-weight:bold" />
-											<p:outputLabel id="cliente"
+											<h:outputText id="cliente"
 												value="#{ordenInternaController.ordenTrabajo.cliente.nombreCl}" />
 
-											<p:outputLabel for="contacto" value="Contacto: "
+											<h:outputText for="contacto" value="Contacto: "
 												style="font-weight:bold" />
-											<p:outputLabel id="contacto"
+											<h:outputText id="contacto"
 												value="#{ordenInternaController.ordenTrabajo.cliente.contactoCl}" />
 
 										</p:panelGrid>
 
-										<p:panelGrid columns="4" layout="grid" style="border:none;">
+										<p:panelGrid columns="4" layout="grid" style="border:none;text-align: left">
 
-											<p:outputLabel for="direccion" value="Dirección: "
+											<h:outputText for="direccion" value="Dirección: "
 												style="font-weight:bold" />
-											<p:outputLabel id="direccion"
+											<h:outputText id="direccion"
 												value="#{ordenInternaController.ordenTrabajo.cliente.direccionCl}" />
 
 										</p:panelGrid>
 
 										<p:panelGrid columns="4" layout="grid"
-											styleClass="ui-noborder" style="border:none;">
+											styleClass="ui-noborder" style="border:none;text-align: left">
 
-											<p:outputLabel for="telefono" value="Telefono: "
+											<h:outputText for="telefono" value="Telefono: "
 												style="font-weight:bold" />
-											<p:outputLabel id="telefono"
+											<h:outputText id="telefono"
 												value="#{ordenInternaController.ordenTrabajo.cliente.telefonoCl}" />
 
-											<p:outputLabel for="fax" value="Fax: "
+											<h:outputText for="fax" value="Fax: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fax"
+											<h:outputText id="fax"
 												value="#{ordenInternaController.ordenTrabajo.cliente.faxCl}" />
 
-											<p:outputLabel for="descCliente" value="Descr. C: "
+											<h:outputText for="descCliente" value="Descr. C: "
 												style="font-weight:bold" />
 											<p:inputTextarea id="descCliente" autoResize="false"
 												value="#{ordenInternaController.ordenTrabajo.responsableOt}" />
@@ -1304,16 +1265,16 @@
 										</p:panelGrid>
 
 										<p:panelGrid columns="4" layout="grid"
-											styleClass="ui-noborder" style="border:none;">
+											styleClass="ui-noborder" style="border:none;text-align: left">
 
-											<p:outputLabel for="fechaRec" value="Fecha de recepción: "
+											<h:outputText for="fechaRec" value="Fecha de recepción: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fechaRec"
+											<h:outputText id="fechaRec"
 												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaordenOt)}" />
 
-											<p:outputLabel for="fechaEntrega" value="Fecha de Entrega: "
+											<h:outputText for="fechaEntrega" value="Fecha de Entrega: "
 												style="font-weight:bold" />
-											<p:outputLabel id="fechaEntrega"
+											<h:outputText id="fechaEntrega"
 												value="#{ordenInternaController.cambioFecha(ordenInternaController.ordenTrabajo.fechaentregaOt)}" />
 
 										</p:panelGrid>
@@ -2024,7 +1985,7 @@
 						<p:panelGrid columns="2" layout="grid"
 							styleClass="ui-panelgrid-blank"
 							columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
-							style="border:none;">
+							style="border:none;text-align: left">
 
 							<p:outputLabel for="cliente" value="Cliente: "
 								style="color:white!important" />
@@ -2082,10 +2043,11 @@
 			PF('statusDialog').hide();
 			}
 
-			function aiuda(){
-			console.log('TIMBREMOS :v');
-
-				}
+			window.onbeforeunload = function(event) {
+				rc();
+			    event.returnValue = "";
+			};
+			
 
 			PrimeFaces.locales['es'] = {
 		            closeText: 'Cerrar',
