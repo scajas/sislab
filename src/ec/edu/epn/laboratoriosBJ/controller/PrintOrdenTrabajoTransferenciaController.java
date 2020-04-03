@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.facturacion.entities.Factura;
+import ec.edu.epn.facturacion.entities.TransferenciaInterna;
 import ec.edu.epn.laboratorioBJ.beans.ClienteDAO;
 import ec.edu.epn.laboratorioBJ.beans.DetalleOrdenDAO;
 import ec.edu.epn.laboratorioBJ.beans.DetalleProDAO;
@@ -53,10 +54,10 @@ import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 import javax.faces.application.FacesMessage;
 
-@ManagedBean(name = "printOrdenFacturaController")
+@ManagedBean(name = "printOrdenTransferenciaController")
 @SessionScoped
 
-public class PrintOrdenTrabajoFacturaController implements Serializable {
+public class PrintOrdenTrabajoTransferenciaController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 1L;
@@ -198,11 +199,10 @@ public class PrintOrdenTrabajoFacturaController implements Serializable {
 				}
 
 				if (prueba == false) {
-					// System.out.println("Este es ela muestra que guarda: " +
-					// detalleo.getPersonal().getIdPersonal());
+					//System.out.println("Este es ela muestra que guarda: " + detalleo.getPersonal().getIdPersonal());
 					listaDetalleOrdenMuestra.add(detalleo);
 				} else {
-					// System.out.println("No se guarda la muestra");
+					//System.out.println("No se guarda la muestra");
 				}
 
 			}
@@ -278,7 +278,7 @@ public class PrintOrdenTrabajoFacturaController implements Serializable {
 		try {
 			FacesContext contex = FacesContext.getCurrentInstance();
 
-			contex.getExternalContext().redirect("/SisLab/pages/ordenTrabajoFactura.jsf");
+			contex.getExternalContext().redirect("/SisLab/pages/ordenTrabajoDesdeTransf.jsf");
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -342,6 +342,19 @@ public class PrintOrdenTrabajoFacturaController implements Serializable {
 		}
 
 		return f;
+	}
+
+	public TransferenciaInterna obtenerTransferencia(String idTransferencia) {
+
+		TransferenciaInterna t = new TransferenciaInterna();
+
+		t = ordenTrabajoI.buscarTransferenciaById(idTransferencia);
+
+		if (t == null) {
+			t.setIdProforma("N/A");
+		}
+
+		return t;
 	}
 
 	public boolean disabledScroll() {
