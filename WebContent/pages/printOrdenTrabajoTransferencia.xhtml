@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="pageTitle">Orden Trabajo</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body onload="rc();">
+
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+
+
+			<p:fieldset>
+
+				<br />
+				<br />
+
+
+				<h:form id="formprincipal">
+
+					<p:remoteCommand name="rc"
+						action="#{printOrdenTransferenciaController.limpiarOT()}"
+						update="formprincipal" />
+
+					<div id="imprimirOT">
+						<center>
+							<table width="1060" align="center"
+								style="BORDER-BOTTOM: #000000 4px solid;">
+								<tr>
+									<td align="center" width="50"></td>
+									<td align="center"><h:outputText
+											value="ESCUELA POLITECNICA NACIONAL"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
+										<br /> <h:outputText
+											value="#{printOrdenTransferenciaController.unidad.nombreU} "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
+										<h:outputText
+											value="#{printOrdenTransferenciaController.unidad.siglaU}"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
+										<br /> <h:outputText
+											rendered="#{printOrdenTransferenciaController.unidad.idUnidad != 2}"
+											value=" Campus Politécnico José Rubén Orellana Ricaurte "
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											value="Direc.: #{printOrdenTransferenciaController.unidad.direccionU}"
+											rendered="#{printOrdenTransferenciaController.unidad.idUnidad != 2}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <h:outputText
+											value="Telf.: #{printOrdenTransferenciaController.unidad.telefonoU}"
+											rendered="#{printOrdenTransferenciaController.unidad.idUnidad != 2}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											rendered="#{printOrdenTransferenciaController.unidad.idUnidad != 2}"
+											value="Personas de Contacto: contacto Telf.: #{printOrdenTransferenciaController.unidad.telCont1U} e-mail: #{printOrdenTransferenciaController.unidad.emailCont1U}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											rendered="#{printOrdenTransferenciaController.unidad.idUnidad != 2}"
+											value="contacto Telf.: #{printOrdenTransferenciaController.unidad.telCont2U} e-mail: #{printOrdenTransferenciaController.unidad.emailCont2U}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
+											rendered="#{printOrdenTransferenciaController.unidad.idUnidad != 2}"
+											value="Quito - Ecuador"
+											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <br /></td>
+									<td align="center" width="50"></td>
+								</tr>
+							</table>
+							<br /> <br />
+
+							<table width="1060" style="BORDER: #000000 1px solid;"
+								align="center">
+								<tr align="justify">
+									<td align="left" width="20"><h:outputText value="Orden: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printOrdenTransferenciaController.ordenTrabajo.idOrden}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+									<td align="left" width="20"><h:outputText
+											value="Proforma: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"><h:outputText
+											value="#{printOrdenTransferenciaController.obtenerTransferencia(printOrdenTransferenciaController.ordenTrabajo.idTi).idProforma}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+								</tr>
+
+
+
+
+							</table>
+
+							<br /> <br />
+
+							<table width="1060" style="BORDER: #000000 1px solid;"
+								align="center">
+								<tr align="justify">
+									<td align="left" width="20"><p:dataTable
+											id="tblVerDetalleOT" scrollable="false" scrollHeight="200"
+											value="#{printOrdenTransferenciaController.listaDetalleOrden}"
+											var="detalleOT" sortBy="#{detalleOT.muestra.idMuestra}"
+											emptyMessage="No se han registrado detalles de orden">
+
+											<p:column headerText="Nro" style="width: 4%">
+												<center>
+													<h:outputText
+														value="#{printOrdenTransferenciaController.listarNumeroM(detalleOT.muestra.idMuestra)}" />
+												</center>
+											</p:column>
+
+											<p:column headerText="ID Muestra" style="width: 10%">
+												<h:outputText value="#{detalleOT.muestra.idMuestra}" />
+											</p:column>
+
+											<p:column headerText="Muestra">
+												<h:outputText value="#{detalleOT.muestra.codigoMCliente}" />
+											</p:column>
+
+											<p:column headerText="Servicio">
+												<h:outputText
+													value="#{printOrdenTransferenciaController.servicio(detalleOT.idServicio).nombreS}" />
+											</p:column>
+
+											<p:column headerText="Método">
+												<h:outputText
+													value="#{printOrdenTransferenciaController.metodo(detalleOT.idMetodo)}" />
+											</p:column>
+
+											<p:column headerText="Laboratorio">
+												<h:outputText
+													value="#{printOrdenTransferenciaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
+											</p:column>
+
+											<p:column headerText="Responsable">
+												<h:outputText value="#{detalleOT.personal.nombresPe}" />
+											</p:column>
+
+											<p:column headerText="h/T" style="width: 4%">
+												<center>
+													<h:outputText value="#{detalleOT.horasTrabajo}" />
+												</center>
+											</p:column>
+
+											<p:column headerText="F. Inicio" style="width: 9%">
+												<h:outputText
+													value="#{printOrdenTransferenciaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
+											</p:column>
+
+											<p:column headerText="F. Fin" style="width: 9%">
+												<h:outputText
+													value="#{printOrdenTransferenciaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
+											</p:column>
+										</p:dataTable></td>
+								</tr>
+
+							</table>
+
+							<br /> <br />
+
+							<table width="1060" style="BORDER: #000000 1px solid;"
+								align="center" title="Responsables">
+
+								<tr align="justify">
+									<td align="center" width="20"><p:dataTable
+											id="tblPersonalTemp"
+											value="#{printOrdenTransferenciaController.tempPersonalLabs}"
+											var="personal"
+											emptyMessage="No se pudo encontrar ninguna coincidencia">
+
+											<f:facet name="header">
+									            Responsables:
+									        </f:facet>
+											<p:column headerText="Responsable">
+												<center>
+													<h:outputText value="#{personal.nombresPe}" />
+												</center>
+											</p:column>
+
+											<p:column headerText="Firma responsable">
+												<center>
+													<h:outputText value="" />
+												</center>
+											</p:column>
+
+
+										</p:dataTable></td>
+								</tr>
+
+							</table>
+
+							<br />
+
+							<table width="1060" style="BORDER: no border;" align="center">
+								<tr align="center">
+									<td align="justify" width="200"><h:outputText
+											value="#{printOrdenTransferenciaController.laboratorio.leyendaOtL}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
+								</tr>
+							</table>
+							<br />
+							<table width="1060" style="BORDER: no border;" align="center">
+								<tr align="center">
+									<td align="left"><h:outputText value="Obeservaciones: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+								<tr align="justify">
+									<td align="justify" width="200"><h:outputText
+											value="#{printOrdenTransferenciaController.ordenTrabajo.observOt}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
+								</tr>
+							</table>
+
+							<br /> <br /> <br /> <br /> <br />
+
+
+							<table width="1060" align="center">
+								<tr align="center">
+									<td align="center"><h:outputText
+											value="___________________"
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+
+								</tr>
+								<tr>
+
+									<td align="center"><br /> <h:outputText
+											value="Responsable: "
+											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " />
+										<h:outputText value="#{sesionUsuario.usuario.nombreUsuario}"
+											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+								</tr>
+
+							</table>
+							<br />
+						</center>
+					</div>
+
+				</h:form>
+
+
+
+				<div class="ui-fluid">
+					<center>
+						<h:panelGrid columns="2">
+
+							<p:commandButton style="width: 150px; margin: 10px"
+								value="Imprimir" icon="fa fa-print">
+								<p:printer target="formprincipal" />
+							</p:commandButton>
+
+							<p:commandButton style="width: 150px; margin: 10px"
+								icon=" fa fa-arrow-left" onclick="PF('cdCancelarOT').show();"
+								value="Cancelar"></p:commandButton>
+
+						</h:panelGrid>
+					</center>
+				</div>
+
+
+			</p:fieldset>
+
+			<!-- **************************  Panel - Confirmar regreso OT ************************** -->
+			<h:form id="formCancelarOT">
+				<p:confirmDialog message="¿Esta seguro(a) que desea cancelar?"
+					header="Cancelar" severity="warn" widgetVar="cdCancelarOT">
+					<center>
+
+						<br /> <br />
+						<p:outputLabel
+							value="Si desea regresar a la interfaz de Orden Trabajo Interna de clic en Aceptar " />
+
+						<br /> <br /> <br />
+
+						<p:commandButton value="Aceptar"
+							action="#{printOrdenTransferenciaController.regresarPanelOT()}"
+							onsuccess="PF('cdCancelarOT').hide();" />
+
+
+						<p:commandButton value="Cancelar"
+							onclick="PF('cdCancelarOT').hide();" type="button" />
+
+					</center>
+
+				</p:confirmDialog>
+
+
+			</h:form>
+
+
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+			function aiuda(){
+			console.log('TIMBREMOS :v');
+
+				}
+
+			PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
+		</script>
+
+		<!-- **************************  Scroll en dialogo   *************************** -->
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+
+.ui-datatable-scrollable-theadclone {
+	visibility: collapse;
+}
+</style>
+
+	</ui:define>
+</ui:composition>
