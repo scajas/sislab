@@ -49,124 +49,142 @@
 						<center>
 							<h:form id="formBuscar">
 
+								<div class="ui-fluid">
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 65%"
+										layout="grid">
+										<h:outputLabel value="Ingrese Fecha Inicial: "
+											style="font-size: 15px" />
 
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									columnClasses="pnlGridFondoFilas,,pnlGridFondoFilas">
+										<p:calendar id="fechaInicio"
+											value="#{reporteComprasController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es" required="true"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Inicial Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button">
+											<p:ajax event="dateSelect" update="fechaFin" />
+										</p:calendar>
 
-									<h:outputLabel value="Ingrese Fecha Inicial: "
-										style="font-size: 15px" />
+										<h:outputLabel value="Ingrese Fecha Final: "
+											style="font-size: 15px" />
+										<p:calendar id="fechaFin"
+											value="#{reporteComprasController.fechaFin}"
+											mindate="#{reporteComprasController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es" required="true"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Final Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											size="35">
+											<f:attribute name="fechaInicio"
+												value="#{reporteComprasController.fechaInicio}" />
 
-									<p:calendar id="fechaInicio"
-										value="#{compraController.fechaInicio}" pattern="dd/MM/yyyy"
-										locale="es" required="true"
-										onkeypress="return permite(event, 'none')"
-										requiredMessage="Fecha Inicial Requerida" navigator="true"
-										effect="fadeIn" effectDuration="100" showOn="button">
-										<p:ajax event="dateSelect" update="fechaFin" />
-									</p:calendar>
+										</p:calendar>
 
-
-									<h:outputLabel value="Ingrese Fecha Final: "
-										style="font-size: 15px" />
-									<p:calendar id="fechaFin" value="#{compraController.fechaFin}"
-										mindate="#{compraController.fechaInicio}" pattern="dd/MM/yyyy"
-										locale="es" required="true"
-										onkeypress="return permite(event, 'none')"
-										requiredMessage="Fecha Final Requerida" navigator="true"
-										effect="fadeIn" effectDuration="100" showOn="button" size="35">
-										<f:attribute name="fechaInicio"
-											value="#{compraController.fechaInicio}" />
-										<f:validator validatorId="primeDateRangeValidator" />
-									</p:calendar>
-
-								</p:panelGrid>
+									</p:panelGrid>
+								</div>
 
 								<br />
 								<br />
 
+								<table width="200" style="BORDER: #000000 0px solid;"
+									align="center">
+									<tr align="center">
+										<td><p:commandLink
+												actionListener="#{reporteComprasController.consultarCompra}"
+												update="@([id$=tblCompra]),@([id$=messagesForm])"
+												process="@this,formBuscar">
 
+												<h:graphicImage value="/images/archivos/busqueda.png"
+													class="btn bt-success" title="Buscar"
+													style="border:0px solid #CAD6E0;" width="35" height="35 " />
 
-								<center>
-									<p:commandLink
-										actionListener="#{compraController.consultarCompra}"
-										update="@([id$=tblCompra]),@([id$=messagesForm])"
-										process="@this,formBuscar">
+												<p>
+													<strong>Buscar</strong>
+												</p>
 
-										<h:graphicImage value="/images/archivos/busqueda.png"
-											class="btn bt-success" title="Buscar"
-											style="border:0px solid #CAD6E0;" width="35" height="35 " />
+											</p:commandLink></td>
 
-									</p:commandLink>
+										<td><p:commandLink
+												oncomplete="PF('repoServicio').show();"
+												id="btnGenerarReporte"
+												update="@([id$=dialogReporteServ], [id$=pdfView])"
+												actionListener="#{reporteComprasController.generarPDF}">
+												<center>
+													<p:graphicImage value="/images/archivos/imprimir.png"
+														height="35px" width="35px" title="Generar Reporte" />
+												</center>
 
-									<p:commandLink oncomplete="PF('repoServicio').show();"
-										id="btnGenerarReporte"
-										update="@([id$=dialogReporteServ], [id$=pdfView])"
-										actionListener="#{compraController.generarPDF}">
-										<center>
-											<p:graphicImage value="/images/archivos/imprimir.png"
-												height="35px" width="35px" title="Generar Reporte" />
-										</center>
-									</p:commandLink>
-
-								</center>
-
+												<p>
+													<strong>Reporte</strong>
+												</p>
+											</p:commandLink></td>
+									</tr>
+								</table>
+								<br />
+								<p>
+									<strong>Nota: Para generar el Reporte se tienen que
+										llenar todos los campos</strong>
+								</p>
 							</h:form>
 						</center>
-					</p:fieldset>
-					<br />
-					<p:dataTable id="tblCompra" value="#{compraController.listCompra}"
-						var="tipo"
-						emptyMessage="No se pudo encontrar ninguna coincidencia"
-						resizableColumns="true" rows="10" paginator="true"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15"
-						style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+
+						<br />
+						<p:dataTable id="tblCompra"
+							value="#{reporteComprasController.compras}" var="tipo"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-						paginatorPosition="bottom">
+							paginatorPosition="bottom">
+
+							<p:column headerText="Compra" style="width: 12%">
+								<h:outputText value="#{tipo.idCompra}" />
+							</p:column>
+
+							<p:column headerText="Descripción">
+								<h:outputText value="#{tipo.descrCompra}" />
+							</p:column>
 
 
-						<p:column headerText="Compra">
-							<h:outputText value="#{tipo.idCompra}" />
-						</p:column>
-
-						<p:column headerText="Fecha">
-							<h:outputText value="#{tipo.fechaCo}" />
-						</p:column>
-
-						<p:column headerText="Descripción">
-							<h:outputText value="#{tipo.descrCompra}" />
-						</p:column>
-
-						<p:column headerText="Monto">
-							<h:outputText value="#{tipo.montoCo}" />
-						</p:column>
-
-						<p:column headerText="Proveedor">
-							<h:outputText value="#{tipo.proveedor.nombrePv}" />
-						</p:column>
+							<p:column headerText="Fecha" style="width: 8%">
+								<h:outputText value="#{tipo.fechaCo}" />
+							</p:column>
 
 
-					</p:dataTable>
+							<p:column headerText="Monto" style="width: 6%">
+								<h:outputText
+									value="#{reporteComprasController.cambiarFormatoDouble(tipo.montoCo)}" />
+							</p:column>
 
-					<br />
-					<br />
+							<p:column headerText="Proveedor">
+								<h:outputText value="#{tipo.proveedor.nombrePv}" />
+							</p:column>
 
-					<center>
 
-						<br /> <br />
-						<!-- Exportar a Excel Sin Formato  -->
-						<h3>Exportar sin Formato</h3>
-						<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
-							<h:graphicImage value="/images/excel.png" width="35px"
-								height="35px" />
-							<pe:exporter type="xlsx" target="tblCompra" fileName="Compra"
-								tableTitle="Compra" selectionOnly="false"
-								orientation="Landscape" datasetPadding="4" />
-						</h:commandLink>
+						</p:dataTable>
 
-					</center>
+						<br />
+						<br />
 
+						<center>
+
+							<br /> <br />
+							<!-- Exportar a Excel Sin Formato  -->
+							<h3>Exportar sin Formato</h3>
+							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+								<h:graphicImage value="/images/excel.png" width="35px"
+									height="35px" />
+								<pe:exporter type="xlsx" target="tblCompra" fileName="Compra"
+									tableTitle="Compra" selectionOnly="false"
+									orientation="Landscape" datasetPadding="4" />
+							</h:commandLink>
+
+						</center>
+					</p:fieldset>
 				</p:panel>
 
 			</h:form>
@@ -185,7 +203,7 @@
 						toggleSpeed="500" closeSpeed="500">
 						<div align="right">
 							<p:commandLink id="btnCerrarDialogs" ajax="false"
-								action="#{compraController.cerrarArchivo()}"
+								action="#{reporteComprasController.cerrarArchivo()}"
 								onsuccess="PF('repoServicio').hide();">
 								<h:graphicImage value="/images/dashboard/NoVerificado.png"
 									title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
@@ -193,15 +211,15 @@
 
 							</p:commandLink>
 						</div>
-						 <table style="width: 100%; height: 100%;">
+						<table style="width: 100%; height: 100%;">
 							<tr>
 								<td><p:media id="pdfView" height="470px" width="100%"
-										cache="false" value="#{compraController.streamFile}"
+										cache="false" value="#{reporteComprasController.streamFile}"
 										player="pdf">
 									</p:media></td>
 
 							</tr>
-						</table> 
+						</table>
 
 
 					</p:panel>

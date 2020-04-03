@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteConsumoExistencia" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="028da5b8-e9e3-423d-9c58-e1459481fd3c">
+	<property name="ireport.zoom" value="1.3310000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="CONTEXT" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaInicio" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaFinal" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT mi.id_existencia,
+p.nombre_pr,
+mi.fecha_mi,
+g.nombre_gr,
+tp.nombre_tprod,
+toi.nombre_toi,
+mi.cantidad_mov
+FROM "Laboratorios".movimientosinventario mi,
+"Laboratorios".producto p,
+"Laboratorios".grado g,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi,
+"Laboratorios".existencias e
+
+WHERE mi.id_existencia = e.id_existencia
+AND e.id_producto = p.id_producto
+AND e.id_grado = g.id_grado
+AND p.id_tipoprod = tp.id_tipoprod
+AND toi.id_tipordeninv = toi.id_tipordeninv
+
+AND mi.fecha_mi BETWEEN $P{fechaInicio} AND $P{fechaFinal}
+ORDER BY mi.fecha_mi ASC]]>
+	</queryString>
+	<field name="id_existencia" class="java.lang.String"/>
+	<field name="nombre_pr" class="java.lang.String"/>
+	<field name="fecha_mi" class="java.sql.Date"/>
+	<field name="nombre_gr" class="java.lang.String"/>
+	<field name="nombre_tprod" class="java.lang.String"/>
+	<field name="nombre_toi" class="java.lang.String"/>
+	<field name="cantidad_mov" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="113" splitType="Stretch">
+			<staticText>
+				<reportElement x="118" y="52" width="333" height="10" uuid="a1328f97-0ff2-4bad-bd24-eaf33f9a0c69"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RUC:1750005620001]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="42" width="333" height="10" uuid="04c0e56f-df4c-4bbd-a630-95a9f909471f"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Direc: Pasaje Andalucía E12-A y Alfredo Mena Caamaño Telf:2976300]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="75" width="523" height="1" uuid="8eef8733-bf47-4c83-bfbe-37b4602e8a0b"/>
+			</line>
+			<staticText>
+				<reportElement x="118" y="32" width="333" height="10" uuid="00e28720-993d-4590-84ec-338e70b24694"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Campus Politécnico José Rubén Orellana Ricaurte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="157" y="89" width="264" height="24" uuid="35ad191f-90fd-4ab5-9ef1-82681caf9999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE CONSUMO DE EXISTENCIAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="62" width="333" height="10" uuid="f8bc1199-99f9-4c2c-a88d-4faa90fa4c31"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Quito-Ecuador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="10" width="333" height="22" uuid="43802918-c17a-4b48-aa68-079af040fad7"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="SansSerif" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESCUELA POLITECNICA NACIONAL]]></text>
+			</staticText>
+			<image>
+				<reportElement x="10" y="10" width="89" height="62" uuid="2f93c351-fffd-4ff4-b35d-bde29e125dd7"/>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="0" width="76" height="20" forecolor="#000000" backcolor="#778D9B" uuid="cac6fcd2-062b-408f-89e5-d9dc1c2be4f0">
+					<property name="net.sf.jasperreports.export.pdf.tag.table"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ID EXISTENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="86" y="0" width="83" height="20" forecolor="#000000" backcolor="#778D9B" uuid="65b9246a-e9c6-49f5-a9f4-0a33c77cc674"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="169" y="0" width="74" height="20" backcolor="#778D9B" uuid="1a5acf28-db59-488b-a129-bfabc5fecb0c"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="243" y="0" width="68" height="20" backcolor="#778D9B" uuid="051b8f02-93c1-494a-890f-cc5c828f8708"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="311" y="0" width="69" height="20" backcolor="#778D9B" uuid="40028105-374c-4def-ac2f-d81830f07fc2"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="380" y="0" width="81" height="20" forecolor="#000000" backcolor="#778D9B" uuid="4a1e0bbc-88e2-4b4e-a827-6ad53c6fcff9"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO MOV. INV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="461" y="0" width="66" height="20" forecolor="#000000" backcolor="#778D9B" uuid="d85d3ac1-9d48-45e9-9643-96bdcbc824de"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="76" height="20" uuid="9ff1bd2e-0f9b-432d-867c-1b9f92122b4c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{id_existencia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="86" y="0" width="83" height="20" uuid="fad255f1-2f58-4381-ab60-be2c03546d48"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{nombre_pr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="169" y="0" width="74" height="20" uuid="f34996e0-c112-4ac6-b281-b8957897e653"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{fecha_mi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="243" y="0" width="68" height="20" uuid="d54b091d-9f38-402f-a5a8-92eeabfdc083"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{nombre_gr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="311" y="0" width="69" height="20" uuid="f248daa5-da16-441d-a08a-a5c3ec71bdca"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{nombre_tprod}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="0" width="81" height="20" uuid="447c1bf9-686d-4e3b-ab27-3113c6dccb41"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{nombre_toi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="461" y="0" width="66" height="20" uuid="bb2faf12-58d0-4eed-84dc-de18bd99f639"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{cantidad_mov}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="533" y="0" width="22" height="20" uuid="c2f311b6-901d-44f6-8046-b50b82a64ef9"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

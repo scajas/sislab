@@ -1,78 +1,64 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.DriverManager;
 
-
-
-
 public class conexionPostrges implements Serializable {
-	
-	
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6947528897763208578L;
 
+	private Connection conexion = null;
 
-	private java.sql.Connection conection = null;
-
-	public java.sql.Connection getConection() {
-		return conection;
-	}
-
-	public void setConection(java.sql.Connection conection) {
-		this.conection = conection;
-	}
-	
 	private String url = "jdbc:postgresql://";
-	private String serverName = "172.31.203.196";
-	private String portNumber = "5432";	
+	private String serverName = "196.168.1.114";
+	private String portNumber = "5432";
 	private String databaseName = "bddcorpepn";
 	private String userName = "postgres";
-	private String password = "seguridad";
+	private String password = "1234";
 
 	// Constructor
 	public conexionPostrges() {
-	} 
+	}
 
-	public String getConnectionUrl() {
+	public String conexionUrl() {
 		return url + serverName + ":" + portNumber + "/" + databaseName;
 	}
-	
 
+	public java.sql.Connection Conexion() {
 
-	public java.sql.Connection getConnection() {		
 		try {
-			
-			//String urlDatabase =  "jdbc:postgresql://172.31.203.216:5432/bddcorpepn";
-			    Class.forName("org.postgresql.Driver"); 
-			     
-			    conection = DriverManager.getConnection(getConnectionUrl(),  userName, password);			
-			
-			if (conection != null)
-				System.out.println("Connection Successful!");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Error Trace in getConnection() : "
-					+ e.getMessage());
-		}
-		return conection;
-	}
 
-	
+			Class.forName("org.postgresql.Driver");
+			conexion = DriverManager.getConnection("jdbc:postgresql://192.168.1.114:5432/bddcorpepn", userName,
+					password);
+
+			if (conexion != null)
+				System.out.println("Conexión exitosa!");
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return conexion;
+	}
 
 	public void closeConnection() {
 		try {
-			if (conection != null)
-				conection.close();
-			conection = null;
+			if (conexion != null)
+				conexion.close();
+			conexion = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	
+	public java.sql.Connection getConexion() {
+		return conexion;
+	}
+
+	public void setConexion(java.sql.Connection conexion) {
+		this.conexion = conexion;
+	}
 
 }

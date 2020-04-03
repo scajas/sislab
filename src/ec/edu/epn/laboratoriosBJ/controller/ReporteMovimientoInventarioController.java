@@ -1,6 +1,7 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,9 +52,11 @@ public class ReporteMovimientoInventarioController implements Serializable {
 	/****************************************************************************/
 	private List<Movimientosinventario> movimientoInventarios = new ArrayList<>();
 	private Movimientosinventario movimientoInventario;
-
+	private List<Existencia> filtrarMovimientos;
+	
 	private List<Existencia> existencias = new ArrayList<>();
 	private List<Existencia> filtrarExistencias;
+	
 	private Existencia selectExistencia;
 	private Existencia existencia;
 	/* Variables adicionales */
@@ -162,7 +165,9 @@ public class ReporteMovimientoInventarioController implements Serializable {
 
 		try {
 
-			// init Orden inventario
+			
+			movimientoInventarios.clear();
+			filtrarMovimientos.clear();
 			movimientoInventario = new Movimientosinventario();
 
 			existencias = new ArrayList<Existencia>();
@@ -175,6 +180,10 @@ public class ReporteMovimientoInventarioController implements Serializable {
 			e.printStackTrace();
 		}
 
+	}
+	public String cambiarFormatoDouble(double numero) {
+		DecimalFormat formato = new DecimalFormat("#.00");
+		return formato.format(numero);
 	}
 
 	/****** Busqueda de Existencias ******/
@@ -245,6 +254,14 @@ public class ReporteMovimientoInventarioController implements Serializable {
 
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
+	}
+
+	public List<Existencia> getFiltrarMovimientos() {
+		return filtrarMovimientos;
+	}
+
+	public void setFiltrarMovimientos(List<Existencia> filtrarMovimientos) {
+		this.filtrarMovimientos = filtrarMovimientos;
 	}
 
 }

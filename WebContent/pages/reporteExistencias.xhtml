@@ -11,7 +11,7 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
 
-	<ui:define name="pageTitle">Reporte Servicios</ui:define>
+	<ui:define name="pageTitle">Reporte Existencias</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -38,7 +38,7 @@
 			<h:form id="formprincipal">
 
 				<p:panel>
-					<p:fieldset legend="Buscar Servicios"
+					<p:fieldset legend="Buscar Existencias"
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -51,22 +51,37 @@
 
 								<div class="ui-fluid">
 
-									<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
-										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 45%"
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 65%"
 										layout="grid">
 
-										<p:outputLabel value="Tipo Servicio: "
+
+										<p:outputLabel value="Tipo de Producto:"
 											style="color:white!important" />
-										<p:selectOneMenu id="tipoServicio" filterMatchMode="contains"
-											filter="true"
-											value="#{reporteServiciosController.tipoServicio}"
-											required="true" requiredMessage="Seleccionar un Tipo">
-											<f:selectItem itemLabel="Seleccione " itemValue="" />
+										<p:selectOneMenu id="tipoProducto"
+											value="#{reporteExistenciasController.nombreTP}"
+											required="true"
+											requiredMessage="Seleccione el Tipo de producto">
+											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
 											<f:selectItems
-												value="#{reporteServiciosController.tipoServicios}"
-												var="tipoS" itemLabel="#{tipoS.nombreTs}"
-												itemValue="#{tipoS.nombreTs}" />
+												value="#{reporteExistenciasController.tipoProductos}"
+												var="tipoProducto" itemLabel="#{tipoProducto.nombreTprod}"
+												itemValue="#{tipoProducto.nombreTprod}" />
+
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Característica:"
+											style="color:white!important" />
+										<p:selectOneMenu id="caracteristica"
+											value="#{reporteExistenciasController.nombreC}"
+											required="true"
+											requiredMessage="Seleccione la Característica">
+											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
+											<f:selectItems
+												value="#{reporteExistenciasController.caracteristicas}"
+												var="caracteristica" itemLabel="#{caracteristica.nombreCr}"
+												itemValue="#{caracteristica.nombreCr}" />
 
 										</p:selectOneMenu>
 
@@ -79,8 +94,8 @@
 										align="center">
 										<tr align="center">
 											<td><p:commandLink
-													actionListener="#{reporteServiciosController.buscarServicio}"
-													update="@([id$=tblServicio]),@([id$=messagesForm])"
+													actionListener="#{reporteExistenciasController.buscarExistencias}"
+													update="@([id$=tblExistencias]),@([id$=messagesForm])"
 													process="@this,formBuscar">
 
 													<h:graphicImage value="/images/archivos/busqueda.png"
@@ -94,10 +109,10 @@
 												</p:commandLink></td>
 
 											<td><p:commandLink
-													oncomplete="PF('reporteServicios').show();"
+													oncomplete="PF('reporteExistencias').show();"
 													id="btnGenerarReporte"
 													update="@([id$=dialogReporteServ], [id$=pdfView])"
-													actionListener="#{reporteServiciosController.generarPDF}">
+													actionListener="#{reporteExistenciasController.generarPDF}">
 
 													<p:graphicImage value="/images/archivos/imprimir.png"
 														height="35px" width="35px" title="Generar Reporte" />
@@ -105,13 +120,13 @@
 													<p>
 														<strong>Reporte</strong>
 													</p>
+
 												</p:commandLink></td>
 										</tr>
 									</table>
 
-									<br /> <br />
+									<br/>
 								</div>
-								<br />
 
 								<p>
 									<strong>Nota: Para generar el Reporte se tienen que
@@ -121,39 +136,76 @@
 						</center>
 
 						<br />
-						<p:dataTable id="tblServicio"
-							value="#{reporteServiciosController.servicios}" var="servicio"
-							widgetVar="filterServicioTable"
+						<p:dataTable id="tblExistencias"
+							value="#{reporteExistenciasController.existencias}"
+							var="existencias"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<p:column headerText="ID Servicio" style="width: 8%">
-								<h:outputText value="#{servicio.idServicio}" />
+							<p:column headerText="ID Existencia" style="width: 10%">
+								<f:facet name="header">
+									<h:outputText value="ID Existencia" />
+								</f:facet>
+								<h:outputText value="#{existencias.idExistencia}" />
 							</p:column>
 
-							<p:column headerText="Sevicio">
-								<h:outputText value="#{servicio.nombreS}" />
+							<p:column headerText="Producto" style="width: 14%">
+								<f:facet name="header">
+									<h:outputText value="Producto" />
+								</f:facet>
+								<h:outputText value="#{existencias.producto.nombrePr}" />
 							</p:column>
 
-							<p:column headerText="Laboratorio">
-								<h:outputText value="#{servicio.laboratorio.nombreL}" />
+							<p:column headerText="Bodega">
+								<f:facet name="header">
+									<h:outputText value="Bodega" />
+								</f:facet>
+								<h:outputText value="#{existencias.bodega.nombreBg}" />
 							</p:column>
 
-							<p:column headerText="Tipo Servicio" style="width: 12%">
-								<h:outputText value="#{servicio.tiposervicio.nombreTs}" />
+							<p:column headerText="Característica" style="width: 10%">
+								<f:facet name="header">
+									<h:outputText value="Característica" />
+								</f:facet>
+								<h:outputText value="#{existencias.caracteristica.nombreCr}" />
 							</p:column>
 
-							<p:column headerText="Precio" style="width: 6%">
+							<p:column headerText="Grado" style="width: 7%">
+								<f:facet name="header">
+									<h:outputText value="Grado" />
+								</f:facet>
+								<h:outputText value="#{existencias.grado.nombreGr}" />
+							</p:column>
+
+							<p:column headerText="Tipo de Producto" style="width: 13%">
+								<f:facet name="header">
+									<h:outputText value="Tipo de Producto" />
+								</f:facet>
+								<h:outputText value="#{existencias.tipoproducto.nombreTprod}" />
+							</p:column>
+
+							<p:column headerText="Saldo Neto" style="width: 8%">
+								<f:facet name="header">
+									<h:outputText value="Saldo Neto" />
+								</f:facet>
 								<h:outputText
-									value="#{reporteServiciosController.cambiarFormatoDouble(servicio.precioS)}" />
+									value="#{reporteExistenciasController.cambiarFormatoDouble(existencias.cantidadE)}" />
+							</p:column>
+
+							<p:column headerText="Unidad" style="width: 6%">
+								<f:facet name="header">
+									<h:outputText value="Unidad" />
+								</f:facet>
+								<h:outputText value="#{existencias.unidadmedida.siglaUm}" />
 							</p:column>
 						</p:dataTable>
+
 						<br />
 						<br />
 
@@ -164,8 +216,8 @@
 							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
 								<h:graphicImage value="/images/excel.png" width="35px"
 									height="35px" />
-								<pe:exporter type="xlsx" target="tblServicio"
-									fileName="Servicios" tableTitle="Servicios"
+								<pe:exporter type="xlsx" target="tblExistencias"
+									fileName="Existencias" tableTitle="Proforma"
 									selectionOnly="false" orientation="Landscape"
 									datasetPadding="4" />
 							</h:commandLink>
@@ -189,23 +241,21 @@
 				</center>
 			</p:dialog>
 
+
 			<p:dialog id="dialogReporteServ" resizable="true"
-				widgetVar="reporteServicios" modal="true" hideEffect="fade"
+				widgetVar="reporteExistencias" modal="true" hideEffect="fade"
 				responsive="true" dynamic="true" width="65%"
-				header="Reporte Servicios">
-				<p:panel id="toggleable" toggleable="true" closable="true"
-					toggleSpeed="500" closeSpeed="500">
+				header="Reporte Existencias">
 
-					<table style="width: 100%; height: 100%;">
-						<tr>
-							<td><p:media id="pdfView" height="470px" width="100%"
-									cache="false" value="#{reporteServiciosController.streamFile}"
-									player="pdf">
-								</p:media></td>
+				<table style="width: 100%; height: 100%;">
+					<tr>
+						<td><p:media id="pdfView" height="470px" width="100%"
+								cache="false" value="#{reporteExistenciasController.streamFile}"
+								player="pdf">
+							</p:media></td>
 
-						</tr>
-					</table>
-				</p:panel>
+					</tr>
+				</table>
 
 			</p:dialog>
 

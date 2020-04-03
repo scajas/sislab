@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,12 +19,10 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIComponent;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -48,7 +47,7 @@ import net.sf.jasperreports.engine.JRParameter;
 @ManagedBean(name = "reporteProformaController")
 @SessionScoped
 
-public class ReporteProformaController implements Serializable{
+public class ReporteProformaController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -71,21 +70,20 @@ public class ReporteProformaController implements Serializable{
 	private TipoClienteDAO tipoClienteI;
 
 	private Proforma proforma;
-	private List<Proforma> listaProforma = new ArrayList<Proforma>();
+	private List<Proforma> proformas = new ArrayList<Proforma>();
 	private Proforma proformaSelect;
 
-	private Integer nombreCli;
+	private String nombreCli;
 	private Date fechaInicio;
 	private Date fechaFinal;
 
 	// select cliente
-
 	private Cliente clienteSelect;
-	private List<Cliente> listaCliente = new ArrayList<Cliente>();
+	private List<Cliente> clientes = new ArrayList<Cliente>();
 	private Cliente cliente;
 
 	private Tipocliente tipoClienteSelect;
-	private List<Tipocliente> listaTipoCliente = new ArrayList<Tipocliente>();
+	private List<Tipocliente> tipoClientes = new ArrayList<Tipocliente>();
 	private Tipocliente tipoCliente;
 
 	private List<Proforma> filtroProforma = new ArrayList<>();
@@ -97,13 +95,7 @@ public class ReporteProformaController implements Serializable{
 		try {
 
 			proforma = new Proforma();
-			listaProforma = proformaI.getAll(Proforma.class);
-
-			listaCliente = clienteI.getAll(Cliente.class);
-			cliente = new Cliente();
-
-			listaTipoCliente = tipoClienteI.getAll(Tipocliente.class);
-			cliente = new Cliente();
+			tipoClientes = tipoClienteI.getAll(Tipocliente.class);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,14 +116,14 @@ public class ReporteProformaController implements Serializable{
 
 	}
 
-	public void buscarCliente() {
+	public void buscarProforma() {
 
 		try {
 
-			listaProforma = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()),
+			proformas = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()),
 					getNombreCli(), proforma.getEstadoPo());
 
-			mensajeInfo("Número de coincidencias encontradas:" + listaProforma.size());
+			mensajeInfo("Número de coincidencias encontradas:" + proformas.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -150,51 +142,13 @@ public class ReporteProformaController implements Serializable{
 	public StreamedContent getStreamFile() {
 		return streamFile;
 	}
-
-	/****** Generacion de PDF ****/
-
-	public void generarPDF(ActionEvent event) throws Exception {
-		try {
-
-			if (streamFile != null)
-				streamFile.getStream().close();
-
-			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("fechaInicio", cambioFecha(getFechaInicio()));
-			parametros.put("fechaFin", cambioFecha(getFechaFinal()));
-
-			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
-			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
-					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
-				direccion = direccion + "\\";
-			} else {
-				direccion = direccion + "/";
-			}
-
-			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteProforma.jrxml");
-			InputStream input = new FileInputStream(new File(jrxmlFile));
-			JasperReport jasperReport = JasperCompileManager.compileReport(input);
-			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
-
-			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteProforma.pdf");
-
-			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
-			InputStream stream = new FileInputStream(destFile);
-
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteProforma.pdf");
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
-
-		}
-
+	
+	public String cambiarFormatoDouble(double numero) {
+		DecimalFormat formato = new DecimalFormat("#.00");
+		return formato.format(numero);
 	}
 
+	/****** Generacion de PDF ****/
 	/*
 	 * public void generarEXCEL(ActionEvent event) throws Exception { try {
 	 * 
@@ -242,6 +196,72 @@ public class ReporteProformaController implements Serializable{
 	 * }
 	 */
 
+	private Connection coneccionSQL() throws IOException {
+		try {
+			conexionPostrges conexionSQL = new conexionPostrges();
+			Connection con = conexionSQL.Conexion();
+			return con;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public void generarPDF(ActionEvent event) throws Exception {
+		try {
+
+			if (streamFile != null)
+				streamFile.getStream().close();
+
+			ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+
+			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
+
+			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
+					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
+				direccion = direccion + "\\";
+			} else {
+				direccion = direccion + "/";
+			}
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+
+			parametros.put("CONTEXT", servletContext.getRealPath("/"));
+			parametros.put("fechaInicio", getFechaInicio());
+			parametros.put("fechaFin", getFechaFinal());
+			parametros.put("tipoCliente", getNombreCli());
+			parametros.put("estadoProforma", proforma.getEstadoPo());
+
+			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
+					.getRealPath("/reportes/reporteProforma.jrxml");
+			InputStream input = new FileInputStream(new File(jrxmlFile));
+			JasperReport jasperReport = JasperCompileManager.compileReport(input);
+			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
+
+			File sourceFile = new File(jrxmlFile);
+			File destFile = new File(sourceFile.getParent(), "reporteProforma.pdf");
+
+			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
+			InputStream stream = new FileInputStream(destFile);
+
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteProforma.pdf");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+	}
+
+	public void setStreamFile(StreamedContent streamFile) {
+		this.streamFile = streamFile;
+
+		System.out.println("Ingresa al Stream File: " + streamFile);
+	}
+
 	public void cerrarArchivo() throws IOException {
 		if (streamFile != null)
 			streamFile.getStream().close();
@@ -250,45 +270,12 @@ public class ReporteProformaController implements Serializable{
 		System.gc();
 	}
 
-	private Connection coneccionSQL() throws IOException {
-		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
-			Connection con = conexionSQL.getConnection();
-			return con;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public void setStreamFile(StreamedContent streamFile) {
-		this.streamFile = streamFile;
-
-		System.out.println("PASA POR AQUI " + streamFile);
-	}
-
 	public Proforma getProforma() {
 		return proforma;
 	}
 
 	public void setProforma(Proforma proforma) {
 		this.proforma = proforma;
-	}
-
-	public List<Proforma> getListaProforma() {
-		return listaProforma;
-	}
-
-	public void setListaProforma(List<Proforma> listaProforma) {
-		this.listaProforma = listaProforma;
-	}
-
-	public List<Cliente> getListaCliente() {
-		return listaCliente;
-	}
-
-	public void setListaCliente(List<Cliente> listaCliente) {
-		this.listaCliente = listaCliente;
 	}
 
 	public Cliente getCliente() {
@@ -323,14 +310,6 @@ public class ReporteProformaController implements Serializable{
 		this.tipoClienteSelect = tipoClienteSelect;
 	}
 
-	public List<Tipocliente> getListaTipoCliente() {
-		return listaTipoCliente;
-	}
-
-	public void setListaTipoCliente(List<Tipocliente> listaTipoCliente) {
-		this.listaTipoCliente = listaTipoCliente;
-	}
-
 	public Tipocliente getTipoCliente() {
 		return tipoCliente;
 	}
@@ -363,11 +342,35 @@ public class ReporteProformaController implements Serializable{
 		this.fechaFinal = fechaFinal;
 	}
 
-	public Integer getNombreCli() {
+	public List<Proforma> getProformas() {
+		return proformas;
+	}
+
+	public void setProformas(List<Proforma> proformas) {
+		this.proformas = proformas;
+	}
+
+	public List<Cliente> getClientes() {
+		return clientes;
+	}
+
+	public void setClientes(List<Cliente> clientes) {
+		this.clientes = clientes;
+	}
+
+	public List<Tipocliente> getTipoClientes() {
+		return tipoClientes;
+	}
+
+	public void setTipoClientes(List<Tipocliente> tipoClientes) {
+		this.tipoClientes = tipoClientes;
+	}
+
+	public String getNombreCli() {
 		return nombreCli;
 	}
 
-	public void setNombreCli(Integer nombreCli) {
+	public void setNombreCli(String nombreCli) {
 		this.nombreCli = nombreCli;
 	}
 }
