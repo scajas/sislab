@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,10 +19,9 @@ import javax.ejb.EJB;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -43,7 +43,6 @@ import ec.edu.epn.laboratorioBJ.beans.PurezaDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadMedidaDAO;
-import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Hidratacion;
 import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
@@ -59,15 +58,12 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
 import javax.faces.application.FacesMessage;
 
 @ManagedBean(name = "reporteConsumoExistenciasController")
 @SessionScoped
-@FacesValidator("primeDateRangeValidator")
-public class ReporteConsumoExistenciasController implements Serializable, Validator {
+
+public class ReporteConsumoExistenciasController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 1L;
@@ -149,16 +145,9 @@ public class ReporteConsumoExistenciasController implements Serializable, Valida
 	public void init() {
 		try {
 
-			// existencias =
-			// existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-			// filtrarExistencias =
-			// existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-			//
 			existencia = new Existencia();
-			// nuevoExistencia = new Existencia();
 
 			movimientosinventarios = movimientoInventarioI.getAll(Movimientosinventario.class);
-			System.out.println("Registros Obtenidos: " + movimientosinventarios.size());
 			movimientosInventario = new Movimientosinventario();
 
 		} catch (Exception e) {
@@ -184,7 +173,10 @@ public class ReporteConsumoExistenciasController implements Serializable, Valida
 		Existencia existenciatemp = movimientoInventarioI.buscarExistenciaById(id);
 		return existenciatemp;
 	}
-	
+	public String cambiarFormatoDouble(double numero) {
+		DecimalFormat formato = new DecimalFormat("#.00");
+		return formato.format(numero);
+	}
 	/** Generacion de PDF **/
 
 	public void generarPDF(ActionEvent event) throws Exception {
@@ -193,9 +185,11 @@ public class ReporteConsumoExistenciasController implements Serializable, Valida
 			if (streamFile != null)
 				streamFile.getStream().close();
 
-			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("fechaInicio", cambioFecha(getFechaInicio()));
-			parametros.put("fechaFinal", cambioFecha(getFechaFinal()));
+			System.out.println("FECHA INICIO : " + fechaInicio);
+			System.out.println("FECHA FIN : " + fechaFinal);
+
+			ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
 
 			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
 			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
@@ -205,8 +199,13 @@ public class ReporteConsumoExistenciasController implements Serializable, Valida
 				direccion = direccion + "/";
 			}
 
+			Map<String, Object> parametros = new HashMap<String, Object>();
+			parametros.put("CONTEXT", servletContext.getRealPath("/"));
+			parametros.put("fechaInicio", fechaInicio);
+			parametros.put("fechaFinal", fechaFinal);
+
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteConsumoExistencias.jrxml");
+					.getRealPath("/reportes/reporteConsumoExistencia.jrxml");
 			InputStream input = new FileInputStream(new File(jrxmlFile));
 			JasperReport jasperReport = JasperCompileManager.compileReport(input);
 			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
@@ -214,12 +213,12 @@ public class ReporteConsumoExistenciasController implements Serializable, Valida
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteConsumoExistencias.pdf");
-			
+			File destFile = new File(sourceFile.getParent(), "reporteConsumoExistencia.pdf");
+
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
-			InputStream stream = new FileInputStream(destFile);	
-			
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteConsumoExistencias.pdf");
+			InputStream stream = new FileInputStream(destFile);
+
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteConsumoExistencia.pdf");
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
@@ -240,7 +239,7 @@ public class ReporteConsumoExistenciasController implements Serializable, Valida
 	private Connection coneccionSQL() throws IOException {
 		try {
 			conexionPostrges conexionSQL = new conexionPostrges();
-			Connection con = conexionSQL.getConnection();
+			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -444,85 +443,51 @@ public class ReporteConsumoExistenciasController implements Serializable, Valida
 	public void setProductos(List<ProductoLab> productos) {
 		this.productos = productos;
 	}
-
+	
 	public String getNombrePro() {
 		return nombrePro;
 	}
-
+	
 	public void setNombrePro(String nombrePro) {
 		this.nombrePro = nombrePro;
 	}
-
+	
 	public List<Movimientosinventario> getMovimientosinventarios() {
 		return movimientosinventarios;
 	}
-
+	
 	public void setMovimientosinventarios(List<Movimientosinventario> movimientosinventarios) {
 		this.movimientosinventarios = movimientosinventarios;
 	}
-
-	/**
-	 * @return the fechaInicio
-	 */
+	
 	public Date getFechaInicio() {
 		return fechaInicio;
 	}
-
-	/**
-	 * @param fechaInicio
-	 *            the fechaInicio to set
-	 */
+	
 	public void setFechaInicio(Date fechaInicio) {
 		this.fechaInicio = fechaInicio;
 	}
-
-	/**
-	 * @return the fechaFinal
-	 */
+	
 	public Date getFechaFinal() {
 		return fechaFinal;
 	}
-
-	/**
-	 * @param fechaFinal
-	 *            the fechaFinal to set
-	 */
+	
 	public void setFechaFinal(Date fechaFinal) {
 		this.fechaFinal = fechaFinal;
 	}
-
-	/**
-	 * @return the streamFile
-	 */
+	
 	public StreamedContent getStreamFile() {
 		return streamFile;
 	}
-
-	/**
-	 * @param streamFile
-	 *            the streamFile to set
-	 */
+	
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
 	}
-
-	@Override
-	public void validate(FacesContext arg0, UIComponent arg1, Object arg2) throws ValidatorException {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * @return the movimientosInventario
-	 */
+	
 	public Movimientosinventario getMovimientosInventario() {
 		return movimientosInventario;
 	}
-
-	/**
-	 * @param movimientosInventario
-	 *            the movimientosInventario to set
-	 */
+	
 	public void setMovimientosInventario(Movimientosinventario movimientosInventario) {
 		this.movimientosInventario = movimientosInventario;
 	}

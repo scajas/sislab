@@ -143,6 +143,7 @@ public class ProformaController implements Serializable {
 			// proformas = proformaI.listaProformaByUnidadLab(uni.getCodigoU(),
 			// iduser.intValue());
 			proforma = new Proforma();
+			filtroProformas.clear();
 			nuevoProforma = new Proforma();
 			proformaBuscar = new Proforma();
 			// Seteo de valores a 0 para la vista
@@ -357,8 +358,6 @@ public class ProformaController implements Serializable {
 	public void buscarProforma() {
 
 		try {
-
-			RequestContext context = RequestContext.getCurrentInstance();
 
 			UnidadLabo uni = new UnidadLabo();
 			proformaBuscar.setCliente(getCliente());

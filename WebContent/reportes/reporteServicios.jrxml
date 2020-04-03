@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteServicios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0e19ffc1-3f6c-4ccc-ab43-5eb8353cd426">
+	<property name="ireport.zoom" value="1.3310000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="tipoServicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idUnidad" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CONTEXT" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT DISTINCT id_servicio, nombre_l, nombre_ts, nombre_s,
+precio_s
+FROM "Laboratorios".servicio s,
+"Laboratorios".laboratorio l,
+"Laboratorios".tiposervicio ts,
+"Laboratorios".unidad u,
+"Laboratorios".laboratorio_usuario lu,
+"public".usuario us
+WHERE s.id_laboratorio = l.id_laboratorio AND
+s.id_tiposerv = ts.id_tiposerv AND
+u.id_unidad = l.id_unidad AND
+l.id_laboratorio = lu.id_laboratorio AND
+u.id_unidad = us.id_unidad AND
+us.id_usuario = lu.id_usuario AND u.id_unidad = $P{idUnidad} AND
+ts.nombre_ts =$P{tipoServicio}
+ORDER BY nombre_s]]>
+	</queryString>
+	<field name="id_servicio" class="java.lang.String"/>
+	<field name="nombre_l" class="java.lang.String"/>
+	<field name="nombre_ts" class="java.lang.String"/>
+	<field name="nombre_s" class="java.lang.String"/>
+	<field name="precio_s" class="java.lang.Float"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="113" splitType="Stretch">
+			<staticText>
+				<reportElement x="118" y="42" width="333" height="10" uuid="e7226637-7415-42ce-8d96-5cc7ba31b90a"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Direc: Pasaje Andalucía E12-A y Alfredo Mena Caamaño Telf:2976300]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="32" width="333" height="10" uuid="dc0969a9-4730-44a1-bfaa-daf3207f481b"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Campus Politécnico José Rubén Orellana Ricaurte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="52" width="333" height="10" uuid="5393ba86-bf8b-4f11-8351-870b7532cd27"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RUC:1750005620001]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="62" width="333" height="10" uuid="00a97743-268b-48c5-950e-194e13d45b5b"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Quito-Ecuador]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="75" width="542" height="1" uuid="2cdd8d88-c05a-4ddd-b53a-f70781199fbb"/>
+			</line>
+			<staticText>
+				<reportElement x="189" y="89" width="198" height="24" uuid="1442505d-767c-4326-ac60-113e4dc31661"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE SERVICIOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="10" width="333" height="22" uuid="fc4d2ca3-5423-4084-bafc-97ce7dd38e9c"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="SansSerif" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESCUELA POLITECNICA NACIONAL]]></text>
+			</staticText>
+			<image>
+				<reportElement x="10" y="10" width="89" height="62" uuid="1f9e4cb5-a149-4d42-8cf5-bf1eb962a329"/>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="488" y="0" width="45" height="20" backcolor="#778D9B" uuid="16e599e6-446c-4ea5-87b0-ec2b6b9bb4cd"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRECIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="331" y="0" width="157" height="20" backcolor="#778D9B" uuid="204e4883-0699-4999-823c-e06a4bc433ae"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LABORATORIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="235" y="0" width="96" height="20" backcolor="#778D9B" uuid="ad3844ef-ae59-4cc5-b4b6-e47975d18d51"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO DE SERVICIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="76" y="0" width="159" height="20" forecolor="#000000" backcolor="#778D9B" uuid="6074078c-5747-4209-a969-ab6b0b4d594d"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="0" width="66" height="20" forecolor="#000000" backcolor="#778D9B" uuid="389342f0-10d8-41bb-8fe4-655b821dea25">
+					<property name="net.sf.jasperreports.export.pdf.tag.table"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="66" height="20" uuid="506a1c98-be09-41fa-a2f3-1f29b92af490"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id_servicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="331" y="0" width="157" height="20" uuid="92c207b7-07b0-4f33-8948-11c168dc0181"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_l}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="235" y="0" width="96" height="20" uuid="2fdd12ba-0af1-4c5e-a303-7c7cc9584e79"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_ts}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="76" y="0" width="159" height="20" uuid="5650ebaf-0242-4baa-b8e9-aea823d76083"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_s}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="488" y="0" width="45" height="20" uuid="8722cde4-0933-4cb3-a9fd-db4c337f4bca"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{precio_s}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="533" y="0" width="22" height="20" uuid="c9dbf154-467c-4bde-9886-f7d13e8f0c2f"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

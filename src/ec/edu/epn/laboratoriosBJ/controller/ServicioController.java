@@ -89,7 +89,6 @@ public class ServicioController implements Serializable {
 
 	private String nombreS;
 	private String idTipoS;
-	private StreamedContent streamFile = null;
 
 	// Metodo Init
 	@PostConstruct
@@ -276,15 +275,6 @@ public class ServicioController implements Serializable {
 		}
 	}
 
-	public void buscarServicioCombo() {
-
-		nuevoServicio.setTiposervicio(tipoServicioSelect);
-
-		servicios = servicioI.getparametrosTipoServicio(nuevoServicio.getTiposervicio().getNombreTs());
-
-		tiposervicio = new Tiposervicio();
-	}
-
 	public void buscarTipoServicio() {
 
 		try {
@@ -325,107 +315,6 @@ public class ServicioController implements Serializable {
 
 	public void pasarNombre(String nombre) {
 		setNombreS(nombre);
-	}
-
-	public void generarPDF(ActionEvent event) throws Exception {
-		try {
-
-			if (streamFile != null)
-				streamFile.getStream().close();
-
-			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("idServicio", tipoServicioSelect.getIdTiposerv());
-
-			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
-			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
-					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
-				direccion = direccion + "\\";
-			} else {
-				direccion = direccion + "/";
-			}
-
-			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/ReporteServicio1.jrxml");
-			InputStream input = new FileInputStream(new File(jrxmlFile));
-			JasperReport jasperReport = JasperCompileManager.compileReport(input);
-			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
-
-			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "ReporteServicio1.pdf");
-
-			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
-			InputStream stream = new FileInputStream(destFile);
-
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "ReporteServicio1.pdf");
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
-
-		}
-
-	}
-
-	public void generarEXCEL(ActionEvent event) throws Exception {
-		try {
-
-			if (streamFile != null)
-				streamFile.getStream().close();
-
-			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("idServicio", tipoServicioSelect.getIdTiposerv());
-
-			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
-			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
-					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
-				direccion = direccion + "\\";
-			} else {
-				direccion = direccion + "/";
-			}
-
-			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/ReporteServicio1.jrxml");
-			InputStream input = new FileInputStream(new File(jrxmlFile));
-			JasperReport jasperReport = JasperCompileManager.compileReport(input);
-			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
-
-			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "ReporteServicio1.xls");
-
-			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
-			InputStream stream = new FileInputStream(destFile);
-
-			streamFile = new DefaultStreamedContent(stream, "application/xls", "ReporteServicio1.xls");
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
-
-		}
-
-	}
-
-	public void cerrarArchivo() throws IOException {
-		if (streamFile != null)
-			streamFile.getStream().close();
-
-		streamFile = null;
-		System.gc();
-	}
-
-	private Connection coneccionSQL() throws IOException {
-		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
-			Connection con = conexionSQL.getConnection();
-			return con;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	public Servicio getServicio() {
@@ -474,18 +363,6 @@ public class ServicioController implements Serializable {
 
 	public void setLaboratorioLab(LaboratorioLab laboratorioLab) {
 		this.laboratorioLab = laboratorioLab;
-	}
-
-	/**
-	 * @param streamFile
-	 *            the streamFile to set
-	 */
-	public void setStreamFile(StreamedContent streamFile) {
-		this.streamFile = streamFile;
-	}
-
-	public StreamedContent getStreamFile() {
-		return streamFile;
 	}
 
 	public List<LaboratorioLab> getLaboratorios() {

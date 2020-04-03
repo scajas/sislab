@@ -73,8 +73,8 @@
 										<p:calendar id="fechaFinal"
 											value="#{reporteProformaController.fechaFinal}"
 											mindate="#{reporteProformaController.fechaInicio}"
-											pattern="dd/MM/yyyy" locale="es" required="true"
-											onkeypress="return permite(event, 'none')"
+											pattern="dd/MM/yyyy" locale="es"
+											onkeypress="return permite(event, 'none')" required="true"
 											requiredMessage="Fecha Final Requerida" navigator="true"
 											effect="fadeIn" effectDuration="100" showOn="button">
 
@@ -86,9 +86,9 @@
 											value="#{reporteProformaController.nombreCli}">
 											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
 											<f:selectItems
-												value="#{reporteProformaController.listaTipoCliente}"
+												value="#{reporteProformaController.tipoClientes}"
 												var="tipoCliente" itemLabel="#{tipoCliente.tipoTcl}"
-												itemValue="#{tipoCliente.idTipocliente}" />
+												itemValue="#{tipoCliente.tipoTcl}" />
 
 										</p:selectOneMenu>
 
@@ -111,7 +111,7 @@
 										align="center">
 										<tr align="center">
 											<td><p:commandLink
-													actionListener="#{reporteProformaController.buscarCliente}"
+													actionListener="#{reporteProformaController.buscarProforma}"
 													update="@([id$=tblProforma]),@([id$=messagesForm])"
 													process="@this,formBuscar">
 
@@ -125,11 +125,11 @@
 
 												</p:commandLink></td>
 
-											<td><p:commandLink
+											<td><p:commandLink id="btnGenerarReporte"
 													oncomplete="PF('repoServicio').show();"
-													id="btnGenerarReporte"
+													actionListener="#{reporteProformaController.generarPDF}"
 													update="@([id$=dialogReporteServ], [id$=pdfView])"
-													actionListener="#{reporteProformaController.generarPDF}">
+													process="@this,formBuscar">
 
 													<p:graphicImage value="/images/archivos/imprimir.png"
 														height="35px" width="35px" title="Generar Reporte" />
@@ -142,98 +142,110 @@
 										</tr>
 									</table>
 
-									<br /> <br />
+									<br />
 								</div>
+								<br />
+
+								<p>
+									<strong>Nota: Para generar el Reporte se tienen que
+										llenar todos los campos</strong>
+								</p>
+
 							</h:form>
 						</center>
-					</p:fieldset>
-					<br />
-					<p:dataTable id="tblProforma"
-						value="#{reporteProformaController.listaProforma}" var="proforma"
-						emptyMessage="No se pudo encontrar ninguna coincidencia" rows="10"
-						paginator="true"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15"
-						style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+
+						<br />
+						<p:dataTable id="tblProforma"
+							value="#{reporteProformaController.proformas}" var="proforma"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-						paginatorPosition="bottom">
+							paginatorPosition="bottom">
 
-						<p:column headerText="Proforma" style="width: 10%">
-							<f:facet name="header">
-								<h:outputText value="Proforma" />
-							</f:facet>
-							<h:outputText value="#{proforma.idProforma}" />
-						</p:column>
+							<p:column headerText="Proforma" style="width: 10%">
+								<f:facet name="header">
+									<h:outputText value="Proforma" />
+								</f:facet>
+								<h:outputText value="#{proforma.idProforma}" />
+							</p:column>
 
-						<p:column headerText="Fecha" style="width: 8%">
-							<f:facet name="header">
-								<h:outputText value="Fecha" />
-							</f:facet>
-							<h:outputText value="#{proforma.fecha}" />
-						</p:column>
+							<p:column headerText="Fecha" style="width: 8%">
+								<f:facet name="header">
+									<h:outputText value="Fecha" />
+								</f:facet>
+								<h:outputText value="#{proforma.fecha}" />
+							</p:column>
 
-						<p:column headerText="Cliente" style="width: 30%">
-							<f:facet name="header">
-								<h:outputText value="Cliente" />
-							</f:facet>
-							<h:outputText value="#{proforma.cliente.nombreCl}" />
-						</p:column>
+							<p:column headerText="Cliente" style="width: 30%">
+								<f:facet name="header">
+									<h:outputText value="Cliente" />
+								</f:facet>
+								<h:outputText value="#{proforma.cliente.nombreCl}" />
+							</p:column>
 
-						<p:column headerText="Tipo de Cliente" style="width: 11%">
-							<f:facet name="header">
-								<h:outputText value="Tipo de Cliente" />
-							</f:facet>
-							<h:outputText value="#{proforma.cliente.tipocliente.tipoTcl}" />
-						</p:column>
+							<p:column headerText="Tipo de Cliente" style="width: 11%">
+								<f:facet name="header">
+									<h:outputText value="Tipo de Cliente" />
+								</f:facet>
+								<h:outputText value="#{proforma.cliente.tipocliente.tipoTcl}" />
+							</p:column>
 
-						<p:column headerText="Estado" style="width: 8%">
-							<f:facet name="header">
-								<h:outputText value="Estado" />
-							</f:facet>
-							<h:outputText value="#{proforma.estadoPo}" />
-						</p:column>
+							<p:column headerText="Estado" style="width: 8%">
+								<f:facet name="header">
+									<h:outputText value="Estado" />
+								</f:facet>
+								<h:outputText value="#{proforma.estadoPo}" />
+							</p:column>
 
-						<p:column headerText="SubTotal" style="width: 6%">
-							<f:facet name="header">
-								<h:outputText value="Subtotal" />
-							</f:facet>
-							<h:outputText value="#{proforma.subtotalPo}" />
-						</p:column>
+							<p:column headerText="SubTotal" style="width: 6%">
+								<f:facet name="header">
+									<h:outputText value="Subtotal" />
+								</f:facet>
+								<h:outputText
+									value="#{reporteProformaController.cambiarFormatoDouble(proforma.subtotalPo)}" />
+							</p:column>
 
-						<p:column headerText="IVA" style="width: 6%">
-							<f:facet name="header">
-								<h:outputText value="IVA" />
-							</f:facet>
-							<h:outputText value="#{proforma.ivaPo}" />
-						</p:column>
+							<p:column headerText="IVA" style="width: 6%">
+								<f:facet name="header">
+									<h:outputText value="IVA" />
+								</f:facet>
+								<h:outputText
+									value="#{reporteProformaController.cambiarFormatoDouble(proforma.ivaPo)}" />
+							</p:column>
 
-						<p:column headerText="Total" style="width: 6%">
-							<f:facet name="header">
-								<h:outputText value="Total" />
-							</f:facet>
-							<h:outputText value="#{proforma.totalPo}" />
-						</p:column>
-					</p:dataTable>
+							<p:column headerText="Total" style="width: 6%">
+								<f:facet name="header">
+									<h:outputText value="Total" />
+								</f:facet>
+								<h:outputText
+									value="#{reporteProformaController.cambiarFormatoDouble(proforma.totalPo)}" />
+							</p:column>
+						</p:dataTable>
 
-					<br />
-					<br />
+						<br />
+						<br />
 
-					<center>
+						<center>
 
-						<!-- Exportar a Excel Sin Formato  -->
-						<h3>Exportar sin Formato</h3>
-						<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
-							<h:graphicImage value="/images/excel.png" width="35px"
-								height="35px" />
-							<pe:exporter type="xlsx" target="tblProforma" fileName="Proforma"
-								tableTitle="Proforma" selectionOnly="false"
-								orientation="Landscape" datasetPadding="4" />
-						</h:commandLink>
+							<!-- Exportar a Excel Sin Formato  -->
+							<h3>Exportar sin Formato</h3>
+							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+								<h:graphicImage value="/images/excel.png" width="35px"
+									height="35px" />
+								<pe:exporter type="xlsx" target="tblProforma"
+									fileName="Proforma" tableTitle="Proforma" selectionOnly="false"
+									orientation="Landscape" datasetPadding="4" />
+							</h:commandLink>
 
-						<br /> <br />
+							<br /> <br />
 
-					</center>
+						</center>
+
+					</p:fieldset>
 				</p:panel>
 
 			</h:form>
@@ -252,19 +264,18 @@
 				<p:dialog id="dialogReporteServ" resizable="true"
 					widgetVar="repoServicio" modal="true" hideEffect="fade"
 					responsive="true" dynamic="true" width="65%"
-					header="Reporte Proforma">
-					<p:panel id="toggleable" toggleable="true" closable="true"
-						toggleSpeed="500" closeSpeed="500">
-						<div align="right">
-							<p:commandLink id="btnCerrarDialogs" ajax="false"
-								action="#{reporteProformaController.cerrarArchivo()}"
-								onsuccess="PF('repoServicio').hide();">
-								<h:graphicImage value="/images/dashboard/NoVerificado.png"
-									title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
-									height="25" />
+					header="Reporte Proformas">
+					<p:panel>
 
-							</p:commandLink>
-						</div>
+						<p:commandLink id="btnCerrarDialogs" ajax="false"
+							action="#{reporteProformaController.cerrarArchivo()}"
+							onsuccess="PF('repoServicio').hide();">
+							<h:graphicImage value="/images/dashboard/NoVerificado.png"
+								title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
+								height="25" />
+
+						</p:commandLink>
+
 						<table style="width: 100%; height: 100%;">
 							<tr>
 								<td><p:media id="pdfView" height="470px" width="100%"
@@ -273,6 +284,7 @@
 									</p:media></td>
 
 							</tr>
+
 						</table>
 					</p:panel>
 

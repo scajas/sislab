@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteExistencias" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe9c2c87-c928-4b4c-b1fe-5e839291cdcf">
+	<property name="ireport.zoom" value="1.3310000000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="CONTEXT" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tipoproducto" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="caracteristica" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT e.id_existencia , p.nombre_pr ,
+b.nombre_bg , c.nombre_cr ,  g.nombre_gr,
+tp.nombre_tprod, e.cantidad_e, um.sigla_um
+FROM
+"Laboratorios".existencias AS e,
+"Laboratorios".producto AS p,
+"Laboratorios".bodega AS b,
+"Laboratorios".caracteristica AS c,
+"Laboratorios".grado AS g,
+"Laboratorios".tipoproducto AS tp,
+"Laboratorios".unidadmedida AS um
+  WHERE e.id_producto = p.id_producto
+    AND e.id_bodega = B."id_bodega"
+    AND e.id_caracteristica = c.id_caracteristica
+    AND e.id_grado = g.id_grado
+    AND e.id_tipoprod = tp.id_tipoprod
+    AND e.id_umedida = um.id_umedida
+    AND tp.nombre_tprod like $P{tipoproducto}
+    AND c.nombre_cr like $P{caracteristica}
+  ORDER BY P.nombre_pr ASC]]>
+	</queryString>
+	<field name="id_existencia" class="java.lang.String"/>
+	<field name="nombre_pr" class="java.lang.String"/>
+	<field name="nombre_bg" class="java.lang.String"/>
+	<field name="nombre_cr" class="java.lang.String"/>
+	<field name="nombre_gr" class="java.lang.String"/>
+	<field name="nombre_tprod" class="java.lang.String"/>
+	<field name="cantidad_e" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[en la interfaz SALDO NETO]]></fieldDescription>
+	</field>
+	<field name="sigla_um" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="113" splitType="Stretch">
+			<staticText>
+				<reportElement x="189" y="89" width="198" height="24" uuid="02073903-22b8-48f5-8b5a-d085c3cce7ea"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE EXISTENCIAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="42" width="333" height="10" uuid="97c2602e-09dc-4988-93ef-8939cbe206f1"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Direc: Pasaje Andalucía E12-A y Alfredo Mena Caamaño Telf:2976300]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="10" width="333" height="22" uuid="99684f4f-b33e-4605-a3ce-97137ddf4414"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="SansSerif" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESCUELA POLITECNICA NACIONAL]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="75" width="542" height="1" uuid="6b2fd2ac-c780-4fc4-b61d-12c04b1343f0"/>
+			</line>
+			<staticText>
+				<reportElement x="118" y="52" width="333" height="10" uuid="e3ad6236-75a0-45fa-9bb5-1889dc10afb4"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RUC:1750005620001]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="118" y="62" width="333" height="10" uuid="95d60742-f2ab-457a-a42c-2e5906c709d3"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Quito-Ecuador]]></text>
+			</staticText>
+			<image>
+				<reportElement x="10" y="13" width="89" height="62" uuid="f2ef4e2e-8d93-40fd-8ea2-fab320f3331d"/>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="118" y="32" width="333" height="10" uuid="5883bc67-2fd3-4351-9e1a-64d38293b6e1"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Arial" size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Campus Politécnico José Rubén Orellana Ricaurte]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="0" width="60" height="20" forecolor="#000000" backcolor="#778D9B" uuid="5bdca4b6-1991-454d-8433-6575ccf3c5ad">
+					<property name="net.sf.jasperreports.export.pdf.tag.table"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[ID EXISTENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="70" y="0" width="109" height="20" forecolor="#000000" backcolor="#778D9B" uuid="68c3b25a-be91-42b0-b615-45c0791d2897"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRODUCTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="179" y="0" width="77" height="20" backcolor="#778D9B" uuid="cdba825d-5dc6-4d8a-a40d-5ac31766eafe"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BODEGA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="256" y="0" width="92" height="20" backcolor="#778D9B" uuid="73edd038-c897-49b0-8467-7af45b30f1e2"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARACTERÍSTICA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="348" y="0" width="56" height="20" backcolor="#778D9B" uuid="1c750dc9-fc5d-4d90-96d1-772f3fd02518"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="404" y="0" width="74" height="20" backcolor="#778D9B" uuid="60ea9047-a796-4172-b4b1-91a714c1ea0d"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="478" y="0" width="38" height="20" backcolor="#778D9B" uuid="eed3db91-45e3-4560-902b-8475b680be75"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[S. NETO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="516" y="0" width="36" height="20" backcolor="#778D9B" uuid="4a132b09-e639-4a44-8886-5901a090b692"/>
+				<box>
+					<pen lineWidth="0.25" lineColor="#000000"/>
+					<topPen lineWidth="0.25" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UNIDAD]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="0" width="60" height="20" uuid="b5da6ce9-4a45-4962-a20b-9331e49fb689"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id_existencia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="70" y="0" width="109" height="20" uuid="69e9d2cd-bebc-4df8-9716-0e53f7004ae4"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_pr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="179" y="0" width="77" height="20" uuid="2d36e849-0837-43e5-b54b-cff395ca9e79"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_bg}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="256" y="0" width="92" height="20" uuid="2b1c32e9-27c3-4c92-a627-d852c9106ecd"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_cr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="348" y="0" width="56" height="20" uuid="a91b82d7-eda6-4be3-972f-a5425c3270bf"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_gr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="404" y="0" width="74" height="20" uuid="d7156e90-38a6-40e7-9b58-3fa00739f11a"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_tprod}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="478" y="0" width="38" height="20" uuid="d3ee96d6-bb74-4d37-8c9a-a5337b762c7c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_e}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="516" y="0" width="36" height="20" uuid="54350b48-2bcf-482d-a9b0-ec2aac766308"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sigla_um}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20">
+			<textField>
+				<reportElement x="529" y="0" width="23" height="20" uuid="8c655f6a-fc14-4793-80b3-0e2f44775089"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

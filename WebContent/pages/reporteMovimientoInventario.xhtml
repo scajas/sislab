@@ -38,7 +38,8 @@
 			<h:form id="formprincipal">
 
 				<p:remoteCommand name="rc"
-					action="#{reporteMovInvController.limpiarCampos()}" />
+					action="#{reporteMovInvController.limpiarCampos}"
+					update="@this,@([id$=messagesForm],[id$=formprincipal])" />
 
 				<p:panel>
 					<p:fieldset legend="Buscar"
@@ -141,53 +142,71 @@
 								<br />
 							</h:form>
 						</center>
-					</p:fieldset>
-					<br />
-					<p:dataTable id="tblMovInv" var="mov"
-						emptyMessage="No se pudo encontrar ninguna coincidencia" rows="10"
-						paginator="true"
-						value="#{reporteMovInvController.movimientoInventarios}"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15"
-						style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+
+						<br />
+						<p:dataTable id="tblMovInv" var="mov"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							rows="10" paginator="true"
+							value="#{reporteMovInvController.movimientoInventarios}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 						-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
 						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-						paginatorPosition="bottom">
+							paginatorPosition="bottom"
+							filteredValue="#{reporteMovInvController.filtrarMovimientos}">
 
-						<p:column headerText="Orden de Inventario" style="width: 12%">
-							<h:outputText value="#{mov.ordeninventario.idOrdeninventario}" />
-						</p:column>
+							<p:column headerText="Orden de Inventario" style="width: 9%"
+								filterBy="#{mov.ordeninventario.idOrdeninventario}"
+								filterMatchMode="contains">
+								<h:outputText value="#{mov.ordeninventario.idOrdeninventario}" />
+							</p:column>
 
-						<p:column headerText="Producto" style="width: 12%">
-							<h:outputText
-								value="#{reporteMovInvController.cambiarDatosExistencia(mov.idExistencia).producto.nombrePr}" />
-						</p:column>
+							<p:column headerText="Producto" style="width: 12%"
+								filterBy="#{reporteMovInvController.cambiarDatosExistencia(mov.idExistencia).producto.nombrePr}"
+								filterMatchMode="contains" filterStyle="width: 80%">
+								<h:outputText
+									value="#{reporteMovInvController.cambiarDatosExistencia(mov.idExistencia).producto.nombrePr}" />
+							</p:column>
 
-						<p:column headerText="F. de Ingreso" style="width: 6%">
-							<h:outputText value="#{mov.fechaMi}" />
-						</p:column>
+							<p:column headerText="F. de Ingreso" style="width: 6%"
+								filterBy="#{mov.fechaMi}" filterMatchMode="contains"
+								filterStyle="width: 70%">
+								<h:outputText value="#{mov.fechaMi}" />
+							</p:column>
 
-						<p:column headerText="Responsable" style="width: 12%">
-							<h:outputText value="#{mov.ordeninventario.responsableOi}" />
-						</p:column>
+							<p:column headerText="Responsable" style="width: 12%"
+								filterBy="#{mov.ordeninventario.responsableOi}"
+								filterMatchMode="contains" filterStyle="width: 80%">
+								<h:outputText value="#{mov.ordeninventario.responsableOi}" />
+							</p:column>
 
-						<p:column headerText="Tipo de Orden de Inv" style="width: 10%">
-							<h:outputText
-								value="#{mov.ordeninventario.tipordeninv.nombreToi}" />
-						</p:column>
+							<p:column headerText="Tipo de Orden de Inv" style="width: 10%"
+								filterBy="#{mov.ordeninventario.tipordeninv.nombreToi}"
+								filterMatchMode="contains">
+								<h:outputText
+									value="#{mov.ordeninventario.tipordeninv.nombreToi}" />
+							</p:column>
 
-						<p:column headerText="Cantidad Mov." style="width: 8%">
-							<h:outputText value="#{mov.cantidadMov}" />
-						</p:column>
+							<p:column headerText="Cantidad Mov." style="width: 8%"
+								filterBy="#{reporteMovInvController.cambiarFormatoDouble(mov.cantidadMov)}"
+								filterMatchMode="contains">
+								<h:outputText
+									value="#{reporteMovInvController.cambiarFormatoDouble(mov.cantidadMov)}" />
+							</p:column>
 
-						<p:column headerText="Observación" style="width: 12%">
-							<h:outputText value="#{mov.observacionesMov}" />
-						</p:column>
+							<p:column headerText="Observación" style="width: 12%"
+								filterBy="#{mov.observacionesMov}" filterMatchMode="contains"
+								filterStyle="width: 80%">
+								<h:outputText value="#{mov.observacionesMov}" />
+							</p:column>
 
-					</p:dataTable>
+						</p:dataTable>
 
-					<br />
-					<br />
+						<br />
+						<br />
+
+					</p:fieldset>
 
 				</p:panel>
 
@@ -253,9 +272,10 @@
 							</p:column>
 
 							<p:column headerText="Saldo Neto"
-								filterBy="#{existencia.cantidadE}" filterMatchMode="contains"
-								filterStyle="width: 80%">
-								<h:outputText value="#{existencia.cantidadE}" />
+								filterBy="#{reporteMovInvController.cambiarFormatoDouble(existencia.cantidadE)}"
+								filterMatchMode="contains" filterStyle="width: 80%">
+								<h:outputText
+									value="#{reporteMovInvController.cambiarFormatoDouble(existencia.cantidadE)}" />
 							</p:column>
 
 							<p:column headerText="U.M."

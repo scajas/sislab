@@ -50,8 +50,10 @@
 							<h:form id="formBuscar">
 								<div class="ui-fluid">
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-										columnClasses="pnlGridFondoFilas,,pnlGridFondoFilas"
-										id="pnlgBusquedaServicio">
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										id="pnlgBusquedaServicio"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 65%"
+										layout="grid">
 
 										<h:outputLabel value="Ingrese Fecha Inicial: "
 											style="font-size: 15px" />
@@ -77,52 +79,57 @@
 											size="35">
 											<f:attribute name="fechaInicio"
 												value="#{reporteConsumoExistenciasController.fechaInicio}" />
-											<f:validator validatorId="primeDateRangeValidator" />
+
 										</p:calendar>
 									</p:panelGrid>
 
 									<br /> <br />
 
-									<p:panelGrid columns="2" style="width:200px "
-										columnClasses="ui-grid-col-2" layout="grid"
-										styleClass="ui-panelgrid-blank">
-										<p:commandLink
-											actionListener="#{reporteConsumoExistenciasController.consultarMovimientos}"
-											update="@([id$=tblConsumoExis]),@([id$=messagesForm])"
-											process="@this,formBuscar">
+									<table width="200" style="BORDER: #000000 0px solid;"
+										align="center">
+										<tr align="center">
+											<td><p:commandLink
+													actionListener="#{reporteConsumoExistenciasController.consultarMovimientos}"
+													update="@([id$=tblConsumoExis]),@([id$=messagesForm])"
+													process="@this,formBuscar">
 
-											<h:graphicImage value="/images/archivos/busqueda.png"
-												class="btn bt-success" title="Buscar"
-												style="border:0px solid #CAD6E0;" width="35" height="35 " />
+													<h:graphicImage value="/images/archivos/busqueda.png"
+														class="btn bt-success" title="Buscar"
+														style="border:0px solid #CAD6E0;" width="35" height="35 " />
+													<p>
+														<strong>Buscar</strong>
+													</p>
+												</p:commandLink></td>
 
-										</p:commandLink>
+											<td><p:commandLink
+													oncomplete="PF('repoConsumoEx').show();"
+													id="btnGenerarReporte"
+													update="@([id$=dialogReporteConsum], [id$=pdfView])"
+													actionListener="#{reporteConsumoExistenciasController.generarPDF}">
+													<center>
+														<p:graphicImage value="/images/archivos/imprimir.png"
+															height="35px" width="35px" title="Generar Reporte" />
+													</center>
+													<p>
+														<strong>Reporte</strong>
+													</p>
+												</p:commandLink></td>
 
-										<p:commandLink oncomplete="PF('repoConsumoEx').show();"
-											id="btnGenerarReporte"
-											update="@([id$=dialogReporteConsum], [id$=pdfView])"
-											actionListener="#{reporteConsumoExistenciasController.generarPDF}">
-											<center>
-												<p:graphicImage value="/images/archivos/imprimir.png"
-													height="35px" width="35px" title="Generar Reporte" />
-											</center>
-										</p:commandLink>
-
-									</p:panelGrid>
-									<br /> <br />
+										</tr>
+									</table>
 								</div>
+
+								<br />
+
+								<p>
+									<strong>Nota: Para generar el Reporte se tienen que
+										llenar todos los campos</strong>
+								</p>
 							</h:form>
 						</center>
-					</p:fieldset>
-					<br />
-					<p:fieldset
-						style="border-radius: 5px 5px 5px 5px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-						;width: '90%';">
+
+						<br />
+
 
 
 						<p:dataTable id="tblConsumoExis"
@@ -179,7 +186,8 @@
 								<f:facet name="header">
 									<h:outputText value="Cantidad" />
 								</f:facet>
-								<h:outputText value="#{mov.cantidadMov}" />
+								<h:outputText
+									value="#{reporteConsumoExistenciasController.cambiarFormatoDouble(mov.cantidadMov)}" />
 							</p:column>
 						</p:dataTable>
 					</p:fieldset>
