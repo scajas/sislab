@@ -49,12 +49,12 @@
 				<h:form id="formprincipal">
 
 					<p:remoteCommand name="rc"
-						action="#{printOrdenFacturaController.limpiarOT()}"
+						action="#{printFormatoOrdenInternaController.limpiarOT()}"
 						update="formprincipal" />
 
 					<div id="imprimirOT">
 						<center>
-							<table width="1060" align="center"
+							<table width="1000" align="center"
 								style="BORDER-BOTTOM: #000000 4px solid;">
 								<tr>
 									<td align="center" width="50"></td>
@@ -62,28 +62,28 @@
 											value="ESCUELA POLITECNICA NACIONAL"
 											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
 										<br /> <h:outputText
-											value="#{printOrdenFacturaController.unidad.nombreU} "
+											value="#{printFormatoOrdenInternaController.unidad.nombreU} "
 											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
 										<h:outputText
-											value="#{printOrdenFacturaController.unidad.siglaU}"
+											value="#{printFormatoOrdenInternaController.unidad.siglaU}"
 											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 20px; " />
 										<br /> <h:outputText
-											rendered="#{printOrdenFacturaController.unidad.idUnidad != 2}"
+											rendered="#{printFormatoOrdenInternaController.unidad.idUnidad != 2}"
 											value=" Campus Politécnico José Rubén Orellana Ricaurte "
 											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
-											value="Direc.: #{printOrdenFacturaController.unidad.direccionU}"
-											rendered="#{printOrdenFacturaController.unidad.idUnidad != 2}"
+											value="Direc.: #{printFormatoOrdenInternaController.unidad.direccionU}"
+											rendered="#{printFormatoOrdenInternaController.unidad.idUnidad != 2}"
 											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <h:outputText
-											value="Telf.: #{printOrdenFacturaController.unidad.telefonoU}"
-											rendered="#{printOrdenFacturaController.unidad.idUnidad != 2}"
+											value="Telf.: #{printFormatoOrdenInternaController.unidad.telefonoU}"
+											rendered="#{printFormatoOrdenInternaController.unidad.idUnidad != 2}"
 											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
-											rendered="#{printOrdenFacturaController.unidad.idUnidad != 2}"
-											value="Personas de Contacto: contacto Telf.: #{printOrdenFacturaController.unidad.telCont1U} e-mail: #{printOrdenFacturaController.unidad.emailCont1U}"
+											rendered="#{printFormatoOrdenInternaController.unidad.idUnidad != 2}"
+											value="Personas de Contacto: contacto Telf.: #{printFormatoOrdenInternaController.unidad.telCont1U} e-mail: #{printFormatoOrdenInternaController.unidad.emailCont1U}"
 											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
-											rendered="#{printOrdenFacturaController.unidad.idUnidad != 2}"
-											value="contacto Telf.: #{printOrdenFacturaController.unidad.telCont2U} e-mail: #{printOrdenFacturaController.unidad.emailCont2U}"
+											rendered="#{printFormatoOrdenInternaController.unidad.idUnidad != 2}"
+											value="contacto Telf.: #{printFormatoOrdenInternaController.unidad.telCont2U} e-mail: #{printFormatoOrdenInternaController.unidad.emailCont2U}"
 											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <h:outputText
-											rendered="#{printOrdenFacturaController.unidad.idUnidad != 2}"
+											rendered="#{printFormatoOrdenInternaController.unidad.idUnidad != 2}"
 											value="Quito - Ecuador"
 											style="FONT-FAMILY: arial; FONT-SIZE: 16px; " /> <br /> <br /></td>
 									<td align="center" width="50"></td>
@@ -91,89 +91,50 @@
 							</table>
 							<br /> <br />
 
-							<table width="1060" style="BORDER: #000000 1px solid;"
+							<table width="1000" style="BORDER: #000000 1px solid;"
 								align="center">
 								<tr align="justify">
 									<td align="left" width="20"><h:outputText value="Orden: "
 											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
 									<td align="left"><h:outputText
-											value="#{printOrdenFacturaController.ordenTrabajo.idOrden}"
+											value="#{printFormatoOrdenInternaController.ordenTrabajo.idOrden}"
 											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
 
-									<td align="left" width="20"><h:outputText
-											value="Proforma: "
+									<td align="left" width="20"><h:outputText value=""
 											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
-									<td align="left"><h:outputText
-											value="#{printOrdenFacturaController.obtenerFactura(printOrdenFacturaController.ordenTrabajo.idFactura).idProforma}"
-											style="FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
+									<td align="left"></td>
 
 								</tr>
-
-
-
-
 							</table>
 
 							<br /> <br />
 
-							<table width="1060" style="BORDER: #000000 1px solid;"
+							<table width="1000" style="BORDER: #000000 1px solid;"
 								align="center">
 								<tr align="justify">
 									<td align="left" width="20"><p:dataTable
-											id="tblVerDetalleOT" scrollable="false" scrollHeight="200"
-											value="#{printOrdenFacturaController.listaDetalleOrden}"
-											var="detalleOT" sortBy="#{detalleOT.muestra.idMuestra}"
+											id="tblVerExistencias"
+											value="#{printFormatoOrdenInternaController.existencias}"
+											var="existencia"
 											emptyMessage="No se han registrado detalles de orden">
 
-											<p:column headerText="Nro" style="width: 4%">
-												<center>
-													<h:outputText
-														value="#{printOrdenFacturaController.listarNumeroM(detalleOT.muestra.idMuestra)}" />
-												</center>
+
+											<p:column headerText="ID Existencia" style="width: 11%">
+												<h:outputText value="⠀⠀⠀⠀⠀⠀⠀⠀" />
 											</p:column>
 
-											<p:column headerText="ID Muestra" style="width: 10%">
-												<h:outputText value="#{detalleOT.muestra.idMuestra}" />
+											<p:column headerText="Existencia">
+												<h:outputText value="#{existencia.idExistencia}" />
 											</p:column>
 
-											<p:column headerText="Muestra">
-												<h:outputText value="#{detalleOT.muestra.codigoMCliente}" />
+											<p:column headerText="Cantidad" style="width: 11%">
+												<h:outputText value="#{existencia.idExistencia}" />
 											</p:column>
 
-											<p:column headerText="Servicio">
-												<h:outputText
-													value="#{printOrdenFacturaController.servicio(detalleOT.idServicio).nombreS}" />
+											<p:column headerText="U. Medida" style="width: 11%">
+												<h:outputText value="#{existencia.idExistencia}" />
 											</p:column>
 
-											<p:column headerText="Método">
-												<h:outputText
-													value="#{printOrdenFacturaController.metodo(detalleOT.idMetodo)}" />
-											</p:column>
-
-											<p:column headerText="Laboratorio">
-												<h:outputText
-													value="#{printOrdenFacturaController.servicio(detalleOT.idServicio).laboratorio.nombreL}" />
-											</p:column>
-
-											<p:column headerText="Responsable">
-												<h:outputText value="#{detalleOT.personal.nombresPe}" />
-											</p:column>
-
-											<p:column headerText="h/T" style="width: 4%">
-												<center>
-													<h:outputText value="#{detalleOT.horasTrabajo}" />
-												</center>
-											</p:column>
-
-											<p:column headerText="F. Inicio" style="width: 9%">
-												<h:outputText
-													value="#{printOrdenFacturaController.cambioFecha(detalleOT.fechaInicioAnalisis)}" />
-											</p:column>
-
-											<p:column headerText="F. Fin" style="width: 9%">
-												<h:outputText
-													value="#{printOrdenFacturaController.cambioFecha(detalleOT.fechaFinAnalisis)}" />
-											</p:column>
 										</p:dataTable></td>
 								</tr>
 
@@ -181,13 +142,13 @@
 
 							<br /> <br />
 
-							<table width="1060" style="BORDER: #000000 1px solid;"
+							<table width="1000" style="BORDER: #000000 1px solid;"
 								align="center" title="Responsables">
 
 								<tr align="justify">
 									<td align="center" width="20"><p:dataTable
 											id="tblPersonalTemp"
-											value="#{printOrdenFacturaController.tempPersonalLabs}"
+											value="#{printFormatoOrdenInternaController.tempPersonalLabs}"
 											var="personal"
 											emptyMessage="No se pudo encontrar ninguna coincidencia">
 
@@ -214,30 +175,43 @@
 
 							<br />
 
-							<table width="1060" style="BORDER: no border;" align="center">
+							<table width="1000" style="BORDER: no border;" align="center">
 								<tr align="center">
 									<td align="justify" width="200"><h:outputText
-											value="#{printOrdenFacturaController.laboratorio.leyendaOtL}"
+											value="#{printFormatoOrdenInternaController.laboratorio.leyendaOtL}"
 											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
 								</tr>
 							</table>
 							<br />
-							<table width="1060" style="BORDER: no border;" align="center">
+
+							<table width="1000" style="BORDER: #000000 1px solid;"
+								align="center">
 								<tr align="center">
-									<td align="left"><h:outputText value="Obeservaciones: "
+									<td align="left"><h:outputText value="Observaciones: "
 											style="FONT-WEIGHT: bold; FONT-FAMILY: arial; FONT-SIZE: 17px; " /></td>
 								</tr>
 								<tr align="justify">
 									<td align="justify" width="200"><h:outputText
-											value="#{printOrdenFacturaController.ordenTrabajo.observOt}"
+											value="⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+"
 											style="FONT-FAMILY: arial; FONT-SIZE: 15px; " /></td>
 								</tr>
 							</table>
 
-							<br /> <br /> <br /> <br /> <br />
+							<br /> <br /> <br /> <br />
+							<br />
 
 
-							<table width="1060" align="center">
+							<table width="1000" align="center">
 								<tr align="center">
 									<td align="center"><h:outputText
 											value="___________________"
@@ -273,14 +247,14 @@
 
 							<p:commandButton value="Cancelar" icon=" fa fa-arrow-left"
 								style="width: 150px; margin: 10px"
-								action="#{printOrdenFacturaController.regresarPanelOT()}">
+								action="#{printFormatoOrdenInternaController.regresarPanelOT()}">
 								<p:confirm header="Cancelar"
 									message="¿Está seguro que desea regresar a la interfaz anterior?."
 									icon="fa fa-exclamation-triangle" />
 							</p:commandButton>
 
-							<p:confirmDialog global="true" showEffect="fade"
-								widgetVar="cdCancelarOT" hideEffect="fade">
+							<p:confirmDialog global="true" showEffect="fade" widgetVar="cdCancelarOT"
+								hideEffect="fade">
 								<center>
 									<p:commandButton value="Aceptar" type="button"
 										styleClass="ui-confirmdialog-yes" icon="fa fa-check-square-o"
@@ -298,6 +272,9 @@
 
 
 			</p:fieldset>
+
+
+		
 
 		</h:body>
 
@@ -350,10 +327,6 @@
 	max-width: 1500px !important;
 	max-height: 500px !important;
 	margin-bottom: 5px !important;
-}
-
-.ui-datatable-scrollable-theadclone {
-	visibility: collapse;
 }
 </style>
 

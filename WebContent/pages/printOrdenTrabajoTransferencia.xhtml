@@ -271,9 +271,26 @@
 								<p:printer target="formprincipal" />
 							</p:commandButton>
 
-							<p:commandButton style="width: 150px; margin: 10px"
-								icon=" fa fa-arrow-left" onclick="PF('cdCancelarOT').show();"
-								value="Cancelar"></p:commandButton>
+							<p:commandButton value="Cancelar" icon=" fa fa-arrow-left"
+								style="width: 150px; margin: 10px"
+								action="#{printOrdenTransferenciaController.regresarPanelOT()}">
+								<p:confirm header="Cancelar"
+									message="¿Está seguro que desea regresar a la interfaz anterior?."
+									icon="fa fa-exclamation-triangle" />
+							</p:commandButton>
+
+							<p:confirmDialog global="true" showEffect="fade"
+								widgetVar="cdCancelarOT" hideEffect="fade">
+								<center>
+									<p:commandButton value="Aceptar" type="button"
+										styleClass="ui-confirmdialog-yes" icon="fa fa-check-square-o"
+										style="width: 150px; margin: 10px" />
+									<p:commandButton value="Cancelar" type="button"
+										styleClass="ui-confirmdialog-no" icon="fa fa-window-close"
+										style="width: 150px; margin: 10px"
+										onclick="PF('cdCancelarOT').hide();" />
+								</center>
+							</p:confirmDialog>
 
 						</h:panelGrid>
 					</center>
@@ -281,35 +298,7 @@
 
 
 			</p:fieldset>
-
-			<!-- **************************  Panel - Confirmar regreso OT ************************** -->
-			<h:form id="formCancelarOT">
-				<p:confirmDialog message="¿Esta seguro(a) que desea cancelar?"
-					header="Cancelar" severity="warn" widgetVar="cdCancelarOT">
-					<center>
-
-						<br /> <br />
-						<p:outputLabel
-							value="Si desea regresar a la interfaz de Orden Trabajo Interna de clic en Aceptar " />
-
-						<br /> <br /> <br />
-
-						<p:commandButton value="Aceptar"
-							action="#{printOrdenTransferenciaController.regresarPanelOT()}"
-							onsuccess="PF('cdCancelarOT').hide();" />
-
-
-						<p:commandButton value="Cancelar"
-							onclick="PF('cdCancelarOT').hide();" type="button" />
-
-					</center>
-
-				</p:confirmDialog>
-
-
-			</h:form>
-
-
+	
 
 		</h:body>
 
