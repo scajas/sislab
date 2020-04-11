@@ -120,7 +120,7 @@ FROM
 				<text><![CDATA[ID EXISTENCIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="70" y="0" width="109" height="20" forecolor="#000000" backcolor="#778D9B" uuid="68c3b25a-be91-42b0-b615-45c0791d2897"/>
+				<reportElement mode="Opaque" x="70" y="0" width="97" height="20" forecolor="#000000" backcolor="#778D9B" uuid="68c3b25a-be91-42b0-b615-45c0791d2897"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -134,7 +134,7 @@ FROM
 				<text><![CDATA[PRODUCTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="179" y="0" width="77" height="20" backcolor="#778D9B" uuid="cdba825d-5dc6-4d8a-a40d-5ac31766eafe"/>
+				<reportElement mode="Opaque" x="167" y="0" width="77" height="20" backcolor="#778D9B" uuid="cdba825d-5dc6-4d8a-a40d-5ac31766eafe"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -148,7 +148,7 @@ FROM
 				<text><![CDATA[BODEGA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="256" y="0" width="92" height="20" backcolor="#778D9B" uuid="73edd038-c897-49b0-8467-7af45b30f1e2"/>
+				<reportElement mode="Opaque" x="244" y="0" width="92" height="20" backcolor="#778D9B" uuid="73edd038-c897-49b0-8467-7af45b30f1e2"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -162,7 +162,7 @@ FROM
 				<text><![CDATA[CARACTERÍSTICA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="348" y="0" width="56" height="20" backcolor="#778D9B" uuid="1c750dc9-fc5d-4d90-96d1-772f3fd02518"/>
+				<reportElement mode="Opaque" x="336" y="0" width="51" height="20" backcolor="#778D9B" uuid="1c750dc9-fc5d-4d90-96d1-772f3fd02518"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -176,7 +176,7 @@ FROM
 				<text><![CDATA[GRADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="404" y="0" width="74" height="20" backcolor="#778D9B" uuid="60ea9047-a796-4172-b4b1-91a714c1ea0d"/>
+				<reportElement mode="Opaque" x="387" y="0" width="64" height="20" backcolor="#778D9B" uuid="60ea9047-a796-4172-b4b1-91a714c1ea0d"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -190,7 +190,7 @@ FROM
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="478" y="0" width="38" height="20" backcolor="#778D9B" uuid="eed3db91-45e3-4560-902b-8475b680be75"/>
+				<reportElement mode="Opaque" x="451" y="0" width="54" height="20" backcolor="#778D9B" uuid="eed3db91-45e3-4560-902b-8475b680be75"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -204,7 +204,7 @@ FROM
 				<text><![CDATA[S. NETO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="516" y="0" width="36" height="20" backcolor="#778D9B" uuid="4a132b09-e639-4a44-8886-5901a090b692"/>
+				<reportElement mode="Opaque" x="505" y="0" width="47" height="20" backcolor="#778D9B" uuid="4a132b09-e639-4a44-8886-5901a090b692"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -220,9 +220,9 @@ FROM
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<textField>
-				<reportElement x="10" y="0" width="60" height="20" uuid="b5da6ce9-4a45-4962-a20b-9331e49fb689"/>
+				<reportElement x="10" y="0" width="60" height="38" uuid="b5da6ce9-4a45-4962-a20b-9331e49fb689"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -236,7 +236,7 @@ FROM
 				<textFieldExpression><![CDATA[$F{id_existencia}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="70" y="0" width="109" height="20" uuid="69e9d2cd-bebc-4df8-9716-0e53f7004ae4"/>
+				<reportElement x="70" y="0" width="97" height="38" uuid="69e9d2cd-bebc-4df8-9716-0e53f7004ae4"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -250,7 +250,7 @@ FROM
 				<textFieldExpression><![CDATA[$F{nombre_pr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="179" y="0" width="77" height="20" uuid="2d36e849-0837-43e5-b54b-cff395ca9e79"/>
+				<reportElement x="167" y="0" width="77" height="38" uuid="2d36e849-0837-43e5-b54b-cff395ca9e79"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -264,7 +264,7 @@ FROM
 				<textFieldExpression><![CDATA[$F{nombre_bg}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="256" y="0" width="92" height="20" uuid="2b1c32e9-27c3-4c92-a627-d852c9106ecd"/>
+				<reportElement x="244" y="0" width="92" height="38" uuid="2b1c32e9-27c3-4c92-a627-d852c9106ecd"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -278,7 +278,7 @@ FROM
 				<textFieldExpression><![CDATA[$F{nombre_cr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="348" y="0" width="56" height="20" uuid="a91b82d7-eda6-4be3-972f-a5425c3270bf"/>
+				<reportElement x="336" y="0" width="51" height="38" uuid="a91b82d7-eda6-4be3-972f-a5425c3270bf"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -292,7 +292,7 @@ FROM
 				<textFieldExpression><![CDATA[$F{nombre_gr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="404" y="0" width="74" height="20" uuid="d7156e90-38a6-40e7-9b58-3fa00739f11a"/>
+				<reportElement x="387" y="0" width="64" height="38" uuid="d7156e90-38a6-40e7-9b58-3fa00739f11a"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -306,7 +306,7 @@ FROM
 				<textFieldExpression><![CDATA[$F{nombre_tprod}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="478" y="0" width="38" height="20" uuid="d3ee96d6-bb74-4d37-8c9a-a5337b762c7c"/>
+				<reportElement x="451" y="0" width="54" height="38" uuid="d3ee96d6-bb74-4d37-8c9a-a5337b762c7c"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -317,10 +317,10 @@ FROM
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cantidad_e}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{cantidad_e})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="516" y="0" width="36" height="20" uuid="54350b48-2bcf-482d-a9b0-ec2aac766308"/>
+				<reportElement x="505" y="0" width="47" height="38" uuid="54350b48-2bcf-482d-a9b0-ec2aac766308"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>

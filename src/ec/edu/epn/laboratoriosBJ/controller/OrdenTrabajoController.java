@@ -1,10 +1,17 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -12,11 +19,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import ec.edu.epn.laboratorioBJ.beans.DetalleOrdenDAO;
@@ -26,13 +33,18 @@ import ec.edu.epn.laboratorioBJ.beans.PersonalLabDAO;
 import ec.edu.epn.laboratorioBJ.beans.ServicioDAO;
 import ec.edu.epn.laboratorioBJ.entities.Detalleorden;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
-import ec.edu.epn.laboratorioBJ.entities.Metodo;
 import ec.edu.epn.laboratorioBJ.entities.OrdenTrabajo;
 import ec.edu.epn.laboratorioBJ.entities.PersonalLab;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
-@ManagedBean(name = "ordenTrabajoController")
+@ManagedBean(name = "reporteOrdenTrabajoController")
 @SessionScoped
 
 public class OrdenTrabajoController implements Serializable {
@@ -62,42 +74,31 @@ public class OrdenTrabajoController implements Serializable {
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratorioDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO")
 	private LaboratorioDAO laboratorioI;
 
-	private OrdenTrabajo ordenTrabajo;
-	private List<OrdenTrabajo> listaOrdenTrabajo = new ArrayList<OrdenTrabajo>();
-	private OrdenTrabajo nuevoOrdenTrabajo;
-	private String nombreTP;
+	private List<OrdenTrabajo> ordenTrabajos = new ArrayList<>();
+
 	private StreamedContent streamFile = null;
 
-	private Detalleorden detalleOrden;
-	private List<Detalleorden> listaDetalleOrden = new ArrayList<>();
+	private List<Detalleorden> detalleOrdenes = new ArrayList<Detalleorden>();
 
 	private Servicio servicio;
-	private List<Servicio> serviciosOrden = new ArrayList<Servicio>();
 
-	private PersonalLab personalLab;
 	private List<PersonalLab> listaPersonalLab = new ArrayList<PersonalLab>();
 
-	private LaboratorioLab laboratorio;
-	private List<LaboratorioLab> listaLaboratorio = new ArrayList<LaboratorioLab>();
+	private List<LaboratorioLab> laboratorios = new ArrayList<LaboratorioLab>();
 
-	private String tipoO;
+	private String tipoOrden;
 	private Date fechaInicio;
 	private Date fechaFin;
+	private String analista;
+	private String estado;
+	private String nombreL;
 
 	@PostConstruct
 	public void init() {
 		try {
-			listaDetalleOrden = detalleOrdenI.getAll(Detalleorden.class);
-			detalleOrden = new Detalleorden();
 
-			ordenTrabajo = new OrdenTrabajo();
-			listaOrdenTrabajo = ordenTrabajoI.getAll(OrdenTrabajo.class);
-
-			listaLaboratorio = ordenTrabajoI.listaLaboratorioUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			laboratorio = new LaboratorioLab();
-
+			servicio = new Servicio();
 			listaPersonalLab = ordenTrabajoI.listaPersonalAnalista();
-			personalLab = new PersonalLab();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,18 +138,82 @@ public class OrdenTrabajoController implements Serializable {
 
 		try {
 
-			System.out.println("ESTOS SON LOS REGISTROS OBTENIDOS ;" +cambioFecha(getFechaFin()) + cambioFecha(getFechaInicio())
-					+ ordenTrabajo.getTipoOt() + ordenTrabajo.getEstadoOt() + laboratorio.getNombreL() + personalLab.getNombresPe());
+			detalleOrdenes = ordenTrabajoI.filtrarLista(cambioFecha(getFechaInicio()), cambioFecha(getFechaFin()),
+					tipoOrden, analista, estado);
 
-			listaDetalleOrden = ordenTrabajoI.filtrarLista(cambioFecha(getFechaInicio()), cambioFecha(getFechaFin()),
-					ordenTrabajo.getTipoOt(), ordenTrabajo.getEstadoOt(), laboratorio.getNombreL(), personalLab.getNombresPe());
-
-			System.out.println("Número de servicios Obtenidos: " + listaDetalleOrden.size());
-
-			mensajeInfo("Coincidencias Encontradas");
+			mensajeInfo("Resultados Obtenidos" + detalleOrdenes.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void generarPDF() throws Exception {
+		try {
+
+			if (streamFile != null)
+				streamFile.getStream().close();
+
+			ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+
+			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
+
+			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
+					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
+				direccion = direccion + "\\";
+			} else {
+				direccion = direccion + "/";
+			}
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+
+			parametros.put("CONTEXT", servletContext.getRealPath("/"));
+			parametros.put("fechaInicio", getFechaInicio());
+			parametros.put("fechaFin", getFechaFin());
+			parametros.put("tipoOrdenTrabajo", tipoOrden);
+			parametros.put("nombrePe", analista);
+			parametros.put("estadoOrden", estado);
+
+			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
+					.getRealPath("/reportes/reporteOrdenTrabajo.jrxml");
+			InputStream input = new FileInputStream(new File(jrxmlFile));
+			JasperReport jasperReport = JasperCompileManager.compileReport(input);
+			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
+
+			File sourceFile = new File(jrxmlFile);
+			File destFile = new File(sourceFile.getParent(), "reporteOrdenTrabajo.pdf");
+
+			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
+			InputStream stream = new FileInputStream(destFile);
+
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteOrdenTrabajo.pdf");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+	}
+
+	private Connection coneccionSQL() throws IOException {
+		try {
+			conexionPostrges conexionSQL = new conexionPostrges();
+			Connection con = conexionSQL.Conexion();
+			return con;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public void cerrarArchivo() throws IOException {
+		if (streamFile != null)
+			streamFile.getStream().close();
+
+		streamFile = null;
+		System.gc();
 	}
 
 	public String cambioFecha(Date fecha) {
@@ -160,109 +225,12 @@ public class OrdenTrabajoController implements Serializable {
 	}
 
 	// ****** Getter y Setters ****//*
-
-	public String getNombreTP() {
-		return nombreTP;
-	}
-
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
-	}
-
-	public OrdenTrabajo getOrdenTrabajo() {
-		return ordenTrabajo;
-	}
-
-	public void setOrdenTrabajo(OrdenTrabajo ordenTrabajo) {
-		this.ordenTrabajo = ordenTrabajo;
-	}
-
-	public List<OrdenTrabajo> getListaOrdenTrabajo() {
-		return listaOrdenTrabajo;
-	}
-
-	public void setListaOrdenTrabajo(List<OrdenTrabajo> listaOrdenTrabajo) {
-		this.listaOrdenTrabajo = listaOrdenTrabajo;
-	}
-
-	public OrdenTrabajo getNuevoOrdenTrabajo() {
-		return nuevoOrdenTrabajo;
-	}
-
-	public void setNuevoOrdenTrabajo(OrdenTrabajo nuevoOrdenTrabajo) {
-		this.nuevoOrdenTrabajo = nuevoOrdenTrabajo;
-	}
-
-	public Detalleorden getDetalleOrden() {
-		return detalleOrden;
-	}
-
-	public void setDetalleOrden(Detalleorden detalleOrden) {
-		this.detalleOrden = detalleOrden;
-	}
-
-	public Servicio getServicio() {
-		return servicio;
-	}
-
-	public void setServicio(Servicio servicio) {
-		this.servicio = servicio;
-	}
-
-	public List<Servicio> getServiciosOrden() {
-		return serviciosOrden;
-	}
-
-	public void setServiciosOrden(List<Servicio> serviciosOrden) {
-		this.serviciosOrden = serviciosOrden;
-	}
-
-	public String getTipoO() {
-		return tipoO;
-	}
-
-	public void setTipoO(String tipoO) {
-		this.tipoO = tipoO;
-	}
-
-	public PersonalLab getPersonalLab() {
-		return personalLab;
-	}
-
-	public void setPersonalLab(PersonalLab personalLab) {
-		this.personalLab = personalLab;
-	}
-
 	public List<PersonalLab> getListaPersonalLab() {
 		return listaPersonalLab;
 	}
 
 	public void setListaPersonalLab(List<PersonalLab> listaPersonalLab) {
 		this.listaPersonalLab = listaPersonalLab;
-	}
-
-	public LaboratorioLab getLaboratorio() {
-		return laboratorio;
-	}
-
-	public void setLaboratorio(LaboratorioLab laboratorio) {
-		this.laboratorio = laboratorio;
-	}
-
-	public List<LaboratorioLab> getListaLaboratorio() {
-		return listaLaboratorio;
-	}
-
-	public void setListaLaboratorio(List<LaboratorioLab> listaLaboratorio) {
-		this.listaLaboratorio = listaLaboratorio;
-	}
-
-	public List<Detalleorden> getListaDetalleOrden() {
-		return listaDetalleOrden;
-	}
-
-	public void setListaDetalleOrden(List<Detalleorden> listaDetalleOrden) {
-		this.listaDetalleOrden = listaDetalleOrden;
 	}
 
 	public Date getFechaInicio() {
@@ -287,6 +255,70 @@ public class OrdenTrabajoController implements Serializable {
 
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
+	}
+
+	public List<Detalleorden> getDetalleOrdenes() {
+		return detalleOrdenes;
+	}
+
+	public void setDetalleOrdenes(List<Detalleorden> detalleOrdenes) {
+		this.detalleOrdenes = detalleOrdenes;
+	}
+
+	public List<LaboratorioLab> getLaboratorios() {
+		return laboratorios;
+	}
+
+	public void setLaboratorios(List<LaboratorioLab> laboratorios) {
+		this.laboratorios = laboratorios;
+	}
+
+	public String getTipoOrden() {
+		return tipoOrden;
+	}
+
+	public void setTipoOrden(String tipoOrden) {
+		this.tipoOrden = tipoOrden;
+	}
+
+	public String getAnalista() {
+		return analista;
+	}
+
+	public void setAnalista(String analista) {
+		this.analista = analista;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getNombreL() {
+		return nombreL;
+	}
+
+	public void setNombreL(String nombreL) {
+		this.nombreL = nombreL;
+	}
+
+	public List<OrdenTrabajo> getOrdenTrabajos() {
+		return ordenTrabajos;
+	}
+
+	public void setOrdenTrabajos(List<OrdenTrabajo> ordenTrabajos) {
+		this.ordenTrabajos = ordenTrabajos;
+	}
+
+	public Servicio getServicio() {
+		return servicio;
+	}
+
+	public void setServicio(Servicio servicio) {
+		this.servicio = servicio;
 	}
 
 }

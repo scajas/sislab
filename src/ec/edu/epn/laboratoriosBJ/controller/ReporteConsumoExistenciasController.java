@@ -145,9 +145,6 @@ public class ReporteConsumoExistenciasController implements Serializable {
 	public void init() {
 		try {
 
-			existencia = new Existencia();
-
-			movimientosinventarios = movimientoInventarioI.getAll(Movimientosinventario.class);
 			movimientosInventario = new Movimientosinventario();
 
 		} catch (Exception e) {
@@ -184,9 +181,6 @@ public class ReporteConsumoExistenciasController implements Serializable {
 
 			if (streamFile != null)
 				streamFile.getStream().close();
-
-			System.out.println("FECHA INICIO : " + fechaInicio);
-			System.out.println("FECHA FIN : " + fechaFinal);
 
 			ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
 					.getContext();
@@ -375,11 +369,7 @@ public class ReporteConsumoExistenciasController implements Serializable {
 
 			movimientosinventarios = existenciasI.getParametroFecha(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()));
 
-			System.out.print("Número de registros Obtenidos " + movimientosinventarios.size());
-
-			mensajeInfo("Numero de coincidencias encontradas:" + movimientosinventarios.size());
-			
-			movimientosInventario = new Movimientosinventario();
+			mensajeInfo("Resultados Obtenidos:" + movimientosinventarios.size());
 
 		} catch (Exception e) {
 			e.printStackTrace();

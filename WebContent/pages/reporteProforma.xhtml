@@ -53,38 +53,38 @@
 
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 65%"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 70%"
 										layout="grid">
 
-										<p:outputLabel value="Ingrese Fecha Inicial: "
+										<p:outputLabel value="Fecha Inicial: "
 											style="color:white!important" />
 
-										<p:calendar id="fechaInicio"
+										<p:calendar id="fechaInicio" 
 											value="#{reporteProformaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es" required="true"
 											onkeypress="return permite(event, 'none')"
-											requiredMessage="Fecha Inicial Requerida" navigator="true"
-											effect="fadeIn" effectDuration="100" showOn="button">
+											requiredMessage="Fecha Inicial Requerida." navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button" placeholder="Seleccione la fecha">
 											<p:ajax event="dateSelect" update="fechaFinal" />
 										</p:calendar>
 
-										<p:outputLabel value="Ingrese Fecha Final: "
+										<p:outputLabel value=" Fecha Final: "
 											style="color:white!important" />
 										<p:calendar id="fechaFinal"
 											value="#{reporteProformaController.fechaFinal}"
 											mindate="#{reporteProformaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es"
 											onkeypress="return permite(event, 'none')" required="true"
-											requiredMessage="Fecha Final Requerida" navigator="true"
-											effect="fadeIn" effectDuration="100" showOn="button">
+											requiredMessage="Fecha Final Requerida." navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button" placeholder="Seleccione la fecha">
 
 										</p:calendar>
 
 										<p:outputLabel value="Tipo de Cliente:"
 											style="color:white!important" />
 										<p:selectOneMenu id="tipoCliente"
-											value="#{reporteProformaController.nombreCli}">
-											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
+											value="#{reporteProformaController.nombreTipoCliente}">
+											<f:selectItem itemLabel="Seleccione" itemValue="%" />
 											<f:selectItems
 												value="#{reporteProformaController.tipoClientes}"
 												var="tipoCliente" itemLabel="#{tipoCliente.tipoTcl}"
@@ -94,8 +94,8 @@
 
 										<p:outputLabel value="Estado:" style="color:white!important" />
 										<p:selectOneMenu id="estado"
-											value="#{reporteProformaController.proforma.estadoPo}">
-											<f:selectItem itemLabel="Seleccione..." itemValue="" />
+											value="#{reporteProformaController.estadoFactura}">
+											<f:selectItem itemLabel="Seleccione" itemValue="%" />
 											<f:selectItem itemLabel="ACEPTADA" itemValue="Aceptada" />
 											<f:selectItem itemLabel="PENDIENTE" itemValue="Pendiente" />
 											<f:selectItem itemLabel="FACTURADA" itemValue="Facturada" />
@@ -125,8 +125,10 @@
 
 												</p:commandLink></td>
 
-											<td><p:commandLink id="btnGenerarReporte"
-													oncomplete="PF('repoServicio').show();"
+											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(start, stop);"
+													id="btnGenerarReporte"
+													oncomplete="PF('reporteProforma').show();"
 													actionListener="#{reporteProformaController.generarPDF}"
 													update="@([id$=dialogReporteServ], [id$=pdfView])"
 													process="@this,formBuscar">
@@ -144,12 +146,7 @@
 
 									<br />
 								</div>
-								<br />
-
-								<p>
-									<strong>Nota: Para generar el Reporte se tienen que
-										llenar todos los campos</strong>
-								</p>
+							
 
 							</h:form>
 						</center>
@@ -226,50 +223,30 @@
 							</p:column>
 						</p:dataTable>
 
-						<br />
-						<br />
-
-						<center>
-
-							<!-- Exportar a Excel Sin Formato  -->
-							<h3>Exportar sin Formato</h3>
-							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
-								<h:graphicImage value="/images/excel.png" width="35px"
-									height="35px" />
-								<pe:exporter type="xlsx" target="tblProforma"
-									fileName="Proforma" tableTitle="Proforma" selectionOnly="false"
-									orientation="Landscape" datasetPadding="4" />
-							</h:commandLink>
-
-							<br /> <br />
-
-						</center>
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
 
 			<p:dialog modal="true" widgetVar="statusDialog"
-				header="Descargando Archivo" draggable="false" closable="false"
+				header="Generando Reporte" draggable="false" closable="false"
 				resizable="false">
 				<center>
 					<h:graphicImage value="/images/archivos/cargando.gif"
-						title="Descargando" style="border:0px solid #CAD6E0;" width="50"
-						height="50" />
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
 				</center>
 			</p:dialog>
 
 			<h:form>
 				<p:dialog id="dialogReporteServ" resizable="true"
-					widgetVar="repoServicio" modal="true" hideEffect="fade"
+					widgetVar="reporteProforma" modal="true" hideEffect="fade"
 					responsive="true" dynamic="true" width="65%"
-					header="Reporte Proformas">
+					header="Reporte Proformas" onShow="stop()">
 					<p:panel>
 
 						<p:commandLink id="btnCerrarDialogs" ajax="false"
 							action="#{reporteProformaController.cerrarArchivo()}"
-							onsuccess="PF('repoServicio').hide();">
+							onsuccess="PF('reporteProforma').hide();">
 							<h:graphicImage value="/images/dashboard/NoVerificado.png"
 								title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
 								height="25" />
