@@ -7,10 +7,11 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:v="http://validators.epn.edu.ec.com"
-	xmlns:ps="http://primefaces.org/apark">
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
 
 
-	<ui:define name="pageTitle">Orden De Trabajo</ui:define>
+	<ui:define name="pageTitle">Ordenes de Trabajo</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -31,150 +32,153 @@
 
 	</script>
 		</h:head>
-
-
 		<h:body>
-
-
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
 			<h:form id="formprincipal">
 
-
-
-
-
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="3000" />
 				<p:panel>
-
-					<p:fieldset legend="ORDEN DE TRABAJO"
+					<p:fieldset legend="Buscar Ordenes de Trabajo"
 						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
 						border: 0px solid #000000;
 						border-style: double;
 						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-						">
-						<br />
-						<br />
-						<h:form id="formBusquedaGeneral">
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						<center>
+							<h:form id="formBuscar">
 
-							<center>
+								<div class="ui-fluid">
 
-								<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
-									width="65%" responsive="true" dynamic="true"
-									style="-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-								box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
-									columnClasses="pnlGridFondoFilas,, pnlGridFondoFilas">
+									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 70%"
+										layout="grid">
 
-									<p:outputLabel for="fecha" value="Fecha Desde: "
-										style="color:white!important" />
-									<p:calendar id="fecha"
-										value="#{ordenTrabajoController.fechaInicio}" showOn="button" />
+										<p:outputLabel value="Fecha Inicial: "
+											style="color:white!important" />
 
+										<p:calendar id="fechaInicio"
+											value="#{reporteOrdenTrabajoController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es" required="true"
+											onkeypress="return permite(event, 'none')"
+											requiredMessage="Fecha Inicial Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											placeholder="Seleccione la fecha">
+											<p:ajax event="dateSelect" update="fechaFinal" />
+										</p:calendar>
 
-									<p:outputLabel for="fecha1" value="Fecha Hasta: "
-										style="color:white!important" />
-									<p:calendar id="fecha1"
-										value="#{ordenTrabajoController.fechaFin}" showOn="button" />
+										<p:outputLabel value="Fecha Final: "
+											style="color:white!important" />
+										<p:calendar id="fechaFinal"
+											value="#{reporteOrdenTrabajoController.fechaFin}"
+											mindate="#{reporteOrdenTrabajoController.fechaInicio}"
+											pattern="dd/MM/yyyy" locale="es"
+											onkeypress="return permite(event, 'none')" required="true"
+											requiredMessage="Fecha Final Requerida" navigator="true"
+											effect="fadeIn" effectDuration="100" showOn="button"
+											placeholder="Seleccione la fecha">
 
+										</p:calendar>
 
-									<p:outputLabel id="lblTipo" for="tipo" value="Tipo: "
-										style="color:white!important" />
-									<p:selectOneMenu id="tipo"
-										value="#{ordenTrabajoController.ordenTrabajo.tipoOt}"
-										size="30">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Externa Factura"
-											itemValue="Externa Factura" />
-										<f:selectItem itemLabel="Externa Transf."
-											itemValue="Externa Transf." />
-										<f:selectItem itemLabel="Interna" itemValue="Interna" />
-									</p:selectOneMenu>
+										<p:outputLabel value="Tipo de Orden :"
+											style="color:white!important" />
+										<p:selectOneMenu id="tipoOrden"
+											value="#{reporteOrdenTrabajoController.tipoOrden}" size="30"
+											effect="fold" filter="true" filterMatchMode="contains">
+											<f:selectItem itemLabel="Seleccione" itemValue="%" />
+											<f:selectItem itemLabel="Externa Factura"
+												itemValue="Externa Factura" />
+											<f:selectItem itemLabel="Interna" itemValue="Interna" />
+										</p:selectOneMenu>
 
-									<p:outputLabel id="lblAnalista" for="an" value="Analista: "
-										style="color:white!important" />
-									<p:selectOneMenu id="an"
-										value="#{ordenTrabajoController.personalLab.nombresPe}">
-										<f:selectItem itemLabel="Por Favor Seleccione..." itemValue="" />
-										<f:selectItems value="#{ordenTrabajoController.listaPersonalLab}"
-											itemLabel="#{personal.nombresPe}"
-											itemValue="#{personal.nombresPe}"
-											var="personal">
-										</f:selectItems>
+										<p:outputLabel id="lblAnalista" value="Analista: "
+											style="color:white!important" />
+										<p:selectOneMenu id="analista"
+											value="#{reporteOrdenTrabajoController.analista}"
+											effect="fold" filter="true" filterMatchMode="contains">
+											<f:selectItem itemLabel="Seleccione" itemValue="%" />
+											<f:selectItems
+												value="#{reporteOrdenTrabajoController.listaPersonalLab}"
+												itemLabel="#{personal.nombresPe}"
+												itemValue="#{personal.nombresPe}" var="personal">
+											</f:selectItems>
 
-									</p:selectOneMenu>
+										</p:selectOneMenu>
 
+										<p:outputLabel id="lblEstado" value="Estado: "
+											style="color:white!important" />
+										<p:selectOneMenu id="estado"
+											value="#{reporteOrdenTrabajoController.estado}" effect="fold"
+											filter="true" filterMatchMode="contains">
+											<f:selectItem itemLabel="Seleccione" itemValue="%" />
+											<f:selectItem itemLabel="Cerrada" itemValue="CLOSED" />
+											<f:selectItem itemLabel="Descargada" itemValue="DOWNLOAD" />
+											<f:selectItem itemLabel="Pendiente" itemValue="PENDIENTE" />
 
-									<p:outputLabel id="lblEstado" for="est" value="Estado: "
-										style="color:white!important" />
-									<p:selectOneMenu id="est"
-										value="#{ordenTrabajoController.ordenTrabajo.estadoOt}">
-										<f:selectItem itemLabel="Seleccione..." itemValue="" />
-										<f:selectItem itemLabel="Cerrada"
-											itemValue="Cerrada" />
-										<f:selectItem itemLabel="Descargada"
-											itemValue="Descaragda" />
-										<f:selectItem itemLabel="Pendiente" itemValue="Pendiente" />
+										</p:selectOneMenu>
 
-									</p:selectOneMenu>
+									</p:panelGrid>
 
-
-									<p:outputLabel id="lblLaboratorio" for="labo"
-										value="Laboratorio: " style="color:white!important" />
-									<p:selectOneMenu id="labo"
-										value="#{ordenTrabajoController.laboratorio.nombreL}">
-										<f:selectItem itemLabel="Por Favor Seleccione..." itemValue="" />
-										<f:selectItems value="#{ordenTrabajoController.listaLaboratorio}"
-											itemLabel="#{laboratorio.nombreL}"
-											itemValue="#{laboratorio.nombreL}"
-											var="laboratorio">
-										</f:selectItems>
-
-									</p:selectOneMenu>
-
-								</p:panelGrid>
-
-							</center>
-							<br />
-							<br />
-							<center>
-								<p:commandButton value="Generar Reporte"
-									onclick="PF('seleccionArchivo').show();" update="@this"
-									process="@this" icon="ui-icon-search" />
-
-								<p:commandLink
-											actionListener="#{ordenTrabajoController.buscarOrden}"
-											update="@([id$=tblOrdenTrabajo])" process="@this,formBusquedaGeneral">
-
-											<h:graphicImage value="/images/archivos/busqueda.png"
-												class="btn bt-success" title="Buscar"
-												style="border:0px solid #CAD6E0;" width="35" height="35" />
-
-										</p:commandLink>
+									<br /> <br />
 
 
-							</center>
+									<table width="200" style="BORDER: #000000 0px solid;"
+										align="center">
+										<tr align="center">
+											<td><p:commandLink
+													actionListener="#{reporteOrdenTrabajoController.buscarOrden()}"
+													update="@([id$=tblOrdenTrabajo]),@([id$=messagesForm])"
+													process="@this,formBuscar">
+
+													<h:graphicImage value="/images/archivos/busqueda.png"
+														class="btn bt-success" title="Buscar"
+														style="border:0px solid #CAD6E0;" width="35" height="35 " />
+
+													<p>
+														<strong>Buscar</strong>
+													</p>
+
+												</p:commandLink></td>
+
+											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(start, stop);"
+													id="btnGenerarReporte"
+													oncomplete="PF('reporteOrdenTrabajo').show();"
+													actionListener="#{reporteOrdenTrabajoController.generarPDF()}"
+													update="@([id$=dialogReporteServ], [id$=pdfView])"
+													process="@this,formBuscar">
+
+													<p:graphicImage value="/images/archivos/imprimir.png"
+														height="35px" width="35px" title="Generar Reporte" />
+
+													<p>
+														<strong>Reporte</strong>
+													</p>
+
+												</p:commandLink></td>
+										</tr>
+									</table>
+
+									<br />
+								</div>
 
 
-						</h:form>
+							</h:form>
+						</center>
 
-						<br />
 						<br />
 						<p:dataTable id="tblOrdenTrabajo"
-							value="#{ordenTrabajoController.listaDetalleOrden}"
+							value="#{reporteOrdenTrabajoController.detalleOrdenes}"
 							var="detalleO" widgetVar="filterOrdenTrabajo"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-					-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
-					box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
-
-							<br />
-							<br />
 
 							<p:column headerText="Orden"
 								filterBy="#{detalleO.ordenTrabajo.idOrden}"
@@ -228,7 +232,6 @@
 
 							</p:column>
 
-
 							<p:column headerText="RUC">
 								<h:outputText value="#{detalleO.ordenTrabajo.cliente.rucCl}" />
 
@@ -242,52 +245,43 @@
 
 						</p:dataTable>
 
-
-
-
-
-
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
-		</h:body>
 
-		<p:dialog id="seleccionArchivo" resizable="true"
-			widgetVar="seleccionArchivo" modal="true" showEffect="explode"
-			hideEffect="fade" responsive="true" dynamic="true"
-			header="Reporte Orden de Trabajo">
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="Generando Reporte" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
 
-			<h:form id="seleccionArchivo2">
+			<h:form>
+				<p:dialog id="dialogReporteServ" resizable="true"
+					widgetVar="reporteOrdenTrabajo" modal="true" hideEffect="fade"
+					responsive="true" dynamic="true" width="65%"
+					header="Reporte Orden de Trabajo" onShow="stop()">
+					<p:panel>
 
-				<p:fieldset legend="PARÁMETROS DE SELECCIÓN"
-					style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						<table style="width: 100%; height: 100%;">
+							<tr>
+								<td><p:media id="pdfView" height="470px" width="100%"
+										cache="false"
+										value="#{reporteOrdenTrabajoController.streamFile}"
+										player="pdf">
+									</p:media></td>
 
-					<h:outputLabel value="Formato:" style="font-size: 17px" size="30" />
-					<p:selectOneMenu style="FONT-FAMILY: arial;" size="30">
-						<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
-						<f:selectItem itemLabel="PDF" itemValue="pdf" />
-						<f:selectItem itemLabel="EXCEL" itemValue="excel" />
+							</tr>
 
-					</p:selectOneMenu>
+						</table>
+					</p:panel>
 
-					<br />
-					<br />
-					<center>
-						<p:commandButton value="Generar Reporte" type="button" />
-						<p:commandButton value="Salir"
-							onclick="PF('seleccionArchivo').hide();" type="button" />
-					</center>
-				</p:fieldset>
+				</p:dialog>
 			</h:form>
-		</p:dialog>
+		</h:body>
 
 		<script type="text/javascript">
 			function start(){
@@ -297,8 +291,33 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
-			
-			
+		    PrimeFaces.locales['es'] = {
+		            closeText: 'Cerrar',
+		            prevText: 'Anterior',
+		            nextText: 'Siguiente',
+		            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+		            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+		            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+		            weekHeader: 'Semana',
+		            firstDayOfWeek: 1,
+		            isRTL: false,
+		            showMonthAfterYear: false,
+		            yearSuffix: '',
+		            timeOnlyTitle: 'Sólo hora',
+		            timeText: 'Tiempo',
+		            hourText: 'Hora',
+		            minuteText: 'Minuto',
+		            secondText: 'Segundo',
+		            currentText: 'Fecha actual',
+		            ampm: false,
+		            month: 'Mes',
+		            week: 'Semana',
+		            day: 'Día',
+		            allDayText: 'Todo el día'
+		        };
+
 		</script>
 
 	</ui:define>

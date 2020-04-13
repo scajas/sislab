@@ -13,7 +13,7 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT mi.id_existencia,
+		<![CDATA[SELECT DISTINCT mi.id_existencia,
 p.nombre_pr,
 mi.fecha_mi,
 g.nombre_gr,
@@ -32,7 +32,6 @@ AND e.id_producto = p.id_producto
 AND e.id_grado = g.id_grado
 AND p.id_tipoprod = tp.id_tipoprod
 AND toi.id_tipordeninv = toi.id_tipordeninv
-
 AND mi.fecha_mi BETWEEN $P{fechaInicio} AND $P{fechaFinal}
 ORDER BY mi.fecha_mi ASC]]>
 	</queryString>
@@ -102,7 +101,7 @@ ORDER BY mi.fecha_mi ASC]]>
 	<columnHeader>
 		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="10" y="0" width="76" height="20" forecolor="#000000" backcolor="#778D9B" uuid="cac6fcd2-062b-408f-89e5-d9dc1c2be4f0">
+				<reportElement mode="Opaque" x="18" y="0" width="81" height="20" forecolor="#000000" backcolor="#778D9B" uuid="cac6fcd2-062b-408f-89e5-d9dc1c2be4f0">
 					<property name="net.sf.jasperreports.export.pdf.tag.table"/>
 				</reportElement>
 				<box>
@@ -113,13 +112,13 @@ ORDER BY mi.fecha_mi ASC]]>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
+					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[ID EXISTENCIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="86" y="0" width="83" height="20" forecolor="#000000" backcolor="#778D9B" uuid="65b9246a-e9c6-49f5-a9f4-0a33c77cc674"/>
+				<reportElement mode="Opaque" x="99" y="0" width="94" height="20" forecolor="#000000" backcolor="#778D9B" uuid="65b9246a-e9c6-49f5-a9f4-0a33c77cc674"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -128,12 +127,12 @@ ORDER BY mi.fecha_mi ASC]]>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NOMBRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="169" y="0" width="74" height="20" backcolor="#778D9B" uuid="1a5acf28-db59-488b-a129-bfabc5fecb0c"/>
+				<reportElement mode="Opaque" x="193" y="0" width="53" height="20" backcolor="#778D9B" uuid="1a5acf28-db59-488b-a129-bfabc5fecb0c"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -142,12 +141,12 @@ ORDER BY mi.fecha_mi ASC]]>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="243" y="0" width="68" height="20" backcolor="#778D9B" uuid="051b8f02-93c1-494a-890f-cc5c828f8708"/>
+				<reportElement mode="Opaque" x="246" y="0" width="68" height="20" backcolor="#778D9B" uuid="051b8f02-93c1-494a-890f-cc5c828f8708"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -156,12 +155,12 @@ ORDER BY mi.fecha_mi ASC]]>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[GRADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="311" y="0" width="69" height="20" backcolor="#778D9B" uuid="40028105-374c-4def-ac2f-d81830f07fc2"/>
+				<reportElement mode="Opaque" x="314" y="0" width="80" height="20" backcolor="#778D9B" uuid="40028105-374c-4def-ac2f-d81830f07fc2"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -170,12 +169,12 @@ ORDER BY mi.fecha_mi ASC]]>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="380" y="0" width="81" height="20" forecolor="#000000" backcolor="#778D9B" uuid="4a1e0bbc-88e2-4b4e-a827-6ad53c6fcff9"/>
+				<reportElement mode="Opaque" x="394" y="0" width="81" height="20" forecolor="#000000" backcolor="#778D9B" uuid="4a1e0bbc-88e2-4b4e-a827-6ad53c6fcff9"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -184,12 +183,12 @@ ORDER BY mi.fecha_mi ASC]]>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TIPO MOV. INV]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="461" y="0" width="66" height="20" forecolor="#000000" backcolor="#778D9B" uuid="d85d3ac1-9d48-45e9-9643-96bdcbc824de"/>
+				<reportElement mode="Opaque" x="475" y="0" width="58" height="20" forecolor="#000000" backcolor="#778D9B" uuid="d85d3ac1-9d48-45e9-9643-96bdcbc824de"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -198,16 +197,16 @@ ORDER BY mi.fecha_mi ASC]]>
 					<rightPen lineWidth="0.25" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="8" isBold="true"/>
+					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<textField>
-				<reportElement x="10" y="0" width="76" height="20" uuid="9ff1bd2e-0f9b-432d-867c-1b9f92122b4c"/>
+				<reportElement x="18" y="0" width="81" height="38" uuid="9ff1bd2e-0f9b-432d-867c-1b9f92122b4c"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -215,10 +214,13 @@ ORDER BY mi.fecha_mi ASC]]>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{id_existencia}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="86" y="0" width="83" height="20" uuid="fad255f1-2f58-4381-ab60-be2c03546d48"/>
+				<reportElement x="99" y="0" width="94" height="38" uuid="fad255f1-2f58-4381-ab60-be2c03546d48"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -226,10 +228,13 @@ ORDER BY mi.fecha_mi ASC]]>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_pr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="169" y="0" width="74" height="20" uuid="f34996e0-c112-4ac6-b281-b8957897e653"/>
+				<reportElement x="193" y="0" width="53" height="38" uuid="f34996e0-c112-4ac6-b281-b8957897e653"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -237,10 +242,13 @@ ORDER BY mi.fecha_mi ASC]]>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{fecha_mi}]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{fecha_mi})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="243" y="0" width="68" height="20" uuid="d54b091d-9f38-402f-a5a8-92eeabfdc083"/>
+				<reportElement x="246" y="0" width="68" height="38" uuid="d54b091d-9f38-402f-a5a8-92eeabfdc083"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -248,10 +256,13 @@ ORDER BY mi.fecha_mi ASC]]>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_gr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="311" y="0" width="69" height="20" uuid="f248daa5-da16-441d-a08a-a5c3ec71bdca"/>
+				<reportElement x="314" y="0" width="80" height="38" uuid="f248daa5-da16-441d-a08a-a5c3ec71bdca"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -259,10 +270,13 @@ ORDER BY mi.fecha_mi ASC]]>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_tprod}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="380" y="0" width="81" height="20" uuid="447c1bf9-686d-4e3b-ab27-3113c6dccb41"/>
+				<reportElement x="394" y="0" width="81" height="38" uuid="447c1bf9-686d-4e3b-ab27-3113c6dccb41"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -270,10 +284,13 @@ ORDER BY mi.fecha_mi ASC]]>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_toi}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="461" y="0" width="66" height="20" uuid="bb2faf12-58d0-4eed-84dc-de18bd99f639"/>
+				<reportElement x="475" y="0" width="58" height="38" uuid="bb2faf12-58d0-4eed-84dc-de18bd99f639"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -281,7 +298,10 @@ ORDER BY mi.fecha_mi ASC]]>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textFieldExpression><![CDATA[$F{cantidad_mov}]]></textFieldExpression>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{cantidad_mov})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

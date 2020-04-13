@@ -73,7 +73,8 @@ public class ReporteProformaController implements Serializable {
 	private List<Proforma> proformas = new ArrayList<Proforma>();
 	private Proforma proformaSelect;
 
-	private String nombreCli;
+	private String nombreTipoCliente;
+	private String estadoFactura;
 	private Date fechaInicio;
 	private Date fechaFinal;
 
@@ -121,7 +122,7 @@ public class ReporteProformaController implements Serializable {
 		try {
 
 			proformas = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()),
-					getNombreCli(), proforma.getEstadoPo());
+					nombreTipoCliente, estadoFactura);
 
 			mensajeInfo("Número de coincidencias encontradas:" + proformas.size());
 		} catch (Exception e) {
@@ -142,10 +143,70 @@ public class ReporteProformaController implements Serializable {
 	public StreamedContent getStreamFile() {
 		return streamFile;
 	}
-	
+
 	public String cambiarFormatoDouble(double numero) {
 		DecimalFormat formato = new DecimalFormat("#.00");
 		return formato.format(numero);
+	}
+
+	private Connection coneccionSQL() throws IOException {
+		try {
+			conexionPostrges conexionSQL = new conexionPostrges();
+			Connection con = conexionSQL.Conexion();
+			return con;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public void generarPDF() throws Exception {
+		try {
+
+			if (streamFile != null)
+				streamFile.getStream().close();
+
+			ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
+					.getContext();
+
+			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
+
+			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
+					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
+				direccion = direccion + "\\";
+			} else {
+				direccion = direccion + "/";
+			}
+
+			Map<String, Object> parametros = new HashMap<String, Object>();
+
+			parametros.put("CONTEXT", servletContext.getRealPath("/"));
+			parametros.put("fechaInicio", getFechaInicio());
+			parametros.put("fechaFin", getFechaFinal());
+			parametros.put("tipoCliente", nombreTipoCliente);
+			parametros.put("estadoProforma", estadoFactura);
+
+			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
+					.getRealPath("/reportes/reporteProforma.jrxml");
+			InputStream input = new FileInputStream(new File(jrxmlFile));
+			JasperReport jasperReport = JasperCompileManager.compileReport(input);
+			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
+
+			File sourceFile = new File(jrxmlFile);
+			File destFile = new File(sourceFile.getParent(), "reporteProforma.pdf");
+
+			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
+			InputStream stream = new FileInputStream(destFile);
+
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteProforma.pdf");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
 	}
 
 	/****** Generacion de PDF ****/
@@ -195,67 +256,6 @@ public class ReporteProformaController implements Serializable {
 	 * 
 	 * }
 	 */
-
-	private Connection coneccionSQL() throws IOException {
-		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
-			Connection con = conexionSQL.Conexion();
-			return con;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public void generarPDF(ActionEvent event) throws Exception {
-		try {
-
-			if (streamFile != null)
-				streamFile.getStream().close();
-
-			ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
-					.getContext();
-
-			String direccion = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/reportes/");
-
-			if (direccion.toUpperCase().contains("C:") || direccion.toUpperCase().contains("D:")
-					|| direccion.toUpperCase().contains("E:") || direccion.toUpperCase().contains("F:")) {
-				direccion = direccion + "\\";
-			} else {
-				direccion = direccion + "/";
-			}
-
-			Map<String, Object> parametros = new HashMap<String, Object>();
-
-			parametros.put("CONTEXT", servletContext.getRealPath("/"));
-			parametros.put("fechaInicio", getFechaInicio());
-			parametros.put("fechaFin", getFechaFinal());
-			parametros.put("tipoCliente", getNombreCli());
-			parametros.put("estadoProforma", proforma.getEstadoPo());
-
-			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteProforma.jrxml");
-			InputStream input = new FileInputStream(new File(jrxmlFile));
-			JasperReport jasperReport = JasperCompileManager.compileReport(input);
-			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
-
-			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteProforma.pdf");
-
-			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
-			InputStream stream = new FileInputStream(destFile);
-
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteProforma.pdf");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-
-	}
-
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
 
@@ -366,11 +366,20 @@ public class ReporteProformaController implements Serializable {
 		this.tipoClientes = tipoClientes;
 	}
 
-	public String getNombreCli() {
-		return nombreCli;
+	public String getNombreTipoCliente() {
+		return nombreTipoCliente;
 	}
 
-	public void setNombreCli(String nombreCli) {
-		this.nombreCli = nombreCli;
+	public void setNombreTipoCliente(String nombreTipoCliente) {
+		this.nombreTipoCliente = nombreTipoCliente;
 	}
+
+	public String getEstadoFactura() {
+		return estadoFactura;
+	}
+
+	public void setEstadoFactura(String estadoFactura) {
+		this.estadoFactura = estadoFactura;
+	}
+
 }

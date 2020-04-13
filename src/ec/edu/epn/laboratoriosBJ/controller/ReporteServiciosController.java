@@ -98,7 +98,6 @@ public class ReporteServiciosController implements Serializable {
 
 	public void buscarServicio() {
 
-		System.out.println("Unidad Usuario Log: " + su.UNIDAD_USUARIO_LOGEADO);
 		servicios = servicioI.getparametrosTipoServicio(tipoServicio, su.UNIDAD_USUARIO_LOGEADO);
 
 		mensajeInfo("Resultados Obtenidos" + servicios.size());
@@ -110,13 +109,11 @@ public class ReporteServiciosController implements Serializable {
 		return formato.format(numero);
 	}
 
-	public void generarPDF(ActionEvent event) throws Exception {
+	public void generarPDF() throws Exception {
 		try {
 
 			if (streamFile != null)
 				streamFile.getStream().close();
-
-			System.out.println("Tipo de Servicio : " + tipoServicio);
 
 			ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext()
 					.getContext();
@@ -151,8 +148,8 @@ public class ReporteServiciosController implements Serializable {
 			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteServicios.pdf");
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
+
+			e.printStackTrace();
 
 		}
 

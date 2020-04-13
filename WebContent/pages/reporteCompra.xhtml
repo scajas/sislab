@@ -52,7 +52,7 @@
 								<div class="ui-fluid">
 									<p:panelGrid columns="4" styleClass="ui-panelgrid-blank"
 										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas,pnlGridAjusteDivs"
-										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 65%"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 70%"
 										layout="grid">
 										<h:outputLabel value="Ingrese Fecha Inicial: "
 											style="font-size: 15px" />
@@ -62,7 +62,8 @@
 											pattern="dd/MM/yyyy" locale="es" required="true"
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Inicial Requerida" navigator="true"
-											effect="fadeIn" effectDuration="100" showOn="button">
+											effect="fadeIn" effectDuration="100" showOn="button"
+											placeholder="Seleccione la fecha">
 											<p:ajax event="dateSelect" update="fechaFin" />
 										</p:calendar>
 
@@ -75,7 +76,7 @@
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Final Requerida" navigator="true"
 											effect="fadeIn" effectDuration="100" showOn="button"
-											size="35">
+											size="35" placeholder="Seleccione la fecha">
 											<f:attribute name="fechaInicio"
 												value="#{reporteComprasController.fechaInicio}" />
 
@@ -121,11 +122,7 @@
 											</p:commandLink></td>
 									</tr>
 								</table>
-								<br />
-								<p>
-									<strong>Nota: Para generar el Reporte se tienen que
-										llenar todos los campos</strong>
-								</p>
+
 							</h:form>
 						</center>
 

@@ -20,7 +20,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -145,6 +144,7 @@ public class ReporteExistenciasController implements Serializable {
 		DecimalFormat formato = new DecimalFormat("#.00");
 		return formato.format(numero);
 	}
+
 	/****** Generacion de PDF ****/
 	private Connection coneccionSQL() throws IOException {
 		try {
@@ -156,8 +156,8 @@ public class ReporteExistenciasController implements Serializable {
 		}
 		return null;
 	}
-	
-	public void generarPDF(ActionEvent event) throws Exception {
+
+	public void generarPDF() throws Exception {
 		try {
 
 			if (streamFile != null)
@@ -196,8 +196,7 @@ public class ReporteExistenciasController implements Serializable {
 			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteExistencias.pdf");
 
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(event.getComponent().getClientId(),
-					new FacesMessage(FacesMessage.SEVERITY_FATAL, "", "ERROR"));
+			e.printStackTrace();
 
 		}
 
@@ -257,8 +256,6 @@ public class ReporteExistenciasController implements Serializable {
 		streamFile = null;
 		System.gc();
 	}
-
-
 
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;

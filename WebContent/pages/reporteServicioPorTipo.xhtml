@@ -62,7 +62,7 @@
 											filter="true"
 											value="#{reporteServiciosController.tipoServicio}"
 											required="true" requiredMessage="Seleccionar un Tipo">
-											<f:selectItem itemLabel="Seleccione " itemValue="" />
+											<f:selectItem itemLabel="Seleccione " itemValue="%" />
 											<f:selectItems
 												value="#{reporteServiciosController.tipoServicios}"
 												var="tipoS" itemLabel="#{tipoS.nombreTs}"
@@ -94,29 +94,25 @@
 												</p:commandLink></td>
 
 											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(start, stop);"
 													oncomplete="PF('reporteServicios').show();"
 													id="btnGenerarReporte"
-													update="@([id$=dialogReporteServ], [id$=pdfView])"
+													update="@([id$=dialogReporteServ],[id$=pdfView])"
 													actionListener="#{reporteServiciosController.generarPDF}">
 
 													<p:graphicImage value="/images/archivos/imprimir.png"
 														height="35px" width="35px" title="Generar Reporte" />
 
 													<p>
-														<strong>Reporte</strong>
+														<strong>Generar Reporte</strong>
 													</p>
 												</p:commandLink></td>
 										</tr>
 									</table>
 
-									<br /> <br />
+									<br />
 								</div>
-								<br />
 
-								<p>
-									<strong>Nota: Para generar el Reporte se tienen que
-										llenar todos los campos</strong>
-								</p>
 							</h:form>
 						</center>
 
@@ -157,42 +153,24 @@
 						<br />
 						<br />
 
-						<center>
-
-							<!-- Exportar a Excel Sin Formato  -->
-							<h3>Exportar sin Formato</h3>
-							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
-								<h:graphicImage value="/images/excel.png" width="35px"
-									height="35px" />
-								<pe:exporter type="xlsx" target="tblServicio"
-									fileName="Servicios" tableTitle="Servicios"
-									selectionOnly="false" orientation="Landscape"
-									datasetPadding="4" />
-							</h:commandLink>
-
-							<br /> <br />
-
-						</center>
-
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
 
 			<p:dialog modal="true" widgetVar="statusDialog"
-				header="Descargando Archivo" draggable="false" closable="false"
+				header="Generando Reporte" draggable="false" closable="false"
 				resizable="false">
 				<center>
 					<h:graphicImage value="/images/archivos/cargando.gif"
-						title="Descargando" style="border:0px solid #CAD6E0;" width="50"
-						height="50" />
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
 				</center>
 			</p:dialog>
 
 			<p:dialog id="dialogReporteServ" resizable="true"
 				widgetVar="reporteServicios" modal="true" hideEffect="fade"
 				responsive="true" dynamic="true" width="65%"
-				header="Reporte Servicios">
+				header="Reporte Servicios" onShow="stop()">
 				<p:panel id="toggleable" toggleable="true" closable="true"
 					toggleSpeed="500" closeSpeed="500">
 

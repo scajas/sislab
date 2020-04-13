@@ -30,6 +30,7 @@ import ec.edu.epn.laboratorioBJ.beans.ServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
+import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
 
 import ec.edu.epn.laboratorioBJ.entities.Tiposervicio;

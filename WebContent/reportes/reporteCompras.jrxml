@@ -105,7 +105,7 @@ ORDER BY c.id_compra]]>
 	<columnHeader>
 		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="26" y="0" width="92" height="20" forecolor="#000000" backcolor="#778D9B" uuid="81c43ae3-284d-428a-84e7-37c99bfa3328">
+				<reportElement mode="Opaque" x="25" y="0" width="106" height="20" forecolor="#000000" backcolor="#778D9B" uuid="81c43ae3-284d-428a-84e7-37c99bfa3328">
 					<property name="net.sf.jasperreports.export.pdf.tag.table"/>
 				</reportElement>
 				<box>
@@ -122,7 +122,7 @@ ORDER BY c.id_compra]]>
 				<text><![CDATA[ID COMPRA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="388" y="0" width="50" height="20" backcolor="#778D9B" uuid="cfd3a70e-0050-43ef-a9b1-fd49ba63af61"/>
+				<reportElement mode="Opaque" x="401" y="0" width="63" height="20" backcolor="#778D9B" uuid="cfd3a70e-0050-43ef-a9b1-fd49ba63af61"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -136,7 +136,7 @@ ORDER BY c.id_compra]]>
 				<text><![CDATA[FECHA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="118" y="0" width="169" height="20" forecolor="#000000" backcolor="#778D9B" uuid="65154028-ee50-4681-8059-7adf352e97bb"/>
+				<reportElement mode="Opaque" x="131" y="0" width="158" height="20" forecolor="#000000" backcolor="#778D9B" uuid="65154028-ee50-4681-8059-7adf352e97bb"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -150,7 +150,7 @@ ORDER BY c.id_compra]]>
 				<text><![CDATA[DESCRIPCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="438" y="0" width="56" height="20" backcolor="#778D9B" uuid="f573d17a-1e0e-4bad-936a-3d9d7ecb4a79"/>
+				<reportElement mode="Opaque" x="464" y="0" width="56" height="20" backcolor="#778D9B" uuid="f573d17a-1e0e-4bad-936a-3d9d7ecb4a79"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -164,7 +164,7 @@ ORDER BY c.id_compra]]>
 				<text><![CDATA[MONTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="287" y="0" width="101" height="20" backcolor="#778D9B" uuid="646d5c28-a9da-4a7c-83d4-9796ca6666a4"/>
+				<reportElement mode="Opaque" x="289" y="0" width="112" height="20" backcolor="#778D9B" uuid="646d5c28-a9da-4a7c-83d4-9796ca6666a4"/>
 				<box>
 					<pen lineWidth="0.25" lineColor="#000000"/>
 					<topPen lineWidth="0.25" lineColor="#000000"/>
@@ -180,23 +180,9 @@ ORDER BY c.id_compra]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="20" splitType="Stretch">
+		<band height="36" splitType="Stretch">
 			<textField>
-				<reportElement x="26" y="0" width="92" height="20" uuid="9e8f20c0-97eb-419d-9208-d2e7d22b272f"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{id_compra}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="388" y="0" width="50" height="20" uuid="04600713-78b0-4f4a-9d1b-2883328f0f59"/>
+				<reportElement x="25" y="0" width="106" height="36" uuid="9e8f20c0-97eb-419d-9208-d2e7d22b272f"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -207,10 +193,24 @@ ORDER BY c.id_compra]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{fecha_co}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{id_compra}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="118" y="0" width="169" height="20" uuid="19960107-69ce-4433-a291-05378572237c"/>
+				<reportElement x="401" y="0" width="63" height="36" uuid="04600713-78b0-4f4a-9d1b-2883328f0f59"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{fecha_co})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="131" y="0" width="158" height="36" uuid="19960107-69ce-4433-a291-05378572237c"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -224,7 +224,7 @@ ORDER BY c.id_compra]]>
 				<textFieldExpression><![CDATA[$F{descr_compra}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="287" y="0" width="101" height="20" uuid="0fef1b1a-27ec-446f-89fb-79b3e304753c"/>
+				<reportElement x="289" y="0" width="112" height="36" uuid="0fef1b1a-27ec-446f-89fb-79b3e304753c"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -238,7 +238,7 @@ ORDER BY c.id_compra]]>
 				<textFieldExpression><![CDATA[$F{nombre_pv}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="438" y="0" width="56" height="20" uuid="9cbe7995-c1c7-4a28-b106-2e74940268b1"/>
+				<reportElement x="464" y="0" width="56" height="36" uuid="9cbe7995-c1c7-4a28-b106-2e74940268b1"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -249,7 +249,7 @@ ORDER BY c.id_compra]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{monto_co}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new DecimalFormat("#,##0.00").format($F{monto_co})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
