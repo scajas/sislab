@@ -86,13 +86,13 @@
 											style="color:white!important" />
 										<p:inputText id="idOT"
 											value="#{ordenFacturaController.buscarOrdenTrabajo.idOrden}"
-											size="24" />
+											size="24" placeholder="ejm. DC-OT0001-2010" />
 
 										<p:outputLabel value="Proforma:" for="idPro"
 											style="color:white!important" />
 										<p:inputText id="idPro"
 											value="#{ordenFacturaController.buscarOrdenTrabajo.idFactura}"
-											size="24" />
+											size="24" placeholder="ejm. DC-P0001-2010" />
 
 									</p:panelGrid>
 
@@ -106,7 +106,8 @@
 										<p:outputLabel value="Cliente:" for="cliente"
 											style="color:white!important" />
 										<p:inputText id="cliente"
-											value="#{ordenFacturaController.cliente.nombreCl}" size="24" />
+											value="#{ordenFacturaController.cliente.nombreCl}" size="24"
+											placeholder="Nombre del Cliente" />
 
 
 									</p:panelGrid>
@@ -121,12 +122,14 @@
 										<p:outputLabel value="Cédula: " for="cedula"
 											style="color:white!important" />
 										<p:inputText id="cedula"
-											value="#{ordenFacturaController.cliente.cedula}" size="24" />
+											value="#{ordenFacturaController.cliente.cedula}" size="24"
+											placeholder="ejm. 1750505050" />
 
 										<p:outputLabel value="RUC:" for="ruc"
 											style="color:white!important" />
 										<p:inputText id="ruc"
-											value="#{ordenFacturaController.cliente.rucCl}" size="24" />
+											value="#{ordenFacturaController.cliente.rucCl}" size="24"
+											placeholder="ejm. 1790883795001" />
 
 										<h:outputLabel value="Fecha desde: "
 											style="color:white!important; font-size: 17px" />
@@ -168,6 +171,10 @@
 											<h:graphicImage value="/images/archivos/busqueda.png"
 												class="btn bt-success" title="Buscar"
 												style="border:0px solid #CAD6E0;" width="35" height="35 " />
+
+											<p>
+												<strong>Buscar</strong>
+											</p>
 										</p:commandLink>
 
 									</center>
@@ -1986,7 +1993,7 @@
 
 								</p:dataTable>
 							</div>
-							<br /> 
+							<br />
 
 							<center>
 

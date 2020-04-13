@@ -342,6 +342,25 @@ public class OrdenInternaController implements Serializable {
 			System.out.println("Me voy al carajo, no funciona esta redireccion");
 		}
 	}
+	
+	public void abrirFormatoOT() {
+
+		try {
+
+			/*
+			 * HttpSession sesion=request.getSession();
+			 * session.setAttribute("Hola", "Hola");
+			 */
+
+			FacesContext contex = FacesContext.getCurrentInstance();
+			contex.getExternalContext().getSessionMap().put("idOT", ordenTrabajo.getIdOrden());
+
+			contex.getExternalContext().redirect("/SisLab/pages/printFormatoOrdenTrabajoInterna.jsf");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Me voy al carajo, no funciona esta redireccion");
+		}
+	}
 
 	public void eliminarProforma() {
 		try {
