@@ -2,6 +2,7 @@ package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +19,7 @@ import org.primefaces.event.FlowEvent;
 
 import ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO;
 import ec.edu.epn.laboratorioBJ.beans.ConcentracionDAO;
+import ec.edu.epn.laboratorioBJ.beans.EliminacionServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.EstadoProductoDAO;
 import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
 import ec.edu.epn.laboratorioBJ.beans.GradoDAO;
@@ -33,6 +35,7 @@ import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadMedidaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Caracteristica;
 import ec.edu.epn.laboratorioBJ.entities.Concentracion;
+import ec.edu.epn.laboratorioBJ.entities.EliminacionServicio;
 import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Grado;
@@ -53,7 +56,7 @@ import javax.faces.application.FacesMessage;
 @ManagedBean(name = "existenciasController")
 @SessionScoped
 public class ExistenciasController implements Serializable {
- 
+
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 1L;
 	FacesContext fc = FacesContext.getCurrentInstance();
@@ -65,6 +68,9 @@ public class ExistenciasController implements Serializable {
 	/** SERVICIOS **/
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ExistenciasDAOImplement!ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO")
 	private ExistenciasDAO existenciasI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/EliminacionServicioDAOImplement!ec.edu.epn.laboratorioBJ.beans.EliminacionServicioDAO")
+	private EliminacionServicioDAO eliminacionServicioI;
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/PresentacionDAOImplement!ec.edu.epn.laboratorioBJ.beans.PresentacionDAO")
 	private PresentacionDAO presentacionI;
@@ -177,6 +183,9 @@ public class ExistenciasController implements Serializable {
 	private List<Unidadmedida> unidadmedidas = new ArrayList<Unidadmedida>();
 	private Unidadmedida unidadmedida;
 
+	// Eliminacion de Servicio
+	private EliminacionServicio eliminacionServicio;
+
 	private Unidadmedida tempUnidadMedida;
 
 	/** METODO Init **/
@@ -244,6 +253,13 @@ public class ExistenciasController implements Serializable {
 
 			tempUnidadMedida = existenciasI.tempUnidadMedida();
 			tempUnidadMedida.setIdUmedida(99999);
+
+			// init Eliminacion de servicios
+			eliminacionServicio = new EliminacionServicio();
+
+			eliminacionServicio.setFecha(new Date());
+			eliminacionServicio.setUsuario(su.nombre_usuario_logeado);
+			eliminacionServicio.setRegistro("Existencias");
 
 		} catch (Exception e) {
 
@@ -413,7 +429,9 @@ public class ExistenciasController implements Serializable {
 	public void eliminarExistencia() {
 
 		try {
-
+			eliminacionServicio.setCodigoEliminado(existencia.getIdExistencia());
+			eliminacionServicioI.save(eliminacionServicio);
+			
 			existenciasI.delete(existencia);
 			updateTable();
 			mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha eliminado correctamente.");
@@ -935,6 +953,14 @@ public class ExistenciasController implements Serializable {
 
 	public void setTempUnidadMedida(Unidadmedida tempUnidadMedida) {
 		this.tempUnidadMedida = tempUnidadMedida;
+	}
+
+	public EliminacionServicio getEliminacionServicio() {
+		return eliminacionServicio;
+	}
+
+	public void setEliminacionServicio(EliminacionServicio eliminacionServicio) {
+		this.eliminacionServicio = eliminacionServicio;
 	}
 
 }

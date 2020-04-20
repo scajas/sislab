@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,12 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+import ec.edu.epn.laboratorioBJ.beans.EliminacionServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO;
 import ec.edu.epn.laboratorioBJ.beans.ServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
+import ec.edu.epn.laboratorioBJ.entities.EliminacionServicio;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
 import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
@@ -60,6 +63,9 @@ public class ServicioController implements Serializable {
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ServicioDAOImplement!ec.edu.epn.laboratorioBJ.beans.ServicioDAO")
 	private ServicioDAO servicioI;
+	
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/EliminacionServicioDAOImplement!ec.edu.epn.laboratorioBJ.beans.EliminacionServicioDAO")
+	private EliminacionServicioDAO eliminacionServicioI;
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratorioDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO")
 	private LaboratorioDAO laboratorioI;
@@ -90,6 +96,9 @@ public class ServicioController implements Serializable {
 
 	private String nombreS;
 	private String idTipoS;
+	
+	// Eliminacion de Servicio
+	private EliminacionServicio eliminacionServicio;
 
 	// Metodo Init
 	@PostConstruct
@@ -102,6 +111,12 @@ public class ServicioController implements Serializable {
 
 			servicio = new Servicio();
 			nuevoServicio = new Servicio();
+			
+			eliminacionServicio = new EliminacionServicio();
+			
+			eliminacionServicio.setFecha(new Date());
+			eliminacionServicio.setUsuario(su.nombre_usuario_logeado);
+			eliminacionServicio.setRegistro("Servicio");
 
 			// tipo servicio
 			setTipoServicios(tipoServicioI.getAll(Tiposervicio.class));
@@ -259,7 +274,9 @@ public class ServicioController implements Serializable {
 
 	public void eliminarServicio() {
 		try {
-
+			eliminacionServicio.setCodigoEliminado(servicio.getIdServicio());
+			//eliminacionServicio.setId(0);
+			eliminacionServicioI.save(eliminacionServicio);
 			servicioI.delete(servicio);
 			updateTable();
 
@@ -412,6 +429,14 @@ public class ServicioController implements Serializable {
 
 	public void setIdTipoS(String idTipoS) {
 		this.idTipoS = idTipoS;
+	}
+
+	public EliminacionServicio getEliminacionServicio() {
+		return eliminacionServicio;
+	}
+
+	public void setEliminacionServicio(EliminacionServicio eliminacionServicio) {
+		this.eliminacionServicio = eliminacionServicio;
 	}
 
 }
