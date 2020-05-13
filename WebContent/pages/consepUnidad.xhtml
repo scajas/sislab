@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="pageTitle">Reporte Consep Unidad</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+		<h:body>
+			<p:growl id="messagesForm" showDetail="true" sticky="false"
+				autoupdate="true" life="3000" />
+			<h:form id="formprincipal">
+
+				<p:panel>
+					<p:fieldset legend="Selección de parametros"
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+						<center>
+							<h:form id="formReporte">
+
+								<div class="ui-fluid">
+
+									<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+										columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs,pnlGridFondoFilas"
+										style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width:30%"
+										layout="grid">
+
+										<p:outputLabel value="Mes:" for="mes"
+											style="color:white!important" />
+										<p:selectOneMenu id="mes" value="#{reporteConsepUnidad.mes}"
+											required="true" size="24">
+											<f:selectItem itemLabel="Seleccione..." itemValue="null" />
+											<f:selectItem itemLabel="Enero" itemValue="1" />
+											<f:selectItem itemLabel="Febrero" itemValue="2" />
+											<f:selectItem itemLabel="Marzo" itemValue="3" />
+											<f:selectItem itemLabel="Abril" itemValue="4" />
+											<f:selectItem itemLabel="Mayo" itemValue="5" />
+											<f:selectItem itemLabel="Junio" itemValue="6" />
+											<f:selectItem itemLabel="Julio" itemValue="7" />
+											<f:selectItem itemLabel="Agosto" itemValue="8" />
+											<f:selectItem itemLabel="Septiembre" itemValue="9" />
+											<f:selectItem itemLabel="Octubre" itemValue="10" />
+											<f:selectItem itemLabel="Noviembre" itemValue="11" />
+											<f:selectItem itemLabel="Diciembre" itemValue="12" />
+										</p:selectOneMenu>
+
+										<p:outputLabel value="Año:" for="anio"
+											style="color:white!important" />
+										<p:selectOneMenu id="anio" value="#{reporteConsepUnidad.anio}"
+											required="true" size="24">
+											<f:selectItem itemLabel="Seleccione..." itemValue="" />
+											<f:selectItems value="#{reporteConsepUnidad.anios}"
+												itemLabel="#{anio}" itemValue="#{anio}" var="anio">
+											</f:selectItems>
+										</p:selectOneMenu>
+
+									</p:panelGrid>
+
+									<br /> <br />
+
+
+									<center>
+										<p:commandLink
+											onclick="PrimeFaces.monitorDownload(start, stop);"
+											id="btnGenerarReporte"
+											oncomplete="PF('reporteConcepUnidad').show();"
+											actionListener="#{reporteConsepUnidad.generarPDF}"
+											update="@([id$=dialogReporteServ], [id$=pdfView])"
+											process="@this,formReporte">
+
+											<p:graphicImage value="/images/archivos/imprimir.png"
+												height="35px" width="35px" title="Generar Reporte" />
+
+											<p>
+												<strong>Imprimir</strong>
+											</p>
+
+										</p:commandLink>
+
+									</center>
+
+								</div>
+
+							</h:form>
+						</center>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="Generando Reporte" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
+
+			<h:form>
+				<p:dialog id="dialogReporteServ" resizable="true"
+					widgetVar="reporteConcepUnidad" modal="true" hideEffect="fade"
+					responsive="true" dynamic="true" width="65%"
+					header="Reporte Concep Unidad" onShow="stop()">
+					<p:panel>
+
+						<p:commandLink id="btnCerrarDialogs" ajax="false"
+							action="#{reporteConsepUnidad.cerrarArchivo()}"
+							onsuccess="PF('reporteConcepUnidad').hide();">
+							<h:graphicImage value="/images/dashboard/NoVerificado.png"
+								title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
+								height="25" />
+
+						</p:commandLink>
+
+						<table style="width: 100%; height: 100%;">
+							<tr>
+								<td><p:media id="pdfView" height="470px" width="100%"
+										cache="false" value="#{reporteConsepUnidad.streamFile}"
+										player="pdf">
+									</p:media></td>
+
+							</tr>
+
+						</table>
+					</p:panel>
+
+				</p:dialog>
+			</h:form>
+
+
+
+		</h:body>
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+		</script>
+
+	</ui:define>
+</ui:composition>

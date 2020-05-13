@@ -1,0 +1,727 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReporteConcepUnidad" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e040f2df-e590-4546-a1a2-2f75fb452d69">
+	<property name="ireport.zoom" value="1.4641000000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="anio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mes" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nombreUsuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm),4) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+se.saldo_e, mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Compra' then 'Compra'
+	when ("nombre_toi") = 'Ajuste de inventario (+)' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'L' then 'L' else' ' end
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi,
+usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and
+mi."id_existencia"=e."id_existencia" and e."id_producto"=p."id_producto" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='L' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='4' OR oi."id_tipordeninv"='6')
+AND e.id_existencia = se.id_existencia and se.mes = $P{mes} and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
+"sigla_um", mi."aux1", se."saldo_e", mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+se.saldo_e, mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	when ("nombre_toi") = 'Bajas' then 'Bajas'
+	when ("nombre_toi") = 'Consumo' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'L' then 'L' else' ' end
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and
+mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='L' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='2' OR oi."id_tipordeninv"='3' OR oi."id_tipordeninv"='8')
+AND "cantidad_mov" NOT IN ('0')
+AND se.id_existencia = e.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
+"sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+se.saldo_e, mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Transferencia' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'L' then 'L' else '' end
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and
+mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='L' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='7')
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
+"sigla_um", mi."aux1",se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm),4) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+se.saldo_e, mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Compra' then 'Compra'
+	when ("nombre_toi") = 'Ajuste de inventario (+)' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'kg' then 'kg' else '' end
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and
+mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='kg' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='4' OR oi."id_tipordeninv"='6')
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+se.saldo_e, mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	when ("nombre_toi") = 'Bajas' then 'Bajas'
+	when ("nombre_toi") = 'Consumo' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'kg' then 'kg' else '' end
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and
+mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='kg' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='2' OR oi."id_tipordeninv"='3' OR oi."id_tipordeninv"='8')
+AND cantidad_mov NOT IN ('0')
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
+"sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+se.saldo_e, mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Transferencia' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else' '
+	end, case when ("sigla_um") = 'kg' then 'kg' else' ' end
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and
+mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='kg' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='7') AND e.id_existencia = se.id_existencia
+and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm/1000),4) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+(se.saldo_e/1000), mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Compra' then 'Compra'
+	when ("nombre_toi") = 'Ajuste de inventario (+)' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'mL' then 'L' else '' end
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp, "Laboratorios".tipordeninv toi, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um, "Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='mL' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='4' OR oi."id_tipordeninv"='6')
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+(se.saldo_e/1000), mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	when ("nombre_toi") = 'Bajas' then 'Bajas'
+	when ("nombre_toi") = 'Consumo' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'mL' then 'L' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp, "Laboratorios".tipordeninv toi, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um, "Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='mL' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='2' OR oi."id_tipordeninv"='3' OR oi."id_tipordeninv"='8')
+AND "cantidad_mov" NOT IN ('0')
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+(se.saldo_e/1000), mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Transferencia' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'mL' then 'L' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp, "Laboratorios".tipordeninv toi, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um, "Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='mL' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='7')
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm/1000),4) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+(se.saldo_e/1000), mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Compra' then 'Compra'
+	when ("nombre_toi") = 'Ajuste de inventario (+)' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'g' then 'kg' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp, "Laboratorios".tipordeninv toi, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um, "Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='g' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='4' OR oi."id_tipordeninv"='6')
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+(se.saldo_e/1000), mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	when ("nombre_toi") = 'Bajas' then 'Bajas'
+	when ("nombre_toi") = 'Consumo' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'g' then 'kg' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp, "Laboratorios".tipordeninv toi, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um, "Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='g' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='2' OR oi."id_tipordeninv"='3' OR oi."id_tipordeninv"='8') AND
+"cantidad_mov" NOT IN ('0') AND
+e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+(se.saldo_e/1000), mi."aux1" AS Factura,
+nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
+	case when ("nombre_toi") = 'Transferencia' then ''
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'g' then 'kg' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp, "Laboratorios".tipordeninv toi, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um, "Laboratorios".saldo_existencia se
+WHERE mi."id_ordeninventario"=oi."id_ordeninventario" and mi."id_existencia"=e."id_existencia" and
+e."id_producto"=p."id_producto" and Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio} and pv."id_proveedor"=mi."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and oi."id_tipordeninv"=toi."id_tipordeninv" and
+e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='g' and us."nombre_usuario" = $P{nombreUsuario} AND
+(oi."id_tipordeninv"='7') AND
+e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio}
+GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
+"nombre_gr", "sigla_um", mi."aux1", se.saldo_e, mi.saldo_e
+
+UNION ALL
+
+SELECT e."id_existencia", ROUND(SUM(e.increm),4) AS Ingresos, ROUND(SUM(e.dism),4) AS Egresos,
+nombre_pr AS Producto, ROUND(se.saldo_e,4) AS Saldo,
+se.saldo_e, "aux1" AS Factura,
+nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
+	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'L' then 'L' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".tipoproducto tp, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um, "Laboratorios".saldo_existencia se
+WHERE e."id_producto"=p."id_producto" and pv."id_proveedor"=e."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='L' and
+us."nombre_usuario" = $P{nombreUsuario}
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio} AND
+e."id_existencia" NOT IN (SELECT e."id_existencia"
+FROM "Laboratorios".existencias e,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+usuario us, "Laboratorios".unidad u,
+"Laboratorios".unidadmedida um
+WHERE mi."id_existencia"=e."id_existencia" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio}
+and e."id_tipoprod"='3' AND mi.id_ordeninventario = oi.id_ordeninventario
+and u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='L' and us."nombre_usuario" = $P{nombreUsuario} AND
+cantidad_mov NOT IN ('0'))
+GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla_um", "aux1", se.saldo_e
+
+UNION ALL
+
+SELECT e."id_existencia", ROUND(SUM(e.increm),4) AS Ingresos, ROUND(SUM(e.dism),4) AS Egresos,
+nombre_pr AS Producto, ROUND(se.saldo_e,4) AS Saldo, se.saldo_e, "aux1" AS Factura,
+nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
+	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'kg' then 'kg' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".tipoproducto tp, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE
+e."id_producto"=p."id_producto" and pv."id_proveedor"=e."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='kg' and
+us."nombre_usuario" = $P{nombreUsuario}
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio} AND
+e."id_existencia" NOT IN (SELECT e."id_existencia"
+FROM "Laboratorios".existencias e,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+usuario us, "Laboratorios".unidad u,
+"Laboratorios".unidadmedida um
+WHERE mi."id_existencia"=e."id_existencia" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio}
+and e."id_tipoprod"='3' AND mi.id_ordeninventario = oi.id_ordeninventario
+and u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='kg' and us."nombre_usuario" = $P{nombreUsuario} AND
+cantidad_mov NOT IN ('0'))
+GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla_um", "aux1", se.saldo_e
+
+UNION ALL
+
+SELECT e."id_existencia", ROUND(SUM(e.increm/1000),4) AS Ingresos, ROUND(SUM(e.dism/1000),4) AS Egresos,
+nombre_pr AS Producto, ROUND(se.saldo_e/1000,4) AS Saldo,
+(se.saldo_e/1000), "aux1" AS Factura,
+nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
+	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'mL' then 'L' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".tipoproducto tp, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE
+e."id_producto"=p."id_producto" and pv."id_proveedor"=e."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='mL' and
+us."nombre_usuario" = $P{nombreUsuario}
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio} AND
+e."id_existencia" NOT IN (SELECT e."id_existencia"
+FROM "Laboratorios".existencias e,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+usuario us, "Laboratorios".unidad u,
+"Laboratorios".unidadmedida um
+WHERE mi."id_existencia"=e."id_existencia" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio}
+and e."id_tipoprod"='3' AND mi.id_ordeninventario = oi.id_ordeninventario
+and u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='mL' and us."nombre_usuario" = $P{nombreUsuario} AND
+cantidad_mov NOT IN ('0'))
+GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla_um", "aux1", se.saldo_e
+
+UNION ALL
+
+SELECT e."id_existencia", ROUND(SUM(e.increm/1000),4) AS Ingresos, ROUND(SUM(e.dism/1000),4) AS Egresos,
+nombre_pr AS Producto, ROUND((se.saldo_e/1000),4) AS Saldo,
+(se.saldo_e/1000), "aux1" AS Factura,
+nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
+	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
+	else ''
+	end, case when ("nombre_gr") = 'Analítico' then 'G.R'
+	when ("nombre_gr") = 'Técnico' then 'T'
+	when ("nombre_gr") = 'USP' then 'USP'
+	else ''
+	end, case when ("sigla_um") = 'g' then 'kg' else '' end
+FROM "Laboratorios".producto p, "Laboratorios".existencias e, "Laboratorios".proveedor pv,
+"Laboratorios".tipoproducto tp, usuario us, "Laboratorios".unidad u,
+"Laboratorios".grado gr, "Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE e."id_producto"=p."id_producto" and pv."id_proveedor"=e."aux2"
+and e."id_tipoprod"=tp."id_tipoprod" and e."id_tipoprod"='3'
+and e."id_grado"=gr."id_grado" and
+u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='g' and
+us."nombre_usuario" = $P{nombreUsuario}
+AND e.id_existencia = se.id_existencia and se.mes = 1 and se.anio = $P{anio} AND
+e."id_existencia" NOT IN (SELECT e."id_existencia"
+FROM "Laboratorios".existencias e,
+"Laboratorios".movimientosinventario mi, "Laboratorios".ordeninventario oi,
+usuario us, "Laboratorios".unidad u,
+"Laboratorios".unidadmedida um
+WHERE mi."id_existencia"=e."id_existencia" and
+Extract(month from "fechaingreso_oi") = $P{mes}
+AND Extract(year from "fechaingreso_oi") = $P{anio}
+and e."id_tipoprod"='3' AND mi.id_ordeninventario = oi.id_ordeninventario
+and u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
+e."id_umedida"=um."id_umedida" and
+"sigla_um"='g' and us."nombre_usuario" = $P{nombreUsuario} AND
+"cantidad_mov" NOT IN ('0'))
+GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla_um", "aux1", se.saldo_e
+order by Producto]]>
+	</queryString>
+	<field name="id_existencia" class="java.lang.String"/>
+	<field name="ingresos" class="java.math.BigDecimal"/>
+	<field name="egresos" class="java.math.BigDecimal"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<field name="saldo_e" class="java.math.BigDecimal"/>
+	<field name="factura" class="java.lang.String">
+		<fieldDescription><![CDATA[campo para saber si el concepto debe ser o no facturado]]></fieldDescription>
+	</field>
+	<field name="proveedor" class="java.lang.String"/>
+	<field name="nombre_toi" class="java.lang.String"/>
+	<field name="nombre_gr" class="java.lang.String"/>
+	<field name="sigla_um" class="java.lang.String"/>
+	<field name="case" class="java.lang.String"/>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="69" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="114" height="38" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["  "+$F{producto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="488" y="0" width="67" height="38" uuid="4df96ea3-64f3-42cb-a52c-d87baf99edc4"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+$F{saldo}+ " " +$F{sigla_um}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="378" y="0" width="55" height="38" uuid="a2a581c9-6bdc-4a0a-a1b4-ed82695aa253"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+$F{ingresos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="114" y="0" width="73" height="38" uuid="ac56f2bd-e235-40e0-80af-89b8bb2135da"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["  "+$F{case}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="187" y="0" width="90" height="38" uuid="e5358c4a-53e5-4bdf-9b16-da62d2586ea9"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" " + $F{factura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="433" y="0" width="55" height="38" uuid="180ec6f8-819b-4003-8317-85bec0e7ebb0"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+$F{egresos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="277" y="0" width="101" height="38" uuid="9caf48eb-1af2-492d-aa3c-9ee10daf8821"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+$F{proveedor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
