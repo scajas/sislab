@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReporteConcepBodega" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e040f2df-e590-4546-a1a2-2f75fb452d69">
+	<property name="ireport.zoom" value="1.4641000000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nombreUsuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mes" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT DISTINCT (e.id_existencia), ROUND(SUM(mi.increm),2) AS ingreso, SUM(mi.dism) AS Egresos,
+p.nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo, se.saldo_e, mi.aux1 AS Factura,
+pv.nombre_pv AS Proveedor, toi.nombre_toi, gr.nombre_gr, um.sigla_um, bg.nombre_bg,
+	CASE WHEN (toi.nombre_toi) = 'Compra' THEN 'Compra'
+	WHEN (toi.nombre_toi) = 'Ajuste de inventario (+)' THEN ''
+	ELSE ''
+	END, CASE WHEN (gr.nombre_gr) = 'Analítico' THEN 'G.R'
+	WHEN (gr.nombre_gr) = 'Técnico' THEN 'T'
+	WHEN (gr.nombre_gr) = 'USP' THEN 'USP'
+	ELSE ''
+	END, CASE WHEN (um.sigla_um) = 'L' THEN 'L' ELSE' ' END
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se,
+"Laboratorios".bodega bg,
+"public".usuario us
+WHERE mi.id_ordeninventario = oi.id_ordeninventario
+AND mi.id_existencia=e.id_existencia
+AND e.id_producto=p.id_producto
+AND e.id_tipoprod = tp.id_tipoprod
+AND oi.id_tipordeninv = toi.id_tipordeninv
+AND e.id_grado = gr.id_grado
+AND u.id_unidad = e.id_unidad
+AND us.id_unidad = u.id_unidad
+AND e.id_umedida = um.id_umedida
+AND e.id_existencia = se.id_existencia
+AND e.id_tipoprod ='3'
+AND um.sigla_um = 'L'
+AND us.nombre_usuario = $P{nombreUsuario}
+AND pv.id_proveedor = mi.aux2
+AND (oi.id_tipordeninv ='4' OR oi.id_tipordeninv ='6')
+AND EXTRACT(MONTH FROM oi.fechaingreso_oi) = $P{mes}
+AND EXTRACT(YEAR FROM oi.fechaingreso_oi) = $P{anio}
+AND se.mes = $P{mes} AND se.anio = $P{anio}
+GROUP BY p.nombre_pr, pv.nombre_pv, toi.nombre_toi, e.id_existencia, gr.nombre_gr,
+um.sigla_um, mi.aux1, se.saldo_e, mi.saldo_e, bg.nombre_bg
+
+UNION ALL
+
+SELECT DISTINCT (e.id_existencia), ROUND(SUM(mi.increm),2) AS ingreso, ROUND(SUM(mi.dism/1000),2) AS egreso,
+pr.nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo,se.saldo_e, mi.aux1 AS factura ,
+pv.nombre_pv, toi.nombre_toi, gr.nombre_gr, um.sigla_um, bg.nombre_bg,
+	CASE WHEN (toi.nombre_toi) = 'Ajuste de inventario (-)' THEN 'Consumo'
+	WHEN (toi.nombre_toi) = 'Consumo' THEN 'Consumo'
+	WHEN (toi.nombre_toi) = 'Bajas' THEN 'Bajas'
+	WHEN (toi.nombre_toi) = 'Compra' THEN 'Compra'
+	WHEN (toi.nombre_toi) = 'Ajuste de inventario (+)' THEN 'Ajuste de inventario (+)'
+	WHEN (toi.nombre_toi) = 'Transferencia' THEN 'Transferencia'
+	ELSE' '
+	END, CASE WHEN (gr.nombre_gr) = 'Analítico' THEN 'G.R'
+	WHEN (gr.nombre_gr) = 'Técnico' THEN 'T'
+	WHEN (gr.nombre_gr) = 'USP' THEN 'USP'
+	ELSE' '
+	END, CASE WHEN (um.sigla_um) = 'mL' THEN 'L'
+	WHEN (um.sigla_um) = 'g' THEN 'kg' ELSE' ' END
+FROM "Laboratorios".producto pr,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".bodega_usuario bu,
+"Laboratorios".bodega bg,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi.id_ordeninventario=oi.id_ordeninventario
+AND mi.id_existencia = e.id_existencia
+AND e.id_producto = pr.id_producto
+AND pv.id_proveedor = mi.aux2
+AND e.id_tipoprod = tp.id_tipoprod
+AND oi.id_tipordeninv = toi.id_tipordeninv
+AND e.id_grado = gr.id_grado
+AND e.id_bodega = bg.id_bodega
+AND e.id_bodega = bu.id_bodega
+AND us.id_usuario = bu.id_usuario
+AND u.id_unidad = e.id_unidad
+AND us.id_unidad = u.id_unidad
+AND e.id_umedida = um.id_umedida
+AND e.id_existencia = se.id_existencia
+AND se.mes = $P{mes} AND se.anio = $P{anio}
+AND Extract(MONTH FROM oi.fechaingreso_oi) = $P{mes}
+AND Extract(YEAR FROM oi.fechaingreso_oi) = $P{anio}
+AND cantidad_mov NOT IN ('0')
+GROUP BY pr.nombre_pr, pv.nombre_pv, toi.nombre_toi, e.id_existencia,
+gr.nombre_gr,se.saldo_e , um.sigla_um, mi.aux1, mi.saldo_e, bg.nombre_bg
+
+UNION ALL
+
+SELECT e.id_existencia, ROUND(SUM(e.increm),4) AS Ingresos, ROUND(SUM(e.dism),4) AS Egresos,
+pr.nombre_pr, ROUND(se.saldo_e,4) AS Saldo, se.saldo_e ,MAX(aux1) AS Factura,
+pv.nombre_pv, toi.nombre_toi, gr.nombre_gr,um.sigla_um, bg.nombre_bg,
+	CASE WHEN (toi.nombre_toi) = 'Ajuste de inventario (-)' THEN 'Consumo'
+	WHEN (toi.nombre_toi) = 'Bajas' THEN 'Bajas'
+	WHEN (toi.nombre_toi) = 'Compra' THEN 'Compra'
+	WHEN (toi.nombre_toi) = 'Ajuste de inventario (+)' THEN 'Ajuste de inventario (+)'
+	WHEN (toi.nombre_toi) = 'Transferencia' THEN 'Transferencia'
+	ELSE' '
+	END, CASE WHEN ("nombre_gr") = 'Analítico' THEN 'G.R'
+	WHEN ("nombre_gr") = 'Técnico' THEN 'T'
+	WHEN ("nombre_gr") = 'USP' THEN 'USP'
+	ELSE' '
+	END, CASE WHEN ("sigla_um") = 'L' THEN 'L'
+	WHEN ("sigla_um") = 'kg' THEN 'kg' ELSE' ' END
+FROM "Laboratorios".producto pr,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".tipordeninv toi,
+"Laboratorios".tipoproducto tp, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".bodega_usuario bu,
+"Laboratorios".bodega bg,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE e.id_producto=pr.id_producto
+AND pv.id_proveedor=e.aux2
+AND e.id_tipoprod=tp.id_tipoprod
+AND e.id_tipoprod='3'
+AND e.id_grado=gr.id_grado
+AND e.id_bodega=bg.id_bodega
+AND e.id_bodega = bu.id_bodega
+AND us.id_usuario = bu.id_usuario
+AND u.id_unidad=e.id_unidad
+AND us.id_unidad=u.id_unidad
+AND e.id_umedida=um.id_umedida
+AND e.id_existencia = se.id_existencia
+AND us.nombre_usuario = $P{nombreUsuario}
+AND (um.sigla_um='L' OR um.sigla_um='kg')
+AND se.mes = $P{mes} AND se.anio = $P{anio}
+AND e.id_existencia NOT IN (SELECT e.id_existencia
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi,
+"public".usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".bodega_usuario bu,
+"Laboratorios".bodega b,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi.id_ordeninventario=oi.id_ordeninventario
+AND mi.id_existencia=e.id_existencia
+AND e.id_producto=p.id_producto
+AND Extract(month from oi.fechaingreso_oi) = $P{mes}
+AND Extract(year from oi.fechaingreso_oi) = $P{anio}
+AND pv.id_proveedor=mi."aux2"
+AND e.id_tipoprod=tp.id_tipoprod
+AND e.id_tipoprod='3'
+AND oi.id_tipordeninv=toi.id_tipordeninv
+AND e.id_grado=gr.id_grado
+AND e.id_bodega=b.id_bodega
+AND e.id_bodega = bu.id_bodega
+AND us.id_usuario= bu.id_usuario
+AND u.id_unidad=e.id_unidad
+AND us.id_unidad=u.id_unidad
+AND e.id_umedida=um.id_umedida
+AND us.nombre_usuario = $P{nombreUsuario}
+AND (um.sigla_um = 'L' OR um.sigla_um = 'kg')
+AND e.id_existencia = se.id_existencia
+AND se.mes = $P{mes} AND se.anio = $P{anio} AND
+cantidad_mov NOT IN ('0'))
+GROUP BY pr.nombre_pr, pv.nombre_pv, e.id_existencia, gr.nombre_gr, toi.nombre_toi,
+bg.nombre_bg, um.sigla_um, se.saldo_e
+
+UNION ALL
+
+SELECT e.id_existencia, ROUND(SUM(e.increm/1000),4) AS Ingresos, ROUND(SUM(e.dism/1000),4) AS Egresos,
+pr.nombre_pr, ROUND(se.saldo_e/1000,4) AS Saldo, se.saldo_e, MAX(aux1) AS Factura,
+pv.nombre_pv, toi.nombre_toi, gr.nombre_gr, um.sigla_um, bg.nombre_bg,
+
+	CASE WHEN (toi.nombre_toi) = 'Ajuste de inventario (-)' THEN 'Consumo'
+	WHEN (toi.nombre_toi) = 'Bajas' THEN 'Bajas'
+	WHEN (toi.nombre_toi) = 'Compra' THEN 'Compra'
+	WHEN (toi.nombre_toi) = 'Ajuste de inventario (+)' THEN 'Ajuste de inventario (+)'
+	WHEN (toi.nombre_toi) = 'Transferencia' THEN 'Transferencia'
+	ELSE' '
+	END, CASE WHEN (gr.nombre_gr) = 'Analítico' THEN 'G.R'
+	WHEN (gr.nombre_gr) = 'Técnico' THEN 'T'
+	WHEN (gr.nombre_gr) = 'USP' THEN 'USP'
+	ELSE' '
+	END, CASE WHEN (um.sigla_um) = 'mL' THEN 'L'
+	WHEN (um.sigla_um) = 'g' THEN 'kg' ELSE' ' END
+FROM "Laboratorios".producto pr,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".tipoproducto tp,
+"public".usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".bodega_usuario bu,
+"Laboratorios".tipordeninv toi,
+"Laboratorios".bodega bg,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE e.id_producto=pr.id_producto
+AND pv.id_proveedor=e.aux2
+AND e.id_tipoprod=tp.id_tipoprod
+AND e.id_tipoprod='3'
+AND e.id_grado=gr.id_grado
+AND e.id_bodega=bg.id_bodega
+AND e.id_bodega = bu.id_bodega
+AND us.id_usuario = bu.id_usuario
+AND u.id_unidad=e.id_unidad
+AND us.id_unidad=u.id_unidad
+AND us.nombre_usuario = $P{nombreUsuario}
+AND e.id_umedida=um.id_umedida
+AND (um.sigla_um='mL' OR um.sigla_um='g')
+AND e.id_existencia = se.id_existencia
+AND se.mes = $P{mes} AND se.anio = $P{anio}
+AND e.id_existencia NOT IN (SELECT e."id_existencia"
+FROM "Laboratorios".producto p,
+"Laboratorios".existencias e,
+"Laboratorios".proveedor pv,
+"Laboratorios".movimientosinventario mi,
+"Laboratorios".ordeninventario oi,
+"Laboratorios".tipoproducto tp,
+"Laboratorios".tipordeninv toi, usuario us,
+"Laboratorios".unidad u,
+"Laboratorios".grado gr,
+"Laboratorios".bodega_usuario bu,
+"Laboratorios".bodega bg,
+"Laboratorios".unidadmedida um,
+"Laboratorios".saldo_existencia se
+WHERE mi.id_ordeninventario=oi.id_ordeninventario
+AND mi.id_existencia=e.id_existencia
+AND e.id_producto=p.id_producto
+AND e.id_tipoprod=tp.id_tipoprod
+AND oi.id_tipordeninv=toi.id_tipordeninv
+AND e.id_grado=gr.id_grado
+AND e.id_bodega=bg.id_bodega
+AND e.id_bodega = bu.id_bodega
+AND us.id_usuario = bu.id_usuario
+AND u.id_unidad=e.id_unidad
+AND us.id_unidad=u.id_unidad
+AND e.id_umedida=um.id_umedida
+AND e.id_existencia = se.id_existencia
+AND (um.sigla_um='mL' OR um.sigla_um='g')
+AND us.nombre_usuario = $P{nombreUsuario}
+AND e.id_tipoprod='3'
+AND pv.id_proveedor=mi.aux2
+AND Extract(month from oi.fechaingreso_oi) = $P{mes}
+AND Extract(year from oi.fechaingreso_oi) = $P{anio}
+AND se.mes = $P{mes} AND se.anio = $P{anio}
+AND cantidad_mov NOT IN ('0'))
+GROUP BY pr.nombre_pr, pv.nombre_pv, e.id_existencia, gr.nombre_gr,
+toi.nombre_toi, bg.nombre_bg, um.sigla_um, se.saldo_e]]>
+	</queryString>
+	<field name="id_existencia" class="java.lang.String"/>
+	<field name="ingreso" class="java.math.BigDecimal"/>
+	<field name="egresos" class="java.math.BigDecimal"/>
+	<field name="producto" class="java.lang.String"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<field name="saldo_e" class="java.math.BigDecimal"/>
+	<field name="factura" class="java.lang.String">
+		<fieldDescription><![CDATA[campo para saber si el concepto debe ser o no facturado]]></fieldDescription>
+	</field>
+	<field name="proveedor" class="java.lang.String"/>
+	<field name="nombre_toi" class="java.lang.String"/>
+	<field name="nombre_gr" class="java.lang.String"/>
+	<field name="sigla_um" class="java.lang.String"/>
+	<field name="nombre_bg" class="java.lang.String"/>
+	<field name="case" class="java.lang.String"/>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#929292" uuid="bd2c5eff-0a7f-4cf0-aecd-ef6aeb9fc3b4"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_bg}.toUpperCase()]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="-1" width="129" height="39" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $F{producto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="488" y="-1" width="67" height="39" uuid="4df96ea3-64f3-42cb-a52c-d87baf99edc4"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+ $F{saldo}+ " " +$F{sigla_um}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="376" y="-1" width="55" height="39" uuid="a2a581c9-6bdc-4a0a-a1b4-ed82695aa253"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+ $F{ingreso}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="212" y="-1" width="83" height="39" uuid="e5358c4a-53e5-4bdf-9b16-da62d2586ea9"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+ $F{factura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="-1" width="57" height="39" uuid="180ec6f8-819b-4003-8317-85bec0e7ebb0"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+ $F{egresos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="295" y="-1" width="81" height="39" uuid="9caf48eb-1af2-492d-aa3c-9ee10daf8821"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+ $F{proveedor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="-1" width="83" height="39" uuid="ac56f2bd-e235-40e0-80af-89b8bb2135da"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+$F{case}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
