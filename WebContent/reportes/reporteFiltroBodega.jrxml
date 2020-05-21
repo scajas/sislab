@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteFiltroBodega" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a19d22dc-b7ec-4fa3-b16f-6bbad353dc3b">
+	<property name="ireport.zoom" value="1.2100000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="subReporte" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\edist\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nombreUsuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nombreBodega" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="mes" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="imagen" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nombreMes" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT nombre_u , nombres_pe , "sigla_u" , nombre_bg , us.nombre_usuario
+FROM "Laboratorios".personal per,
+"Laboratorios".unidad u,
+"Laboratorios".bodega_usuario bu,
+"Laboratorios".bodega b,
+usuario us
+WHERE us.id_unidad=u.id_unidad
+AND us.id_personal= per.id_personal
+AND bu.id_usuario=us.id_usuario
+AND bu.id_bodega=b.id_bodega
+AND us.nombre_usuario= $P{nombreUsuario}
+AND b.nombre_bg = $P{nombreBodega}]]>
+	</queryString>
+	<field name="nombre_u" class="java.lang.String"/>
+	<field name="nombres_pe" class="java.lang.String"/>
+	<field name="sigla_u" class="java.lang.String"/>
+	<field name="nombre_bg" class="java.lang.String"/>
+	<field name="nombre_usuario" class="java.lang.String"/>
+	<group name="SubReporteFiltroBodega">
+		<groupExpression><![CDATA[$F{nombre_u}]]></groupExpression>
+		<groupHeader>
+			<band height="33">
+				<subreport>
+					<reportElement x="0" y="0" width="555" height="33" uuid="489fb2ee-03c1-4853-9a33-14aa32c6c1ba"/>
+					<subreportParameter name="anio">
+						<subreportParameterExpression><![CDATA[$P{anio}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="nombreBodega">
+						<subreportParameterExpression><![CDATA[$P{nombreBodega}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="mes">
+						<subreportParameterExpression><![CDATA[$P{mes}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="nombreUsuario">
+						<subreportParameterExpression><![CDATA[$P{nombreUsuario}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{subReporte}.toString() + "reportes/" + "subReporteFiltroBodega.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="96" splitType="Stretch">
+			<textField>
+				<reportElement x="449" y="34" width="57" height="20" uuid="9d408329-c3fe-498d-8911-74f21a386ff1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sigla_u}.trim()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="117" y="54" width="357" height="20" uuid="458ff9b3-ff94-4472-8cdc-315d9c6c7600"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REACTIVOS CONTROLADOS POR EL CONCEP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="117" y="14" width="357" height="20" uuid="8c42247a-8b45-4438-96d5-86a12c045490"/>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESCUELA POLITECNICA NACIONAL ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="444" y="34" width="5" height="20" uuid="f4515583-c45e-45ca-85ce-abc9bd59d08b"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[(]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="117" y="34" width="327" height="20" uuid="6dccf90c-1bdf-4647-bb4f-6548bb9a2e34"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_u}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="506" y="34" width="3" height="20" uuid="bd6f0b90-65d5-4231-ac56-00e0a0112237"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[)]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="86" width="555" height="1" uuid="7b8f1dd8-1dd1-408e-b55b-967dc960b8fd"/>
+			</line>
+			<image>
+				<reportElement x="5" y="14" width="89" height="62" uuid="59b58571-7f1b-4613-8d8f-8fc4718e7ec9"/>
+				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="66" splitType="Stretch">
+			<textField>
+				<reportElement x="87" y="0" width="171" height="20" uuid="e2152d6a-a667-4793-ab8e-ce79d59a7a9b"/>
+				<textFieldExpression><![CDATA[$F{nombre_bg}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="0" width="82" height="20" uuid="da595041-650e-40d2-ac58-391da1c2d8e6"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bodega:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="40" width="82" height="20" uuid="d27aef96-dcea-441a-a152-ad3c5b8fa2c2"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mes:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="20" width="82" height="20" uuid="65ceb5d6-9f9c-4e44-b0de-3877d05cae95"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsable:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="87" y="20" width="171" height="20" uuid="5ebfbf2e-bf92-4f0d-b462-2cdf957647ba"/>
+				<textFieldExpression><![CDATA[($F{nombres_pe}.equals("")? "" + $F{nombre_usuario} :  "" + $F{nombres_pe})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="87" y="40" width="171" height="20" uuid="6f69877a-27fd-4bf4-8f48-4ce8a9742051"/>
+				<textFieldExpression><![CDATA[$P{nombreMes} + " " + $P{anio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="431" y="0" width="57" height="35" backcolor="#778D9B" uuid="cf2de89b-7fcd-4e13-b3e5-53a3ecbdfb77"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="129" y="0" width="83" height="35" backcolor="#778D9B" uuid="1969cc57-f20c-47cc-8e68-c28d15ca51ab"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TRANSACCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="129" height="35" backcolor="#778D9B" uuid="801c67f5-48de-4538-9c06-005af3f916d8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUBSTANCIA CONTROLADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="376" y="0" width="55" height="35" backcolor="#778D9B" uuid="c4603020-19ce-46a1-b560-d6a75058a1f3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[INGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="212" y="0" width="83" height="35" backcolor="#778D9B" uuid="e1f72d68-b0d8-41e8-a675-8f9173390b49"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° FACTURA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="295" y="0" width="81" height="35" backcolor="#778D9B" uuid="f4b5092b-da12-4b92-a748-276023f77c8e"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROVEEDOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="488" y="0" width="67" height="35" backcolor="#778D9B" uuid="3b0d201f-84a7-4626-93bd-836a67ea94d8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="41" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="21" width="29" height="20" uuid="18bb605c-f74b-4b7c-b3c7-a0ed04876024"/>
+				<text><![CDATA[Quito,]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="100" height="21" uuid="260c6aec-fb4f-4a3e-96d2-e22972e5ac68"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_pe}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="29" y="21" width="100" height="20" uuid="bd5f157f-ec36-40d6-8335-0cc1ce65e1f9"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
