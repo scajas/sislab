@@ -16,9 +16,8 @@ import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 
-import ec.edu.epn.laboratorioBJ.beans.BodegaDAO;
-import ec.edu.epn.laboratorioBJ.entities.Bodega;
-import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
+import ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO;
+import ec.edu.epn.laboratorioBJ.entities.laboratory;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "bodegaController")
@@ -36,25 +35,26 @@ public class BodegaController implements Serializable {
 
 	/** SERIVICIOS **/
 
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/BodegaDAOImplement!ec.edu.epn.laboratorioBJ.beans.BodegaDAO")
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratoryDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO")
 
-	private BodegaDAO bodegaI;
+	private LaboratoryDAO laboratoryI;
 
 	// variables de la clase
-	private Bodega bodega;
-	private List<Bodega> bodegas = new ArrayList<>();
-	private List<Bodega> filtroBodegas;
-	private Bodega nuevoBodega;
+	private laboratory bodega;
+	private List<laboratory> bodegas = new ArrayList<>();
+	private List<laboratory> filtroBodegas;
+
+	private laboratory nuevoBodega;
 	private String nombreB;
-	
+
 	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
 
-			bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
-			bodega = new Bodega();
-			nuevoBodega = new Bodega();
+			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
+			bodega = new laboratory();
+			nuevoBodega = new laboratory();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,10 +90,10 @@ public class BodegaController implements Serializable {
 				nuevoBodega.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
 				Long iduser = su.id_usuario_log;
 				nuevoBodega.setIdUsuario(iduser.intValue());
-				bodegaI.save(nuevoBodega);
-				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
+				laboratoryI.save(nuevoBodega);
+				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 				mensajeInfo("La Bodega (" + nuevoBodega.getNombreBg() + ") registrada exitosamente");
-				nuevoBodega = new Bodega();
+				nuevoBodega = new laboratory();
 
 				context.execute("PF('nuevoB').hide();");
 			}
@@ -111,21 +111,21 @@ public class BodegaController implements Serializable {
 		try {
 
 			if (bodega.getNombreBg().equals(getNombreB())) {
-				bodegaI.update(bodega);
-				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
+				laboratoryI.update(bodega);
+				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 
 				mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
 			} else if (buscarBodega(bodega.getNombreBg()) == false) {
-				bodegaI.update(bodega);
-				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
+				laboratoryI.update(bodega);
+				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 
 				mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
 			} else {
-				bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
+				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 				mensajeError("La Bodega (" + bodega.getNombreBg() + ") ya existe.");
 			}
 
@@ -137,8 +137,8 @@ public class BodegaController implements Serializable {
 	public void eliminarBodega(ActionEvent event) {
 		try {
 
-			bodegaI.delete(bodega);
-			bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			laboratoryI.delete(bodega);
+			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 
 			mensajeInfo("La Bodega (" + bodega.getNombreBg() + ") se ha eliminado exitosamente");
 
@@ -155,13 +155,13 @@ public class BodegaController implements Serializable {
 
 	private boolean buscarBodega(String valor) {
 		try {
-			bodegas = bodegaI.listaBodegaUnidad(su.UNIDAD_USUARIO_LOGEADO);
+			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		boolean resultado = false;
-		for (Bodega tipo : bodegas) {
+		for (laboratory tipo : bodegas) {
 			if (tipo.getNombreBg().equals(valor)) {
 				resultado = true;
 				break;
@@ -176,34 +176,30 @@ public class BodegaController implements Serializable {
 		setNombreB(nombre);
 	}
 
-	/*
-	 * get and set
-	 */
-
-	public Bodega getBodega() {
+	// SETT Y GETT
+	public laboratory getBodega() {
 		return bodega;
 	}
 
-	public void setBodega(Bodega bodega) {
+	public void setBodega(laboratory bodega) {
 		this.bodega = bodega;
 	}
 
-	public List<Bodega> getBodegas() {
+	public List<laboratory> getBodegas() {
 		return bodegas;
 	}
 
-	public void setBodegas(List<Bodega> bodegas) {
+	public void setBodegas(List<laboratory> bodegas) {
 		this.bodegas = bodegas;
 	}
 
-	public Bodega getNuevoBodega() {
+	public laboratory getNuevoBodega() {
 		return nuevoBodega;
 	}
 
-	public void setNuevoBodega(Bodega nuevoBodega) {
+	public void setNuevoBodega(laboratory nuevoBodega) {
 		this.nuevoBodega = nuevoBodega;
 	}
-
 	public String getNombreB() {
 		return nombreB;
 	}
@@ -212,11 +208,11 @@ public class BodegaController implements Serializable {
 		this.nombreB = nombreB;
 	}
 
-	public List<Bodega> getFiltroBodegas() {
+	public List<laboratory> getFiltroBodegas() {
 		return filtroBodegas;
 	}
 
-	public void setFiltroBodegas(List<Bodega> filtroBodegas) {
+	public void setFiltroBodegas(List<laboratory> filtroBodegas) {
 		this.filtroBodegas = filtroBodegas;
 	}
 
