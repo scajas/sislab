@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -20,6 +19,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.TipoServicioDAO;
 import ec.edu.epn.laboratorioBJ.entities.Tiposervicio;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "tipoServicioController")
@@ -47,8 +47,9 @@ public class TipoServicioController implements Serializable {
 	private String nombreTS;
 
 	private List<Tiposervicio> filtroTipoServicio = new ArrayList<>();
-
-	// Mpetodo Init
+	private Utilidades utilidades;
+	
+	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
@@ -56,25 +57,11 @@ public class TipoServicioController implements Serializable {
 			tipoServicios = tipoServicioI.getListTS();
 			tipoServicio = new Tiposervicio();
 			nuevoTipoServicio = new Tiposervicio();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/******* Método Guardar *******/
@@ -85,14 +72,14 @@ public class TipoServicioController implements Serializable {
 
 		try {
 			if (buscarTipoServicio(nuevoTipoServicio.getNombreTs()) == true) {
-				mensajeError("El Tipo de Servicio (" + nuevoTipoServicio.getNombreTs() + ") ya existe.");
+				utilidades.mensajeError("El Tipo de Servicio (" + nuevoTipoServicio.getNombreTs() + ") ya existe.");
 
 			} else {
 
 				tipoServicioI.save(nuevoTipoServicio);
 				tipoServicios = tipoServicioI.getListTS();
 
-				mensajeInfo(
+				utilidades.mensajeInfo(
 						"El Tipo Servicio  (" + nuevoTipoServicio.getNombreTs() + ") se ha almacenado exitosamente");
 
 				nuevoTipoServicio = new Tiposervicio();
@@ -102,7 +89,7 @@ public class TipoServicioController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 
@@ -121,24 +108,24 @@ public class TipoServicioController implements Serializable {
 
 				context.execute("PF('modificarTipoServicio').hide();");
 
-				mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
 
 			} else if (buscarTipoServicio(tipoServicio.getNombreTs()) == false) {
 
 				tipoServicioI.update(tipoServicio);
 				tipoServicios = tipoServicioI.getListTS();
 
-				mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarTipoServicio').hide();");
 
 			} else {
 				tipoServicios = tipoServicioI.getListTS();
-				mensajeError("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") ya existe.");
+				utilidades.mensajeError("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -150,16 +137,16 @@ public class TipoServicioController implements Serializable {
 			tipoServicioI.delete(tipoServicio);
 			tipoServicios = tipoServicioI.getListTS();
 
-			mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError(
+				utilidades.mensajeError(
 						"La tabla Tipo Servicio (" + tipoServicio.getNombreTs() + ") tiene relación con otra tabla");
 			} else {
 
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 			}
 
 		}
@@ -173,8 +160,7 @@ public class TipoServicioController implements Serializable {
 		try {
 			tipoServicios = tipoServicioI.getAll(Tiposervicio.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 		}
 
 		boolean resultado = false;

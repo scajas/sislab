@@ -63,7 +63,8 @@
 											pattern="dd/MM/yyyy" locale="es" required="true"
 											onkeypress="return permite(event, 'none')"
 											requiredMessage="Fecha Inicial Requerida" navigator="true"
-											effect="fadeIn" effectDuration="100" showOn="button" placeholder="Seleccione la Fecha">
+											effect="fadeIn" effectDuration="100" showOn="button"
+											placeholder="Seleccione la Fecha">
 											<p:ajax event="dateSelect" update="fechaFin" />
 										</p:calendar>
 
@@ -89,9 +90,11 @@
 										align="center">
 										<tr align="center">
 											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(startBusqueda);"
 													actionListener="#{reporteConsumoExistenciasController.consultarMovimientos}"
 													update="@([id$=tblConsumoExis]),@([id$=messagesForm])"
-													process="@this,formBuscar">
+													process="@this,formBuscar"
+													onsuccess="PrimeFaces.monitorDownload(stopBusqueda);">
 
 													<h:graphicImage value="/images/archivos/busqueda.png"
 														class="btn bt-success" title="Buscar"
@@ -102,6 +105,7 @@
 												</p:commandLink></td>
 
 											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(start, stop);"
 													oncomplete="PF('repoConsumoEx').show();"
 													id="btnGenerarReporte"
 													update="@([id$=dialogReporteConsum], [id$=pdfView])"
@@ -126,8 +130,6 @@
 
 						<br />
 
-
-
 						<p:dataTable id="tblConsumoExis"
 							value="#{reporteConsumoExistenciasController.movimientosinventarios}"
 							var="mov"
@@ -142,21 +144,21 @@
 
 							<p:column headerText="Existencia">
 								<f:facet name="header">
-									<h:outputText value="Existencia" />
+									<h:outputText value="ID EXISTENCIA" />
 								</f:facet>
 								<h:outputText value="#{mov.idExistencia}" />
 							</p:column>
 
 							<p:column headerText="Fecha">
 								<f:facet name="header">
-									<h:outputText value="Fecha" />
+									<h:outputText value="FECHA" />
 								</f:facet>
 								<h:outputText value="#{mov.fechaMi}" />
 							</p:column>
 
 							<p:column headerText="Grado">
 								<f:facet name="header">
-									<h:outputText value="Grado" />
+									<h:outputText value="GRADO" />
 								</f:facet>
 								<h:outputText
 									value="#{reporteConsumoExistenciasController.cambiarDatosExistencia(mov.idExistencia).grado.nombreGr}" />
@@ -164,7 +166,7 @@
 
 							<p:column headerText="Tipo Producto">
 								<f:facet name="header">
-									<h:outputText value="Tipo Producto" />
+									<h:outputText value="TIPO DE PRODUCTO" />
 								</f:facet>
 								<h:outputText
 									value="#{reporteConsumoExistenciasController.cambiarDatosExistencia(mov.idExistencia).tipoproducto.nombreTprod}" />
@@ -172,7 +174,7 @@
 
 							<p:column headerText="Tipo Mov.Inv.">
 								<f:facet name="header">
-									<h:outputText value="Tipo Mov.Inv." />
+									<h:outputText value="TIPO MOV. INV." />
 								</f:facet>
 								<h:outputText
 									value="#{mov.ordeninventario.tipordeninv.nombreToi}" />
@@ -180,18 +182,21 @@
 
 							<p:column headerText="Cantidad">
 								<f:facet name="header">
-									<h:outputText value="Cantidad" />
+									<h:outputText value="CANTIDAD" />
 								</f:facet>
 								<h:outputText
 									value="#{reporteConsumoExistenciasController.cambiarFormatoDouble(mov.cantidadMov)}" />
 							</p:column>
 						</p:dataTable>
+
 					</p:fieldset>
 				</p:panel>
+
+
 				<p:dialog id="dialogReporteConsum" resizable="true"
 					widgetVar="repoConsumoEx" modal="true" hideEffect="fade"
 					responsive="true" dynamic="true" width="65%"
-					header="Reporte Consumo Existencias">
+					header="Reporte Consumo Existencias" onShow="stop()">
 					<p:panel id="toggleable" toggleable="true" closable="true"
 						toggleSpeed="500" closeSpeed="500">
 						<div align="right">
@@ -216,48 +221,22 @@
 				</p:dialog>
 			</h:form>
 
-			<p:dialog modal="true" widgetVar="statusDialog" header="Descargando!"
-				draggable="false" closable="false" resizable="false">
-				<p:graphicImage name="/images/archivos/cargando.gif" />
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="¡Generando Reporte!" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
 			</p:dialog>
 
-
-
-			<p:dialog id="seleccionArchivo1" resizable="true"
-				widgetVar="seleccionArchivo" modal="true" showEffect="explode"
-				hideEffect="fade" responsive="true" dynamic="true"
-				header="Reporte Consumo Existencias">
-
-
-				<h:form id="seleccionArchivo2">
-
-					<p:fieldset legend="PARÁMETROS DE SELECCIÓN"
-						style="border-radius: 10px 10px 10px 10px;
-						-moz-border-radius: 10px 10px 10px 10px;
-						-webkit-border-radius: 10px 10px 10px 10px;
-						border: 0px solid #000000;
-						border-style: double;
-						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
-
-						<h:outputLabel value="Formato:" style="font-size: 17px" size="30" />
-						<p:selectOneMenu style="FONT-FAMILY: arial;" size="30">
-							<f:selectItem itemLabel="Porfavor Seleccione" itemValue="" />
-							<f:selectItem itemLabel="PDF" itemValue="pdf" />
-							<f:selectItem itemLabel="EXCEL" itemValue="excel" />
-
-						</p:selectOneMenu>
-
-						<br />
-						<br />
-						<center>
-							<p:commandButton value="Generar Reporte" type="button" />
-							<p:commandButton value="Salir"
-								onclick="PF('seleccionArchivo').hide();" type="button" />
-
-						</center>
-					</p:fieldset>
-				</h:form>
+			<p:dialog modal="true" widgetVar="statusDialog2"
+				header="¡Buscando Coincidencias!" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
 			</p:dialog>
 
 		</h:body>
@@ -270,6 +249,15 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
+
+			function startBusqueda(){
+			PF('statusDialog2').show();
+			} 
+
+			function stopBusqueda(){
+			PF('statusDialog2').hide();
+			}
+				
 		    PrimeFaces.locales['es'] = {
 		            closeText: 'Cerrar',
 		            prevText: 'Anterior',

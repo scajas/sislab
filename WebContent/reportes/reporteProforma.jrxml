@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteProforma" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dfd9280b-b74a-4bb5-9a53-356cc548b669">
-	<property name="ireport.zoom" value="1.3310000000000008"/>
+	<property name="ireport.zoom" value="1.3310000000000022"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="fechaInicio" class="java.util.Date">
@@ -97,11 +97,11 @@ ORDER BY id_proforma]]>
 				<text><![CDATA[Quito-Ecuador]]></text>
 			</staticText>
 			<image>
-				<reportElement x="3" y="3" width="89" height="62" uuid="756cbe83-672e-4829-8b05-38e8a4efa42f"/>
-				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<reportElement x="11" y="3" width="89" height="62" uuid="756cbe83-672e-4829-8b05-38e8a4efa42f"/>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
 			<line>
-				<reportElement x="3" y="65" width="542" height="1" uuid="650e581c-25ba-447b-be8b-8a2215a1046d"/>
+				<reportElement x="0" y="70" width="555" height="1" uuid="650e581c-25ba-447b-be8b-8a2215a1046d"/>
 			</line>
 		</band>
 	</title>

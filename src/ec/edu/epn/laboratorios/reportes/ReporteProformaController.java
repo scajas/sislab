@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,12 +16,10 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -35,6 +33,8 @@ import ec.edu.epn.laboratorioBJ.beans.TipoClienteDAO;
 import ec.edu.epn.laboratorioBJ.entities.Cliente;
 import ec.edu.epn.laboratorioBJ.entities.Proforma;
 import ec.edu.epn.laboratorioBJ.entities.Tipocliente;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -89,7 +89,7 @@ public class ReporteProformaController implements Serializable {
 
 	private List<Proforma> filtroProforma = new ArrayList<>();
 	private StreamedContent streamFile = null;
-
+	private Utilidades utilidades;
 	// Metodo Init
 	@PostConstruct
 	public void init() {
@@ -97,24 +97,11 @@ public class ReporteProformaController implements Serializable {
 
 			proforma = new Proforma();
 			tipoClientes = tipoClienteI.getAll(Tipocliente.class);
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	public void buscarProforma() {
@@ -124,9 +111,9 @@ public class ReporteProformaController implements Serializable {
 			proformas = proformaI.getparametrosCliente(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()),
 					nombreTipoCliente, estadoFactura);
 
-			mensajeInfo("Número de coincidencias encontradas:" + proformas.size());
+			utilidades.mensajeInfo("Número de coincidencias encontradas:" + proformas.size());
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 
 	}
@@ -151,11 +138,11 @@ public class ReporteProformaController implements Serializable {
 
 	private Connection coneccionSQL() throws IOException {
 		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
+			conexionPostgres conexionSQL = new conexionPostgres();
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 		return null;
 	}
@@ -203,63 +190,15 @@ public class ReporteProformaController implements Serializable {
 			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteProforma.pdf");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 
 		}
 
 	}
 
-	/****** Generacion de PDF ****/
-	/*
-	 * public void generarEXCEL(ActionEvent event) throws Exception { try {
-	 * 
-	 * if (streamFile != null) streamFile.getStream().close();
-	 * 
-	 * Map<String, Object> parametros = new HashMap<String, Object>();
-	 * parametros.put("fechaInicial", proformaSelect.getFecha());
-	 * parametros.put("fechaFinal", proformaSelect.getFecha());
-	 * parametros.put("tipoCliente", clienteSelect.getTipocliente());
-	 * parametros.put("estadoProforma", proformaSelect.getEstadoPo());
-	 * 
-	 * String direccion =
-	 * FacesContext.getCurrentInstance().getExternalContext().getRealPath(
-	 * "/reportes/"); if (direccion.toUpperCase().contains("C:") ||
-	 * direccion.toUpperCase().contains("D:") ||
-	 * direccion.toUpperCase().contains("E:") ||
-	 * direccion.toUpperCase().contains("F:")) { direccion = direccion + "\\"; }
-	 * else { direccion = direccion + "/"; }
-	 * 
-	 * String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-	 * .getRealPath("/reportes/reporteProforma.jrxml"); InputStream input = new
-	 * FileInputStream(new File(jrxmlFile)); JasperReport jasperReport =
-	 * JasperCompileManager.compileReport(input);
-	 * parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-	 * 
-	 * JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,
-	 * parametros);
-	 * 
-	 * File sourceFile = new File(jrxmlFile); File destFile = new
-	 * File(sourceFile.getParent(), "reporteProforma.xlsx");
-	 * 
-	 * JasperExportManager.exportReportToPdfFile(jasperPrint,
-	 * destFile.toString()); InputStream stream = new FileInputStream(destFile);
-	 * 
-	 * streamFile = new DefaultStreamedContent(stream, "application/xlsx",
-	 * "reporteProforma.xlsx");
-	 * 
-	 * } catch (Exception e) {
-	 * FacesContext.getCurrentInstance().addMessage(event.getComponent().
-	 * getClientId(), new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-	 * "ERROR"));
-	 * 
-	 * }
-	 * 
-	 * }
-	 */
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
 
-		System.out.println("Ingresa al Stream File: " + streamFile);
 	}
 
 	public void cerrarArchivo() throws IOException {

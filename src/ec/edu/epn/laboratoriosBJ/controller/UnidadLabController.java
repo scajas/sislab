@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -17,6 +16,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "unidadLaboController")
@@ -42,7 +42,8 @@ public class UnidadLabController implements Serializable {
 	private UnidadLabo nuevoUnidad;
 	private String nombreTP;
 	private List<UnidadLabo> filtroUnidad;
-
+	private Utilidades utilidades;
+	
 	@PostConstruct
 	public void init() {
 		try {
@@ -50,24 +51,11 @@ public class UnidadLabController implements Serializable {
 			unidades = unidadI.getAll(UnidadLabo.class);
 			nuevoUnidad = new UnidadLabo();
 			unidad = new UnidadLabo();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	// ************Agregar Unidad************//
@@ -79,19 +67,19 @@ public class UnidadLabController implements Serializable {
 		try {
 			if (buscarUnidad(nuevoUnidad.getNombreU()) == true) {
 
-				mensajeError("La Unidad (" + nuevoUnidad.getNombreU() + ") ya existe.");
+				utilidades.mensajeError("La Unidad (" + nuevoUnidad.getNombreU() + ") ya existe.");
 		
 			} else {
 
 				unidadI.save(nuevoUnidad);
-				mensajeInfo("La Unidad (" + nuevoUnidad.getNombreU() + ") se ha almacenado correctamente.");
+				utilidades.mensajeInfo("La Unidad (" + nuevoUnidad.getNombreU() + ") se ha almacenado correctamente.");
 				nuevoUnidad = new UnidadLabo();
 				unidades = unidadI.getAll(UnidadLabo.class);
 				context.execute("PF('nuevoUnidad').hide();");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 
 	}
@@ -104,24 +92,24 @@ public class UnidadLabController implements Serializable {
 
 				unidadI.update(unidad);
 				unidades = unidadI.getAll(UnidadLabo.class);
-				mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha actualizado exitosamente.");
 				context.execute("PF('modificarUnidad')");
 
 			} else if (buscarUnidad(unidad.getNombreU()) == false) {
 
 				unidadI.update(unidad);
 				unidades = unidadI.getAll(UnidadLabo.class);
-				mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha actualizado exitosamente.");
 				context.execute("PF('modificarUnidad')");
 
 			} else {
 
 				unidades = unidadI.getAll(UnidadLabo.class);
-				mensajeError("La Unidad (" + unidad.getNombreU() + ") ya existe.");
+				utilidades.mensajeError("La Unidad (" + unidad.getNombreU() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 	}
 
@@ -133,15 +121,14 @@ public class UnidadLabController implements Serializable {
 
 			unidadI.delete(unidad);
 			unidades = unidadI.getAll(UnidadLabo.class);
-
-			mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha eliminado correctamente.");
+			utilidades.mensajeInfo("La Unidad (" + unidad.getNombreU() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("La tabla Unidad (" + unidad.getNombreU() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Unidad (" + unidad.getNombreU() + ") tiene relación con otra tabla.");
 			} else {
-				mensajeError("Ha ocurrido un problema.");
+				utilidades.mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
@@ -154,8 +141,7 @@ public class UnidadLabController implements Serializable {
 		try {
 			unidades = unidadI.getAll(UnidadLabo.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 		}
 
 		boolean resultado = false;

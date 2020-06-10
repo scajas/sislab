@@ -3,10 +3,8 @@ package ec.edu.epn.laboratoriosBJ.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -18,6 +16,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO;
 import ec.edu.epn.laboratorioBJ.entities.laboratory;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "bodegaController")
@@ -46,33 +45,21 @@ public class BodegaController implements Serializable {
 
 	private laboratory nuevoBodega;
 	private String nombreB;
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
 
-			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
+			bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
 			bodega = new laboratory();
 			nuevoBodega = new laboratory();
+			utilidades = new Utilidades();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Nuevo ****/
@@ -83,7 +70,7 @@ public class BodegaController implements Serializable {
 
 		try {
 			if (buscarBodega(nuevoBodega.getNombreBg()) == true) {
-				mensajeError("La Bodega (" + nuevoBodega.getNombreBg() + ") ya existe.");
+				utilidades.mensajeError("La Bodega (" + nuevoBodega.getNombreBg() + ") ya existe.");
 
 			} else {
 				// seteo de las campos
@@ -91,16 +78,15 @@ public class BodegaController implements Serializable {
 				Long iduser = su.id_usuario_log;
 				nuevoBodega.setIdUsuario(iduser.intValue());
 				laboratoryI.save(nuevoBodega);
-				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
-				mensajeInfo("La Bodega (" + nuevoBodega.getNombreBg() + ") registrada exitosamente");
+				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
+				utilidades.mensajeInfo("La Bodega (" + nuevoBodega.getNombreBg() + ") se ha almacenado exitosamente");
 				nuevoBodega = new laboratory();
-
 				context.execute("PF('nuevoB').hide();");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 
 	}
@@ -112,25 +98,25 @@ public class BodegaController implements Serializable {
 
 			if (bodega.getNombreBg().equals(getNombreB())) {
 				laboratoryI.update(bodega);
-				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
+				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
 
-				mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
 			} else if (buscarBodega(bodega.getNombreBg()) == false) {
 				laboratoryI.update(bodega);
-				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
+				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
 
-				mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
 			} else {
-				bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
-				mensajeError("La Bodega (" + bodega.getNombreBg() + ") ya existe.");
+				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
+				utilidades.mensajeError("La Bodega (" + bodega.getNombreBg() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -138,16 +124,16 @@ public class BodegaController implements Serializable {
 		try {
 
 			laboratoryI.delete(bodega);
-			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
+			bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
 
-			mensajeInfo("La Bodega (" + bodega.getNombreBg() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("La Tabla Bodega (" + bodega.getNombreBg() + ") tiene relación con otra tabla");
+				utilidades.mensajeError("La Tabla Bodega (" + bodega.getNombreBg() + ") tiene relación con otra tabla");
 			} else {
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 			}
 
 		}
@@ -155,7 +141,7 @@ public class BodegaController implements Serializable {
 
 	private boolean buscarBodega(String valor) {
 		try {
-			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
+			bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -200,6 +186,7 @@ public class BodegaController implements Serializable {
 	public void setNuevoBodega(laboratory nuevoBodega) {
 		this.nuevoBodega = nuevoBodega;
 	}
+
 	public String getNombreB() {
 		return nombreB;
 	}
@@ -214,6 +201,14 @@ public class BodegaController implements Serializable {
 
 	public void setFiltroBodegas(List<laboratory> filtroBodegas) {
 		this.filtroBodegas = filtroBodegas;
+	}
+
+	public Utilidades getUtilidades() {
+		return utilidades;
+	}
+
+	public void setUtilidades(Utilidades utilidades) {
+		this.utilidades = utilidades;
 	}
 
 }

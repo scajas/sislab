@@ -20,6 +20,7 @@ import ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import java.io.File;
@@ -69,6 +70,7 @@ public class LaboratorioController implements Serializable {
 	private UploadedFile file;
 	private FileUploadEvent fileUploadEvent;
 	private UploadedFile uploadedFile;
+	private Utilidades utilidades;
 
 	/** MÉTODOS **/
 	@PostConstruct
@@ -83,6 +85,7 @@ public class LaboratorioController implements Serializable {
 
 			unidadSelect = new UnidadLabo();
 			unidadSelectEmpty = new UnidadLabo();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
@@ -102,20 +105,6 @@ public class LaboratorioController implements Serializable {
 
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
-
 	/****** Nuevo - Nuevo Lab ****/
 
 	public void guardarLab() {
@@ -127,18 +116,18 @@ public class LaboratorioController implements Serializable {
 
 				if (buscarLaboratorioLab(nuevoLaboratorioLab.getNombreL()) == true) {
 
-					mensajeError("El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
+					utilidades.mensajeError("El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
 
 				} else if (nuevoLaboratorioLab.getPath() == null) {
 
-					mensajeError("Debe seleccionar una Imagen.");
+					utilidades.mensajeError("Debe seleccionar una Imagen.");
 
 				} else {
 					cargarImg(getFileUploadEvent());
 					nuevoLaboratorioLab.setUnidad(unidadSelect);
 
 					laboratorioI.save(nuevoLaboratorioLab);
-					mensajeInfo(
+					utilidades.mensajeInfo(
 							"El Laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") se ha almacenado exitosamente");
 
 					updateTable();
@@ -149,13 +138,12 @@ public class LaboratorioController implements Serializable {
 
 			} else {
 
-				mensajeError("Debe llenar los campos obligatorios");
+				utilidades.mensajeError("Debe llenar los campos obligatorios");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un error");
 
 		}
 
@@ -169,7 +157,7 @@ public class LaboratorioController implements Serializable {
 
 		if (unidadSelect.getNombreU() == null) {
 
-			mensajeError("Debe Seleccionar la Unidad.");
+			utilidades.mensajeError("Debe Seleccionar la Unidad.");
 			resultado = false;
 		}
 
@@ -179,14 +167,14 @@ public class LaboratorioController implements Serializable {
 
 		if (nuevoLaboratorioLab.getNombreL() == null || nuevoLaboratorioLab.getNombreL().equals("")) {
 
-			mensajeError("Debe Ingresar el Nombre del Laboratorio.");
+			utilidades.mensajeError("Debe Ingresar el Nombre del Laboratorio.");
 			resultado = false;
 
 		} else {
 			resultado = true;
 		}
 		if (buscarLaboratorioLab(nuevoLaboratorioLab.getNombreL()) == true) {
-			mensajeError("El laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
+			utilidades.mensajeError("El laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
 			resultado = false;
 
 		} else {
@@ -194,7 +182,7 @@ public class LaboratorioController implements Serializable {
 		}
 		if (nuevoLaboratorioLab.getCentrocostoL() == null || nuevoLaboratorioLab.getCentrocostoL().equals("")) {
 
-			mensajeError("Debe Ingresar el Centro de Costo.");
+			utilidades.mensajeError("Debe Ingresar el Centro de Costo.");
 			resultado = false;
 
 		} else {
@@ -238,7 +226,7 @@ public class LaboratorioController implements Serializable {
 			out.close();
 
 			getNuevoLaboratorioLab().setPath(name);
-			mensajeInfo("La imagen (" + name + ") fue subida con éxito.");
+			utilidades.mensajeInfo("La imagen (" + name + ") fue subida con éxito.");
 
 			updateTable();
 		} catch (Exception e) {
@@ -278,7 +266,8 @@ public class LaboratorioController implements Serializable {
 				modificarImg(getFileUploadEvent());
 				laboratorioI.update(LaboratorioLab);
 				updateTable();
-				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente.");
+				utilidades.mensajeInfo(
+						"El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente.");
 
 				context.execute("PF('modificarLaboratorio').hide();");
 
@@ -287,19 +276,20 @@ public class LaboratorioController implements Serializable {
 				modificarImg(getFileUploadEvent());
 				laboratorioI.update(LaboratorioLab);
 				updateTable();
-				mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente.");
+				utilidades.mensajeInfo(
+						"El Laboratorio (" + LaboratorioLab.getNombreL() + ") se actualizado exitosamente.");
 
 				context.execute("PF('modificarLaboratorio').hide();");
 
 			} else {
 				updateTable();
-				mensajeError("El Laboratorio (" + LaboratorioLab.getNombreL() + ") ya existe");
+				utilidades.mensajeError("El Laboratorio (" + LaboratorioLab.getNombreL() + ") ya existe");
 
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 	}
@@ -362,7 +352,7 @@ public class LaboratorioController implements Serializable {
 
 			LaboratorioLab.setPath(direccion);
 
-			mensajeInfo("La imagen (" + name + ") fue actualizada con éxito");
+			utilidades.mensajeInfo("La imagen (" + name + ") fue actualizada con éxito");
 
 			updateTable();
 		} catch (Exception e) {
@@ -398,18 +388,19 @@ public class LaboratorioController implements Serializable {
 
 			laboratorioI.delete(LaboratorioLab);
 			updateTable();
-			mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se ha eliminado correctamente");
+			utilidades
+					.mensajeInfo("El Laboratorio (" + LaboratorioLab.getNombreL() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError(
+				utilidades.mensajeError(
 						"La tabla Laboratorio (" + LaboratorioLab.getNombreL() + ") tiene relación con otra tabla");
 
 			} else {
 
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 
 			}
 
@@ -425,9 +416,7 @@ public class LaboratorioController implements Serializable {
 			updateTable();
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
-
 		boolean resultado = false;
 		for (LaboratorioLab lab : listaLaboratorioLab) {
 			if (lab.getNombreL().equals(valor)) {
@@ -458,7 +447,6 @@ public class LaboratorioController implements Serializable {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 	}

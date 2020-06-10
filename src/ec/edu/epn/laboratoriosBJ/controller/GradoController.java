@@ -3,22 +3,17 @@ package ec.edu.epn.laboratoriosBJ.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.primefaces.context.RequestContext;
-
 import ec.edu.epn.laboratorioBJ.beans.GradoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Grado;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "gradoController")
@@ -41,7 +36,7 @@ public class GradoController implements Serializable {
 	private List<Grado> filtroGrado = new ArrayList<>();
 	private Grado nuevoGrado;
 	private String nombreGrado;
-
+	private Utilidades utilidades;
 	// Mpetodo Init
 	@PostConstruct
 	public void init() {
@@ -50,25 +45,12 @@ public class GradoController implements Serializable {
 			Grados = gradoI.getAll(Grado.class);
 			grado = new Grado();
 			nuevoGrado = new Grado();
+			utilidades = new Utilidades();
+
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/******* Método Guardar *******/
@@ -77,20 +59,20 @@ public class GradoController implements Serializable {
 		RequestContext context = RequestContext.getCurrentInstance();
 		try {
 			if (buscarGrado(nuevoGrado.getNombreGr()) == true) {
-				mensajeError("El Grado (" + nuevoGrado.getNombreGr() + ") ya existe.");
+				utilidades.mensajeError("El Grado (" + nuevoGrado.getNombreGr() + ") ya existe.");
 
 			} else {
 
 				gradoI.save(nuevoGrado);
 				Grados = gradoI.getAll(Grado.class);
-				mensajeInfo("El Grado (" + nuevoGrado.getNombreGr() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("El Grado (" + nuevoGrado.getNombreGr() + ") se ha almacenado exitosamente");
 				nuevoGrado = new Grado();
 				context.execute("PF('nuevoGrado').hide();");
 
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 
 		}
 
@@ -107,7 +89,7 @@ public class GradoController implements Serializable {
 				gradoI.update(grado);
 				Grados = gradoI.getAll(Grado.class);
 
-				mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarGrado').hide();");
 
@@ -115,18 +97,18 @@ public class GradoController implements Serializable {
 				gradoI.update(grado);
 				Grados = gradoI.getAll(Grado.class);
 
-				mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarGrado').hide();");
 
 			} else {
 				Grados = gradoI.getAll(Grado.class);
-				mensajeError("El Grado (" + grado.getNombreGr() + ") ya existe.");
+				utilidades.mensajeError("El Grado (" + grado.getNombreGr() + ") ya existe.");
 
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 	}
 
@@ -138,17 +120,17 @@ public class GradoController implements Serializable {
 			gradoI.delete(grado);
 			Grados = gradoI.getAll(Grado.class);
 
-			mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("El Grado (" + grado.getNombreGr() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Grado (" + grado.getNombreGr() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Grado (" + grado.getNombreGr() + ") tiene relación con otra tabla.");
 
 			} else {
 
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 			}
 
 		}
@@ -161,8 +143,7 @@ public class GradoController implements Serializable {
 		try {
 			Grados = gradoI.getAll(Grado.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 		}
 
 		boolean resultado = false;

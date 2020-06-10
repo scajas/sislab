@@ -59,7 +59,6 @@ public class OrdenInventarioController implements Serializable {
 	@PostConstruct
 	public void init() {
 		try {
-			// Long idUsuario = su.id_usuario_log;
 
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
@@ -128,9 +127,7 @@ public class OrdenInventarioController implements Serializable {
 		setMovimientoInventarios(ordenInventarioI.listaMovimientoI(id));
 	}
 
-	/*
-	 * get and set
-	 */
+	/****** Getter y Setter ****/
 
 	public Ordeninventario getOrdenInventario() {
 		return ordenInventario;

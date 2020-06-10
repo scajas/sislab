@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -17,6 +16,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.TipoOrdenInventarioDAO;
 import ec.edu.epn.laboratorioBJ.entities.Tipordeninv;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "tipoOrdenInventarioController")
@@ -44,6 +44,7 @@ public class TipoOrdenInventarioController implements Serializable {
 	private Tipordeninv tipoOrdenInv;
 	private String nombreTOI;
 	private List<Tipordeninv> filtrarTOI;
+	private Utilidades utilidades;
 
 	/** METODO INIT **/
 	@PostConstruct
@@ -54,25 +55,11 @@ public class TipoOrdenInventarioController implements Serializable {
 			setListTipoInventario(tipoOrdenInventarioI.getAll(Tipordeninv.class));
 			setNuevoTipoInventario(new Tipordeninv());
 			tipoOrdenInv = new Tipordeninv();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Guardar ****/
@@ -81,7 +68,7 @@ public class TipoOrdenInventarioController implements Serializable {
 		try {
 
 			if (buscarTipoOrdenInventario(nuevoTipoInventario.getNombreToi()) == true) {
-				mensajeError("El Tipo Orden Producto (" + nuevoTipoInventario.getNombreToi() + ") ya existe.");
+				utilidades.mensajeError("El Tipo Orden Producto (" + nuevoTipoInventario.getNombreToi() + ") ya existe.");
 				
 
 			} else {
@@ -89,7 +76,7 @@ public class TipoOrdenInventarioController implements Serializable {
 				tipoOrdenInventarioI.save(nuevoTipoInventario);
 				listTipoInventario = tipoOrdenInventarioI.getAll(Tipordeninv.class);
 
-				mensajeInfo("El Tipo Orden Inventario (" + nuevoTipoInventario.getNombreToi()
+				utilidades.mensajeInfo("El Tipo Orden Inventario (" + nuevoTipoInventario.getNombreToi()
 						+ ") se ha almacenado exitosamente.");
 
 				nuevoTipoInventario = new Tipordeninv();
@@ -100,7 +87,7 @@ public class TipoOrdenInventarioController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 
 		}
 
@@ -115,7 +102,7 @@ public class TipoOrdenInventarioController implements Serializable {
 				tipoOrdenInventarioI.update(tipoOrdenInv);
 				listTipoInventario = tipoOrdenInventarioI.getAll(Tipordeninv.class);
 
-				mensajeInfo("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
+				utilidades.mensajeInfo("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
 						+ ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarTOI').hide();");
@@ -124,19 +111,19 @@ public class TipoOrdenInventarioController implements Serializable {
 				tipoOrdenInventarioI.update(tipoOrdenInv);
 				listTipoInventario = tipoOrdenInventarioI.getAll(Tipordeninv.class);
 
-				mensajeInfo("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
+				utilidades.mensajeInfo("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
 						+ ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarTOI').hide();");
 			} else {
 				listTipoInventario = tipoOrdenInventarioI.getAll(Tipordeninv.class);
 
-				mensajeError("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi() + ") ya existe.");
+				utilidades.mensajeError("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 
 		}
 	}
@@ -147,18 +134,18 @@ public class TipoOrdenInventarioController implements Serializable {
 			tipoOrdenInventarioI.delete(tipoOrdenInv);
 			listTipoInventario = tipoOrdenInventarioI.getAll(Tipordeninv.class);
 
-			mensajeInfo("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
+			utilidades.mensajeInfo("El Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
 					+ ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
+				utilidades.mensajeError("La tabla Tipo Orden Inventario (" + tipoOrdenInv.getNombreToi()
 						+ ") tiene relación con otra tabla.");
 
 			} else {
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 
 			}
 
@@ -172,8 +159,7 @@ public class TipoOrdenInventarioController implements Serializable {
 		try {
 			listTipoInventario = tipoOrdenInventarioI.getAll(Tipordeninv.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
 		}
 
 		boolean resultado = false;

@@ -112,7 +112,7 @@ AND b.nombre_bg = $P{nombreBodega}]]>
 			</line>
 			<image>
 				<reportElement x="5" y="14" width="89" height="62" uuid="59b58571-7f1b-4613-8d8f-8fc4718e7ec9"/>
-				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/epnReporte.png.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

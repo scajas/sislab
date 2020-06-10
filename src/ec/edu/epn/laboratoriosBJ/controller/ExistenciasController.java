@@ -49,6 +49,7 @@ import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.laboratorioBJ.entities.Unidadmedida;
 import ec.edu.epn.laboratorioBJ.entities.laboratory;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import javax.faces.application.FacesMessage;
@@ -124,6 +125,7 @@ public class ExistenciasController implements Serializable {
 	private Existencia existencia;// eliminar y editar
 	private String nombreTP;
 	private String nombrePro;
+	private Utilidades utilidades;
 
 	/** Variables para select **/
 
@@ -260,6 +262,8 @@ public class ExistenciasController implements Serializable {
 			eliminacionServicio.setFecha(new Date());
 			eliminacionServicio.setUsuario(su.nombre_usuario_logeado);
 			eliminacionServicio.setRegistro("Existencias");
+			
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
@@ -275,20 +279,6 @@ public class ExistenciasController implements Serializable {
 		} catch (Exception e) {
 
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-		FacesContext context = FacesContext.getCurrentInstance();
-
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Agregar Estado Producto ****/
@@ -364,7 +354,7 @@ public class ExistenciasController implements Serializable {
 		try {
 			if (buscarExistencia(nuevoExistencia.getIdExistencia()) == true) {
 
-				mensajeError("La Muestra (" + nuevoExistencia.getIdExistencia() + ") ya existe.");
+				utilidades.mensajeError("La Muestra (" + nuevoExistencia.getIdExistencia() + ") ya existe.");
 
 			} else {
 
@@ -376,10 +366,7 @@ public class ExistenciasController implements Serializable {
 				nuevoExistencia.setEstadoproducto(estadoProSelect);
 				nuevoExistencia.setGrado(gradoSelect);
 				nuevoExistencia.setPosgiro(posGiroSelect);
-
 				nuevoExistencia.setPurezaE(purezaSelect.getIdPureza());
-				System.out.println("Pureza Seleccionada: " + purezaSelect.getIdPureza());
-
 				nuevoExistencia.setConcentracion(concentracionSelect);
 				nuevoExistencia.setCaracteristica(caracteristicaSelect);
 				nuevoExistencia.setTipoproducto(tipoproductoSelect);
@@ -387,7 +374,7 @@ public class ExistenciasController implements Serializable {
 
 				existenciasI.save(nuevoExistencia);
 
-				mensajeInfo("La existencia (" + nuevoExistencia.getIdExistencia() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("La existencia (" + nuevoExistencia.getIdExistencia() + ") se ha almacenado exitosamente");
 
 				updateTable();
 
@@ -401,9 +388,7 @@ public class ExistenciasController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
-
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 
@@ -417,10 +402,10 @@ public class ExistenciasController implements Serializable {
 			existenciasI.update(existencia);
 			updateTable();
 
-			mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha actualizado exitosamente.");
+			utilidades.mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha actualizado exitosamente.");
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -434,14 +419,14 @@ public class ExistenciasController implements Serializable {
 			
 			existenciasI.delete(existencia);
 			updateTable();
-			mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha eliminado correctamente.");
+			utilidades.mensajeInfo("La Existencia (" + existencia.getIdExistencia() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("La Existencia (" + existencia.getIdExistencia() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La Existencia (" + existencia.getIdExistencia() + ") tiene relación con otra tabla.");
 			} else {
-				mensajeError("Ha ocurrido un problema.");
+				utilidades.mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
@@ -476,7 +461,6 @@ public class ExistenciasController implements Serializable {
 
 		case "confirm":
 
-			System.out.println("Entra al Case 2");
 			if (Integer.valueOf(bodegaSelect.getIdBodega()) == 1) {
 
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ingrese la Bodega.", null);
@@ -505,14 +489,10 @@ public class ExistenciasController implements Serializable {
 			break;
 
 		default:
-
-			System.out.println("Entra al default");
 			resultado = event.getNewStep();
 			break;
 
 		}
-
-		System.out.println("Case: " + resultado);
 		return resultado;
 
 	}
@@ -525,7 +505,6 @@ public class ExistenciasController implements Serializable {
 			existencias = existenciasI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 		boolean resultado = false;
@@ -547,7 +526,7 @@ public class ExistenciasController implements Serializable {
 			setMovimientosinventarios(existenciasI.listarMovimientoById(idExistencia));
 
 		} catch (Exception e) {
-			e.printStackTrace();
+	
 		}
 	}
 

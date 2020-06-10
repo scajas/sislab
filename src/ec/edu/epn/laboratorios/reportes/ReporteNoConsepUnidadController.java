@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -33,6 +32,8 @@ import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Caracteristica;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -83,7 +84,7 @@ public class ReporteNoConsepUnidadController implements Serializable {
 	private String mes;
 	private String anio;
 	private String formato;
-
+	private Utilidades utilidades;
 	// Metodo Init
 	@PostConstruct
 	public void init() {
@@ -92,24 +93,11 @@ public class ReporteNoConsepUnidadController implements Serializable {
 			anio = new String();
 			formato = new String();
 			llenarListaAño();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Metodo para setear la fecha ****/
@@ -134,7 +122,6 @@ public class ReporteNoConsepUnidadController implements Serializable {
 	public void generarPDF() throws Exception {
 		try {
 
-			System.out.println("Usuario: " + su.nombre_usuario_logeado);
 			if (streamFile != null)
 				streamFile.getStream().close();
 
@@ -175,8 +162,6 @@ public class ReporteNoConsepUnidadController implements Serializable {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
-
 		}
 
 	}
@@ -191,11 +176,11 @@ public class ReporteNoConsepUnidadController implements Serializable {
 
 	private Connection coneccionSQL() throws IOException {
 		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
+			conexionPostgres conexionSQL = new conexionPostgres();
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 		return null;
 	}
@@ -225,8 +210,7 @@ public class ReporteNoConsepUnidadController implements Serializable {
 				break;
 			}
 		}
-
-		System.out.println("Este es el mes: " + mes);
+		
 
 		return mes;
 	}
@@ -235,7 +219,6 @@ public class ReporteNoConsepUnidadController implements Serializable {
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
 
-		System.out.println("PASA POR AQUI " + streamFile);
 	}
 
 	public Existencia getExistencia() {

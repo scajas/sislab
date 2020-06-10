@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -17,6 +16,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.HidratacionDAO;
 import ec.edu.epn.laboratorioBJ.entities.Hidratacion;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "hidratacionController")
@@ -42,6 +42,7 @@ public class HidratacionController implements Serializable {
 	private Hidratacion nuevaHidratacion;
 	private String nombreH;
 	private List<Hidratacion> filtrarHidratacion;
+	private Utilidades utilidades;
 
 	@PostConstruct
 	public void init() {
@@ -51,25 +52,12 @@ public class HidratacionController implements Serializable {
 			setNuevaHidratacion(new Hidratacion());
 			hidratacion = new Hidratacion();
 			nuevaHidratacion = new Hidratacion();
-
+			utilidades = new Utilidades();
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
 
 	/****** Agregar Nuevo ****/
 
@@ -79,13 +67,13 @@ public class HidratacionController implements Serializable {
 		try {
 			if (buscarHidratacion(nuevaHidratacion.getNombreHi()) == true) {
 
-				mensajeError("La Hidratación (" + nuevaHidratacion.getNombreHi() + ") ya existe.");
+				utilidades.mensajeError("La Hidratación (" + nuevaHidratacion.getNombreHi() + ") ya existe.");
 
 			} else {
 				hidratacionI.save(nuevaHidratacion);
 				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
 
-				mensajeInfo("La Hidratación (" + nuevaHidratacion.getNombreHi() + ") se ha almacenado exitosamente.");
+				utilidades.mensajeInfo("La Hidratación (" + nuevaHidratacion.getNombreHi() + ") se ha almacenado exitosamente.");
 
 				nuevaHidratacion = new Hidratacion();
 
@@ -95,7 +83,7 @@ public class HidratacionController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema.");
+			utilidades.mensajeError("Ha ocurrido un problema.");
 		}
 
 	}
@@ -111,7 +99,7 @@ public class HidratacionController implements Serializable {
 				hidratacionI.update(hidratacion);
 				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
 
-				mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarHidratacion').hide();");
 
@@ -119,18 +107,18 @@ public class HidratacionController implements Serializable {
 				hidratacionI.update(hidratacion);
 				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
 
-				mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarHidratacion').hide();");
 			} else {
 
 				listaHidratacion = hidratacionI.getAll(Hidratacion.class);
-				mensajeError("La Hidratación (" + hidratacion.getNombreHi() + ") ya existe.");
+				utilidades.mensajeError("La Hidratación (" + hidratacion.getNombreHi() + ") ya existe.");
 
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 	}
 
@@ -143,17 +131,17 @@ public class HidratacionController implements Serializable {
 			hidratacionI.delete(hidratacion);
 			listaHidratacion = hidratacionI.getAll(Hidratacion.class);
 
-			mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha eliminado correctamente.");
+			utilidades.mensajeInfo("La Hidratación (" + hidratacion.getNombreHi() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Hidratación (" + hidratacion.getNombreHi() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Hidratación (" + hidratacion.getNombreHi() + ") tiene relación con otra tabla.");
 
 			} else {
 
-				mensajeError("Ha ocurrido un problema.");
+				utilidades.mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
@@ -166,8 +154,7 @@ public class HidratacionController implements Serializable {
 		try {
 			listaHidratacion = hidratacionI.getAll(Hidratacion.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 
 		boolean resultado = false;

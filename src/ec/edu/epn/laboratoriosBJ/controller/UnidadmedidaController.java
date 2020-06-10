@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 import ec.edu.epn.laboratorioBJ.beans.UnidadMedidaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Unidadmedida;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "unidadMedidaController")
@@ -44,6 +44,7 @@ public class UnidadmedidaController implements Serializable {
 	private Unidadmedida unidadMedida; // select
 	private String nombreUM;
 	private List<Unidadmedida> filtrarUM;
+	private Utilidades utilidades;
 
 	/** METODO INIT **/
 	@PostConstruct
@@ -53,25 +54,11 @@ public class UnidadmedidaController implements Serializable {
 			listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 			nuevoUnidadMedida = new Unidadmedida();
 			unidadMedida = new Unidadmedida();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Guardar ****/
@@ -83,14 +70,14 @@ public class UnidadmedidaController implements Serializable {
 
 			if (buscarUnidadMedida(nuevoUnidadMedida.getMedidaUm()) == true) {
 
-				mensajeError("La Unidad de Medida (" + nuevoUnidadMedida.getMedidaUm() + ") ya existe.");
+				utilidades.mensajeError("La Unidad de Medida (" + nuevoUnidadMedida.getMedidaUm() + ") ya existe.");
 
 			} else {
 
 				unidadMedidaI.save(nuevoUnidadMedida);
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-				mensajeInfo(
+				utilidades.mensajeInfo(
 						"La Unidad de Medida (" + nuevoUnidadMedida.getMedidaUm() + ") se ha almacenado exitosamente.");
 
 				nuevoUnidadMedida = new Unidadmedida();
@@ -100,7 +87,7 @@ public class UnidadmedidaController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 
@@ -115,26 +102,26 @@ public class UnidadmedidaController implements Serializable {
 				unidadMedidaI.update(unidadMedida);
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-				mensajeInfo("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarUnidadMedida').hide();");
 
 			} else if (buscarUnidadMedida(unidadMedida.getMedidaUm()) == false) {
 				unidadMedidaI.update(unidadMedida);
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-				mensajeInfo("La unidad de Medida (" + unidadMedida.getMedidaUm() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La unidad de Medida (" + unidadMedida.getMedidaUm() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarUnidadMedida').hide();");
 
 			} else {
 
 				listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-				mensajeError("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ") ya existe.");
+				utilidades.mensajeError("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 	}
 
@@ -144,18 +131,18 @@ public class UnidadmedidaController implements Serializable {
 			unidadMedidaI.delete(unidadMedida);
 			listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 
-			mensajeInfo("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ")  se ha eliminado correctamente");
+			utilidades.mensajeInfo("La Unidad de Medida (" + unidadMedida.getMedidaUm() + ")  se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Unidad de Medida (" + unidadMedida.getMedidaUm()
+				utilidades.mensajeError("La tabla Unidad de Medida (" + unidadMedida.getMedidaUm()
 						+ ") tiene relación con otra tabla.");
 
 			} else {
 
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 
 			}
 
@@ -169,8 +156,7 @@ public class UnidadmedidaController implements Serializable {
 		try {
 			listUnidadMedida = unidadMedidaI.getAll(Unidadmedida.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
 		}
 
 		boolean resultado = false;

@@ -111,7 +111,7 @@ ORDER BY "nombre_bg"]]>
 			</staticText>
 			<image>
 				<reportElement x="11" y="10" width="89" height="62" uuid="d96772d4-21b4-4bb4-b567-20a03c43cdaf"/>
-				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

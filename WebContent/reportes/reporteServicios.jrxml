@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteServicios" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0e19ffc1-3f6c-4ccc-ab43-5eb8353cd426">
-	<property name="ireport.zoom" value="1.3310000000000004"/>
+	<property name="ireport.zoom" value="1.4641000000000013"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="tipoServicio" class="java.lang.String">
@@ -69,7 +69,7 @@ ORDER BY nombre_s]]>
 				<text><![CDATA[Quito-Ecuador]]></text>
 			</staticText>
 			<line>
-				<reportElement x="10" y="75" width="542" height="1" uuid="2cdd8d88-c05a-4ddd-b53a-f70781199fbb"/>
+				<reportElement x="0" y="77" width="555" height="1" uuid="2cdd8d88-c05a-4ddd-b53a-f70781199fbb"/>
 			</line>
 			<staticText>
 				<reportElement x="189" y="89" width="198" height="24" uuid="1442505d-767c-4326-ac60-113e4dc31661"/>
@@ -86,8 +86,8 @@ ORDER BY nombre_s]]>
 				<text><![CDATA[ESCUELA POLITECNICA NACIONAL]]></text>
 			</staticText>
 			<image>
-				<reportElement x="10" y="10" width="89" height="62" uuid="1f9e4cb5-a149-4d42-8cf5-bf1eb962a329"/>
-				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<reportElement x="12" y="10" width="89" height="62" uuid="1f9e4cb5-a149-4d42-8cf5-bf1eb962a329"/>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

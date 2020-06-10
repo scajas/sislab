@@ -23,9 +23,8 @@ import ec.edu.epn.laboratorioBJ.entities.ProductoLab;
 import ec.edu.epn.laboratorioBJ.entities.Riesgoespecifico;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
-
-import javax.faces.application.FacesMessage;
 
 @ManagedBean(name = "productoController")
 @SessionScoped
@@ -73,12 +72,13 @@ public class ProductoLabController implements Serializable {
 	private Integer riesgoS;
 	private Integer riesgoI;
 	private Integer riesgoR;
+	private Utilidades utilidades;
 
 	@PostConstruct
 	public void init() {
 		try {
 
-			// setListarProductos(productoI.getAll(ProductoLab.class));
+			//Producto
 			listarProductos = productoI.getListPro();
 			setListarRiesgosEsp(riesgoEspI.getAll(Riesgoespecifico.class));
 			setListarTipoProducto(tipoProI.getAll(Tipoproducto.class));
@@ -93,24 +93,11 @@ public class ProductoLabController implements Serializable {
 			// tipo producto
 			listarTipoProducto = tipoProI.getAll(Tipoproducto.class);
 			tipoProducto = new Tipoproducto();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
 		}
-
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-		FacesContext context = FacesContext.getCurrentInstance();
-
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
@@ -121,7 +108,7 @@ public class ProductoLabController implements Serializable {
 
 		try {
 			if (buscarProducto(nuevoProducto.getNombrePr()) == true) {
-				mensajeError("El Producto (" + nuevoProducto.getNombrePr() + ") ya existe.");
+				utilidades.mensajeError("El Producto (" + nuevoProducto.getNombrePr() + ") ya existe.");
 
 			} else {
 
@@ -163,7 +150,7 @@ public class ProductoLabController implements Serializable {
 				productoI.save(nuevoProducto);
 				listarProductos = productoI.getListPro();
 
-				mensajeInfo("El producto (" + nuevoProducto.getNombrePr() + ") se ha almacenado exitosamente.");
+				utilidades.mensajeInfo("El producto (" + nuevoProducto.getNombrePr() + ") se ha almacenado exitosamente.");
 
 				nuevoProducto = new ProductoLab();
 				riesgoEspecificoSelect = new Riesgoespecifico();
@@ -174,7 +161,7 @@ public class ProductoLabController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema.");
+			utilidades.mensajeError("Ha ocurrido un problema.");
 		}
 
 	}
@@ -194,7 +181,7 @@ public class ProductoLabController implements Serializable {
 				productoI.update(productoLab);
 				listarProductos = productoI.getListPro();
 
-				mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarProducto').hide();");
 
@@ -210,17 +197,17 @@ public class ProductoLabController implements Serializable {
 				productoI.update(productoLab);
 				listarProductos = productoI.getListPro();
 
-				mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarProducto').hide();");
 
 			} else {
 				listarProductos = productoI.getListPro();
-				mensajeError("El Producto (" + productoLab.getNombrePr() + ") ya existe.");
+				utilidades.mensajeError("El Producto (" + productoLab.getNombrePr() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -232,14 +219,14 @@ public class ProductoLabController implements Serializable {
 
 			productoI.delete(productoLab);
 			listarProductos = productoI.getListPro();
-			mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha eliminado correctamente.");
+			utilidades.mensajeInfo("El Producto (" + productoLab.getNombrePr() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("La tabla Producto (" + productoLab.getNombrePr() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Producto (" + productoLab.getNombrePr() + ") tiene relación con otra tabla.");
 			} else {
-				mensajeError("Ha ocurrido un problema.");
+				utilidades.mensajeError("Ha ocurrido un problema.");
 			}
 
 		}

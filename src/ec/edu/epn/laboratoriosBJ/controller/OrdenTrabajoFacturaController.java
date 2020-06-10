@@ -1,40 +1,27 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.RemoveException;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
+
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.jdom.IllegalAddException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
-import org.primefaces.model.SortOrder;
-import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
-import com.sun.media.sound.DLSInstrument;
-
-import ec.edu.epn.catalogos.beans.facultadDAO;
 import ec.edu.epn.facturacion.entities.EstadoFactura;
 import ec.edu.epn.facturacion.entities.Factura;
 import ec.edu.epn.laboratorioBJ.beans.ClienteDAO;
@@ -50,15 +37,12 @@ import ec.edu.epn.laboratorioBJ.beans.TipoClienteDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadMedidaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Cliente;
-import ec.edu.epn.laboratorioBJ.entities.DetalleProforma;
 import ec.edu.epn.laboratorioBJ.entities.Detalleorden;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Metodo;
-import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Muestra;
 import ec.edu.epn.laboratorioBJ.entities.OrdenTrabajo;
 import ec.edu.epn.laboratorioBJ.entities.PersonalLab;
-import ec.edu.epn.laboratorioBJ.entities.Proforma;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
@@ -164,7 +148,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 	/* Metodo */
 	private List<Metodo> metodos = new ArrayList<Metodo>();
-	private Metodo metodoSelect;
+
 	private Metodo metodoNA;
 
 	/* Muestra */
@@ -191,7 +175,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 			/** Orden Trabajo (Interno) **/
 			UnidadLabo uni = new UnidadLabo();
-			Long iduser = su.id_usuario_log;
+
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 			// proformas = proformaI.listaProformaByUnidadLab(uni.getCodigoU(),
 			// iduser.intValue());
@@ -220,7 +204,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			setTempIdServ(0);
 			setTempIdServ(0);
 			metodoNA = ordenTrabajoI.findMetodoById("120");
-			System.err.println("Este es el metodo: " + metodoNA.getNombreMt());
+	
 
 			/** Valores Adicionales **/
 			fechaInicio = null;
@@ -229,7 +213,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			disabledSelectItem();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 
 	}
@@ -307,7 +291,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			disabledSelectItem();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+	
 		}
 
 	}
@@ -345,7 +329,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 			mensajeError("Ha ocurrido un error interno.");
 		}
 	}
@@ -387,41 +371,32 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 			contex.getExternalContext().redirect("/SisLab/pages/printOrdenTrabajoFactura.jsf");
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Me voy al carajo, no funciona esta redireccion");
+	
 		}
 	}
 
 	public void eliminarProforma() {
 		try {
-			// cargarDetalleProforma(proforma.getIdProforma());
-			//
-			// eliminarDetallesPro(detalleProformas);
-			//
-			// proformaI.delete(getProforma());
-			//
-			// proformas.remove(proforma);
 
 			mensajeInfo("Se ha eliminado la proforma ()");
 			limpiarOT();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 			mensajeError("Ha ocurrido un error en la eliminacion");
 		}
 	}
 
 	public void eliminarDetallesOT(List<Detalleorden> dot) {
-		System.out.println("Entra al eliminar");
+
 		if (dot.size() == 0) {
-			System.out.println("No hay registros que Eliminar");
+	
 		} else {
 			for (Detalleorden detalleorden : dot) {
 				try {
 					detalleOrdenI.delete(detalleorden);
 				} catch (Exception e) {
-					e.printStackTrace();
+				
 				}
 			}
 		}
@@ -437,10 +412,8 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			listaOrdenTrabajo = ordenTrabajoI.listarOTFacturaByUnidadLab(uni.getCodigoU(), 1, buscarOrdenTrabajo,
 					fechaInicio, fechaFinal);
 
-			System.out.println("Estos son todos los registros que trae " + listaOrdenTrabajo.size());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
 		}
 
 	}
@@ -475,20 +448,14 @@ public class OrdenTrabajoFacturaController implements Serializable {
 				codigoAux = (uni.getCodigoU() + "-OT0000-" + anio);
 			}
 
-			System.out.println("Este es el id que trae: " + codigoAux);
-
 			String[] partsId = codigoAux.split("-OT", 2);
 
 			partsId = partsId[1].split("-");
 
 			String codigoCortado = partsId[0];
 
-			System.out.println("Este es el id convertido en numero: " + codigoCortado);
-
 			Integer codigo = Integer.parseInt(codigoCortado);
 			codigo = codigo + 1;
-
-			System.out.println("Este es el id oficial: " + codigo);
 
 			Long id = su.id_usuario_log;
 
@@ -524,27 +491,23 @@ public class OrdenTrabajoFacturaController implements Serializable {
 				break;
 			}
 
-			System.out.println("Este es el nuevo id: " + nuevoOrdenTrabajo.getIdOrden());
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+
 		}
 	}
 
 	public void cargarDetalleOT(String id) {
 		try {
-			System.out.println("Entra a la cargar de lista de detalleOt: " + id);
+		
 			listaDetalleOrdenTemp.clear();
-			System.out.println("Lista de detallesPro id: " + id);
+	
 			listaDetalleOrdenTemp = ordenTrabajoI.listarDetalleOrdenById(id);
 			llenarPersonalTemp(listaDetalleOrdenTemp);
 
-			System.out.println("Lista de detallePro: " + listaDetalleOrdenTemp.size());
-			System.out.println("Lista de personal: " + tempPersonalLabs.size());
-
 			llenarlistaTempM();
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
 
 	}
@@ -572,7 +535,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 					listaDetalleOrdenMuestra.add(detalleo);
 				} else {
-					// System.out.println("No se guarda la muestra");
+		
 				}
 
 			}
@@ -583,9 +546,6 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	public int listarNumeroM(String idMuestra) {
 		int i = 1;
 
-		// System.out.println("Este es el tamaño de la lista: " +
-		// listaDetalleOrdenMuestra.size());
-
 		for (Detalleorden detalleorden : listaDetalleOrdenMuestra) {
 			if (detalleorden.getMuestra().getIdMuestra().equals(idMuestra)) {
 				break;
@@ -595,8 +555,6 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 		}
 
-		// System.out.println("Este es id: " + getTempIdTablaM());
-
 		return i;
 	}
 
@@ -605,16 +563,14 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		boolean prueba = true;
 
 		for (Detalleorden detalleo : detalleordens) {
-			System.out.println("Este es la lista actual: " + tempPersonalLabs.size());
-			System.out.println("Este es el personal: " + detalleo.getPersonal().getIdPersonal());
+
 
 			if (tempPersonalLabs.size() == 0) {
 				tempPersonalLabs.add(detalleo.getPersonal());
-				System.out.println("entra al if");
+			
 			} else {
 				for (PersonalLab p : tempPersonalLabs) {
-					System.out
-							.println("compara: " + detalleo.getPersonal().getIdPersonal() + " con" + p.getIdPersonal());
+
 					if (detalleo.getPersonal().getIdPersonal().equals(p.getIdPersonal())) {
 						prueba = true;
 						break;
@@ -624,10 +580,10 @@ public class OrdenTrabajoFacturaController implements Serializable {
 				}
 
 				if (prueba == false) {
-					System.out.println("Este es el personal que guarda: " + detalleo.getPersonal().getIdPersonal());
+	
 					tempPersonalLabs.add(detalleo.getPersonal());
 				} else {
-					System.out.println("No se guarda el personal");
+				
 				}
 
 			}
@@ -666,7 +622,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		listaDetalleOrden.add(nuevoDetalleOrden);
 
 		if (getTempId() == 1) {
-			System.out.println("Guarda en lista temporal");
+			
 			listaDetalleOrdenAdd.add(nuevoDetalleOrden);
 		}
 
@@ -690,8 +646,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		try {
 			ordenTrabajoI.update(o);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
 		}
 	}
 
@@ -701,26 +656,22 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			mensajeInfo("Se ha editado correctamente el estado de (" + ordenTrabajo.getIdOrden() + ")");
 			limpiarOT();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 			mensajeError("Ha ocurrido un error!");
 		}
 	}
 
 	public void guardarDetalleOT(List<Detalleorden> ots) {
-		System.out.println("Entra en la funcion guardar detalleOT");
+
 		if (ots.size() == 0) {
-			System.out.println("No hay registros que guardar");
+	
 		} else {
 			for (Detalleorden detalleOt : ots) {
 				try {
-					System.out.println("id:_" + detalleOt.getIdMetodo());
-					System.out.println("id:_" + detalleOt.getIdServicio());
-					System.out.println("id:_" + detalleOt.getMuestra().getIdMuestra());
+				
 					detalleOrdenI.save(detalleOt);
 				} catch (Exception e) {
-					System.out.println(e);
-					// e.printStackTrace();
+			
 				}
 
 			}
@@ -729,13 +680,12 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	}
 
 	public void actualizarDetalleOT(List<Detalleorden> dot) {
-		System.out.println("Esta entrando a la funcion");
+
 		for (Detalleorden detalleO : dot) {
 			try {
 				detalleOrdenI.update(detalleO);
 			} catch (Exception e) {
-				System.out.println(e);
-				// e.printStackTrace();
+		
 			}
 
 		}
@@ -749,8 +699,6 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		RequestContext context = RequestContext.getCurrentInstance();
 
 		if (getTempId() == 1) {
-
-			System.out.println("Esta en el panel editar");
 
 			editarDetalleTemp(detalleOrden);
 
@@ -805,7 +753,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 					+ servicio(detalleOrden.getIdServicio()).getNombreS() + ")");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+	
 			mensajeError("Ha ocurrido un error interno.");
 		}
 	}
@@ -814,16 +762,16 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		if (getTempId() == 1) {
 			if (buscarDetalleOTAdd(detalleOrden)) {
 				listaDetalleOrdenAdd.remove(detalleOrden);
-				System.out.println("Le quita del temporal de añadir");
+		
 			} else {
 				listaDetalleOrdenDelete.add(detalleOrden);
-				System.out.println("Entra al else");
+			
 			}
 		}
 	}
 
 	public void cambiarIDDetalleOT(OrdenTrabajo o) {
-		System.out.println("Entra al setteo de Ids (cambiarIDDetallePro)");
+
 		int i = 0;
 
 		for (Detalleorden detalleO : listaDetalleOrden) {
@@ -838,10 +786,10 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	}
 
 	public void cambiarIDDetalleOTAdd(OrdenTrabajo o) {
-		System.out.println("entra a la funcion cambiarIDDetalleProADD");
+	
 		int i = 0;
 		if (listaDetalleOrdenAdd.size() == 0) {
-			System.out.println("No hay registros que añadir");
+		
 		} else {
 			for (Detalleorden detalleO : listaDetalleOrdenAdd) {
 
@@ -860,13 +808,12 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	public void cargarServicios() {
 		try {
 
-			System.out.println("Esta entrando a la funcion");
 			servicios = ordenTrabajoI.listarServiciosByPro(getFactura().getIdProforma());
 			filtroServicios = servicios;
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+		
 		}
 
 	}
@@ -876,11 +823,10 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			setTempIdPer(idPer);
 			personalLabs = personalLabI.listarPersonalByServ(nuevoServicio, su.UNIDAD_USUARIO_LOGEADO);
 			filtroPersonalLabs = personalLabs;
-			System.out.println("Estos son los servicios que trae: " + personalLabs.size());
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+		
 		}
 
 	}
@@ -890,11 +836,10 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			setTempIdM(idM);
 			muestras = ordenTrabajoI.listarMuestraByFactura(nuevoOrdenTrabajo.getIdFactura());
 			filtroMuestras = muestras;
-			System.out.println("Estos son las muestras que trae: " + muestras.size());
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+	
 		}
 
 	}
@@ -924,7 +869,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+		
 		}
 	}
 
@@ -932,7 +877,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		RequestContext context = RequestContext.getCurrentInstance();
 		try {
 			if (tempIdM == 0) {
-				// formDetalleOT]
+			
 				nuevoDetalleOrden.setMuestra(muestra);
 				context.update("formDetalleOT");
 
@@ -947,7 +892,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -972,7 +917,6 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		} else {
 			cargarMetodo(nuevoDetalleOrden);
 			nuevoDetalleOrden.setPersonal(new PersonalLab());
-			System.out.println("Esta entrando al else");
 			setTempIdServ(0);
 			context.update("formDetalleOT");
 		}
@@ -994,11 +938,10 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		boolean resultado = false;
 
 		for (Detalleorden dc : listaDetalleOrden) {
-			System.out.println("Este es el que encontro: " + dc.getIdServicio());
-
+		
 			if (dc.getIdServicio().equals(detalleorden.getIdServicio())
 					&& dc.getMuestra().getIdMuestra().equals(idMuestra)) {
-				System.out.println("Encajan " + dc.getIdServicio() + " y " + detalleorden.getIdServicio());
+			
 				resultado = true;
 				break;
 			} else {
@@ -1013,18 +956,12 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		// Realiza una busqueda en la lista temporal de Detalle Proforma
 		int i = 0;
 
-		System.out.println("Este es el del formulario: " + detalleorden.getIdServicio());
-		System.out.println("Este es el detallePro: " + listaDetalleOrden.size());
-
 		for (Detalleorden dc : listaDetalleOrden) {
 
 			if (dc.getIdServicio().equals(detalleorden.getIdServicio())) {
 				i++;
 			}
 		}
-
-		System.err.println("Esto es el numero de veces que existe un servicio: " + i
-				+ " y este es le numero total de muestras: " + nuevoOrdenTrabajo.getNumeromuestraOt());
 
 		if (nuevoOrdenTrabajo.getNumeromuestraOt() == 0) {
 			if (i == 1) {
@@ -1042,14 +979,11 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	public boolean buscarDetalleOTAdd(Detalleorden detalleorden) {
 		// Realiza una busqueda en la lista temporal de Detalle Proforma
 		boolean resultado = false;
-		System.out.println("Este es el del formulario: " + detalleorden.getIdServicio());
-		System.out.println("Este es el detallePro: " + listaDetalleOrden.size());
 
 		for (Detalleorden dc : listaDetalleOrdenAdd) {
-			System.out.println("Este es el que encontro: " + dc.getIdServicio());
 
 			if (dc.getIdServicio().equals(detalleorden.getIdServicio())) {
-				System.out.println("Encajan " + dc.getIdServicio() + " y " + detalleorden.getIdServicio());
+	
 				resultado = true;
 				break;
 			} else {
@@ -1068,12 +1002,11 @@ public class OrdenTrabajoFacturaController implements Serializable {
 	public void cargarMetodo(Detalleorden detalleOrden) {
 		try {
 
-			System.out.println("Esta entrando a la funcion de metodo: " + detalleOrden.getIdServicio());
 			metodos = ordenTrabajoI.listarMetodosByIdServicio(detalleOrden.getIdServicio());
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+	
 		}
 	}
 
@@ -1093,9 +1026,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		} else {
 			listaDetalleOrden.clear();
 			// cambiarIdTempPanel(1); editarOT
-			System.out.println("Lista de detallesPro id: " + o.getIdOrden());
 			listaDetalleOrden = ordenTrabajoI.listarDetalleOrdenById(o.getIdOrden());
-			System.out.println("Lista de detallePro: " + listaDetalleOrden.size());
 			context.execute("PF('" + panel + "').show();");
 		}
 
@@ -1108,11 +1039,10 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 			clientes = ordenTrabajoI.listarClienteBY(getCliente());
 			filtroClientes = clientes;
-			System.out.println("Registros de clientes: " + clientes.size());
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+	
 		}
 	}
 
@@ -1126,7 +1056,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+
 		}
 	}
 
@@ -1156,28 +1086,9 @@ public class OrdenTrabajoFacturaController implements Serializable {
 			facturas = ordenTrabajoI.listarFacturasPagadas(su.UNIDAD_USUARIO_LOGEADO, idUser.intValue());
 			filtroFacturas = facturas;
 
-			System.out.println("Registros de Facturas: " + facturas.size());
-
-			// this.lazyModel = new LazyDataModel<Factura>() {
-			// private static final long serialVersionUID = 1L;
-			//
-			// @Override
-			// public List<Factura> load(int first, int pageSize, String
-			// sortField, SortOrder sortOrder,
-			// Map<String, Object> filters) {
-			// setRowCount(ordenTrabajoI.getTotalRegistros().intValue());
-			//
-			// return ordenTrabajoI.listarFacturasPagadas(first, pageSize,
-			// sortField, SortOrder.ASCENDING.equals(sortOrder), 1, 1);
-			//
-			// }
-			//
-			//
-			// };
-
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+		
 		}
 	}
 
@@ -1197,7 +1108,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 		} catch (Exception e) {
 			mensajeError("Ha ocurrido un error.");
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -1390,7 +1301,6 @@ public class OrdenTrabajoFacturaController implements Serializable {
 
 	public boolean disabledButton() {
 
-		System.out.println("Este es el numero actual de registros: " + listaDetalleOrden.size());
 		if (listaDetalleOrden.size() == 0) {
 			return false;
 		} else {
@@ -1404,7 +1314,7 @@ public class OrdenTrabajoFacturaController implements Serializable {
 		if (a == 1 && b == 1) {
 			cargarServicios();
 		}
-		System.out.println("Se ha cambiado a: " + a);
+
 	}
 
 	/****** Getter y Setter de Estado Producto ****/

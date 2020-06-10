@@ -59,7 +59,7 @@ ORDER BY c.id_compra]]>
 				<text><![CDATA[Campus Politécnico José Rubén Orellana Ricaurte]]></text>
 			</staticText>
 			<line>
-				<reportElement x="10" y="75" width="542" height="1" uuid="c555c37e-78fa-4464-b63f-fdf35f3a426a"/>
+				<reportElement x="0" y="76" width="555" height="1" uuid="c555c37e-78fa-4464-b63f-fdf35f3a426a"/>
 			</line>
 			<staticText>
 				<reportElement x="118" y="10" width="333" height="22" uuid="ff1801a7-8423-4cd7-9350-4a0b6394d30a"/>
@@ -98,7 +98,7 @@ ORDER BY c.id_compra]]>
 			</staticText>
 			<image>
 				<reportElement x="10" y="10" width="89" height="62" uuid="a6074d7d-63ef-45e5-ace4-8279442279f2"/>
-				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

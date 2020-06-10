@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +30,8 @@ import org.primefaces.model.StreamedContent;
 
 import ec.edu.epn.laboratorioBJ.beans.CompraDAO;
 import ec.edu.epn.laboratorioBJ.entities.Compra;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -66,6 +68,7 @@ public class ReporteComprasController implements Serializable {
 
 	private Date fechaInicio;
 	private Date fechaFin;
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
@@ -73,24 +76,12 @@ public class ReporteComprasController implements Serializable {
 		try {
 
 			setCompra(new Compra());
+			utilidades = new Utilidades();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
 
 	/****** Metodo para setear la fecha ****/
 	public String cambioFecha(Date fecha) {
@@ -108,11 +99,11 @@ public class ReporteComprasController implements Serializable {
 	/****** Generacion de PDF ****/
 	private Connection coneccionSQL() throws IOException {
 		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
+			conexionPostgres conexionSQL = new conexionPostgres();
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
 		return null;
 	}
@@ -123,10 +114,10 @@ public class ReporteComprasController implements Serializable {
 
 			compras = compraI.getParametrosCompra(cambioFecha(getFechaInicio()), cambioFecha(getFechaFin()), su.UNIDAD_USUARIO_LOGEADO);
 
-			mensajeInfo("Numero de coincidencias encontradas:" + compras.size());
+			utilidades.mensajeInfo("Numero de coincidencias encontradas:" + compras.size());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+	
 		}
 	}
 
@@ -184,52 +175,6 @@ public class ReporteComprasController implements Serializable {
 
 	}
 
-	/*
-	 * public void generarEXCEL(ActionEvent event) throws Exception { try {
-	 * 
-	 * if (streamFile != null) streamFile.getStream().close();
-	 * 
-	 * Map<String, Object> parametros = new HashMap<String, Object>();
-	 * parametros.put("fechaInicial", proformaSelect.getFecha());
-	 * parametros.put("fechaFinal", proformaSelect.getFecha());
-	 * parametros.put("tipoCliente", clienteSelect.getTipocliente());
-	 * parametros.put("estadoProforma", proformaSelect.getEstadoPo());
-	 * 
-	 * String direccion =
-	 * FacesContext.getCurrentInstance().getExternalContext().getRealPath(
-	 * "/reportes/"); if (direccion.toUpperCase().contains("C:") ||
-	 * direccion.toUpperCase().contains("D:") ||
-	 * direccion.toUpperCase().contains("E:") ||
-	 * direccion.toUpperCase().contains("F:")) { direccion = direccion + "\\"; }
-	 * else { direccion = direccion + "/"; }
-	 * 
-	 * String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-	 * .getRealPath("/reportes/reporteProforma.jrxml"); InputStream input = new
-	 * FileInputStream(new File(jrxmlFile)); JasperReport jasperReport =
-	 * JasperCompileManager.compileReport(input);
-	 * parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-	 * 
-	 * JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,
-	 * parametros);
-	 * 
-	 * File sourceFile = new File(jrxmlFile); File destFile = new
-	 * File(sourceFile.getParent(), "reporteProforma.xlsx");
-	 * 
-	 * JasperExportManager.exportReportToPdfFile(jasperPrint,
-	 * destFile.toString()); InputStream stream = new FileInputStream(destFile);
-	 * 
-	 * streamFile = new DefaultStreamedContent(stream, "application/xlsx",
-	 * "reporteProforma.xlsx");
-	 * 
-	 * } catch (Exception e) {
-	 * FacesContext.getCurrentInstance().addMessage(event.getComponent().
-	 * getClientId(), new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-	 * "ERROR"));
-	 * 
-	 * }
-	 * 
-	 * }
-	 */
 
 	public void cerrarArchivo() throws IOException {
 		if (streamFile != null)
@@ -241,8 +186,6 @@ public class ReporteComprasController implements Serializable {
 
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
-
-		System.out.println("PASA POR AQUI " + streamFile);
 	}
 
 	public Date getFechaInicio() {

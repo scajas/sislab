@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -18,6 +17,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.PresentacionDAO;
 import ec.edu.epn.laboratorioBJ.entities.Presentacion;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "presentacionController")
@@ -38,6 +38,7 @@ public class PresentacionController implements Serializable {
 	private List<Presentacion> filtroPresentacion = new ArrayList<>();
 	private Presentacion nuevoPresentacion;
 	private String nombreTP;
+	private Utilidades utilidades;
 
 	@PostConstruct
 	public void init() {
@@ -46,25 +47,11 @@ public class PresentacionController implements Serializable {
 			Presentaciones = presentacionI.getAll(Presentacion.class);
 			presentacion = new Presentacion();
 			nuevoPresentacion = new Presentacion();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/******* Método Guardar *******/
@@ -75,14 +62,14 @@ public class PresentacionController implements Serializable {
 		try {
 			if (buscarPresentacion(nuevoPresentacion.getNombrePrs()) == true) {
 
-				mensajeError("La presentación (" + nuevoPresentacion.getNombrePrs() + ") ya existe.");
+				utilidades.mensajeError("La presentación (" + nuevoPresentacion.getNombrePrs() + ") ya existe.");
 
 			} else {
 				presentacionI.save(nuevoPresentacion);
 
 				Presentaciones = presentacionI.getAll(Presentacion.class);
 
-				mensajeInfo("La Presentación (" + nuevoPresentacion.getNombrePrs() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("La Presentación (" + nuevoPresentacion.getNombrePrs() + ") se ha almacenado exitosamente");
 
 				nuevoPresentacion = new Presentacion();
 
@@ -92,7 +79,7 @@ public class PresentacionController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 
 		}
 
@@ -108,7 +95,7 @@ public class PresentacionController implements Serializable {
 				presentacionI.update(presentacion);
 				Presentaciones = presentacionI.getAll(Presentacion.class);
 
-				mensajeInfo("La Presentación (" + presentacion.getNombrePrs() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Presentación (" + presentacion.getNombrePrs() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarPresentacion').hide();");
 
 			} else if (buscarPresentacion(presentacion.getNombrePrs()) == false) {
@@ -116,16 +103,16 @@ public class PresentacionController implements Serializable {
 				presentacionI.update(presentacion);
 				Presentaciones = presentacionI.getAll(Presentacion.class);
 
-				mensajeInfo("La Presentación (" + presentacion.getNombrePrs() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Presentación (" + presentacion.getNombrePrs() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarPresentacion').hide();");
 
 			} else {
 				Presentaciones = presentacionI.getAll(Presentacion.class);
-				mensajeError("La Presentación (" + presentacion.getNombrePrs() + ") ya existe.");
+				utilidades.mensajeError("La Presentación (" + presentacion.getNombrePrs() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 	}
 
@@ -137,17 +124,17 @@ public class PresentacionController implements Serializable {
 			presentacionI.delete(presentacion);
 			Presentaciones = presentacionI.getAll(Presentacion.class);
 
-			mensajeInfo("La Presentación (" + presentacion.getNombrePrs() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("La Presentación (" + presentacion.getNombrePrs() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La Presentación (" + presentacion.getNombrePrs() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La Presentación (" + presentacion.getNombrePrs() + ") tiene relación con otra tabla.");
 
 			} else {
 
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 			}
 
 		}
@@ -161,8 +148,7 @@ public class PresentacionController implements Serializable {
 		try {
 			Presentaciones = presentacionI.getAll(Presentacion.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 
 		boolean resultado = false;

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -17,6 +16,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.NormaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Norma;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "normaController")
@@ -44,6 +44,7 @@ public class NormaController implements Serializable {
 	private List<Norma> filtrarNorma;
 	private Norma nuevoNorma;
 	private String nombreN;
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
@@ -53,24 +54,10 @@ public class NormaController implements Serializable {
 			normas = normaI.getAll(Norma.class);
 			norma = new Norma();
 			nuevoNorma = new Norma();
+			utilidades = new Utilidades();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	public void agregarNorma() {
@@ -79,14 +66,14 @@ public class NormaController implements Serializable {
 
 		try {
 			if (buscarNorma(nuevoNorma.getNombreN()) == true) {
-				mensajeError("La Norma (" + nuevoNorma.getNombreN() + ") ya existe.");
+				utilidades.mensajeError("La Norma (" + nuevoNorma.getNombreN() + ") ya existe.");
 
 			} else {
 
 				normaI.save(nuevoNorma);
 				normas = normaI.getAll(Norma.class);
 
-				mensajeInfo("La Norma (" + nuevoNorma.getNombreN() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("La Norma (" + nuevoNorma.getNombreN() + ") se ha almacenado exitosamente");
 
 				nuevoNorma = new Norma();
 
@@ -94,7 +81,7 @@ public class NormaController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 
 	}
@@ -110,7 +97,7 @@ public class NormaController implements Serializable {
 
 				context.execute("PF('modificarN').hide();");
 
-				mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha actualizado exitosamente");
 
 			} else if (buscarNorma(norma.getNombreN()) == false) {
 
@@ -118,15 +105,15 @@ public class NormaController implements Serializable {
 				normas = normaI.getAll(Norma.class);
 				context.execute("PF('modificarN').hide();");
 
-				mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha actualizado exitosamente");
 
 			} else {
 				normas = normaI.getAll(Norma.class);
-				mensajeError("La norma (" + norma.getNombreN() + ") ya existe.");
+				utilidades.mensajeError("La norma (" + norma.getNombreN() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -135,16 +122,15 @@ public class NormaController implements Serializable {
 
 			normaI.delete(norma);
 			normas = normaI.getAll(Norma.class);
-
-			mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("La Norma (" + norma.getNombreN() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Norma (" + norma.getNombreN() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Norma (" + norma.getNombreN() + ") tiene relación con otra tabla.");
 			} else {
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 			}
 
 		}
@@ -155,7 +141,7 @@ public class NormaController implements Serializable {
 		try {
 			normas = normaI.getAll(Norma.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+	
 			e.printStackTrace();
 		}
 
@@ -175,10 +161,8 @@ public class NormaController implements Serializable {
 	public void pasarNombre(String nombre) {
 		setnombreN(nombre);
 	}
-
-	/*
-	 * get and set
-	 */
+	
+	/****** Getter y Setter ****/
 
 	public Norma getNorma() {
 		return norma;

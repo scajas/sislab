@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -21,6 +20,7 @@ import ec.edu.epn.laboratorioBJ.beans.SaldoExistenciaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.SaldoExistencia;
 import ec.edu.epn.laboratorioBJ.entities.SaldoExistenciaPK;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "saldoExistenciaController")
@@ -59,6 +59,7 @@ public class SaldoExistenciaController implements Serializable {
 	private SaldoExistenciaPK saldoExistenciaPK;
 
 	private String mesvalue;
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
@@ -68,9 +69,9 @@ public class SaldoExistenciaController implements Serializable {
 			saldosExistencia = saldoExistenciaI.getAll(SaldoExistencia.class);
 			existencias = existenciaI.getAll(Existencia.class);
 			existencia = new Existencia();
-
+			utilidades = new Utilidades();
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
 
 	}
@@ -110,19 +111,19 @@ public class SaldoExistenciaController implements Serializable {
 
 					}
 				} catch (Exception e) {
-					mensajeError("Ha ocurrido un error");
+					utilidades.mensajeError("Ha ocurrido un error");
 				}
 
 			}
 
 			if (mensajeVal.contains("saldoCerrado")) {
-				mensajeError("Ya ha cerrado el saldo para el mes " + " (" + mesvalue + ") ");
+				utilidades.mensajeError("Ya ha cerrado el saldo para el mes " + " (" + mesvalue + ") ");
 			} else if (mensajeVal.contains("guardar")) {
-				mensajeInfo("El Saldo de Existencia almacenado exitosamente en el mes " + " (" + mesvalue + ") ");
+				utilidades.mensajeInfo("El Saldo de Existencia almacenado exitosamente en el mes " + " (" + mesvalue + ") ");
 			}
 
 		} else {
-			mensajeError("Debe seleccionar un mes");
+			utilidades.mensajeError("Debe seleccionar un mes");
 
 		}
 
@@ -130,13 +131,11 @@ public class SaldoExistenciaController implements Serializable {
 
 	public void mesnsajesGuardar() {
 
-		mensajeInfo("Ya ha cerrado el saldo para el mes" + mes1);
+		utilidades.mensajeInfo("Ya ha cerrado el saldo para el mes" + mes1);
 
 	}
 
 	public void validarMes() {
-
-		System.out.println("New value: " + getMes1());
 
 	}
 
@@ -168,20 +167,6 @@ public class SaldoExistenciaController implements Serializable {
 			setMesvalue("Noviembre");
 		else if (mes1 == 12)
 			setMesvalue("Diciembre");
-
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-		FacesContext context = FacesContext.getCurrentInstance();
-
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 

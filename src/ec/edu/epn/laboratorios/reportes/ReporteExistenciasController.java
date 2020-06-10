@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -33,6 +32,8 @@ import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Caracteristica;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -42,10 +43,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JRParameter;
 
-@ManagedBean(name = "reporteConsepUnidad")
+@ManagedBean(name = "reporteExistenciasController")
 @SessionScoped
 
-public class ReporteConsepUnidadController implements Serializable {
+public class ReporteExistenciasController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -77,38 +78,40 @@ public class ReporteConsepUnidadController implements Serializable {
 	private Caracteristica caracteristica;
 	private List<Caracteristica> caracteristicas = new ArrayList<Caracteristica>();
 
-	private List<String> anios = new ArrayList<String>();
 	private StreamedContent streamFile = null;
 
-	private String mes;
-	private String anio;
-	private String formato;
-
+	private String nombreTP;
+	private String nombreC;
+	private Utilidades utilidades;
 	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
-			mes = new String();
-			anio = new String();
-			formato = new String();
-			llenarListaAño();
+
+			existencia = new Existencia();
+
+			tipoProducto = new Tipoproducto();
+			tipoProductos = tipoProductoI.getAll(Tipoproducto.class);
+
+			caracteristica = new Caracteristica();
+			caracteristicas = caracteristicaI.getAll(Caracteristica.class);
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
+	public void buscarExistencias() {
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
+		try {
 
-	public void mensajeInfo(String mensaje) {
+			existencias = existenciasI.existenciasByParametros(nombreTP, nombreC);
+			utilidades.mensajeInfo("Resultados Obtenidos :" + existencias.size());
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
+		} catch (Exception e) {
+			
+		}
 
 	}
 
@@ -131,10 +134,20 @@ public class ReporteConsepUnidadController implements Serializable {
 	}
 
 	/****** Generacion de PDF ****/
+	private Connection coneccionSQL() throws IOException {
+		try {
+			conexionPostgres conexionSQL = new conexionPostgres();
+			Connection con = conexionSQL.Conexion();
+			return con;
+		} catch (Exception e) {
+			
+		}
+		return null;
+	}
+
 	public void generarPDF() throws Exception {
 		try {
 
-			System.out.println("Usuario: " + su.nombre_usuario_logeado);
 			if (streamFile != null)
 				streamFile.getStream().close();
 
@@ -150,15 +163,12 @@ public class ReporteConsepUnidadController implements Serializable {
 			}
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("imagen", servletContext.getRealPath("/"));
-			parametros.put("SubReporte", servletContext.getRealPath("/"));
-			parametros.put("nombreUsuario", su.nombre_usuario_logeado);
-			parametros.put("mes", Integer.parseInt(mes));
-			parametros.put("anio", Integer.parseInt(anio));
-			parametros.put("nombreMes", obtenerMes(Integer.parseInt(mes)));
+			parametros.put("CONTEXT", servletContext.getRealPath("/"));
+			parametros.put("tipoproducto", nombreTP);
+			parametros.put("caracteristica", nombreC);
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reportConcepUnidad.jrxml");
+					.getRealPath("/reportes/reporteExistencias.jrxml");
 			InputStream input = new FileInputStream(new File(jrxmlFile));
 			JasperReport jasperReport = JasperCompileManager.compileReport(input);
 			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
@@ -166,16 +176,15 @@ public class ReporteConsepUnidadController implements Serializable {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteUnidad.pdf");
+			File destFile = new File(sourceFile.getParent(), "reporteExistencias.pdf");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
 			InputStream stream = new FileInputStream(destFile);
 
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteUnidad.pdf");
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteExistencias.pdf");
 
 		} catch (Exception e) {
-
-			e.printStackTrace();
+			
 
 		}
 
@@ -189,53 +198,8 @@ public class ReporteConsepUnidadController implements Serializable {
 		System.gc();
 	}
 
-	private Connection coneccionSQL() throws IOException {
-		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
-			Connection con = conexionSQL.Conexion();
-			return con;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public void llenarListaAño() {
-		int a1 = 2009; // fecha de inicio por defecto
-
-		String fecha = cambioFecha(new Date());
-		String[] partsFecha = fecha.split("-");
-		int anio = Integer.valueOf(partsFecha[0]);
-
-		for (int i = a1; i < anio; i++) {
-			anios.add(String.valueOf(i));
-		}
-
-		obtenerMes(12);
-
-	}
-
-	public String obtenerMes(int m) {
-		String meses[] = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
-				"Octubre", "Noviembre", "Diciembre" };
-		String mes = "";
-		for (int i = 0; i < meses.length; i++) {
-			if (i == (m - 1)) {
-				mes = meses[i];
-				break;
-			}
-		}
-
-		System.out.println("Este es el mes: " + mes);
-
-		return mes;
-	}
-
-
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
-
-		System.out.println("PASA POR AQUI " + streamFile);
 	}
 
 	public Existencia getExistencia() {
@@ -294,36 +258,20 @@ public class ReporteConsepUnidadController implements Serializable {
 		this.caracteristicas = caracteristicas;
 	}
 
-	public List<String> getAnios() {
-		return anios;
+	public String getNombreTP() {
+		return nombreTP;
 	}
 
-	public void setAnios(List<String> anios) {
-		this.anios = anios;
+	public void setNombreTP(String nombreTP) {
+		this.nombreTP = nombreTP;
 	}
 
-	public String getMes() {
-		return mes;
+	public String getNombreC() {
+		return nombreC;
 	}
 
-	public void setMes(String mes) {
-		this.mes = mes;
-	}
-
-	public String getAnio() {
-		return anio;
-	}
-
-	public void setAnio(String anio) {
-		this.anio = anio;
-	}
-
-	public String getFormato() {
-		return formato;
-	}
-
-	public void setFormato(String formato) {
-		this.formato = formato;
+	public void setNombreC(String nombreC) {
+		this.nombreC = nombreC;
 	}
 
 }

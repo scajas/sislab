@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -19,6 +18,7 @@ import ec.edu.epn.laboratorioBJ.beans.ProveedorLabDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoProveedorDAO;
 import ec.edu.epn.laboratorioBJ.entities.ProveedorLab;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproveedor;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "proveedorController")
@@ -53,6 +53,7 @@ public class ProveedorLabController implements Serializable {
 	private Tipoproveedor tipoProveedorSelect;
 
 	private List<ProveedorLab> filtroProveedor;
+	private Utilidades utilidades;
 
 	@PostConstruct
 	public void init() {
@@ -64,24 +65,11 @@ public class ProveedorLabController implements Serializable {
 
 			tipoProveedores = tipoProveedorI.getAll(Tipoproveedor.class);
 			tipoProveedor = new Tipoproveedor();
-
+			utilidades = new Utilidades();
+		
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Agregar Proveedor ****/
@@ -93,7 +81,7 @@ public class ProveedorLabController implements Serializable {
 		try {
 			if (buscarProveedor(nuevoProveedor.getNombrePv()) == true) {
 
-				mensajeError("El Proveedor (" + nuevoProveedor.getNombrePv() + ") ya existe.");
+				utilidades.mensajeError("El Proveedor (" + nuevoProveedor.getNombrePv() + ") ya existe.");
 
 			} else {
 
@@ -102,7 +90,7 @@ public class ProveedorLabController implements Serializable {
 
 				proveedores = proveedorI.getListProveedor();
 
-				mensajeInfo("El Proveedor (" + nuevoProveedor.getNombrePv() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("El Proveedor (" + nuevoProveedor.getNombrePv() + ") se ha almacenado exitosamente");
 
 				nuevoProveedor = new ProveedorLab();
 				tipoProveedorSelect = new Tipoproveedor();
@@ -113,8 +101,8 @@ public class ProveedorLabController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un problema");
+		
 		}
 	}
 
@@ -130,7 +118,7 @@ public class ProveedorLabController implements Serializable {
 				proveedorI.update(proveedor);
 				proveedores = proveedorI.getListProveedor();
 
-				mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarProveedor').hide();");
 
@@ -139,18 +127,18 @@ public class ProveedorLabController implements Serializable {
 				proveedorI.update(proveedor);
 				proveedores = proveedorI.getListProveedor();
 
-				mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarProveedor').hide();");
 
 			} else {
 				proveedores = proveedorI.getListProveedor();
-				mensajeError("El Proveedor (" + proveedor.getNombrePv() + ") ya existe.");
+				utilidades.mensajeError("El Proveedor (" + proveedor.getNombrePv() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un problema");
+		
 		}
 	}
 
@@ -162,14 +150,14 @@ public class ProveedorLabController implements Serializable {
 
 			proveedorI.delete(proveedor);
 			proveedores = proveedorI.getListProveedor();
-			mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha eliminado correctamente");
+			utilidades.mensajeInfo("El Proveedor (" + proveedor.getNombrePv() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("La tabla Proveedor (" + proveedor.getNombrePv() + ") tiene relación con otra tabla");
+				utilidades.mensajeError("La tabla Proveedor (" + proveedor.getNombrePv() + ") tiene relación con otra tabla");
 			} else {
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 			}
 
 		}
@@ -186,7 +174,6 @@ public class ProveedorLabController implements Serializable {
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 		boolean resultado = false;

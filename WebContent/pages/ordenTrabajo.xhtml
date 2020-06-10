@@ -128,9 +128,11 @@
 										align="center">
 										<tr align="center">
 											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(startBusqueda);"
 													actionListener="#{reporteOrdenTrabajoController.buscarOrden()}"
 													update="@([id$=tblOrdenTrabajo]),@([id$=messagesForm])"
-													process="@this,formBuscar">
+													process="@this,formBuscar"
+													onsuccess="PrimeFaces.monitorDownload(stopBusqueda);">
 
 													<h:graphicImage value="/images/archivos/busqueda.png"
 														class="btn bt-success" title="Buscar"
@@ -183,18 +185,27 @@
 							<p:column headerText="Orden"
 								filterBy="#{detalleO.ordenTrabajo.idOrden}"
 								filterStyle="width: 80% !important;">
+								<f:facet name="header">
+									<h:outputText value="ID ORDEN" />
+								</f:facet>
 								<h:outputText value="#{detalleO.ordenTrabajo.idOrden}" />
 							</p:column>
 
 							<p:column headerText="Fecha"
 								filterBy="#{detalleO.ordenTrabajo.fechaordenOt}"
 								filterStyle="width: 80% !important;">
+								<f:facet name="header">
+									<h:outputText value="ID FECHA" />
+								</f:facet>
 								<h:outputText value="#{detalleO.ordenTrabajo.fechaordenOt}" />
 							</p:column>
 
 							<p:column headerText="Servicio"
 								filterBy="#{ordenTrabajoController.servicio(detalleO.idServicio)}"
 								filterStyle="width: 80% !important;">
+								<f:facet name="header">
+									<h:outputText value="ID SERVICIO" />
+								</f:facet>
 								<h:outputText
 									value="#{ordenTrabajoController.servicio(detalleO.idServicio)}" />
 							</p:column>
@@ -202,42 +213,62 @@
 							<p:column headerText="Analista"
 								filterBy="#{detalleO.personal.nombresPe}"
 								filterStyle="width: 80% !important;">
+								<f:facet name="header">
+									<h:outputText value="ANALISTA" />
+								</f:facet>
 								<h:outputText value="#{detalleO.personal.nombresPe}" />
-
 							</p:column>
 
 							<p:column headerText="Horas" filterBy="#{detalleO.horasTrabajo}"
 								filterStyle="width: 80% !important;">
+								<f:facet name="header">
+									<h:outputText value="HORAS" />
+								</f:facet>
 								<h:outputText value="#{detalleO.horasTrabajo}" />
 
 							</p:column>
 
 							<p:column headerText="Estado">
+								<f:facet name="header">
+									<h:outputText value="ESTADO" />
+								</f:facet>
 								<h:outputText value="#{detalleO.estadoDot}" />
-
 							</p:column>
 
 							<p:column headerText="Cliente">
+								<f:facet name="header">
+									<h:outputText value="CLIENTE" />
+								</f:facet>
 								<h:outputText value="#{detalleO.ordenTrabajo.cliente.nombreCl}" />
 							</p:column>
 
 							<p:column headerText="Dirección">
+								<f:facet name="header">
+									<h:outputText value="DIRECCIÓN" />
+								</f:facet>
 								<h:outputText
 									value="#{detalleO.ordenTrabajo.cliente.direccionCl}" />
 							</p:column>
 
 							<p:column headerText="Teléfono">
+								<f:facet name="header">
+									<h:outputText value="TÉLEFONO" />
+								</f:facet>
 								<h:outputText
 									value="#{detalleO.ordenTrabajo.cliente.telefonoCl}" />
-
 							</p:column>
 
 							<p:column headerText="RUC">
+								<f:facet name="header">
+									<h:outputText value="RUC" />
+								</f:facet>
 								<h:outputText value="#{detalleO.ordenTrabajo.cliente.rucCl}" />
-
 							</p:column>
 
 							<p:column headerText="Contacto">
+								<f:facet name="header">
+									<h:outputText value="CONTACTO" />
+								</f:facet>
 								<h:outputText
 									value="#{detalleO.ordenTrabajo.cliente.contactoCl}" />
 
@@ -245,19 +276,25 @@
 
 						</p:dataTable>
 
+						<br />
+						<br />
+						<center>
+							<h3>Exportar sin Formato</h3>
+							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+								<h:graphicImage value="/images/excel.png" width="35px"
+									height="35px" />
+								<pe:exporter type="xlsx" target="tblOrdenTrabajo"
+									fileName="Reporte Orden Trabajo" orientation="Landscape"
+									datasetPadding="4" facetBackground="#778d9b" facetFontSize="13"
+									facetFontStyle="BOLD" cellFontSize="10" />
+							</h:commandLink>
+
+						</center>
 					</p:fieldset>
+
 				</p:panel>
 
 			</h:form>
-
-			<p:dialog modal="true" widgetVar="statusDialog"
-				header="Generando Reporte" draggable="false" closable="false"
-				resizable="false">
-				<center>
-					<h:graphicImage value="/images/archivos/cargando.gif"
-						style="border:0px solid #CAD6E0;" width="50" height="50" />
-				</center>
-			</p:dialog>
 
 			<h:form>
 				<p:dialog id="dialogReporteServ" resizable="true"
@@ -281,6 +318,25 @@
 
 				</p:dialog>
 			</h:form>
+
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="¡Generando Reporte!" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
+
+			<p:dialog modal="true" widgetVar="statusDialog2"
+				header="¡Buscando Coincidencias!" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
+
 		</h:body>
 
 		<script type="text/javascript">
@@ -291,6 +347,15 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
+			
+			function startBusqueda(){
+			PF('statusDialog2').show();
+			} 
+
+			function stopBusqueda(){
+			PF('statusDialog2').hide();
+			}
+			
 		    PrimeFaces.locales['es'] = {
 		            closeText: 'Cerrar',
 		            prevText: 'Anterior',

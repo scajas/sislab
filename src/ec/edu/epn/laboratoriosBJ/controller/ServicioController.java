@@ -1,30 +1,19 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 import ec.edu.epn.laboratorioBJ.beans.EliminacionServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.LaboratorioDAO;
@@ -33,18 +22,12 @@ import ec.edu.epn.laboratorioBJ.beans.TipoServicioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.EliminacionServicio;
 import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
-import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
 
 import ec.edu.epn.laboratorioBJ.entities.Tiposervicio;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 @ManagedBean(name = "servicioController")
 @SessionScoped
@@ -99,6 +82,8 @@ public class ServicioController implements Serializable {
 	
 	// Eliminacion de Servicio
 	private EliminacionServicio eliminacionServicio;
+	
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
@@ -125,24 +110,11 @@ public class ServicioController implements Serializable {
 			// Laboratorio
 			laboratorios = servicioI.listaLaboratorioUnidad(su.UNIDAD_USUARIO_LOGEADO);
 			laboratorioLab = new LaboratorioLab();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	public void updateTable() {
@@ -192,7 +164,7 @@ public class ServicioController implements Serializable {
 			nuevoServicio.setTiposervicio(tipoServicioSelect);
 
 			servicioI.save(nuevoServicio);
-			mensajeInfo("El Servicio (" + nuevoServicio.getNombreS() + ") se ha almacenado exitosamente");
+			utilidades.mensajeInfo("El Servicio (" + nuevoServicio.getNombreS() + ") se ha almacenado exitosamente");
 
 			updateTable();
 			nuevoServicio = new Servicio();
@@ -202,7 +174,7 @@ public class ServicioController implements Serializable {
 			context.execute("PF('nuevoS').hide();");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 
 	}
@@ -213,26 +185,23 @@ public class ServicioController implements Serializable {
 
 			if (buscarServicio(nuevoServicio.getNombreS()) == true) {
 
-				mensajeError("El Servicio (" + nuevoServicio.getNombreS() + ") ya existe.");
+				utilidades.mensajeError("El Servicio (" + nuevoServicio.getNombreS() + ") ya existe.");
 
 			} else if (tipoServicioSelect.getIdTiposerv() == 5) {
 
-				System.out.println("Entro a la validación de Analisis Interno");
 				createIdExistencia();
 
 			} else if (nuevoServicio.getPrecioS() == 0) {
 
-				System.out.println("Entro a la validación del Precio");
-
-				mensajeError("El Precio tiene que ser mayor a cero");
+				utilidades.mensajeError("El Precio tiene que ser mayor a cero");
 
 			} else {
 				createIdExistencia();
 			}
 
 		} catch (Exception e) {
-			mensajeError("ha ocurrido un problema");
-			e.printStackTrace();
+			utilidades.mensajeError("ha ocurrido un problema");
+	
 		}
 
 	}
@@ -248,7 +217,7 @@ public class ServicioController implements Serializable {
 				servicioI.update(servicio);
 				updateTable();
 
-				mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarS').hide();");
 
@@ -257,18 +226,18 @@ public class ServicioController implements Serializable {
 				servicioI.update(servicio);
 				updateTable();
 
-				mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarS').hide();");
 			}
 
 			else {
 
-				mensajeError("El Servicio (" + nuevoServicio.getNombreS() + ") ya existe.");
+				utilidades.mensajeError("El Servicio (" + nuevoServicio.getNombreS() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -280,14 +249,14 @@ public class ServicioController implements Serializable {
 			servicioI.delete(servicio);
 			updateTable();
 
-			mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("El Servicio (" + servicio.getNombreS() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("La tabla Servicio (" + servicio.getNombreS() + ") tiene relación con otra tabla");
+				utilidades.mensajeError("La tabla Servicio (" + servicio.getNombreS() + ") tiene relación con otra tabla");
 			} else {
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 			}
 
 		}
@@ -300,7 +269,7 @@ public class ServicioController implements Serializable {
 			tipoServicios = tipoServicioI.getAll(Tiposervicio.class);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 	}
 
@@ -308,7 +277,7 @@ public class ServicioController implements Serializable {
 		try {
 			servicios = servicioI.getAll(Servicio.class);
 		} catch (Exception e) {
-			e.printStackTrace();
+	
 		}
 		boolean resultado = false;
 		for (Servicio tipo : servicios) {
@@ -326,7 +295,7 @@ public class ServicioController implements Serializable {
 		try {
 			servicios = servicioI.listaServicioXTipo(tipoServicioSelect.getIdTiposerv());
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 
 	}
