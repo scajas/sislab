@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/templates/common.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:v="http://validators.epn.edu.ec.com"
+	xmlns:ps="http://primefaces.org/apark">
+
+
+	<ui:define name="pageTitle">Trabajo Analistas</ui:define>
+	<ui:define name="body">
+
+		<h:head>
+
+			<script type="text/javascript">
+	
+		//<![CDATA[
+		function printDiv(divName){
+			var f =new Date();
+			var printContents =document.getElementById(divName).innerHTML;
+			var originalContents =document.body.innerHTML;
+			document.body.innerHTML=printContents;
+			window.print();
+			document.body.innerHTML=originalContents;
+		}
+
+		//]]>
+
+	</script>
+		</h:head>
+
+
+		<h:body onload="rc();">
+
+
+			<h:form id="formprincipal">
+
+				<p:remoteCommand name="rc"
+					action="#{trabajoAnalistaController.limpiarTodosCampos()}"
+					update="formprincipal" />
+
+				<p:growl id="messagesForm" showDetail="true" sticky="true"
+					autoupdate="true" life="1000" />
+
+				<p:panel>
+					<p:fieldset legend="Trabajo Analista"
+						style="border-radius: 5px 5px 5px 5px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
+						;width: '90%';">
+						<br />
+						<br />
+
+						<p:dataTable id="tblTrabajoAnalista"
+							value="#{trabajoAnalistaController.detallesOrden}" var="detalleO"
+							widgetVar="filtereditarMetodoOTable"
+							emptyMessage="No se pudo encontrar ninguna coincidencia"
+							rows="10" paginator="true"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,15"
+							style="border: 0;background: 0;width:100%;-webkit-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							-moz-box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;
+							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
+							paginatorPosition="bottom">
+
+							<f:facet name="header">
+								Labores de Analista
+							</f:facet>
+
+
+							<p:column headerText="Id Orden"
+								filterBy="#{detalleO.ordenTrabajo.idOrden}"
+								filterMatchMode="contains" style="width: 12%"
+								filterStyle="width: 70%">
+								<h:outputText value="#{detalleO.ordenTrabajo.idOrden}" />
+							</p:column>
+
+							<p:column headerText="ID Muestra"
+								filterBy="#{detalleO.muestra.idMuestra}"
+								filterStyle="width: 80%">
+								<h:outputText value="#{detalleO.muestra.idMuestra}" />
+							</p:column>
+
+							<p:column headerText="Muestra"
+								filterBy="#{detalleO.muestra.codigoMCliente}"
+								filterStyle="width: 80%">
+								<h:outputText value="#{detalleO.muestra.codigoMCliente}" />
+							</p:column>
+
+							<p:column headerText="Servicio"
+								filterBy="#{trabajoAnalistaController.servicio(detalleO.idServicio)}"
+								filterStyle="width: 80%">
+								<h:outputText
+									value="#{trabajoAnalistaController.servicio(detalleO.idServicio)}" />
+							</p:column>
+
+							<p:column headerText="Horas" filterBy="#{detalleO.horasTrabajo}"
+								filterStyle="width: 50%" style="width: 5%">
+								<h:outputText value="#{detalleO.horasTrabajo}" />
+							</p:column>
+
+							<p:column headerText="Fecha Inicio"
+								filterBy="#{detalleO.fechaInicioAnalisis}"
+								filterStyle="width: 70%" style="width: 9%">
+								<h:outputText value="#{detalleO.fechaInicioAnalisis}" />
+							</p:column>
+
+							<p:column headerText="Fecha Fin"
+								filterBy="#{detalleO.fechaFinAnalisis}" filterStyle="width: 70%"
+								style="width: 9%">
+								<h:outputText value="#{detalleO.fechaFinAnalisis}" />
+							</p:column>
+
+							<p:column headerText="Acciones" style="width:9%">
+								<center>
+
+									<!-- **************************  Boton Editar   *************************** -->
+									<p:commandLink icon="ui-icon-check"
+										process="@this,tblTrabajoAnalista"
+										action="#{trabajoAnalistaController.cargarMetodo(detalleO)}"
+										onsuccess="PF('editarMetodoOT').show();">
+
+										<h:graphicImage value="/images/archivos/editar.png"
+											title="Modificar" style="border:0px solid #CAD6E0;"
+											width="35" height="35" />
+
+										<f:setPropertyActionListener
+											target="#{trabajoAnalistaController.detalleOrden}"
+											value="#{detalleO}">
+										</f:setPropertyActionListener>
+
+
+									</p:commandLink>
+
+									<!-- **************************  Boton Cerrar   *************************** -->
+
+
+									<p:commandLink icon="ui-icon-check"
+										process="@this,tblTrabajoAnalista"
+										onsuccess="PF('cerrarMetodoOT').show();">
+
+										<h:graphicImage
+											value="/images/archivos/cancelar_seleccion.png"
+											title="Cerrar" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+
+										<f:setPropertyActionListener
+											target="#{trabajoAnalistaController.detalleOrden}"
+											value="#{detalleO}">
+										</f:setPropertyActionListener>
+
+									</p:commandLink>
+
+								</center>
+							</p:column>
+
+							<p:column headerText="Descargar" filterStyle="width: 70%"
+								style="width: 9%">
+								<center>
+									<p:commandLink icon="ui-icon-check"
+										process="@this,tblTrabajoAnalista"
+										actionListener="#{trabajoAnalistaController.validarPanelSaldo()}"
+										update="@this,@([id$=messagesForm])">
+
+										<h:graphicImage value="/images/archivos/descargar.png"
+											title="Descarga" style="border:0px solid #CAD6E0;" width="35"
+											height="35" />
+
+										<f:setPropertyActionListener
+											target="#{trabajoAnalistaController.detalleOrden}"
+											value="#{detalleO}">
+										</f:setPropertyActionListener>
+
+
+									</p:commandLink>
+								</center>
+							</p:column>
+
+						</p:dataTable>
+
+					</p:fieldset>
+				</p:panel>
+
+			</h:form>
+
+			<!-- **************************  Panel - Editar Metodo de Orden de Trabajo   *************************** -->
+
+			<p:dialog id="panelEditarMetodoOT" resizable="true"
+				widgetVar="editarMetodoOT" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="80vh"
+				height="40vh" header="Editar Metodo de Orden de Trabajo">
+
+
+				<h:form id="formEditarMetodoOT">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<!-- **************************  Sub-Panel - Informacion Servicio   *************************** -->
+
+
+						<div class="ui-fluid">
+
+							<center>
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+									layout="grid">
+
+									<p:outputLabel for="servicio" value="Servicio: "
+										style="color:white!important" />
+									<p:outputLabel id="servicio"
+										value="#{trabajoAnalistaController.servicio(trabajoAnalistaController.detalleOrden.idServicio)}"
+										size="30" maxlength="100" />
+
+									<p:outputLabel for="metodo" value="Método: "
+										style="color:white!important" />
+									<p:selectOneMenu id="metodo"
+										value="#{trabajoAnalistaController.detalleOrden.idMetodo}">
+
+										<f:selectItems value="#{trabajoAnalistaController.metodos}"
+											itemLabel="#{metodo.nombreMt}" itemValue="#{metodo.idMetodo}"
+											var="metodo">
+										</f:selectItems>
+									</p:selectOneMenu>
+
+
+
+								</p:panelGrid>
+							</center>
+							<br />
+
+						</div>
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{trabajoAnalistaController.modificarDetalleOt()}"
+									process="@this,formEditarMetodoOT"
+									onsuccess="PF('editarMetodoOT').hide();"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarMetodoOT">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('editarMetodoOT').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Cerrar Tarea   *************************** -->
+			<p:dialog id="panelCerrarMetodoOT" resizable="true"
+				widgetVar="cerrarMetodoOT" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="80vh"
+				height="40vh" header="Cerrar Tarea">
+
+
+				<h:form id="formCerrarMetodoOT">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<!-- **************************  Sub-Panel - Informacion Servicio   *************************** -->
+
+						<div class="ui-fluid">
+
+							<center>
+								<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+									columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+									style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+									layout="grid">
+
+									<p:outputLabel for="idOrden" value="Orden Trabajo: "
+										style="color:white!important" />
+									<p:outputLabel id="idOrden"
+										value="#{trabajoAnalistaController.detalleOrden.ordenTrabajo.idOrden}"
+										size="30" maxlength="100" />
+
+									<p:outputLabel for="servicio" value="Servicio: "
+										style="color:white!important" />
+									<p:outputLabel id="servicio"
+										value="#{trabajoAnalistaController.servicio(trabajoAnalistaController.detalleOrden.idServicio)}"
+										size="30" maxlength="100" />
+
+									<p:outputLabel for="metodo" value="Método: "
+										style="color:white!important" />
+									<p:outputLabel id="metodo"
+										value="#{trabajoAnalistaController.metodo(trabajoAnalistaController.detalleOrden.idMetodo)}"
+										title="#{trabajoAnalistaController.detalleOrden.idMetodo}"
+										size="30" maxlength="100" />
+
+								</p:panelGrid>
+								<br />
+
+							</center>
+							<p style="color: red;">
+								<strong>NOTA: El cierre del trabajo del analista puede
+									ser realizado si el método no tiene existencias</strong>
+							</p>
+
+							<br />
+
+						</div>
+
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Cerrar" icon="fa fa-times-circle"
+									style="width: 115px; margin: 10px"
+									actionListener="#{trabajoAnalistaController.modificarEstadoOrden}"
+									process="@this,formCerrarMetodoOT"
+									onsuccess="PF('cerrarMetodoOT').hide();"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formCerrarMetodoOT">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('cerrarMetodoOT').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Descarga de Existencia   *************************** -->
+			<p:dialog id="panelDescargaOT" resizable="true"
+				widgetVar="descargaOT" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Descarga de Existencia">
+
+
+				<h:form id="formDescargarOT">
+					<div class="ui-fluid">
+						<p:fieldset
+							style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+
+							<!-- Datos de Orden de Trabajo -->
+							<center>
+								<p:fieldset
+									style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+									<p:panelGrid columns="4" layout="grid"
+										style="border:none;text-align: left">
+
+										<h:outputText for="metodo" value="Metodo: "
+											style="font-weight:bold" />
+										<h:outputText id="metodo"
+											value="#{trabajoAnalistaController.metodo(trabajoAnalistaController.detalleOrden.idDetalleorden)}" />
+
+									</p:panelGrid>
+
+									<p:panelGrid columns="4" layout="grid" styleClass="ui-noborder"
+										style="border:none;text-align: left">
+
+										<h:outputText for="muestra" value="Id Muestra: "
+											style="font-weight:bold" />
+										<h:outputText id="muestra"
+											value="#{trabajoAnalistaController.detalleOrden.muestra.idMuestra}" />
+
+										<h:outputText for="muestraNbr" value="Muestra: "
+											style="font-weight:bold" />
+										<h:outputText id="muestraNbr"
+											value="#{trabajoAnalistaController.reemplazarStringVacios(trabajoAnalistaController.detalleOrden.muestra.codigoMCliente)}" />
+
+									</p:panelGrid>
+
+
+								</p:fieldset>
+							</center>
+
+							<br />
+							<br />
+
+							<!-- Agregar -->
+
+							<br />
+							<center>
+								<p:commandButton value="Agregar" icon="fa fa-plus"
+									title="Agregar Existencias"
+									style="width: 125px; border-radius: 3px 3px 3px 3px;"
+									disabled="#{trabajoAnalistaController.disabledButton() != false}"
+									process="@this" onsuccess="PF('nuevoDescarga').show();"
+									actionListener="#{trabajoAnalistaController.cargarDetalleMetodo()}"
+									update="@this,@([id$=messagesForm])">
+
+								</p:commandButton>
+							</center>
+							<br />
+							<center>
+								<p:fieldset
+									style="border-radius: 10px 10px 10px 10px;
+											-moz-border-radius: 10px 10px 10px 10px;
+											-webkit-border-radius: 10px 10px 10px 10px;
+											border: 0px solid #000000;
+											border-style: double;
+											border-width: 1px;
+											border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+									<p:panel id="detallePro" header="Detalle de Descarga">
+										<p:dataTable id="tblExistenciasMI"
+											value="#{trabajoAnalistaController.movimientoInventarios}"
+											var="movimientoI">
+
+											<p:column headerText="Existencia">
+												<h:outputText
+													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).idExistencia}" />
+											</p:column>
+
+											<p:column headerText="Producto">
+												<h:outputText
+													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).producto.nombrePr}" />
+											</p:column>
+
+											<p:column headerText="Cant. Existente">
+												<h:outputText
+													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).cantidadE}" />
+											</p:column>
+
+											<p:column headerText="Cant. Requerida">
+												<h:outputText value="#{movimientoI.cantidadDmt}" />
+											</p:column>
+
+											<p:column headerText="Cant. Empleada">
+												<h:outputText value="#{movimientoI.cantidadMov}" />
+												<h:outputText
+													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).unidadmedida.siglaUm}" />
+											</p:column>
+
+											<p:column headerText="Tipo Justificación">
+												<h:outputText
+													value="#{trabajoAnalistaController.justificacion(movimientoI.idTipojust)}" />
+											</p:column>
+
+											<p:column headerText="Justificación">
+												<h:outputText value="#{movimientoI.observacionesMov}" />
+											</p:column>
+
+											<p:column headerText="Acciones">
+												<center>
+
+													<!-- **************************  Boton Editar   *************************** -->
+													<p:commandLink process="tblExistenciasMI"
+														icon="ui-icon-check"
+														action="#{trabajoAnalistaController.cargarJustificacion()}"
+														onsuccess="PF('editarDescarga').show();" update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDescarga">
+
+														<h:graphicImage value="/images/archivos/editar.png"
+															title="Modificar" style="border:0px solid #CAD6E0;"
+															width="35" height="35" />
+
+
+														<f:setPropertyActionListener
+															target="#{trabajoAnalistaController.movimientoInventario}"
+															value="#{movimientoI}">
+														</f:setPropertyActionListener>
+
+													</p:commandLink>
+
+												</center>
+											</p:column>
+
+										</p:dataTable>
+									</p:panel>
+
+
+								</p:fieldset>
+
+								<br />
+
+
+							</center>
+
+							<center>
+
+								<br /> <br />
+
+								<h:panelGrid columns="3">
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										value="Guardar" icon="fa fa-save"
+										process="@this,formDescargarOT"
+										disabled="#{trabajoAnalistaController.disabledButton() != true}"
+										actionListener="#{trabajoAnalistaController.agregarOrdenI}"
+										update="@this,@([id$=messagesForm],[id$=formprincipal]),formDescargarOT,formNuevoDescarga">
+
+									</p:commandButton>
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon="fa fa-bitbucket" value="Limpiar"
+										actionListener="#{trabajoAnalistaController.limpiarTodosCampos}"
+										update="@this,@([id$=messagesForm]),formDescargarOT">
+									</p:commandButton>
+
+									<p:commandButton style="width: 150px; margin: 10px"
+										icon=" fa fa-arrow-left" onclick="PF('nuevoOT').hide();"
+										process="@none" value="Atras">
+
+									</p:commandButton>
+
+								</h:panelGrid>
+
+							</center>
+						</p:fieldset>
+					</div>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Ingresar Descarga   *************************** -->
+			<p:dialog id="panelIngresarDescarga" resizable="true"
+				widgetVar="nuevoDescarga" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="150vh"
+				height="73vh" header="Ingresar Descarga">
+
+
+				<h:form id="formNuevoDescarga">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<!-- **************************  Sub-Panel - Buscar Existencia  *************************** -->
+						<div class="ui-g">
+							<div class="ui-g-6">
+								<p:fieldset
+									style="border-radius: 10px 10px 10px 10px;
+									-moz-border-radius: 10px 10px 10px 10px;
+									-webkit-border-radius: 10px 10px 10px 10px;
+									border: 0px solid #000000;
+									border-style: double;
+									border-width: 1px;
+									border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1"
+									legend="Existencias">
+
+									<p:dataTable id="tblMetodo"
+										value="#{trabajoAnalistaController.listaDetalleMetodo}"
+										var="metodo" widgetVar="filterServiciosTable"
+										emptyMessage="No se pudo encontrar ninguna coincidencia"
+										filteredValue="#{trabajoAnalistaController.filtroDetalleMetodo}"
+										rows="5" paginator="true"
+										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
+										rowKey="#{metodo.idDetallemetodo}"
+										selection="#{trabajoAnalistaController.nuevoDetallemetodo}"
+										selectionMode="single">
+										<p:ajax event="rowSelect"
+											listener="#{trabajoAnalistaController.validarDetalleM()}"
+											update="@([id$=messagesForm])" />
+
+										<p:column headerText="ID" filterBy="#{metodo.idExistencia}"
+											filterMatchMode="contains">
+											<h:outputText value="#{metodo.idExistencia}" />
+										</p:column>
+
+										<p:column headerText="Nombre"
+											filterBy="#{trabajoAnalistaController.cambiarDatosExistencia(metodo.idExistencia).producto.nombrePr}"
+											filterMatchMode="contains">
+											<h:outputText
+												value="#{trabajoAnalistaController.cambiarDatosExistencia(metodo.idExistencia).producto.nombrePr}" />
+										</p:column>
+
+										<p:column headerText="Cant. Req"
+											filterBy="#{metodo.cantidadDmt}" filterMatchMode="contains">
+											<h:outputText value="#{metodo.cantidadDmt}" />
+										</p:column>
+
+									</p:dataTable>
+									<br />
+
+								</p:fieldset>
+							</div>
+
+							<!-- **************************  Sub-Panel - Registro General  *************************** -->
+
+							<div class="ui-g-6 ui-g-nopad">
+								<div class="ui-g-12">
+									<!-- **************************  Sub-Panel   *************************** -->
+									<p:fieldset
+										style="border-radius: 10px 10px 10px 10px;
+										-moz-border-radius: 10px 10px 10px 10px;
+										-webkit-border-radius: 10px 10px 10px 10px;
+										border: 0px solid #000000;
+										border-style: double;
+										border-width: 1px;
+										border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+										<div class="ui-fluid">
+
+											<center>
+												<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+													columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+													style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+													layout="grid">
+
+													<p:outputLabel for="producto" value="Produto: "
+														style="color:white!important" />
+													<p:outputLabel id="producto"
+														value="#{trabajoAnalistaController.cambiarDatosExistencia(trabajoAnalistaController.nuevoMovimientoInventario.idExistencia).producto.nombrePr}"
+														size="30" maxlength="100" />
+
+													<p:outputLabel for="saldoE" value="Saldo: "
+														style="color:white!important" />
+													<p:outputLabel id="saldoE"
+														value="#{trabajoAnalistaController.nuevoMovimientoInventario.saldoE}"
+														size="30" maxlength="100" />
+
+													<p:outputLabel for="cantidadReq"
+														value="Cantidad Requerida: " style="color:white!important" />
+													<p:outputLabel id="cantidadReq"
+														value="#{trabajoAnalistaController.nuevoMovimientoInventario.cantidadDmt}"
+														size="30" maxlength="100" />
+
+													<p:outputLabel value="Cantidad Empleada: " for="cantidad"
+														style="color:white!important" />
+													<p:inputNumber id="cantidad"
+														value="#{trabajoAnalistaController.nuevoMovimientoInventario.cantidadMov}"
+														required="true" emptyValue="zero"
+														requiredMessage="Debe ingresar la cantidad" size="30"
+														maxlength="100">
+													</p:inputNumber>
+
+													<p:outputLabel for="tipoJustificacion"
+														value="Tipo de Justificación: "
+														style="color:white!important" />
+													<p:selectOneMenu id="tipoJustificacion"
+														value="#{trabajoAnalistaController.nuevoMovimientoInventario.idTipojust}">
+														<f:selectItem itemLabel="Seleccione..." itemValue="1" />
+														<f:selectItems
+															value="#{trabajoAnalistaController.tipoJustificacions}"
+															itemLabel="#{tipo.nombreJust}"
+															itemValue="#{tipo.idTipojust}" var="tipo">
+														</f:selectItems>
+													</p:selectOneMenu>
+
+													<p:outputLabel id="lblObservaciones" for="observaciones"
+														value="Justificación: " style="color:white!important " />
+													<p:inputTextarea id="observaciones"
+														value="#{trabajoAnalistaController.nuevoMovimientoInventario.observacionesMov}"
+														size="100" />
+
+
+
+												</p:panelGrid>
+											</center>
+											<br />
+
+										</div>
+
+
+									</p:fieldset>
+
+
+
+								</div>
+							</div>
+
+						</div>
+
+						<br />
+						<br />
+
+
+						<center>
+
+							<h:panelGrid columns="3">
+
+								<p:commandButton value="Descarga Automática" icon="fa fa-save"
+									style="width: 140px; margin: 10px"
+									title="Agregara todo el contenido de la tabla para su posterior registro"
+									process="@this,formNuevoDescarga"
+									disabled="#{trabajoAnalistaController.disabledButtonAgregarTodoDescarga() != true}"
+									actionListener="#{trabajoAnalistaController.agregarTodosMovimientos()}"
+									update="@this,@([id$=messagesForm],[id$=formprincipal])">
+								</p:commandButton>
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									process="@this,formNuevoDescarga"
+									actionListener="#{trabajoAnalistaController.agregarMovimientoInv}"
+									disabled="#{trabajoAnalistaController.disabledButtonAgregarDescarga() != true}"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoDescarga, formDescargarOT">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('nuevoDescarga').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+			<!-- **************************  Panel - Modificar Descarga de Existencia   *************************** -->
+			<p:dialog id="panelEditarDescarga" resizable="true"
+				widgetVar="editarDescarga" modal="true" showEffect="explode"
+				hideEffect="fade" responsive="true" dynamic="true" width="80vh"
+				height="40vh" header="Modificar Descarga">
+
+
+				<h:form id="formEditarDescarga">
+
+					<p:fieldset
+						style="border-radius: 10px 10px 10px 10px;
+						-moz-border-radius: 10px 10px 10px 10px;
+						-webkit-border-radius: 10px 10px 10px 10px;
+						border: 0px solid #000000;
+						border-style: double;
+						border-width: 1px;
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
+
+						<!-- **************************  Sub-Panel - Buscar Servicio   *************************** -->
+						<div class="ui-g">
+
+							<!-- **************************  Sub-Panel - Registro General  *************************** -->
+
+							<div class="ui-g-12">
+								<!-- **************************  Sub-Panel - Informacion Servicio   *************************** -->
+
+
+								<div class="ui-fluid">
+
+									<center>
+										<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+											style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left"
+											layout="grid">
+
+											<p:outputLabel for="producto" value="Produto: "
+												style="color:white!important" />
+											<p:outputLabel id="producto"
+												value="#{trabajoAnalistaController.cambiarDatosExistencia(trabajoAnalistaController.movimientoInventario.idExistencia).producto.nombrePr}"
+												size="30" maxlength="100" />
+
+											<p:outputLabel for="saldoE" value="Saldo: "
+												style="color:white!important" />
+											<p:outputLabel id="saldoE"
+												value="#{trabajoAnalistaController.movimientoInventario.saldoE}"
+												size="30" maxlength="100" />
+
+											<p:outputLabel for="cantidadReq" value="Cantidad Requerida: "
+												style="color:white!important" />
+											<p:outputLabel id="cantidadReq"
+												value="#{trabajoAnalistaController.movimientoInventario.cantidadDmt}"
+												size="30" maxlength="100" />
+
+											<p:outputLabel value="Cantidad Empleada: " for="cantidad"
+												style="color:white!important" />
+											<p:inputNumber id="cantidad"
+												value="#{trabajoAnalistaController.movimientoInventario.cantidadMov}"
+												required="true" emptyValue="zero"
+												requiredMessage="Debe ingresar la cantidad" size="30"
+												maxlength="100">
+											</p:inputNumber>
+
+											<p:outputLabel for="tipoJustificacion"
+												value="Tipo de Justificación: "
+												style="color:white!important" />
+											<p:selectOneMenu id="tipoJustificacion"
+												value="#{trabajoAnalistaController.movimientoInventario.idTipojust}">
+												<f:selectItem itemLabel="Seleccione..." itemValue="1" />
+												<f:selectItems
+													value="#{trabajoAnalistaController.tipoJustificacions}"
+													itemLabel="#{tipo.nombreJust}"
+													itemValue="#{tipo.idTipojust}" var="tipo">
+												</f:selectItems>
+											</p:selectOneMenu>
+
+											<p:outputLabel id="lblObservaciones" for="observaciones"
+												value="Justificación: " style="color:white!important " />
+											<p:inputTextarea id="observaciones"
+												value="#{trabajoAnalistaController.movimientoInventario.observacionesMov}"
+												size="100" />
+
+										</p:panelGrid>
+									</center>
+									<br />
+
+								</div>
+
+							</div>
+						</div>
+						<br />
+						<center>
+
+							<h:panelGrid columns="2">
+
+								<p:commandButton value="Guardar" icon="fa fa-save"
+									style="width: 115px; margin: 10px"
+									actionListener="#{trabajoAnalistaController.modificarMovimientoInv}"
+									process="@form,formEditarDescarga"
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDescarga,formDescargarOT">
+								</p:commandButton>
+
+								<p:commandButton value="Atrás "
+									style="width: 115px; margin: 5px" icon="fa fa-arrow-left"
+									onclick="PF('editarDescarga').hide();" process="@none">
+
+								</p:commandButton>
+
+							</h:panelGrid>
+
+						</center>
+
+
+
+					</p:fieldset>
+				</h:form>
+			</p:dialog>
+
+		</h:body>
+
+
+
+		<script type="text/javascript">
+			function start(){
+			PF('statusDialog').show();
+			} 
+
+			function stop(){
+			PF('statusDialog').hide();
+			}
+
+			window.onbeforeunload = function(event) {
+				rc();
+			    event.returnValue = "";
+			};
+
+		</script>
+
+		<!-- **************************  Scroll en dialogo   *************************** -->
+		<style type="text/css">
+.ui-dialog-content {
+	max-width: 1500px !important;
+	max-height: 500px !important;
+	margin-bottom: 5px !important;
+}
+</style>
+
+	</ui:define>
+</ui:composition>
