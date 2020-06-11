@@ -400,7 +400,9 @@
 
 									<p:commandButton icon="fa fa-search-plus"
 										style="width: 150px; margin: 10px" value="Cargar Existencias"
-										onclick="PF('listadoEx').show();" update="formListadoEx">
+										actionListener="#{movimientoInventarioController.cargarlistaExistencias}"
+										onclick="PF('listadoEx').show();"
+										update="@this,@([id$=messagesForm]">
 
 									</p:commandButton>
 
@@ -540,8 +542,9 @@
 								<p:commandButton icon="fa fa-search-plus"
 									style="width: 150px; margin: 10px" value="Cargar Existencias"
 									action="#{movimientoInventarioController.auxPanel(1)}"
-									onclick="PF('listadoExTransf').show();"
-									update="formListadoExTransf">
+									actionListener="#{movimientoInventarioController.cargarlistaExistenciasTransf}"
+									onsuccess="PF('listadoExTransf').show();"
+									update="@this,@([id$=messagesForm]">
 
 								</p:commandButton>
 
@@ -656,8 +659,9 @@
 									<p:commandButton icon="fa fa-search-plus"
 										style="width: 150px; margin: 10px" value="Cargar Existencias"
 										action="#{movimientoInventarioController.auxPanel(2)}"
-										onclick="PF('listadoExTransf').show();"
-										update="formListadoExTransf">
+										actionListener="#{movimientoInventarioController.cargarlistaExistenciasTransf()}"
+										onsuccess="PF('listadoExTransf').show();"
+										update="@this,@([id$=messagesForm]">
 
 									</p:commandButton>
 
@@ -818,7 +822,7 @@
 												value="#{movimientoInventarioController.movInventario.cantidadMov}"
 												size="24" required="true"
 												requiredMessage="Debe Agregar la Cantidad"
-												validator="#{movimientoInventarioController.validarSaldoEdit}"/>
+												validator="#{movimientoInventarioController.validarSaldoEdit}" />
 
 											<p:outputLabel id="lblBodega" for="bodega" value="Bodega: "
 												style="color:white!important" />
@@ -1384,6 +1388,11 @@
 			console.log('TIMBREMOS :v');
 
 				}
+
+			window.onbeforeunload = function(event) {
+				rc();
+			    event.returnValue = "";
+			};
 
 			PrimeFaces.locales['es'] = {
 		            closeText: 'Cerrar',
