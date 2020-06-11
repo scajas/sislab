@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -24,12 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import com.bea.xml.stream.samples.Parse;
-
-import ec.edu.epn.laboratorioBJ.beans.BodegaDAO;
-import ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO;
-import ec.edu.epn.laboratorioBJ.entities.Bodega;
-import ec.edu.epn.laboratorioBJ.entities.laboratory;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -39,10 +34,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JRParameter;
 
-@ManagedBean(name = "concepFiltroBodega")
+@ManagedBean(name = "reporteConsepBodega")
 @SessionScoped
 
-public class ConsepFiltroBodegaController implements Serializable {
+public class ReporteConsepBodegaController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -52,34 +47,26 @@ public class ConsepFiltroBodegaController implements Serializable {
 	SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
 
 	/****************************************************************************/
-	/** SERVICIOS **/
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratoryDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO")
-	private LaboratoryDAO laboratoryI;
-	/****************************************************************************/
-	// variables de la clase
 
-	private List<laboratory> bodegas = new ArrayList<>();
+	/** SERVICIOS **/
 	private StreamedContent streamFile = null;
 	private List<String> anios = new ArrayList<String>();
 
 	private String mes;
 	private String anio;
 	private String formato;
-	private String bodega;
 
-	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
 
-			bodegas = laboratoryI.ListarBodegaById((int)su.id_usuario_log);
 			setMes(new String());
 			setAnio(new String());
 			setFormato(new String());
 			llenarListaAño();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -107,8 +94,6 @@ public class ConsepFiltroBodegaController implements Serializable {
 			}
 		}
 
-		System.out.println("Este es el mes: " + mes);
-
 		return mes;
 	}
 
@@ -124,7 +109,6 @@ public class ConsepFiltroBodegaController implements Serializable {
 	public void generarPDF() throws Exception {
 		try {
 
-			System.out.println("Bodega: " + bodega);
 			if (streamFile != null)
 				streamFile.getStream().close();
 
@@ -141,15 +125,14 @@ public class ConsepFiltroBodegaController implements Serializable {
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("imagen", servletContext.getRealPath("/"));
-			parametros.put("subReporte", servletContext.getRealPath("/"));
+			parametros.put("SubReporte", servletContext.getRealPath("/"));
 			parametros.put("nombreUsuario", su.nombre_usuario_logeado);
 			parametros.put("mes", Integer.parseInt(mes));
 			parametros.put("anio", Integer.parseInt(anio));
 			parametros.put("nombreMes", obtenerMes(Integer.parseInt(mes)));
-			parametros.put("nombreBodega", bodega);
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteFiltroBodega.jrxml");
+					.getRealPath("/reportes/reportConcepBodega.jrxml");
 			InputStream input = new FileInputStream(new File(jrxmlFile));
 			JasperReport jasperReport = JasperCompileManager.compileReport(input);
 			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
@@ -157,16 +140,16 @@ public class ConsepFiltroBodegaController implements Serializable {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteConcepBodega.pdf");
+			File destFile = new File(sourceFile.getParent(), "reporteBodega.pdf");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
 			InputStream stream = new FileInputStream(destFile);
 
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteConcepBodega.pdf");
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteBodega.pdf");
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			
 
 		}
 
@@ -182,11 +165,11 @@ public class ConsepFiltroBodegaController implements Serializable {
 
 	private Connection coneccionSQL() throws IOException {
 		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
+			conexionPostgres conexionSQL = new conexionPostgres();
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 		return null;
 	}
@@ -229,22 +212,6 @@ public class ConsepFiltroBodegaController implements Serializable {
 
 	public void setAnios(List<String> anios) {
 		this.anios = anios;
-	}
-
-	public String getBodega() {
-		return bodega;
-	}
-
-	public void setBodega(String bodega) {
-		this.bodega = bodega;
-	}
-
-	public List<laboratory> getBodegas() {
-		return bodegas;
-	}
-
-	public void setBodegas(List<laboratory> bodegas) {
-		this.bodegas = bodegas;
 	}
 
 }

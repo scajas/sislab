@@ -1,13 +1,11 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -16,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-
-import com.sun.org.apache.bcel.internal.generic.DDIV;
 
 import ec.edu.epn.laboratorioBJ.beans.DetalleMetodoDAO;
 import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
@@ -30,6 +26,7 @@ import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
 import ec.edu.epn.laboratorioBJ.entities.Metodo;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "metodoController")
@@ -97,9 +94,10 @@ public class MetodoController implements Serializable {
 	private Detallemetodo detalleMetodo;
 
 	private LaboratorioLab laboratorio;
-
+	
 	UnidadLabo unidadLabo;
 	private String nombreM;
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
@@ -138,10 +136,11 @@ public class MetodoController implements Serializable {
 			detalleMetodo = new Detallemetodo();
 
 			tempExistencias = new ArrayList<Existencia>();
+			
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
 		}
 	}
 
@@ -155,21 +154,6 @@ public class MetodoController implements Serializable {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
-	}
-
-	/****** Mensajes Personalizados ****/
-
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
@@ -194,11 +178,10 @@ public class MetodoController implements Serializable {
 			nuevoDetalleMetodoAux.setCantidadDmt(0);
 
 			actualizarExistencias();
-			mensajeInfo("Se ha limpiado todo el formulario");
+			utilidades.mensajeInfo("Se ha limpiado todo el formulario");
 
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 	}
@@ -208,7 +191,6 @@ public class MetodoController implements Serializable {
 	 * 
 	 * try { tblMetodos(); } catch (Exception e) {
 	 * 
-	 * e.printStackTrace(); }
 	 * 
 	 * boolean resultado = false; for (Metodo m : metodos) { if
 	 * (m.getNombreMt().equals(valor)) { resultado = true; break; } else {
@@ -234,20 +216,20 @@ public class MetodoController implements Serializable {
 				RequestContext context = RequestContext.getCurrentInstance();
 				getNuevoDetalleMetodo().setIdExistencia(getSelectExistencia().getIdExistencia());
 
-				mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
+				utilidades.mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
 				existencia = selectExistencia;
 				selectExistencia = new Existencia();
 				filterExistencia = new ArrayList<Existencia>();
 				context.execute("PF('listadoEx').hide();");
 
 			} else {
-				mensajeError("La existencia (" + selectExistencia.getIdExistencia() + ") ya ha sido seleccionada");
+				utilidades.mensajeError("La existencia (" + selectExistencia.getIdExistencia() + ") ya ha sido seleccionada");
 				selectExistencia = new Existencia();
 			}
 
 		} catch (Exception e) {
-			mensajeError("No se ha seleccionado ninguna Existencia");
-			e.printStackTrace();
+			utilidades.mensajeError("No se ha seleccionado ninguna Existencia");
+
 		}
 
 	}
@@ -281,7 +263,7 @@ public class MetodoController implements Serializable {
 		try {
 
 			if (nuevoDetalleMetodo.getIdExistencia() == null) {
-				mensajeError("No ha seleccionado Ninguna Existencia");
+				utilidades.mensajeError("No ha seleccionado Ninguna Existencia");
 			} else {
 
 				float cantidadMo = nuevoDetalleMetodo.getCantidadDmt();
@@ -295,7 +277,7 @@ public class MetodoController implements Serializable {
 				nuevoDetalleMetodos.add(nuevoDetalleMetodo);
 				setDetalleMetodos(nuevoDetalleMetodos);
 
-				mensajeInfo("Se ha almacenado (" + nuevoDetalleMetodo.getIdExistencia() + ") correctamente.");
+				utilidades.mensajeInfo("Se ha almacenado (" + nuevoDetalleMetodo.getIdExistencia() + ") correctamente.");
 
 				nuevoDetalleMetodo = new Detallemetodo();
 				existencia = new Existencia();
@@ -305,7 +287,7 @@ public class MetodoController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 
 	}
@@ -318,7 +300,7 @@ public class MetodoController implements Serializable {
 		for (Detallemetodo dm : nuevoDetalleMetodos) {
 			if (dm.getIdExistencia().equals(detalleMetodo.getIdExistencia())) {
 
-				mensajeInfo("Se ha editado el Detalle Método(" + detalleMetodo.getIdExistencia() + ")");
+				utilidades.mensajeInfo("Se ha editado el Detalle Método(" + detalleMetodo.getIdExistencia() + ")");
 				context.execute("PF('editarDetalleTemp').hide();");
 
 				break;
@@ -337,10 +319,10 @@ public class MetodoController implements Serializable {
 		try {
 			nuevoDetalleMetodos.remove(detalleMetodo);
 			setDetalleMetodos(nuevoDetalleMetodos);
-			mensajeInfo("Se ha eliminado el Detalle Método (" + detalleMetodo.getIdExistencia() + ")");
+			utilidades.mensajeInfo("Se ha eliminado el Detalle Método (" + detalleMetodo.getIdExistencia() + ")");
 		} catch (Exception e) {
-			e.printStackTrace();
-			mensajeError("Ha ocurrido un error interno.");
+	
+			utilidades.mensajeError("Ha ocurrido un error interno.");
 		}
 
 	}
@@ -363,15 +345,15 @@ public class MetodoController implements Serializable {
 
 			if (nuevoMetodo.getNombreMt() == "") {
 
-				mensajeError("Ingrese el Método");
+				utilidades.mensajeError("Ingrese el Método");
 
 			} else if (servicioSelect == null) {
 
-				mensajeError("Seleccione el Servicio");
+				utilidades.mensajeError("Seleccione el Servicio");
 
 			} else if (nuevoDetalleMetodos.size() == 0) {
 
-				mensajeError("Debe ingresar Detalle Metodo");
+				utilidades.mensajeError("Debe ingresar Detalle Metodo");
 
 			} else {
 
@@ -386,7 +368,7 @@ public class MetodoController implements Serializable {
 
 				/** ID ORD INV - MOV INV **/
 
-				mensajeInfo("El Método (" + nuevoMetodo.getIdMetodo() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("El Método (" + nuevoMetodo.getIdMetodo() + ") se ha almacenado exitosamente");
 				context.execute("PF('nuevoMetodo').hide();");
 
 				// Limpiar Campos y actualizar
@@ -409,8 +391,8 @@ public class MetodoController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un error");
+			
 		}
 	}
 
@@ -465,8 +447,8 @@ public class MetodoController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un error");
+		
 		}
 	}
 
@@ -521,21 +503,20 @@ public class MetodoController implements Serializable {
 
 				getTempDetalleMetodoEdit().setIdExistencia(getSelectExDMTemp().getIdExistencia());
 
-				System.out.println("Existencia Seleccionada:" + selectExDMTemp.getIdExistencia());
-				mensajeInfo("Se seleccionó la Existencia (" + selectExDMTemp.getIdExistencia());
+				utilidades.mensajeInfo("Se seleccionó la Existencia (" + selectExDMTemp.getIdExistencia());
 				existencia = selectExDMTemp;
 				selectExDMTemp = new Existencia();
 				filterExistencia = new ArrayList<Existencia>();
 				context.execute("PF('listadoExTemp').hide();");
 
 			} else {
-				mensajeError("La existencia (" + selectExDMTemp.getIdExistencia() + ") ya ha sido seleccionada");
+				utilidades.mensajeError("La existencia (" + selectExDMTemp.getIdExistencia() + ") ya ha sido seleccionada");
 				selectExDMTemp = new Existencia();
 			}
 
 		} catch (Exception e) {
-			mensajeError("No se ha seleccionado ninguna Existencia");
-			e.printStackTrace();
+			utilidades.mensajeError("No se ha seleccionado ninguna Existencia");
+	
 		}
 
 	}
@@ -569,7 +550,7 @@ public class MetodoController implements Serializable {
 		try {
 
 			if (tempDetalleMetodoEdit.getIdExistencia() == null) {
-				mensajeError("No ha seleccionado Ninguna Existencia");
+				utilidades.mensajeError("No ha seleccionado Ninguna Existencia");
 			} else {
 
 				float cantidadMo = tempDetalleMetodoEdit.getCantidadDmt();
@@ -581,7 +562,7 @@ public class MetodoController implements Serializable {
 				tempExistencias.add(getExistencia());
 				tempDetalleMetodosEdit.add(tempDetalleMetodoEdit);
 				setTempDetalleMetodosEdit(tempDetalleMetodosEdit);
-				mensajeInfo("Se ha almacenado (" + tempDetalleMetodoEdit.getIdExistencia() + ") correctamente.");
+				utilidades.mensajeInfo("Se ha almacenado (" + tempDetalleMetodoEdit.getIdExistencia() + ") correctamente.");
 
 				tempDetalleMetodoEdit = new Detallemetodo();
 				existencia = new Existencia();
@@ -591,7 +572,7 @@ public class MetodoController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
 
 	}
@@ -604,7 +585,7 @@ public class MetodoController implements Serializable {
 		for (Detallemetodo dm : tempDetalleMetodosEdit) {
 			if (dm.getIdExistencia().equals(tempDetalleMetodoEdit.getIdExistencia())) {
 
-				mensajeInfo("Se ha editado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+				utilidades.mensajeInfo("Se ha editado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
 				context.execute("PF('editDMTemp').hide();");
 
 				break;
@@ -623,10 +604,10 @@ public class MetodoController implements Serializable {
 		try {
 			tempDetalleMetodosEdit.remove(tempDetalleMetodoEdit);
 			setListasTempDelete();
-			mensajeInfo("Se ha eliminado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+			utilidades.mensajeInfo("Se ha eliminado el Detalle Método (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
 		} catch (Exception e) {
-			e.printStackTrace();
-			mensajeError("Ha ocurrido un error interno.");
+
+			utilidades.mensajeError("Ha ocurrido un error interno.");
 		}
 
 	}
@@ -650,7 +631,7 @@ public class MetodoController implements Serializable {
 		actualizarDetalleM(tempDetalleMetodosEdit);
 		actualizarMetodo(metodo);
 
-		mensajeInfo("El Método (" + metodo.getNombreMt() + ") se actualizado exitosamente");
+		utilidades.mensajeInfo("El Método (" + metodo.getNombreMt() + ") se actualizado exitosamente");
 		tblMetodos();
 		context.execute("PF('editMetodo').hide();");
 
@@ -666,8 +647,7 @@ public class MetodoController implements Serializable {
 				try {
 					detalleMetodoI.save(detalleM);
 				} catch (Exception e) {
-					System.out.println(e);
-
+				
 				}
 
 			}
@@ -686,7 +666,7 @@ public class MetodoController implements Serializable {
 	/****** Editar - Cargar Detalle M ******/
 
 	public void cambiarIDDetalleM(Metodo m) {
-		System.out.println("Entra al setteo de Ids (cambiarIDDetallePro)");
+
 		int i = 0;
 		for (Detallemetodo dmE : tempDetalleMetodosEdit) {
 
@@ -700,10 +680,10 @@ public class MetodoController implements Serializable {
 	/****** Editar - Cargar Detalle M ******/
 
 	public void cambiarIDDetalleProAdd(Metodo m) {
-		System.out.println("entra a la funcion cambiarIDDetalleMetodoADD");
+	
 		int i = 0;
 		if (dmAddEdit.size() == 0) {
-			System.out.println("No hay registros que añadir");
+		
 		} else {
 			for (Detallemetodo detalleME : dmAddEdit) {
 
@@ -719,13 +699,12 @@ public class MetodoController implements Serializable {
 	/****** Editar - Editar Detalle M ******/
 
 	public void actualizarDetalleM(List<Detallemetodo> dm) {
-		System.out.println("Esta entrando a la funcion del editar detalle M");
+		
 		for (Detallemetodo detalleM : dm) {
 			try {
 				detalleMetodoI.update(detalleM);
 			} catch (Exception e) {
-				System.out.println(e);
-				// e.printStackTrace();
+
 			}
 
 		}
@@ -737,26 +716,22 @@ public class MetodoController implements Serializable {
 		try {
 			metodoI.update(m);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 		}
 	}
 
 	/****** Editar - Eliminar Detalle M Temp ******/
 
 	public void eliminarDetallesM(List<Detallemetodo> dm) {
-		System.out.println("Registros que ingresan al Eliminar" + dm.size());
+	
 		if (dm.size() == 0) {
-			System.out.println("No hay registros que Eliminar");
+		
 		} else {
 			for (Detallemetodo d : dm) {
 				try {
-
 					detalleMetodoI.delete(d);
-					System.out.println("registros eliminados" + d.getIdExistencia());
-
 				} catch (Exception e) {
-					e.printStackTrace();
+				
 				}
 			}
 		}
@@ -769,10 +744,10 @@ public class MetodoController implements Serializable {
 
 		if (buscarDetalleMAdd(tempDetalleMetodoEdit)) {
 			dmAddEdit.remove(tempDetalleMetodoEdit);
-			System.out.println("Le quita del temporal de añadir");
+	
 		} else {
 			dmDelete.add(tempDetalleMetodoEdit);
-			System.out.println("Entra al else" + tempDetalleMetodoEdit.getMetodo().getIdMetodo());
+		
 		}
 
 	}
@@ -785,11 +760,11 @@ public class MetodoController implements Serializable {
 
 			detalleMetodos.remove(tempDetalleMetodoEdit);
 
-			mensajeInfo("Se ha eliminado el detalle Metodo (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
+			utilidades.mensajeInfo("Se ha eliminado el detalle Metodo (" + tempDetalleMetodoEdit.getIdExistencia() + ")");
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			mensajeError("Ha ocurrido un error interno.");
+	
+			utilidades.mensajeError("Ha ocurrido un error interno.");
 		}
 	}
 
@@ -800,7 +775,7 @@ public class MetodoController implements Serializable {
 		for (Detallemetodo dp : tempDetalleMetodosEdit) {
 
 			if (dp.equals(dM)) {
-				System.out.println("Encajan " + dp.getIdExistencia());
+			
 				resultado = true;
 				break;
 			} else {
@@ -829,7 +804,7 @@ public class MetodoController implements Serializable {
 			eliminarDetalleMetodo(detalleMetodos);
 			metodoI.delete(getMetodo());
 			metodos.remove(metodo);
-			mensajeInfo("El Método (" + metodo.getNombreMt() + ") se ha eliminado correctamente.");
+			utilidades.mensajeInfo("El Método (" + metodo.getNombreMt() + ") se ha eliminado correctamente.");
 
 			tblMetodos();
 
@@ -837,11 +812,11 @@ public class MetodoController implements Serializable {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Método (" + metodo.getNombreMt() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Método (" + metodo.getNombreMt() + ") tiene relación con otra tabla.");
 
 			} else {
 
-				mensajeError("Ha ocurrido un problema.");
+				utilidades.mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
@@ -864,7 +839,7 @@ public class MetodoController implements Serializable {
 				try {
 					detalleMetodoI.delete(dms);
 				} catch (Exception e) {
-					e.printStackTrace();
+				
 				}
 			}
 		}

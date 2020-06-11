@@ -62,7 +62,7 @@ ORDER BY mi.fecha_mi ASC]]>
 				<text><![CDATA[Direc: Pasaje Andalucía E12-A y Alfredo Mena Caamaño Telf:2976300]]></text>
 			</staticText>
 			<line>
-				<reportElement x="10" y="75" width="523" height="1" uuid="8eef8733-bf47-4c83-bfbe-37b4602e8a0b"/>
+				<reportElement x="0" y="77" width="555" height="1" uuid="8eef8733-bf47-4c83-bfbe-37b4602e8a0b"/>
 			</line>
 			<staticText>
 				<reportElement x="118" y="32" width="333" height="10" uuid="00e28720-993d-4590-84ec-338e70b24694"/>
@@ -94,7 +94,7 @@ ORDER BY mi.fecha_mi ASC]]>
 			</staticText>
 			<image>
 				<reportElement x="10" y="10" width="89" height="62" uuid="2f93c351-fffd-4ff4-b35d-bde29e125dd7"/>
-				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

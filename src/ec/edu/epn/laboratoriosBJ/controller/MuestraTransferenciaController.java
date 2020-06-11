@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -20,6 +19,7 @@ import ec.edu.epn.laboratorioBJ.beans.MuestraDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.Muestra;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "muestraTransferenciaController")
@@ -55,6 +55,7 @@ public class MuestraTransferenciaController implements Serializable {
 	// ****** Filtros ****//*
 	private List<TransferenciaInterna> filtrarTransferenciaInterna;
 	private List<Muestra> filtrarMuestras;
+	private Utilidades utilidades;
 
 	/** MÉTODO INIT **/
 	@PostConstruct
@@ -67,6 +68,7 @@ public class MuestraTransferenciaController implements Serializable {
 
 			setNuevaMuestra(new Muestra());
 			muestra = new Muestra();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
@@ -86,19 +88,6 @@ public class MuestraTransferenciaController implements Serializable {
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-		FacesContext context = FacesContext.getCurrentInstance();
-
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
 
 	/****** Agregar Nueva Muestra ****/
 
@@ -109,7 +98,7 @@ public class MuestraTransferenciaController implements Serializable {
 		try {
 			if (buscarMuesta(nuevaMuestra.getCodigoMCliente()) == true) {
 
-				mensajeError("La Muestra (" + nuevaMuestra.getCodigoMCliente() + ") ya existe.");
+				utilidades.mensajeError("La Muestra (" + nuevaMuestra.getCodigoMCliente() + ") ya existe.");
 
 			} else {
 
@@ -143,7 +132,7 @@ public class MuestraTransferenciaController implements Serializable {
 				muestraI.save(nuevaMuestra);
 				updateTable();
 
-				mensajeInfo("La muestra (" + nuevaMuestra.getCodigoMCliente() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("La muestra (" + nuevaMuestra.getCodigoMCliente() + ") se ha almacenado exitosamente");
 
 				nuevaMuestra = new Muestra();
 
@@ -153,7 +142,7 @@ public class MuestraTransferenciaController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 
@@ -170,23 +159,23 @@ public class MuestraTransferenciaController implements Serializable {
 				muestraI.update(muestra);
 				updateTable();
 
-				mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarMuestra').hide();");
 
 			} else if (buscarMuesta(muestra.getCodigoMCliente()) == false) {
 				muestraI.update(muestra);
 				updateTable();
 
-				mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarMuestra').hide();");
 			} else {
-				mensajeError("La Muestra (" + muestra.getCodigoMCliente() + ") ya existe");
+				utilidades.mensajeError("La Muestra (" + muestra.getCodigoMCliente() + ") ya existe");
 
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -199,17 +188,17 @@ public class MuestraTransferenciaController implements Serializable {
 			muestraI.delete(muestra);
 			updateTable();
 
-			mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha eliminado correctamente");
+			utilidades.mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Muestra (" + muestra.getCodigoMCliente() + ") tiene relación con otra tabla");
+				utilidades.mensajeError("La tabla Muestra (" + muestra.getCodigoMCliente() + ") tiene relación con otra tabla");
 
 			} else {
 
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 
 			}
 
@@ -225,7 +214,6 @@ public class MuestraTransferenciaController implements Serializable {
 			listaMuestra = muestraI.getAll(Muestra.class);
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 		boolean resultado = false;
@@ -252,13 +240,13 @@ public class MuestraTransferenciaController implements Serializable {
 		try {
 			getNuevaMuestra().setIdTi(selectTransferenciaInterna.getIdTi());
 
-			mensajeInfo("Se seleccionó la Transferencia (" + selectTransferenciaInterna.getIdTi() + ")");
+			utilidades.mensajeInfo("Se seleccionó la Transferencia (" + selectTransferenciaInterna.getIdTi() + ")");
 
 			selectTransferenciaInterna = new TransferenciaInterna();
 
 		} catch (Exception e) {
 
-			mensajeError("No se ha seleccionado ninguna Transferencia");
+			utilidades.mensajeError("No se ha seleccionado ninguna Transferencia");
 		}
 
 	}
@@ -271,7 +259,7 @@ public class MuestraTransferenciaController implements Serializable {
 			listaTransferencia = muestraI.getListaTransferencia(idUsuario.intValue(), su.UNIDAD_USUARIO_LOGEADO);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
 		return listaTransferencia;
 

@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -22,6 +21,7 @@ import ec.edu.epn.laboratorioBJ.beans.PersonalLabDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.PersonalLab;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "personalController")
@@ -60,6 +60,7 @@ public class personalController implements Serializable, Validator {
 	private UnidadLabo unidadSelect;
 	private List<UnidadLabo> listaUnidad = new ArrayList<UnidadLabo>();
 	private UnidadLabo unidad;
+	private Utilidades utilidades;
 
 	// Método init
 	@PostConstruct
@@ -71,24 +72,11 @@ public class personalController implements Serializable, Validator {
 
 			listaUnidad = unidadI.getAll(UnidadLabo.class);
 			unidad = new UnidadLabo();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
 		}
-
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
@@ -99,28 +87,21 @@ public class personalController implements Serializable, Validator {
 		try {
 			if (buscarPersonal(nuevoPersonal.getIdPersonal()) == true) {
 
-				mensajeError("Ha ocurrido un error, El Personal ( " + nuevoPersonal.getIdPersonal() + " ) ya existe.");
+				utilidades.mensajeError("Ha ocurrido un error, El Personal ( " + nuevoPersonal.getIdPersonal() + " ) ya existe.");
 
 				nuevoPersonal = new PersonalLab();
 
 			} else if (nuevoPersonal.getIdUnidad() == 25){
-				mensajeError("Ha ocurrido un error, la unidad (na), no puede cumplir el regisro debido a que no existe");
+				utilidades.mensajeError("Ha ocurrido un error, la unidad (na), no puede cumplir el regisro debido a que no existe");
 			}
 			else {
 
-				/** Creacion del IdPersonal **/
-				
-				System.out.println("Este es el id que trae: " + nuevoPersonal.getIdUnidad());
-
 				String codigoAux = personalI.maxIdPersonal(nuevoPersonal.getIdUnidad());
-				System.out.println("Este es el id que trae: " + codigoAux);
 
 				String codigoCortado = codigoAux.substring(5, 9);
-				System.out.println("Este es el id convertido en numero: " + codigoCortado);
 
 				Integer codigo = Integer.parseInt(codigoCortado);
 				codigo = codigo + 1;
-				System.out.println("Este es el id oficial: " + codigo);
 
 				String codigoPersonal = codigo.toString();
 				UnidadLabo uni = personalI.buscarUnidadById(nuevoPersonal.getIdUnidad());
@@ -145,14 +126,12 @@ public class personalController implements Serializable, Validator {
 					break;
 				}
 
-				System.out.println("Este es el nuevo id: " + nuevoPersonal.getIdPersonal());
-
 				/** GUARDAR **/
 
 				personalI.save(nuevoPersonal);
 				listaPersonal = personalI.listarPersonalById(su.UNIDAD_USUARIO_LOGEADO);
 
-				mensajeInfo("El Personal (" + nuevoPersonal.getIdPersonal() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("El Personal (" + nuevoPersonal.getIdPersonal() + ") se ha almacenado exitosamente");
 
 				nuevoPersonal = new PersonalLab();
 
@@ -160,9 +139,7 @@ public class personalController implements Serializable, Validator {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
-
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un error");
 
 		}
 	}
@@ -176,22 +153,22 @@ public class personalController implements Serializable, Validator {
 				personalI.update(personal);
 				listaPersonal = personalI.getAll(PersonalLab.class);
 
-				mensajeInfo("El Personal (" + personal.getNombresPe() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Personal (" + personal.getNombresPe() + ") se ha actualizado exitosamente.");
 
 			} else if (buscarPersonal(personal.getNombresPe()) == false) {
 				personalI.update(personal);
 				listaPersonal = personalI.getAll(PersonalLab.class);
 
-				mensajeInfo("El Personal (" + personal.getNombresPe() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Personal (" + personal.getNombresPe() + ") se ha actualizado exitosamente.");
 
 			} else {
 				listaPersonal = personalI.getAll(PersonalLab.class);
-				mensajeError("El Personal (" + personal.getNombresPe() + ") ya existe.");
+				utilidades.mensajeError("El Personal (" + personal.getNombresPe() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 	}
@@ -205,17 +182,17 @@ public class personalController implements Serializable, Validator {
 			personalI.delete(personal);
 			listaPersonal = personalI.getAll(PersonalLab.class);
 
-			mensajeInfo("El Personal (" + personal.getNombresPe() + ") se ha eliminado correctamente.");
+			utilidades.mensajeInfo("El Personal (" + personal.getNombresPe() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Personal tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Personal tiene relación con otra tabla.");
 
 			} else {
 
-				mensajeError("Ha ocurrido un problema.");
+				utilidades.mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
@@ -230,7 +207,6 @@ public class personalController implements Serializable, Validator {
 			listaPersonal = personalI.listarPersonalById(su.UNIDAD_USUARIO_LOGEADO);
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 		boolean resultado = false;

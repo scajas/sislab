@@ -61,8 +61,7 @@
 										<p:selectOneMenu id="tipoProducto"
 											value="#{reporteExistenciasController.nombreTP}"
 											effect="fold" filter="true" filterMatchMode="contains">
-											<f:selectItem itemLabel="Porfavor Seleccione"
-												itemValue="%" />
+											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="%" />
 											<f:selectItems
 												value="#{reporteExistenciasController.tipoProductos}"
 												var="tipoProducto" itemLabel="#{tipoProducto.nombreTprod}"
@@ -75,8 +74,7 @@
 										<p:selectOneMenu id="caracteristica"
 											value="#{reporteExistenciasController.nombreC}" effect="fold"
 											filter="true" filterMatchMode="contains">
-											<f:selectItem itemLabel="Porfavor Seleccione"
-												itemValue="%" />
+											<f:selectItem itemLabel="Porfavor Seleccione" itemValue="%" />
 											<f:selectItems
 												value="#{reporteExistenciasController.caracteristicas}"
 												var="caracteristica" itemLabel="#{caracteristica.nombreCr}"
@@ -93,9 +91,11 @@
 										align="center">
 										<tr align="center">
 											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(startBusqueda);"
 													actionListener="#{reporteExistenciasController.buscarExistencias}"
 													update="@([id$=tblExistencias]),@([id$=messagesForm])"
-													process="@this,formBuscar">
+													process="@this,formBuscar"
+													onsuccess="PrimeFaces.monitorDownload(stopBusqueda);">
 
 													<h:graphicImage value="/images/archivos/busqueda.png"
 														class="btn bt-success" title="Buscar"
@@ -145,59 +145,58 @@
 						box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<p:column headerText="ID Existencia" style="width: 10%">
+							<p:column headerText="ID Existencia" style="width: 10% ;">
 								<f:facet name="header">
-									<h:outputText value="ID Existencia" />
+									<h:outputText value="ID EXISTENCIA" />
 								</f:facet>
 								<h:outputText value="#{existencias.idExistencia}" />
 							</p:column>
 
 							<p:column headerText="Producto" style="width: 14%">
 								<f:facet name="header">
-									<h:outputText value="Producto" />
+									<h:outputText value="PRODUCTO" />
 								</f:facet>
 								<h:outputText value="#{existencias.producto.nombrePr}" />
 							</p:column>
 
 							<p:column headerText="Bodega">
 								<f:facet name="header">
-									<h:outputText value="Bodega" />
+									<h:outputText value="BODEGA" />
 								</f:facet>
 								<h:outputText value="#{existencias.bodega.nombreBg}" />
 							</p:column>
 
 							<p:column headerText="Característica" style="width: 10%">
 								<f:facet name="header">
-									<h:outputText value="Característica" />
+									<h:outputText value="CARACTERÍSTICA" />
 								</f:facet>
 								<h:outputText value="#{existencias.caracteristica.nombreCr}" />
 							</p:column>
 
 							<p:column headerText="Grado" style="width: 7%">
 								<f:facet name="header">
-									<h:outputText value="Grado" />
+									<h:outputText value="GRADO" />
 								</f:facet>
 								<h:outputText value="#{existencias.grado.nombreGr}" />
 							</p:column>
 
 							<p:column headerText="Tipo de Producto" style="width: 13%">
 								<f:facet name="header">
-									<h:outputText value="Tipo de Producto" />
+									<h:outputText value="TIPO DE PRODUCTO" />
 								</f:facet>
 								<h:outputText value="#{existencias.tipoproducto.nombreTprod}" />
 							</p:column>
 
 							<p:column headerText="Saldo Neto" style="width: 8%">
 								<f:facet name="header">
-									<h:outputText value="Saldo Neto" />
+									<h:outputText value="SALDO NETO" />
 								</f:facet>
-								<h:outputText
-									value="#{reporteExistenciasController.cambiarFormatoDouble(existencias.cantidadE)}" />
+								<h:outputText value="#{existencias.cantidadE}" />
 							</p:column>
 
 							<p:column headerText="Unidad" style="width: 6%">
 								<f:facet name="header">
-									<h:outputText value="Unidad" />
+									<h:outputText value="UNIDAD" />
 								</f:facet>
 								<h:outputText value="#{existencias.unidadmedida.siglaUm}" />
 							</p:column>
@@ -205,20 +204,22 @@
 
 						<br />
 						<br />
+						<center>
+							<h3>Exportar sin Formato</h3>
+							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+								<h:graphicImage value="/images/excel.png" width="35px"
+									height="35px" />
+								<pe:exporter type="xlsx" target="tblExistencias"
+									fileName="Reporte Existencias" orientation="Landscape"
+									datasetPadding="4" facetBackground="#778d9b" facetFontSize="13"
+									facetFontStyle="BOLD" cellFontSize="10" />
+							</h:commandLink>
+						</center>
 
 					</p:fieldset>
 				</p:panel>
 
 			</h:form>
-
-			<p:dialog modal="true" widgetVar="statusDialog"
-				header="Generando Reporte" draggable="false" closable="false"
-				resizable="false">
-				<center>
-					<h:graphicImage value="/images/archivos/cargando.gif"
-						style="border:0px solid #CAD6E0;" width="50" height="50" />
-				</center>
-			</p:dialog>
 
 			<p:dialog id="dialogReporteServ" resizable="true"
 				widgetVar="reporteExistencias" modal="true" hideEffect="fade"
@@ -237,6 +238,26 @@
 
 			</p:dialog>
 
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="¡Generando Reporte!" draggable="false" closable="false"
+				resizable="false">
+
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
+
+
+			<p:dialog modal="true" widgetVar="statusDialog2"
+				header="¡Buscando Coincidencias!" draggable="false" closable="false"
+				resizable="false">
+
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
 		</h:body>
 
 		<script type="text/javascript">
@@ -246,6 +267,14 @@
 
 			function stop(){
 			PF('statusDialog').hide();
+			}
+			
+			function startBusqueda(){
+			PF('statusDialog2').show();
+			} 
+
+			function stopBusqueda(){
+			PF('statusDialog2').hide();
 			}
 
 		</script>

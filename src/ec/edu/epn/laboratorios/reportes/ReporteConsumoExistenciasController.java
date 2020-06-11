@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +48,8 @@ import ec.edu.epn.laboratorioBJ.entities.Hidratacion;
 import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.ProductoLab;
 import ec.edu.epn.laboratorioBJ.entities.Pureza;
-
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JRParameter;
@@ -137,6 +138,7 @@ public class ReporteConsumoExistenciasController implements Serializable {
 	private Date fechaInicio;
 	private Date fechaFinal;
 
+	private Utilidades utilidades;
 	// reporte
 	private StreamedContent streamFile = null;
 
@@ -146,23 +148,12 @@ public class ReporteConsumoExistenciasController implements Serializable {
 		try {
 
 			movimientosInventario = new Movimientosinventario();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
 		}
 
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 	}
 
 	/** Cambiar dato **/
@@ -232,11 +223,11 @@ public class ReporteConsumoExistenciasController implements Serializable {
 
 	private Connection coneccionSQL() throws IOException {
 		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
+			conexionPostgres conexionSQL = new conexionPostgres();
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 		return null;
 	}
@@ -251,11 +242,11 @@ public class ReporteConsumoExistenciasController implements Serializable {
 
 	public void listaMovimientoInventario(String idExistencia) {
 		try {
-			System.out.println("ESTE ES EL ID QUE RECIBE: " + idExistencia);
+
 			setMovimientosinventarios(existenciasI.listarMovimientoById(idExistencia));
-			System.out.println("Numero de Registros traidos: " + getMovimientosinventarios().size());
+	
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -294,7 +285,6 @@ public class ReporteConsumoExistenciasController implements Serializable {
 
 	public String movimientoInv(String idExistencia) {
 
-		System.out.println("Entra a la funcion");
 		String nombre = "";
 
 		Movimientosinventario movimientosinventario = new Movimientosinventario();
@@ -369,10 +359,10 @@ public class ReporteConsumoExistenciasController implements Serializable {
 
 			movimientosinventarios = existenciasI.getParametroFecha(cambioFecha(getFechaInicio()), cambioFecha(getFechaFinal()));
 
-			mensajeInfo("Resultados Obtenidos:" + movimientosinventarios.size());
+			utilidades.mensajeInfo("Resultados Obtenidos:" + movimientosinventarios.size());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 

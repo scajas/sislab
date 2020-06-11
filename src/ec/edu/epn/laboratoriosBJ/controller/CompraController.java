@@ -1,37 +1,24 @@
 package ec.edu.epn.laboratoriosBJ.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Connection;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
-import javax.servlet.ServletContext;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 import ec.edu.epn.laboratorioBJ.beans.CompraDAO;
 import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
@@ -45,13 +32,8 @@ import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
 import ec.edu.epn.laboratorioBJ.entities.Ordeninventario;
 import ec.edu.epn.laboratorioBJ.entities.ProveedorLab;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 @ManagedBean(name = "compraController")
 @SessionScoped
@@ -125,6 +107,8 @@ public class CompraController implements Serializable {
 	private Movimientosinventario movimientoInventario;
 
 	UnidadLabo unidadLabo;
+	
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
@@ -157,10 +141,12 @@ public class CompraController implements Serializable {
 			existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 			tempExistencias = new ArrayList<Existencia>();
 			selectExistencia = new Existencia();
+			
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+	
 		}
 	}
 
@@ -169,20 +155,6 @@ public class CompraController implements Serializable {
 		UnidadLabo uni = new UnidadLabo();
 		uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 		compras = compraI.getListCompras(uni.getCodigoU());
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Busqueda de Existencias ****/
@@ -220,7 +192,7 @@ public class CompraController implements Serializable {
 
 				RequestContext context = RequestContext.getCurrentInstance();
 				getNuevoMovimientoInventario().setIdExistencia(getSelectExistencia().getIdExistencia());
-				mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
+				utilidades.mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
 
 				setExistencia(selectExistencia);
 				selectExistencia = new Existencia();
@@ -228,13 +200,13 @@ public class CompraController implements Serializable {
 				context.execute("PF('listadoEx').hide();");
 
 			} else {
-				mensajeError("La existencia (" + selectExistencia.getIdExistencia() + ") ya ha sido seleccionada");
+				utilidades.mensajeError("La existencia (" + selectExistencia.getIdExistencia() + ") ya ha sido seleccionada");
 				selectExistencia = new Existencia();
 			}
 
 		} catch (Exception e) {
-			mensajeError("No se ha seleccionado ninguna Existencia");
-			e.printStackTrace();
+			utilidades.mensajeError("No se ha seleccionado ninguna Existencia");
+		
 		}
 
 	}
@@ -261,7 +233,7 @@ public class CompraController implements Serializable {
 			nuevoMovimientoInventarios.add(nuevoMovimientoInventario);
 			setMovimientoInventarios(nuevoMovimientoInventarios);
 
-			mensajeInfo("Se ha almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") correctamente.");
+			utilidades.mensajeInfo("Se ha almacenado (" + nuevoMovimientoInventario.getIdExistencia() + ") correctamente.");
 
 			nuevoMovimientoInventario = new Movimientosinventario();
 			existencia = new Existencia();
@@ -272,7 +244,7 @@ public class CompraController implements Serializable {
 			context.execute("PF('ingresarMI').hide();");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
 
 	}
@@ -304,11 +276,10 @@ public class CompraController implements Serializable {
 			existencia = new Existencia();
 			existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 
-			mensajeInfo("Se ha limpiado todo el formulario");
+			utilidades.mensajeInfo("Se ha limpiado todo el formulario");
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 
 	}
@@ -336,26 +307,26 @@ public class CompraController implements Serializable {
 			System.out.println("tabla Ajuste Inventario" + nuevoMovimientoInventarios.size());
 			if (nuevaCompra.getDescrCompra() == ("")) {
 
-				mensajeError("Ingrese la Descripción");
+				utilidades.mensajeError("Ingrese la Descripción");
 
 			} else if (nuevaCompra.getFechaCo() == null) {
 
-				mensajeError("Ingrese la Fecha de Compra");
+				utilidades.mensajeError("Ingrese la Fecha de Compra");
 
 			} else if (nuevaCompra.getDocumentoCo() == "") {
 
-				mensajeError("Ingrese el Documento");
+				utilidades.mensajeError("Ingrese el Documento");
 
 			} else if (nuevaCompra.getMontoCo() == 0) {
 
-				mensajeError("Ingrese el Monto");
+				utilidades.mensajeError("Ingrese el Monto");
 
 			} else if (nuevoOrdeninventario.getFechaingresoOi() == null) {
 
-				mensajeError("Ingrese la feha de Ingreso");
+				utilidades.mensajeError("Ingrese la feha de Ingreso");
 			} else if (nuevoMovimientoInventarios.size() == 0) {
 
-				mensajeError("Debe ingresar al menos 1 Movimiento de Inventario");
+				utilidades.mensajeError("Debe ingresar al menos 1 Movimiento de Inventario");
 			}
 
 			else {
@@ -374,7 +345,7 @@ public class CompraController implements Serializable {
 				obtenerIdOrd(nuevoOrdeninventario);
 				guardarMovimientosInv();
 
-				mensajeInfo("La Compra (" + nuevaCompra.getIdCompra() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("La Compra (" + nuevaCompra.getIdCompra() + ") se ha almacenado exitosamente");
 				context.execute("PF('nuevaCompra').hide();");
 
 				// Limpiar Campos y actualizar
@@ -395,8 +366,8 @@ public class CompraController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un error");
+			
 		}
 	}
 
@@ -449,8 +420,8 @@ public class CompraController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un error");
+		
 		}
 	}
 
@@ -501,8 +472,8 @@ public class CompraController implements Serializable {
 			}
 			System.out.println("Este es el nuevo id: " + nuevoOrdeninventario.getIdOrdeninventario());
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un error");
+		
 		}
 	}
 
@@ -584,10 +555,10 @@ public class CompraController implements Serializable {
 		try {
 			nuevoMovimientoInventarios.remove(movimientoInventario);
 			setMovimientoInventarios(nuevoMovimientoInventarios);
-			mensajeInfo("Se ha eliminado el Mov. de Inventario (" + movimientoInventario.getIdExistencia() + ")");
+			utilidades.mensajeInfo("Se ha eliminado el Mov. de Inventario (" + movimientoInventario.getIdExistencia() + ")");
 		} catch (Exception e) {
-			e.printStackTrace();
-			mensajeError("Ha ocurrido un error interno.");
+		
+			utilidades.mensajeError("Ha ocurrido un error interno.");
 		}
 
 	}
@@ -598,7 +569,7 @@ public class CompraController implements Serializable {
 		for (Movimientosinventario m : nuevoMovimientoInventarios) {
 			if (m.getIdExistencia().equals(movimientoInventario.getIdExistencia())) {
 
-				mensajeInfo("Se ha editado el Mov. de Inventario (" + movimientoInventario.getIdExistencia() + ")");
+				utilidades.mensajeInfo("Se ha editado el Mov. de Inventario (" + movimientoInventario.getIdExistencia() + ")");
 				context.execute("PF('editarMI').hide();");
 
 				break;

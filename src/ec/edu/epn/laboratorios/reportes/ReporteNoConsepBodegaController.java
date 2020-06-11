@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,19 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
-import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,10 +24,7 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import ec.edu.epn.laboratorioBJ.beans.ServicioDAO;
-import ec.edu.epn.laboratorioBJ.beans.TipoServicioDAO;
-import ec.edu.epn.laboratorioBJ.entities.Servicio;
-import ec.edu.epn.laboratorioBJ.entities.Tiposervicio;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -39,10 +34,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JRParameter;
 
-@ManagedBean(name = "reporteServiciosController")
+@ManagedBean(name = "noConsepBodega")
 @SessionScoped
 
-public class ReporteServiciosController implements Serializable {
+public class ReporteNoConsepBodegaController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -54,59 +49,62 @@ public class ReporteServiciosController implements Serializable {
 	/****************************************************************************/
 
 	/** SERVICIOS **/
-
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/ServicioDAOImplement!ec.edu.epn.laboratorioBJ.beans.ServicioDAO")
-	private ServicioDAO servicioI;
-
-	@EJB(lookup = "java:global/ServiciosSeguridadEPN/TipoServicioDAOImplement!ec.edu.epn.laboratorioBJ.beans.TipoServicioDAO")
-	private TipoServicioDAO tipoServicioI;
-
 	private StreamedContent streamFile = null;
+	private List<String> anios = new ArrayList<String>();
 
-	private Servicio servicio;
-	private List<Servicio> servicios = new ArrayList<Servicio>();
-	private List<Servicio> filtroServicios;
-
-	private String tipoServicio;
-	private List<Tiposervicio> tipoServicios = new ArrayList<Tiposervicio>();
+	private String mes;
+	private String anio;
+	private String formato;
 
 	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
 
-			setTipoServicios(tipoServicioI.getAll(Tiposervicio.class));
+			setMes(new String());
+			setAnio(new String());
+			setFormato(new String());
+			llenarListaAño();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
+	public void llenarListaAño() {
+		int a1 = 2009; // fecha de inicio por defecto
 
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
+		String fecha = cambioFecha(new Date());
+		String[] partsFecha = fecha.split("-");
+		int anio = Integer.valueOf(partsFecha[0]);
 
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
-
-	public void buscarServicio() {
-
-		servicios = servicioI.getparametrosTipoServicio(tipoServicio, su.UNIDAD_USUARIO_LOGEADO);
-
-		mensajeInfo("Resultados Obtenidos" + servicios.size());
+		for (int i = a1; i < anio; i++) {
+			anios.add(String.valueOf(i));
+		}
 
 	}
 
-	public String cambiarFormatoDouble(double numero) {
-		DecimalFormat formato = new DecimalFormat("#.00");
-		return formato.format(numero);
+	public String obtenerMes(int m) {
+		String meses[] = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
+				"Octubre", "Noviembre", "Diciembre" };
+		String mes = "";
+		for (int i = 0; i < meses.length; i++) {
+			if (i == (m - 1)) {
+				mes = meses[i];
+				break;
+			}
+		}
+
+		return mes;
+	}
+
+	/** Metodo para setear la fecha **/
+	public String cambioFecha(Date fecha) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+		String fechaFinal = format.format(fecha);
+
+		return fechaFinal;
 	}
 
 	public void generarPDF() throws Exception {
@@ -127,12 +125,15 @@ public class ReporteServiciosController implements Serializable {
 			}
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("CONTEXT", servletContext.getRealPath("/"));
-			parametros.put("tipoServicio", tipoServicio);
-			parametros.put("idUnidad", su.UNIDAD_USUARIO_LOGEADO);
+			parametros.put("imagen", servletContext.getRealPath("/"));
+			parametros.put("subReporte", servletContext.getRealPath("/"));
+			parametros.put("nombreUsuario", su.nombre_usuario_logeado);
+			parametros.put("mes", Integer.parseInt(mes));
+			parametros.put("anio", Integer.parseInt(anio));
+			parametros.put("nombreMes", obtenerMes(Integer.parseInt(mes)));
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteServicios.jrxml");
+					.getRealPath("/reportes/noConsepBodega.jrxml");
 			InputStream input = new FileInputStream(new File(jrxmlFile));
 			JasperReport jasperReport = JasperCompileManager.compileReport(input);
 			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
@@ -140,16 +141,14 @@ public class ReporteServiciosController implements Serializable {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteServicios.pdf");
+			File destFile = new File(sourceFile.getParent(), "noConsepBodega.pdf");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
 			InputStream stream = new FileInputStream(destFile);
 
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteServicios.pdf");
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "noConsepBodega.pdf");
 
-		} catch (Exception e) {
-
-			e.printStackTrace();
+		} catch (Exception e) {	
 
 		}
 
@@ -165,11 +164,11 @@ public class ReporteServiciosController implements Serializable {
 
 	private Connection coneccionSQL() throws IOException {
 		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
+			conexionPostgres conexionSQL = new conexionPostgres();
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 		return null;
 	}
@@ -182,44 +181,36 @@ public class ReporteServiciosController implements Serializable {
 		return streamFile;
 	}
 
-	public Servicio getServicio() {
-		return servicio;
+	public String getMes() {
+		return mes;
 	}
 
-	public void setServicio(Servicio servicio) {
-		this.servicio = servicio;
+	public void setMes(String mes) {
+		this.mes = mes;
 	}
 
-	public List<Servicio> getServicios() {
-		return servicios;
+	public String getAnio() {
+		return anio;
 	}
 
-	public void setServicios(List<Servicio> servicios) {
-		this.servicios = servicios;
+	public void setAnio(String anio) {
+		this.anio = anio;
 	}
 
-	public List<Servicio> getFiltroServicios() {
-		return filtroServicios;
+	public String getFormato() {
+		return formato;
 	}
 
-	public void setFiltroServicios(List<Servicio> filtroServicios) {
-		this.filtroServicios = filtroServicios;
+	public void setFormato(String formato) {
+		this.formato = formato;
 	}
 
-	public String getTipoServicio() {
-		return tipoServicio;
+	public List<String> getAnios() {
+		return anios;
 	}
 
-	public void setTipoServicio(String tipoServicio) {
-		this.tipoServicio = tipoServicio;
-	}
-
-	public List<Tiposervicio> getTipoServicios() {
-		return tipoServicios;
-	}
-
-	public void setTipoServicios(List<Tiposervicio> tipoServicios) {
-		this.tipoServicios = tipoServicios;
+	public void setAnios(List<String> anios) {
+		this.anios = anios;
 	}
 
 }

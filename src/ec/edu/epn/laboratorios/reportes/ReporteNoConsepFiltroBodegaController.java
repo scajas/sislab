@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -29,10 +29,13 @@ import org.primefaces.model.StreamedContent;
 
 import ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO;
 import ec.edu.epn.laboratorioBJ.beans.ExistenciasDAO;
+import ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Caracteristica;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
+import ec.edu.epn.laboratorioBJ.entities.laboratory;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -42,10 +45,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JRParameter;
 
-@ManagedBean(name = "reporteExistenciasController")
+@ManagedBean(name = "reporteNoConsepFiltroBodega")
 @SessionScoped
 
-public class ReporteExistenciasController implements Serializable {
+public class ReporteNoConsepFiltroBodegaController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -66,6 +69,9 @@ public class ReporteExistenciasController implements Serializable {
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/CaracteristicaDAOImplement!ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO")
 	private CaracteristicaDAO caracteristicaI;
+	
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratoryDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO")
+	private LaboratoryDAO laboratoryI;
 
 	private Existencia existencia;
 	private List<Existencia> existencias = new ArrayList<Existencia>();
@@ -77,56 +83,36 @@ public class ReporteExistenciasController implements Serializable {
 	private Caracteristica caracteristica;
 	private List<Caracteristica> caracteristicas = new ArrayList<Caracteristica>();
 
+	private List<String> anios = new ArrayList<String>();
 	private StreamedContent streamFile = null;
+	
+	private List<laboratory> bodegas = new ArrayList<laboratory>();
+	private laboratory bodega = new laboratory();
 
-	private String nombreTP;
-	private String nombreC;
+	private String mes;
+	private String anio;
+	private String formato;
+	
 
 	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
-
-			existencia = new Existencia();
-
-			tipoProducto = new Tipoproducto();
-			tipoProductos = tipoProductoI.getAll(Tipoproducto.class);
-
-			caracteristica = new Caracteristica();
-			caracteristicas = caracteristicaI.getAll(Caracteristica.class);
+			mes = new String();
+			anio = new String();
+			formato = new String();
+			llenarListaAño();
+			
+			bodega = new laboratory();
+			
+			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+	
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
-
-	public void buscarExistencias() {
-
-		try {
-
-			existencias = existenciasI.existenciasByParametros(nombreTP, nombreC);
-			mensajeInfo("Resultados Obtenidos :" + existencias.size());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
+	
 	/****** Metodo para setear la fecha ****/
 	public String cambioFecha(Date fecha) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -146,17 +132,6 @@ public class ReporteExistenciasController implements Serializable {
 	}
 
 	/****** Generacion de PDF ****/
-	private Connection coneccionSQL() throws IOException {
-		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
-			Connection con = conexionSQL.Conexion();
-			return con;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 	public void generarPDF() throws Exception {
 		try {
 
@@ -175,12 +150,16 @@ public class ReporteExistenciasController implements Serializable {
 			}
 
 			Map<String, Object> parametros = new HashMap<String, Object>();
-			parametros.put("CONTEXT", servletContext.getRealPath("/"));
-			parametros.put("tipoproducto", nombreTP);
-			parametros.put("caracteristica", nombreC);
+			parametros.put("imagen", servletContext.getRealPath("/"));
+			parametros.put("SubReporte", servletContext.getRealPath("/"));
+			parametros.put("nombreUsuario", su.nombre_usuario_logeado);
+			parametros.put("mes", Integer.parseInt(mes));
+			parametros.put("anio", Integer.parseInt(anio));
+			parametros.put("nombreMes", obtenerMes(Integer.parseInt(mes)));
+			parametros.put("nombreBodega", bodega.getNombreBg());
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteExistencias.jrxml");
+					.getRealPath("/reportes/reportNoConcepFiltroBodega.jrxml");
 			InputStream input = new FileInputStream(new File(jrxmlFile));
 			JasperReport jasperReport = JasperCompileManager.compileReport(input);
 			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
@@ -188,66 +167,18 @@ public class ReporteExistenciasController implements Serializable {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteExistencias.pdf");
+			File destFile = new File(sourceFile.getParent(), "reporteNoConcepFiltroBodega.pdf");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
 			InputStream stream = new FileInputStream(destFile);
 
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteExistencias.pdf");
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteNoConcepFiltroBodega.pdf");
 
 		} catch (Exception e) {
-			e.printStackTrace();
 
 		}
 
 	}
-
-	/*
-	 * public void generarEXCEL(ActionEvent event) throws Exception { try {
-	 * 
-	 * if (streamFile != null) streamFile.getStream().close();
-	 * 
-	 * Map<String, Object> parametros = new HashMap<String, Object>();
-	 * parametros.put("fechaInicial", proformaSelect.getFecha());
-	 * parametros.put("fechaFinal", proformaSelect.getFecha());
-	 * parametros.put("tipoCliente", clienteSelect.getTipocliente());
-	 * parametros.put("estadoProforma", proformaSelect.getEstadoPo());
-	 * 
-	 * String direccion =
-	 * FacesContext.getCurrentInstance().getExternalContext().getRealPath(
-	 * "/reportes/"); if (direccion.toUpperCase().contains("C:") ||
-	 * direccion.toUpperCase().contains("D:") ||
-	 * direccion.toUpperCase().contains("E:") ||
-	 * direccion.toUpperCase().contains("F:")) { direccion = direccion + "\\"; }
-	 * else { direccion = direccion + "/"; }
-	 * 
-	 * String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-	 * .getRealPath("/reportes/reporteProforma.jrxml"); InputStream input = new
-	 * FileInputStream(new File(jrxmlFile)); JasperReport jasperReport =
-	 * JasperCompileManager.compileReport(input);
-	 * parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
-	 * 
-	 * JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,
-	 * parametros);
-	 * 
-	 * File sourceFile = new File(jrxmlFile); File destFile = new
-	 * File(sourceFile.getParent(), "reporteProforma.xlsx");
-	 * 
-	 * JasperExportManager.exportReportToPdfFile(jasperPrint,
-	 * destFile.toString()); InputStream stream = new FileInputStream(destFile);
-	 * 
-	 * streamFile = new DefaultStreamedContent(stream, "application/xlsx",
-	 * "reporteProforma.xlsx");
-	 * 
-	 * } catch (Exception e) {
-	 * FacesContext.getCurrentInstance().addMessage(event.getComponent().
-	 * getClientId(), new FacesMessage(FacesMessage.SEVERITY_FATAL, "",
-	 * "ERROR"));
-	 * 
-	 * }
-	 * 
-	 * }
-	 */
 
 	public void cerrarArchivo() throws IOException {
 		if (streamFile != null)
@@ -257,10 +188,51 @@ public class ReporteExistenciasController implements Serializable {
 		System.gc();
 	}
 
+	private Connection coneccionSQL() throws IOException {
+		try {
+			conexionPostgres conexionSQL = new conexionPostgres();
+			Connection con = conexionSQL.Conexion();
+			return con;
+		} catch (Exception e) {
+	
+		}
+		return null;
+	}
+
+	public void llenarListaAño() {
+		int a1 = 2009; // fecha de inicio por defecto
+
+		String fecha = cambioFecha(new Date());
+		String[] partsFecha = fecha.split("-");
+		int anio = Integer.valueOf(partsFecha[0]);
+
+		for (int i = a1; i < anio; i++) {
+			anios.add(String.valueOf(i));
+		}
+
+		obtenerMes(12);
+
+	}
+
+	public String obtenerMes(int m) {
+		String meses[] = { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre",
+				"Octubre", "Noviembre", "Diciembre" };
+		String mes = "";
+		for (int i = 0; i < meses.length; i++) {
+			if (i == (m - 1)) {
+				mes = meses[i];
+				break;
+			}
+		}
+
+
+		return mes;
+	}
+
+
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
 
-		System.out.println("PASA POR AQUI " + streamFile);
 	}
 
 	public Existencia getExistencia() {
@@ -319,20 +291,52 @@ public class ReporteExistenciasController implements Serializable {
 		this.caracteristicas = caracteristicas;
 	}
 
-	public String getNombreTP() {
-		return nombreTP;
+	public List<String> getAnios() {
+		return anios;
 	}
 
-	public void setNombreTP(String nombreTP) {
-		this.nombreTP = nombreTP;
+	public void setAnios(List<String> anios) {
+		this.anios = anios;
 	}
 
-	public String getNombreC() {
-		return nombreC;
+	public String getMes() {
+		return mes;
 	}
 
-	public void setNombreC(String nombreC) {
-		this.nombreC = nombreC;
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+
+	public String getAnio() {
+		return anio;
+	}
+
+	public void setAnio(String anio) {
+		this.anio = anio;
+	}
+
+	public String getFormato() {
+		return formato;
+	}
+
+	public void setFormato(String formato) {
+		this.formato = formato;
+	}
+
+	public List<laboratory> getBodegas() {
+		return bodegas;
+	}
+
+	public void setBodegas(List<laboratory> bodegas) {
+		this.bodegas = bodegas;
+	}
+
+	public laboratory getBodega() {
+		return bodega;
+	}
+
+	public void setBodega(laboratory bodega) {
+		this.bodega = bodega;
 	}
 
 }

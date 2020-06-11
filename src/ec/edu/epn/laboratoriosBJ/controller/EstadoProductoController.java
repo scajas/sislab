@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -18,6 +17,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.EstadoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Estadoproducto;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "estadoProductoController")
@@ -34,7 +34,6 @@ public class EstadoProductoController implements Serializable {
 	SesionUsuario su = (SesionUsuario) session.getAttribute("sesionUsuario");
 
 	/****************************************************************************/
-
 	/** SERVICIOS **/
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/EstadoProductoDAOImplement!ec.edu.epn.laboratorioBJ.beans.EstadoProductoDAO")
 	private EstadoProductoDAO estadoProductoI;
@@ -47,9 +46,8 @@ public class EstadoProductoController implements Serializable {
 	private Estadoproducto estadoproducto;
 	private String nombreTP;
 	private List<Estadoproducto> filtrarEstados;
-
 	private List<Estadoproducto> selectEP;
-
+	private Utilidades utilidades;
 	// Método init
 	@PostConstruct
 	public void init() {
@@ -58,24 +56,11 @@ public class EstadoProductoController implements Serializable {
 			estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 			setNuevoEstadoProducto(new Estadoproducto());
 			estadoproducto = new Estadoproducto();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
 		}
-
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
@@ -86,16 +71,16 @@ public class EstadoProductoController implements Serializable {
 		RequestContext context = RequestContext.getCurrentInstance();
 
 		try {
-			System.out.println("Lista: " + nuevoEstadoProducto.getNombreEstp());
+
 			if (buscarEstadoProducto(nuevoEstadoProducto.getNombreEstp()) == true) {
 
-				mensajeError("El Estado Producto (" + nuevoEstadoProducto.getNombreEstp() + ") ya existe.");
+				utilidades.mensajeError("El Estado Producto (" + nuevoEstadoProducto.getNombreEstp() + ") ya existe.");
 
 			} else {
 				estadoProductoI.save(nuevoEstadoProducto);
 				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 
-				mensajeInfo("El Estado producto (" + nuevoEstadoProducto.getNombreEstp()
+				utilidades.mensajeInfo("El Estado producto (" + nuevoEstadoProducto.getNombreEstp()
 						+ ") se ha almacenado exitosamente.");
 
 				nuevoEstadoProducto = new Estadoproducto();
@@ -105,8 +90,8 @@ public class EstadoProductoController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema.");
-			e.printStackTrace();
+			utilidades.mensajeError("Ha ocurrido un problema.");
+	
 		}
 
 	}
@@ -122,7 +107,7 @@ public class EstadoProductoController implements Serializable {
 				estadoProductoI.update(estadoproducto);
 				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 
-				mensajeInfo(
+				utilidades.mensajeInfo(
 						"El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha actualizado exitosamente.");
 
 				context.execute("PF('modificarEstadoPro').hide();");
@@ -131,17 +116,17 @@ public class EstadoProductoController implements Serializable {
 				estadoProductoI.update(estadoproducto);
 				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 
-				mensajeInfo(
+				utilidades.mensajeInfo(
 						"El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha actualizado exitosamente.");
 				context.execute("PF('modificarEstadoPro').hide();");
 			} else {
 				estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
-				mensajeError("El Estado Producto (" + estadoproducto.getNombreEstp() + ") ya existe.");
+				utilidades.mensajeError("El Estado Producto (" + estadoproducto.getNombreEstp() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 	}
@@ -154,18 +139,18 @@ public class EstadoProductoController implements Serializable {
 
 			estadoProductoI.delete(estadoproducto);
 			estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
-			mensajeInfo("El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha eliminado correctamente.");
+			utilidades.mensajeInfo("El Estado Producto (" + estadoproducto.getNombreEstp() + ") se ha eliminado correctamente.");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Estado Producto (" + estadoproducto.getNombreEstp()
+				utilidades.mensajeError("La tabla Estado Producto (" + estadoproducto.getNombreEstp()
 						+ ") tiene relación con otra tabla.");
 
 			} else {
 
-				mensajeError("Ha ocurrido un problema.");
+				utilidades.mensajeError("Ha ocurrido un problema.");
 			}
 
 		}
@@ -180,7 +165,6 @@ public class EstadoProductoController implements Serializable {
 			estadoProductos = estadoProductoI.getAll(Estadoproducto.class);
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 		boolean resultado = false;

@@ -60,8 +60,7 @@
 											style="color:white!important" />
 										<p:selectOneMenu id="tipoServicio" filterMatchMode="contains"
 											filter="true"
-											value="#{reporteServiciosController.tipoServicio}"
-											required="true" requiredMessage="Seleccionar un Tipo">
+											value="#{reporteServiciosController.tipoServicio}">
 											<f:selectItem itemLabel="Seleccione " itemValue="%" />
 											<f:selectItems
 												value="#{reporteServiciosController.tipoServicios}"
@@ -79,9 +78,11 @@
 										align="center">
 										<tr align="center">
 											<td><p:commandLink
+													onclick="PrimeFaces.monitorDownload(startBusqueda);"
 													actionListener="#{reporteServiciosController.buscarServicio}"
 													update="@([id$=tblServicio]),@([id$=messagesForm])"
-													process="@this,formBuscar">
+													process="@this,formBuscar"
+													onsuccess="PrimeFaces.monitorDownload(stopBusqueda);">
 
 													<h:graphicImage value="/images/archivos/busqueda.png"
 														class="btn bt-success" title="Buscar"
@@ -129,43 +130,62 @@
 							box-shadow: 0px 9px 18px 4px rgba(0,0,0,0.73)!important;"
 							paginatorPosition="bottom">
 
-							<p:column headerText="ID Servicio" style="width: 8%">
+							<p:column headerText="ID Servicio" style="width: 10%">
+								<f:facet name="header">
+									<h:outputText value="ID SERVICIO" />
+								</f:facet>
 								<h:outputText value="#{servicio.idServicio}" />
 							</p:column>
 
 							<p:column headerText="Sevicio">
+								<f:facet name="header">
+									<h:outputText value="SERVICIO" />
+								</f:facet>
 								<h:outputText value="#{servicio.nombreS}" />
 							</p:column>
 
 							<p:column headerText="Laboratorio">
+								<f:facet name="header">
+									<h:outputText value="LABORATORIO" />
+								</f:facet>
 								<h:outputText value="#{servicio.laboratorio.nombreL}" />
 							</p:column>
 
 							<p:column headerText="Tipo Servicio" style="width: 12%">
+								<f:facet name="header">
+									<h:outputText value="TIPO DE SERVICIO" />
+								</f:facet>
 								<h:outputText value="#{servicio.tiposervicio.nombreTs}" />
 							</p:column>
 
 							<p:column headerText="Precio" style="width: 6%">
-								<h:outputText
-									value="#{reporteServiciosController.cambiarFormatoDouble(servicio.precioS)}" />
+								<f:facet name="header">
+									<h:outputText value="PRECIO" />
+								</f:facet>
+								<h:outputText value="#{servicio.precioS}" />
 							</p:column>
 						</p:dataTable>
 						<br />
 						<br />
 
+						<center>
+							<h3>Exportar sin Formato</h3>
+							<h:commandLink onclick="PrimeFaces.monitorDownload(start, stop);">
+								<h:graphicImage value="/images/excel.png" width="35px"
+									height="35px" />
+								<pe:exporter type="xlsx" target="tblServicio"
+									fileName="Reporte Servicios" orientation="Landscape"
+									datasetPadding="4" facetBackground="#778d9b" facetFontSize="13"
+									facetFontStyle="BOLD" cellFontSize="10" />
+							</h:commandLink>
+
+						</center>
 					</p:fieldset>
+
+
 				</p:panel>
 
 			</h:form>
-
-			<p:dialog modal="true" widgetVar="statusDialog"
-				header="Generando Reporte" draggable="false" closable="false"
-				resizable="false">
-				<center>
-					<h:graphicImage value="/images/archivos/cargando.gif"
-						style="border:0px solid #CAD6E0;" width="50" height="50" />
-				</center>
-			</p:dialog>
 
 			<p:dialog id="dialogReporteServ" resizable="true"
 				widgetVar="reporteServicios" modal="true" hideEffect="fade"
@@ -187,6 +207,24 @@
 
 			</p:dialog>
 
+			<p:dialog modal="true" widgetVar="statusDialog"
+				header="¡Generando Reporte!" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
+
+			<p:dialog modal="true" widgetVar="statusDialog2"
+				header="¡Buscando Coincidencias!" draggable="false" closable="false"
+				resizable="false">
+				<center>
+					<h:graphicImage value="/images/archivos/cargando.gif"
+						style="border:0px solid #CAD6E0;" width="50" height="50" />
+				</center>
+			</p:dialog>
+
 		</h:body>
 
 		<script type="text/javascript">
@@ -197,6 +235,15 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
+
+			function startBusqueda(){
+			PF('statusDialog2').show();
+			} 
+
+			function stopBusqueda(){
+			PF('statusDialog2').hide();
+			}
+				
 
 		</script>
 

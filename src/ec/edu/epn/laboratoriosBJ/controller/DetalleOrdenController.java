@@ -2,27 +2,20 @@ package ec.edu.epn.laboratoriosBJ.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-//import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-//import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-//import org.primefaces.context.RequestContext;
-
 import ec.edu.epn.laboratorioBJ.beans.DetalleOrdenDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
-//import ec.edu.epn.laboratorioBJ.beans.NormaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Detalleorden;
 import ec.edu.epn.laboratorioBJ.entities.Metodo;
-//import ec.edu.epn.laboratorioBJ.entities.Norma;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
@@ -61,11 +54,11 @@ public class DetalleOrdenController implements Serializable {
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 			detallesOrden = detalleOrdenI.listTAbyId(uni.getCodigoU());
-
 			setDetalleOrden(new Detalleorden());
+
+
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 	}
 

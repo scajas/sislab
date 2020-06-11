@@ -17,6 +17,7 @@ import javax.faces.application.FacesMessage;
 
 import ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO;
 import ec.edu.epn.laboratorioBJ.entities.Caracteristica;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "caracteristicaController")
@@ -43,6 +44,7 @@ public class CaracteristicaController implements Serializable {
 	private Caracteristica nuevaCaracteristica;
 	private String nombreC;
 	private List<Caracteristica> filtrarCaracteristicas;
+	private Utilidades utilidades;
 
 	@PostConstruct
 	public void init() {
@@ -50,44 +52,30 @@ public class CaracteristicaController implements Serializable {
 			listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
 			nuevaCaracteristica = new Caracteristica();
 			caracteristica = new Caracteristica();
+			setUtilidades(new Utilidades());
 		} catch (Exception e) {
 
 		}
 
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "¡ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
-
-	/** Nuevo **/
 	public void agregarCaracteristica() {
 		RequestContext context = RequestContext.getCurrentInstance();
 		try {
 			if (buscarCaracteristica(nuevaCaracteristica.getNombreCr()) == true) {
-				mensajeError("La Característica (" + nuevaCaracteristica.getNombreCr() + ") ya existe.");
+				utilidades.mensajeError("La Característica (" + nuevaCaracteristica.getNombreCr() + ") ya existe.");
 
 			} else {
 				caracteristicaI.save(nuevaCaracteristica);
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
-				mensajeInfo(
+				utilidades.mensajeInfo(
 						"La Característica (" + nuevaCaracteristica.getNombreCr() + ") se ha almacenado exitosamente");
 				nuevaCaracteristica = new Caracteristica();
 				context.execute("PF('nuevaCaracteristica').hide();");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 
 	}
@@ -103,7 +91,7 @@ public class CaracteristicaController implements Serializable {
 				caracteristicaI.update(caracteristica);
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
 
-				mensajeInfo("La Caracteristica (" + caracteristica.getNombreCr() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Caracteristica (" + caracteristica.getNombreCr() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarCaracteristica').hide();");
 
@@ -111,17 +99,17 @@ public class CaracteristicaController implements Serializable {
 				caracteristicaI.update(caracteristica);
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
 
-				mensajeInfo("La Caracteristica (" + caracteristica.getNombreCr() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Caracteristica (" + caracteristica.getNombreCr() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarCaracteristica').hide();");
 
 			} else {
 				listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
-				mensajeError("La Caracteristica (" + caracteristica.getNombreCr() + ") ya existe.");
+				utilidades.mensajeError("La Caracteristica (" + caracteristica.getNombreCr() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 	}
 
@@ -131,17 +119,17 @@ public class CaracteristicaController implements Serializable {
 		try {
 			caracteristicaI.delete(caracteristica);
 			listarCaracteristicas = caracteristicaI.getAll(Caracteristica.class);
-			mensajeInfo("La Característica (" + caracteristica.getNombreCr() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("La Característica (" + caracteristica.getNombreCr() + ") se ha eliminado exitosamente");
 		} 
 		
 		catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla característica (" + caracteristica.getNombreCr()
+				utilidades.mensajeError("La tabla característica (" + caracteristica.getNombreCr()
 						+ ") tiene una relacion con otra tabla");
 			} else {
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 			}
 
 		}
@@ -214,6 +202,14 @@ public class CaracteristicaController implements Serializable {
 
 	public void setFiltrarCaracteristicas(List<Caracteristica> filtrarCaracteristicas) {
 		this.filtrarCaracteristicas = filtrarCaracteristicas;
+	}
+
+	public Utilidades getUtilidades() {
+		return utilidades;
+	}
+
+	public void setUtilidades(Utilidades utilidades) {
+		this.utilidades = utilidades;
 	}
 
 }

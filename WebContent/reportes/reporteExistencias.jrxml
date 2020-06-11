@@ -71,7 +71,7 @@ FROM
 				<text><![CDATA[ESCUELA POLITECNICA NACIONAL]]></text>
 			</staticText>
 			<line>
-				<reportElement x="10" y="75" width="542" height="1" uuid="6b2fd2ac-c780-4fc4-b61d-12c04b1343f0"/>
+				<reportElement x="0" y="79" width="552" height="1" uuid="6b2fd2ac-c780-4fc4-b61d-12c04b1343f0"/>
 			</line>
 			<staticText>
 				<reportElement x="118" y="52" width="333" height="10" uuid="e3ad6236-75a0-45fa-9bb5-1889dc10afb4"/>
@@ -89,7 +89,7 @@ FROM
 			</staticText>
 			<image>
 				<reportElement x="10" y="13" width="89" height="62" uuid="f2ef4e2e-8d93-40fd-8ea2-fab320f3331d"/>
-				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{CONTEXT}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="118" y="32" width="333" height="10" uuid="5883bc67-2fd3-4351-9e1a-64d38293b6e1"/>

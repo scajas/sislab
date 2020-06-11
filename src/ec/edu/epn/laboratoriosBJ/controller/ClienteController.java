@@ -6,11 +6,9 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -20,6 +18,7 @@ import ec.edu.epn.laboratorioBJ.beans.ClienteDAO;
 import ec.edu.epn.laboratorioBJ.beans.TipoClienteDAO;
 import ec.edu.epn.laboratorioBJ.entities.Cliente;
 import ec.edu.epn.laboratorioBJ.entities.Tipocliente;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "clienteController")
@@ -42,6 +41,8 @@ public class ClienteController implements Serializable {
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/TipoClienteDAOImplement!ec.edu.epn.laboratorioBJ.beans.TipoClienteDAO")
 	private TipoClienteDAO tipoClienteI;// I (interface)
+	
+	/******************************************************************/
 
 	private Cliente cliente;
 	private List<Cliente> listaCliente = new ArrayList<Cliente>();
@@ -54,7 +55,8 @@ public class ClienteController implements Serializable {
 	private List<Cliente> filtroCliente;
 
 	private String nombreC;
-
+	private Utilidades utilidades;
+	
 	@PostConstruct
 	public void init() {
 		try {
@@ -65,36 +67,24 @@ public class ClienteController implements Serializable {
 
 			tipoCliente = new Tipocliente();
 			tipoClientes = tipoClienteI.getAll(Tipocliente.class);
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
 
 	/****** Agregar Cliente ****/
 
-	public void agregarCliente(ActionEvent event) {
+	public void agregarCliente() {
 
 		RequestContext context = RequestContext.getCurrentInstance();
-
+		
 		try {
 			if (buscarCliente(nuevoCliente.getNombreCl()) == true) {
 
-				mensajeError("El Cliente (" + nuevoCliente.getNombreCl() + ") ya existe.");
+				utilidades.mensajeError("El Cliente (" + nuevoCliente.getNombreCl() + ") ya existe.");
 
 			} else {
 
@@ -102,7 +92,7 @@ public class ClienteController implements Serializable {
 				clienteI.save(nuevoCliente);
 				listaCliente = clienteI.ListCliente();
 
-				mensajeInfo("El Cliente (" + nuevoCliente.getNombreCl() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("El Cliente (" + nuevoCliente.getNombreCl() + ") se ha almacenado exitosamente");
 
 				nuevoCliente = new Cliente();
 				tipoCliente = new Tipocliente();
@@ -113,7 +103,7 @@ public class ClienteController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 
 		}
 
@@ -124,14 +114,14 @@ public class ClienteController implements Serializable {
 	public void modificarCliente() {
 
 		RequestContext context = RequestContext.getCurrentInstance();
-
+		
 		try {
 			if (cliente.getNombreCl().equals(getNombreC())) {
 
 				clienteI.update(cliente);
 				listaCliente = clienteI.ListCliente();
 
-				mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarCliente').hide();");
 
 			} else if (buscarCliente(cliente.getNombreCl()) == false) {
@@ -139,17 +129,17 @@ public class ClienteController implements Serializable {
 				clienteI.update(cliente);
 				listaCliente = clienteI.ListCliente();
 
-				mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarCliente').hide();");
 
 			} else {
 
 				listaCliente = clienteI.ListCliente();
-				mensajeError("El Cliente (" + cliente.getNombreCl() + ") ya existe.");
+				utilidades.mensajeError("El Cliente (" + cliente.getNombreCl() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -162,14 +152,14 @@ public class ClienteController implements Serializable {
 			clienteI.delete(cliente);
 			listaCliente = clienteI.ListCliente();
 
-			mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha eliminado correctamente");
+			utilidades.mensajeInfo("El Cliente (" + cliente.getNombreCl() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError("La tabla Cliente (" + cliente.getNombreCl() + ") tiene relación con otra tabla.");
+				utilidades.mensajeError("La tabla Cliente (" + cliente.getNombreCl() + ") tiene relación con otra tabla.");
 			} else {
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 			}
 
 		}
@@ -182,8 +172,7 @@ public class ClienteController implements Serializable {
 		try {
 			listaCliente = clienteI.getAll(Cliente.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 
 		boolean resultado = false;

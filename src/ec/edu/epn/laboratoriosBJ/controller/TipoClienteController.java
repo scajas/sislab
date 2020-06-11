@@ -11,14 +11,13 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.event.ActionEvent;
-
 import ec.edu.epn.laboratorioBJ.beans.TipoClienteDAO;
 import ec.edu.epn.laboratorioBJ.entities.Tipocliente;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "tipoClienteController")
@@ -45,6 +44,7 @@ public class TipoClienteController implements Serializable {
 	private String nombreTC;
 
 	private List<Tipocliente> filtrarTC;
+	private Utilidades utilidades;
 
 	/** METODO INIT **/
 	@PostConstruct
@@ -53,23 +53,10 @@ public class TipoClienteController implements Serializable {
 			listarTipoClientes = tipoClienteI.getLisTC();
 			nuevoTipoCliente = new Tipocliente();
 			tipoCliente = new Tipocliente();
+			utilidades = new Utilidades();
 		} catch (Exception e) {
 
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	/****** Agregar Tipo Cliente ****/
@@ -80,18 +67,18 @@ public class TipoClienteController implements Serializable {
 
 		try {
 			if (buscarTipoCliente(nuevoTipoCliente.getTipoTcl()) == true) {
-				mensajeError("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") ya existe.");
+				utilidades.mensajeError("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") ya existe.");
 
 			} else {
 				tipoClienteI.save(nuevoTipoCliente);
 				listarTipoClientes = tipoClienteI.getLisTC();
-				mensajeInfo("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("El Tipo Cliente (" + nuevoTipoCliente.getTipoTcl() + ") se ha almacenado exitosamente");
 				nuevoTipoCliente = new Tipocliente();
 				context.execute("PF('nuevoTipoCliente').hide();");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 
 	}
@@ -103,14 +90,14 @@ public class TipoClienteController implements Serializable {
 
 			tipoClienteI.delete(tipoCliente);
 			listarTipoClientes = tipoClienteI.getLisTC();
-			mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha eliminado exitosamente");
+			utilidades.mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha eliminado exitosamente");
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
-				mensajeError(
+				utilidades.mensajeError(
 						"La tabla Tipo Cliente (" + tipoCliente.getTipoTcl() + ") tiene una relación con otra tabla");
 			} else {
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 			}
 
 		}
@@ -125,22 +112,22 @@ public class TipoClienteController implements Serializable {
 			if (tipoCliente.getTipoTcl().equals(getNombreTC())) {
 				tipoClienteI.update(tipoCliente);
 				listarTipoClientes = tipoClienteI.getLisTC();
-				mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarTipoCliente').hide();");
 
 			} else if (buscarTipoCliente(tipoCliente.getTipoTcl()) == false) {
 				tipoClienteI.update(tipoCliente);
 				listarTipoClientes = tipoClienteI.getLisTC();
-				mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarTipoCliente').hide();");
 
 			} else {
 				listarTipoClientes = tipoClienteI.getLisTC();
-				mensajeError("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") ya existe.");
+				utilidades.mensajeError("El Tipo Cliente (" + tipoCliente.getTipoTcl() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -151,7 +138,7 @@ public class TipoClienteController implements Serializable {
 		try {
 			listarTipoClientes = tipoClienteI.getAll(Tipocliente.class);
 		} catch (Exception e) {
-			e.printStackTrace();
+		
 		}
 
 		boolean resultado = false;

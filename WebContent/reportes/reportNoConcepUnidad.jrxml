@@ -109,11 +109,11 @@ ORDER BY b.nombre_bg]]>
 				<text><![CDATA[)]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="85" width="555" height="1" uuid="bc263ee1-78a3-4a86-9b95-7251de02f4a1"/>
+				<reportElement x="0" y="81" width="555" height="1" uuid="bc263ee1-78a3-4a86-9b95-7251de02f4a1"/>
 			</line>
 			<image>
 				<reportElement x="13" y="13" width="89" height="62" uuid="7b934e43-bfd8-49ff-a224-27bcaca017e9"/>
-				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/EPN.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
 		</band>
 	</title>

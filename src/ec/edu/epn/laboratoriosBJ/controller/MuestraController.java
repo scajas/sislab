@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -23,6 +22,7 @@ import ec.edu.epn.laboratorioBJ.beans.MuestraDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.Muestra;
 import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "muestraController")
@@ -59,6 +59,7 @@ public class MuestraController implements Serializable {
 	// ****** Filtros ****//*
 	private List<Factura> filtrarFacturas;
 	private List<Muestra> filtrarMuestras;
+	private Utilidades utilidades;
 
 	/** MÉTODO INIT **/
 	@PostConstruct
@@ -69,28 +70,13 @@ public class MuestraController implements Serializable {
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
 			listaMuestra = muestraI.ListaMFById(uni.getCodigoU());
 
-			// setListaMuestra(muestraI.getAll(Muestra.class));
 			setNuevaMuestra(new Muestra());
 			muestra = new Muestra();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 
 		}
-
-	}
-
-	/****** Mensajes Personalizados ****/
-
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
@@ -103,7 +89,7 @@ public class MuestraController implements Serializable {
 		try {
 			if (buscarMuesta(nuevaMuestra.getCodigoMCliente()) == true) {
 
-				mensajeError("La Muestra (" + nuevaMuestra.getCodigoMCliente() + " ) ya existe.");
+				utilidades.mensajeError("La Muestra (" + nuevaMuestra.getCodigoMCliente() + " ) ya existe.");
 			} else {
 
 				Integer idMuestra = muestraI.generarId("Muestra", "auxMuestra");
@@ -136,7 +122,7 @@ public class MuestraController implements Serializable {
 				muestraI.save(nuevaMuestra);
 				listaMuestra = muestraI.getAll(Muestra.class);
 
-				mensajeInfo("La muestra (" + nuevaMuestra.getCodigoMCliente() + ") se ha almacenado exitosamente");
+				utilidades.mensajeInfo("La muestra (" + nuevaMuestra.getCodigoMCliente() + ") se ha almacenado exitosamente");
 
 				nuevaMuestra = new Muestra();
 				context.execute("PF('nuevaMuestra').hide();");
@@ -145,7 +131,7 @@ public class MuestraController implements Serializable {
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 
@@ -162,7 +148,7 @@ public class MuestraController implements Serializable {
 				muestraI.update(muestra);
 				listaMuestra = muestraI.getAll(Muestra.class);
 
-				mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarMuestra').hide();");
 
@@ -170,18 +156,18 @@ public class MuestraController implements Serializable {
 				muestraI.update(muestra);
 				listaMuestra = muestraI.getAll(Muestra.class);
 
-				mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarMuestra').hide();");
 
 			} else {
-				mensajeError("La Muestra (" + muestra.getCodigoMCliente() + ") ya existe");
+				utilidades.mensajeError("La Muestra (" + muestra.getCodigoMCliente() + ") ya existe");
 
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 		}
 	}
 
@@ -194,17 +180,17 @@ public class MuestraController implements Serializable {
 			muestraI.delete(muestra);
 			listaMuestra = muestraI.getAll(Muestra.class);
 
-			mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha eliminado correctamente");
+			utilidades.mensajeInfo("La Muestra (" + muestra.getCodigoMCliente() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError("La tabla Muestra (" + muestra.getCodigoMCliente() + ") tiene relación con otra tabla");
+				utilidades.mensajeError("La tabla Muestra (" + muestra.getCodigoMCliente() + ") tiene relación con otra tabla");
 
 			} else {
 
-				mensajeError("Ha ocurrido un problema");
+				utilidades.mensajeError("Ha ocurrido un problema");
 
 			}
 
@@ -220,7 +206,7 @@ public class MuestraController implements Serializable {
 			listaFactura = muestraI.getListaFacturas(idUsuario.intValue(), su.UNIDAD_USUARIO_LOGEADO);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+	
 		}
 		return listaFactura;
 
@@ -234,7 +220,6 @@ public class MuestraController implements Serializable {
 			listaMuestra = muestraI.getAll(Muestra.class);
 		} catch (Exception e) {
 
-			e.printStackTrace();
 		}
 
 		boolean resultado = false;
@@ -261,11 +246,11 @@ public class MuestraController implements Serializable {
 
 		try {
 			getNuevaMuestra().setIdFactura(selectFactura.getIdFactura());
-			mensajeInfo("Se seleccionó la Factura (" + selectFactura.getIdFactura());
+			utilidades.mensajeInfo("Se seleccionó la Factura (" + selectFactura.getIdFactura());
 			selectFactura = new Factura();
 
 		} catch (Exception e) {
-			mensajeError("No se ha seleccionado ninguna factura");
+			utilidades.mensajeError("No se ha seleccionado ninguna factura");
 		}
 
 	}
@@ -288,7 +273,7 @@ public class MuestraController implements Serializable {
 		return nombre;
 	}
 
-	/****** Getter y Setter de Muestra ****/
+	/****** Getter y Setter ****/
 
 	public List<Muestra> getListaMuestra() {
 		return listaMuestra;

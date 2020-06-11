@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -18,6 +17,7 @@ import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "tipoProductoController")
@@ -45,6 +45,7 @@ public class TipoProductoController implements Serializable {
 	private Tipoproducto nuevoTipoProducto;
 	private Tipoproducto tipoProducto;
 	private String nombreTP;
+	private Utilidades utilidades;
 
 	// filtro
 	private List<Tipoproducto> filtrarTipoProducto;
@@ -56,24 +57,10 @@ public class TipoProductoController implements Serializable {
 			setListaTipoProducto(tipoProductoI.getAll(Tipoproducto.class));
 			setNuevoTipoProducto(new Tipoproducto());
 			tipoProducto = new Tipoproducto();
-
+			utilidades = new Utilidades();
 		} catch (Exception e) {
 
 		}
-
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
 
 	}
 
@@ -85,21 +72,21 @@ public class TipoProductoController implements Serializable {
 		try {
 			if (buscarTipoProducto(nuevoTipoProducto.getNombreTprod()) == true) {
 
-				mensajeError("El Tipo Producto (" + nuevoTipoProducto.getNombreTprod() + ") ya existe ");
+				utilidades.mensajeError("El Tipo Producto (" + nuevoTipoProducto.getNombreTprod() + ") ya existe ");
 
 			} else {
 
 				tipoProductoI.save(nuevoTipoProducto);
 				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 
-				mensajeInfo("El Tipo Producto (" + nuevoTipoProducto.getNombreTprod() + ") se ha almacenado exitosamente ");
+				utilidades.mensajeInfo("El Tipo Producto (" + nuevoTipoProducto.getNombreTprod() + ") se ha almacenado exitosamente ");
 				nuevoTipoProducto = new Tipoproducto();
 				context.execute("PF('nuevoTipoProducto').hide();");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un error");
+			utilidades.mensajeError("Ha ocurrido un error");
 		}
 
 	}
@@ -115,24 +102,24 @@ public class TipoProductoController implements Serializable {
 				tipoProductoI.update(tipoProducto);
 				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 
-				mensajeInfo("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") se ha actualizado exitosamente.");
 				context.execute("PF('modificarTipoProducto').hide();");
 
 			} else if (buscarTipoProducto(tipoProducto.getNombreTprod()) == false) {
 				tipoProductoI.update(tipoProducto);
 				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 
-				mensajeInfo("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") se ha actualizado exitosamente.");
+				utilidades.mensajeInfo("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") se ha actualizado exitosamente.");
 				context.execute("PF('modificarTipoProducto').hide();");
 
 			} else {
 				listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
-				mensajeError("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") ya existe.");
+				utilidades.mensajeError("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") ya existe.");
 			}
 
 		} catch (Exception e) {
 
-			mensajeError("Ha ocurrido un problema");
+			utilidades.mensajeError("Ha ocurrido un problema");
 
 		}
 	}
@@ -146,17 +133,17 @@ public class TipoProductoController implements Serializable {
 			tipoProductoI.delete(tipoProducto);
 			listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 
-			mensajeInfo("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") se ha eliminado correctamente");
+			utilidades.mensajeInfo("El Tipo Producto (" + tipoProducto.getNombreTprod() + ") se ha eliminado correctamente");
 
 		} catch (Exception e) {
 
 			if (e.getMessage() == "Transaction rolled back") {
 
-				mensajeError(
+				utilidades.mensajeError(
 						"La tabla Tipo Producto (" + tipoProducto.getNombreTprod() + ") tiene relación con otra tabla");
 
 			} else {
-				mensajeError("Ha ocurrido un error");
+				utilidades.mensajeError("Ha ocurrido un error");
 			}
 
 		}
@@ -170,8 +157,7 @@ public class TipoProductoController implements Serializable {
 		try {
 			listaTipoProducto = tipoProductoI.getAll(Tipoproducto.class);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 
 		boolean resultado = false;

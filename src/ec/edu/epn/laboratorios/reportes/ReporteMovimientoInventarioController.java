@@ -1,4 +1,4 @@
-package ec.edu.epn.laboratoriosBJ.controller;
+package ec.edu.epn.laboratorios.reportes;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -23,6 +22,7 @@ import ec.edu.epn.laboratorioBJ.beans.MovimientosInventarioDAO;
 import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Movimientosinventario;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
 @ManagedBean(name = "reporteMovInvController")
@@ -53,15 +53,16 @@ public class ReporteMovimientoInventarioController implements Serializable {
 	private List<Movimientosinventario> movimientoInventarios = new ArrayList<>();
 	private Movimientosinventario movimientoInventario;
 	private List<Existencia> filtrarMovimientos;
-	
+
 	private List<Existencia> existencias = new ArrayList<>();
 	private List<Existencia> filtrarExistencias;
-	
+
 	private Existencia selectExistencia;
 	private Existencia existencia;
 	/* Variables adicionales */
 	private Date fechaInicio;
 	private Date fechaFinal;
+	private Utilidades utilidades;
 
 	// Metodo Init
 	@PostConstruct
@@ -71,43 +72,29 @@ public class ReporteMovimientoInventarioController implements Serializable {
 			existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 			selectExistencia = new Existencia();
 			existencia = new Existencia();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
-	}
-
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
 	}
 
 	public void buscar() {
 
 		try {
 
-			System.out.println("Existenci:" + existencia.getIdExistencia());
 			if (existencia.getIdExistencia().equals("")) {
 
-				mensajeError("Debe seleccionar una Existencia.");
+				utilidades.mensajeError("Debe seleccionar una Existencia.");
 			}
 
 			else if (fechaInicio == null) {
 
-				mensajeError("Ingrese la Fecha de Inicio.");
+				utilidades.mensajeError("Ingrese la Fecha de Inicio.");
 
 			} else if (fechaFinal == null) {
 
-				mensajeError("Ingrese la Fecha Final.");
+				utilidades.mensajeError("Ingrese la Fecha Final.");
 			}
 
 			else {
@@ -115,12 +102,11 @@ public class ReporteMovimientoInventarioController implements Serializable {
 				movimientoInventarios = movimientoInventarioI.parametrosMovInv(existencia.getIdExistencia(),
 						cambioFecha(fechaInicio), cambioFecha(fechaFinal));
 
-				mensajeInfo("Registros Obtenidos: " + movimientoInventarios.size());
+				utilidades.mensajeInfo("Registros Obtenidos: " + movimientoInventarios.size());
 
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 
 	}
@@ -130,15 +116,15 @@ public class ReporteMovimientoInventarioController implements Serializable {
 		RequestContext context = RequestContext.getCurrentInstance();
 		try {
 
-			mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
+			utilidades.mensajeInfo("Se seleccionó la Existencia (" + selectExistencia.getIdExistencia());
 			setExistencia(selectExistencia);
 			selectExistencia = new Existencia();
 			filtrarExistencias = new ArrayList<Existencia>();
 			context.execute("PF('listadoEx').hide();");
 
 		} catch (Exception e) {
-			mensajeError("No se ha seleccionado ninguna Existencia");
-			e.printStackTrace();
+			utilidades.mensajeError("No se ha seleccionado ninguna Existencia");
+
 		}
 
 	}
@@ -165,7 +151,6 @@ public class ReporteMovimientoInventarioController implements Serializable {
 
 		try {
 
-			
 			movimientoInventarios.clear();
 			filtrarMovimientos.clear();
 			movimientoInventario = new Movimientosinventario();
@@ -176,11 +161,11 @@ public class ReporteMovimientoInventarioController implements Serializable {
 			existencia = new Existencia();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 
 	}
+
 	public String cambiarFormatoDouble(double numero) {
 		DecimalFormat formato = new DecimalFormat("#.00");
 		return formato.format(numero);

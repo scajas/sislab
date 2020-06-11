@@ -15,7 +15,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -36,6 +35,8 @@ import ec.edu.epn.laboratorioBJ.entities.LaboratorioLab;
 import ec.edu.epn.laboratorioBJ.entities.OrdenTrabajo;
 import ec.edu.epn.laboratorioBJ.entities.PersonalLab;
 import ec.edu.epn.laboratorioBJ.entities.Servicio;
+import ec.edu.epn.laboratorios.utilidades.Utilidades;
+import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -92,6 +93,7 @@ public class OrdenTrabajoController implements Serializable {
 	private String analista;
 	private String estado;
 	private String nombreL;
+	private Utilidades utilidades;
 
 	@PostConstruct
 	public void init() {
@@ -99,6 +101,7 @@ public class OrdenTrabajoController implements Serializable {
 
 			servicio = new Servicio();
 			listaPersonalLab = ordenTrabajoI.listaPersonalAnalista();
+			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,19 +124,6 @@ public class OrdenTrabajoController implements Serializable {
 		return nombre;
 	}
 
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
-
 	public void buscarOrden() {
 
 		try {
@@ -141,7 +131,7 @@ public class OrdenTrabajoController implements Serializable {
 			detalleOrdenes = ordenTrabajoI.filtrarLista(cambioFecha(getFechaInicio()), cambioFecha(getFechaFin()),
 					tipoOrden, analista, estado);
 
-			mensajeInfo("Resultados Obtenidos" + detalleOrdenes.size());
+			utilidades.mensajeInfo("Resultados Obtenidos" + detalleOrdenes.size());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -199,7 +189,7 @@ public class OrdenTrabajoController implements Serializable {
 
 	private Connection coneccionSQL() throws IOException {
 		try {
-			conexionPostrges conexionSQL = new conexionPostrges();
+			conexionPostgres conexionSQL = new conexionPostgres();
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
