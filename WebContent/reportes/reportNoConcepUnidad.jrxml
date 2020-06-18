@@ -69,7 +69,7 @@ ORDER BY b.nombre_bg]]>
 		</groupHeader>
 	</group>
 	<title>
-		<band height="105" splitType="Stretch">
+		<band height="156" splitType="Stretch">
 			<staticText>
 				<reportElement x="112" y="12" width="357" height="20" uuid="2ae957fd-375c-4b02-9ad8-cfcbd0842997"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
@@ -115,48 +115,44 @@ ORDER BY b.nombre_bg]]>
 				<reportElement x="13" y="13" width="89" height="62" uuid="7b934e43-bfd8-49ff-a224-27bcaca017e9"/>
 				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="68">
 			<staticText>
-				<reportElement x="0" y="0" width="82" height="20" uuid="5311f445-057a-48d9-a380-0c3ada932ea7"/>
+				<reportElement x="0" y="92" width="82" height="20" uuid="5311f445-057a-48d9-a380-0c3ada932ea7"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Unidad:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="20" width="82" height="20" uuid="a38045fe-336d-44dd-acb3-164c6cf02373"/>
+				<reportElement x="0" y="112" width="82" height="20" uuid="a38045fe-336d-44dd-acb3-164c6cf02373"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Responsable:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="40" width="82" height="20" uuid="f387f897-16c4-47c7-b9b0-b41fff821863"/>
+				<reportElement x="0" y="132" width="82" height="20" uuid="f387f897-16c4-47c7-b9b0-b41fff821863"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Mes:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="100" y="20" width="448" height="20" uuid="7d0475f1-e6df-4dbe-b2d2-b84033731846"/>
+				<reportElement x="100" y="112" width="448" height="20" uuid="7d0475f1-e6df-4dbe-b2d2-b84033731846"/>
 				<textElement verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[($F{nombres_pe}.equals("                                                  ") ? "" + $P{nombreUsuario} :  "" + $F{nombres_pe})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="0" width="404" height="20" uuid="a45ff099-a744-4156-a4ef-bb40ab05fd31"/>
+				<reportElement x="100" y="92" width="404" height="20" uuid="a45ff099-a744-4156-a4ef-bb40ab05fd31"/>
 				<textFieldExpression><![CDATA[$F{nombre_u}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="100" y="40" width="148" height="20" uuid="f86422ce-a1ab-40be-84f3-c1cc6bec3a45"/>
+				<reportElement x="100" y="132" width="148" height="20" uuid="f86422ce-a1ab-40be-84f3-c1cc6bec3a45"/>
 				<textElement verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$P{nombreMes} + "        " + $P{anio}]]></textFieldExpression>
 			</textField>
 		</band>
-	</pageHeader>
-	<columnHeader>
+	</title>
+	<pageHeader>
 		<band height="35">
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="114" height="35" backcolor="#778D9B" uuid="492b4de6-24b9-4f02-bbee-121087c3de7e"/>
@@ -168,12 +164,12 @@ ORDER BY b.nombre_bg]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SUBSTANCIA CONTROLADA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="114" y="0" width="73" height="35" backcolor="#778D9B" uuid="2796a092-01e2-491c-a1e9-4b3d95cc7c67"/>
+				<reportElement mode="Opaque" x="114" y="0" width="83" height="35" backcolor="#778D9B" uuid="2796a092-01e2-491c-a1e9-4b3d95cc7c67"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -182,12 +178,12 @@ ORDER BY b.nombre_bg]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TRANSACCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="187" y="0" width="90" height="35" backcolor="#778D9B" uuid="d073bfb2-6505-45b4-9b2f-7d6b88d1a161"/>
+				<reportElement mode="Opaque" x="197" y="0" width="90" height="35" backcolor="#778D9B" uuid="d073bfb2-6505-45b4-9b2f-7d6b88d1a161"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -196,12 +192,12 @@ ORDER BY b.nombre_bg]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[N° FACTURA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="277" y="0" width="101" height="35" backcolor="#778D9B" uuid="4200abe4-c001-4523-af7c-dfe8e987197b"/>
+				<reportElement mode="Opaque" x="287" y="0" width="91" height="35" backcolor="#778D9B" uuid="4200abe4-c001-4523-af7c-dfe8e987197b"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -210,7 +206,7 @@ ORDER BY b.nombre_bg]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PROVEEDOR]]></text>
 			</staticText>
@@ -224,7 +220,7 @@ ORDER BY b.nombre_bg]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[INGRESOS]]></text>
 			</staticText>
@@ -238,7 +234,7 @@ ORDER BY b.nombre_bg]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[EGRESOS]]></text>
 			</staticText>
@@ -252,29 +248,32 @@ ORDER BY b.nombre_bg]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[SALDO]]></text>
 			</staticText>
 		</band>
+	</pageHeader>
+	<columnHeader>
+		<band/>
 	</columnHeader>
-	<pageFooter>
-		<band height="42" splitType="Stretch">
+	<lastPageFooter>
+		<band height="41">
 			<textField>
-				<reportElement x="0" y="0" width="100" height="20" uuid="a7fbc072-1705-47d4-ba21-dd1484a29356"/>
+				<reportElement x="2" y="0" width="100" height="20" uuid="a7fbc072-1705-47d4-ba21-dd1484a29356"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($F{nombres_pe}.equals("                                                  ") ? "" + $P{nombreUsuario} :  "" + $F{nombres_pe})]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="29" y="20" width="100" height="20" uuid="631a4f72-8b09-4a46-b06a-34f8c6a1426d"/>
+				<reportElement x="31" y="20" width="100" height="20" uuid="631a4f72-8b09-4a46-b06a-34f8c6a1426d"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="20" width="29" height="20" uuid="c5cc05c3-98a1-4111-a603-28c87a705dd9"/>
+				<reportElement x="2" y="20" width="29" height="20" uuid="c5cc05c3-98a1-4111-a603-28c87a705dd9"/>
 				<text><![CDATA[Quito,]]></text>
 			</staticText>
 		</band>
-	</pageFooter>
+	</lastPageFooter>
 </jasperReport>
