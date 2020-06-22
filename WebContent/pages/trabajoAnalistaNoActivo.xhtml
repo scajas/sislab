@@ -39,7 +39,7 @@
 			<h:form id="formprincipal">
 
 				<p:remoteCommand name="rc"
-					action="#{trabajoAnalistaController.limpiarTodosCampos()}"
+					action="#{trabajoAnalistaNoActivoController.limpiarTodosCampos()}"
 					update="formprincipal" />
 
 				<p:growl id="messagesForm" showDetail="true" sticky="true"
@@ -59,7 +59,7 @@
 						<br />
 
 						<p:dataTable id="tblTrabajoAnalista"
-							value="#{trabajoAnalistaController.detallesOrden}" var="detalleO"
+							value="#{trabajoAnalistaNoActivoController.detallesOrden}" var="detalleO"
 							widgetVar="filtereditarMetodoOTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							rows="10" paginator="true"
@@ -71,7 +71,7 @@
 							paginatorPosition="bottom">
 
 							<f:facet name="header">
-								Labores de Analista
+								Labores de Analistas
 							</f:facet>
 
 
@@ -82,23 +82,30 @@
 								<h:outputText value="#{detalleO.ordenTrabajo.idOrden}" />
 							</p:column>
 
-							<p:column headerText="ID Muestra"
+							<p:column headerText="ID Muestra" visible="false"
 								filterBy="#{detalleO.muestra.idMuestra}"
 								filterStyle="width: 80%">
 								<h:outputText value="#{detalleO.muestra.idMuestra}" />
 							</p:column>
 
-							<p:column headerText="Muestra"
+							<p:column headerText="Muestra" visible="false"
 								filterBy="#{detalleO.muestra.codigoMCliente}"
 								filterStyle="width: 80%">
 								<h:outputText value="#{detalleO.muestra.codigoMCliente}" />
 							</p:column>
 
 							<p:column headerText="Servicio"
-								filterBy="#{trabajoAnalistaController.servicio(detalleO.idServicio)}"
+								filterBy="#{trabajoAnalistaNoActivoController.servicio(detalleO.idServicio)}"
 								filterStyle="width: 80%">
 								<h:outputText
-									value="#{trabajoAnalistaController.servicio(detalleO.idServicio)}" />
+									value="#{trabajoAnalistaNoActivoController.servicio(detalleO.idServicio)}" />
+							</p:column>
+							
+							<p:column headerText="Metodo"
+								filterBy="#{trabajoAnalistaNoActivoController.metodo(detalleO.idMetodo)}"
+								filterStyle="width: 80%">
+								<h:outputText
+									value="#{trabajoAnalistaNoActivoController.metodo(detalleO.idMetodo)}" />
 							</p:column>
 
 							<p:column headerText="Horas" filterBy="#{detalleO.horasTrabajo}"
@@ -121,24 +128,6 @@
 							<p:column headerText="Acciones" style="width:9%">
 								<center>
 
-									<!-- **************************  Boton Editar   *************************** -->
-									<p:commandLink icon="ui-icon-check"
-										process="@this,tblTrabajoAnalista"
-										action="#{trabajoAnalistaController.cargarMetodo(detalleO)}"
-										onsuccess="PF('editarMetodoOT').show();">
-
-										<h:graphicImage value="/images/archivos/editar.png"
-											title="Modificar" style="border:0px solid #CAD6E0;"
-											width="35" height="35" />
-
-										<f:setPropertyActionListener
-											target="#{trabajoAnalistaController.detalleOrden}"
-											value="#{detalleO}">
-										</f:setPropertyActionListener>
-
-
-									</p:commandLink>
-
 									<!-- **************************  Boton Cerrar   *************************** -->
 
 
@@ -153,7 +142,7 @@
 
 
 										<f:setPropertyActionListener
-											target="#{trabajoAnalistaController.detalleOrden}"
+											target="#{trabajoAnalistaNoActivoController.detalleOrden}"
 											value="#{detalleO}">
 										</f:setPropertyActionListener>
 
@@ -163,11 +152,11 @@
 							</p:column>
 
 							<p:column headerText="Descargar" filterStyle="width: 70%"
-								style="width: 9%">
+								style="width: 9%" visible="false">
 								<center>
 									<p:commandLink icon="ui-icon-check"
 										process="@this,tblTrabajoAnalista"
-										actionListener="#{trabajoAnalistaController.validarPanelSaldo()}"
+										actionListener="#{trabajoAnalistaNoActivoController.validarPanelSaldo()}"
 										update="@this,@([id$=messagesForm])">
 
 										<h:graphicImage value="/images/archivos/descargar.png"
@@ -175,7 +164,7 @@
 											height="35" />
 
 										<f:setPropertyActionListener
-											target="#{trabajoAnalistaController.detalleOrden}"
+											target="#{trabajoAnalistaNoActivoController.detalleOrden}"
 											value="#{detalleO}">
 										</f:setPropertyActionListener>
 
@@ -224,15 +213,15 @@
 									<p:outputLabel for="servicio" value="Servicio: "
 										style="color:white!important" />
 									<p:outputLabel id="servicio"
-										value="#{trabajoAnalistaController.servicio(trabajoAnalistaController.detalleOrden.idServicio)}"
+										value="#{trabajoAnalistaNoActivoController.servicio(trabajoAnalistaNoActivoController.detalleOrden.idServicio)}"
 										size="30" maxlength="100" />
 
 									<p:outputLabel for="metodo" value="Método: "
 										style="color:white!important" />
 									<p:selectOneMenu id="metodo"
-										value="#{trabajoAnalistaController.detalleOrden.idMetodo}">
+										value="#{trabajoAnalistaNoActivoController.detalleOrden.idMetodo}">
 
-										<f:selectItems value="#{trabajoAnalistaController.metodos}"
+										<f:selectItems value="#{trabajoAnalistaNoActivoController.metodos}"
 											itemLabel="#{metodo.nombreMt}" itemValue="#{metodo.idMetodo}"
 											var="metodo">
 										</f:selectItems>
@@ -252,7 +241,7 @@
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
-									actionListener="#{trabajoAnalistaController.modificarDetalleOt()}"
+									actionListener="#{trabajoAnalistaNoActivoController.modificarDetalleOt()}"
 									process="@this,formEditarMetodoOT"
 									onsuccess="PF('editarMetodoOT').hide();"
 									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarMetodoOT">
@@ -305,20 +294,20 @@
 									<p:outputLabel for="idOrden" value="Orden Trabajo: "
 										style="color:white!important" />
 									<p:outputLabel id="idOrden"
-										value="#{trabajoAnalistaController.detalleOrden.ordenTrabajo.idOrden}"
+										value="#{trabajoAnalistaNoActivoController.detalleOrden.ordenTrabajo.idOrden}"
 										size="30" maxlength="100" />
 
 									<p:outputLabel for="servicio" value="Servicio: "
 										style="color:white!important" />
 									<p:outputLabel id="servicio"
-										value="#{trabajoAnalistaController.servicio(trabajoAnalistaController.detalleOrden.idServicio)}"
+										value="#{trabajoAnalistaNoActivoController.servicio(trabajoAnalistaNoActivoController.detalleOrden.idServicio)}"
 										size="30" maxlength="100" />
 
 									<p:outputLabel for="metodo" value="Método: "
 										style="color:white!important" />
 									<p:outputLabel id="metodo"
-										value="#{trabajoAnalistaController.metodo(trabajoAnalistaController.detalleOrden.idMetodo)}"
-										title="#{trabajoAnalistaController.detalleOrden.idMetodo}"
+										value="#{trabajoAnalistaNoActivoController.metodo(trabajoAnalistaNoActivoController.detalleOrden.idMetodo)}"
+										title="#{trabajoAnalistaNoActivoController.detalleOrden.idMetodo}"
 										size="30" maxlength="100" />
 
 								</p:panelGrid>
@@ -340,7 +329,7 @@
 
 								<p:commandButton value="Cerrar" icon="fa fa-times-circle"
 									style="width: 115px; margin: 10px"
-									actionListener="#{trabajoAnalistaController.modificarEstadoOrden}"
+									actionListener="#{trabajoAnalistaNoActivoController.modificarEstadoOrden}"
 									process="@this,formCerrarMetodoOT"
 									onsuccess="PF('cerrarMetodoOT').hide();"
 									update="@this,@([id$=messagesForm],[id$=formprincipal]),formCerrarMetodoOT">
@@ -398,7 +387,7 @@
 										<h:outputText for="metodo" value="Metodo: "
 											style="font-weight:bold" />
 										<h:outputText id="metodo"
-											value="#{trabajoAnalistaController.metodo(trabajoAnalistaController.detalleOrden.idDetalleorden)}" />
+											value="#{trabajoAnalistaNoActivoController.metodo(trabajoAnalistaNoActivoController.detalleOrden.idDetalleorden)}" />
 
 									</p:panelGrid>
 
@@ -408,12 +397,12 @@
 										<h:outputText for="muestra" value="Id Muestra: "
 											style="font-weight:bold" />
 										<h:outputText id="muestra"
-											value="#{trabajoAnalistaController.detalleOrden.muestra.idMuestra}" />
+											value="#{trabajoAnalistaNoActivoController.detalleOrden.muestra.idMuestra}" />
 
 										<h:outputText for="muestraNbr" value="Muestra: "
 											style="font-weight:bold" />
 										<h:outputText id="muestraNbr"
-											value="#{trabajoAnalistaController.reemplazarStringVacios(trabajoAnalistaController.detalleOrden.muestra.codigoMCliente)}" />
+											value="#{trabajoAnalistaNoActivoController.reemplazarStringVacios(trabajoAnalistaNoActivoController.detalleOrden.muestra.codigoMCliente)}" />
 
 									</p:panelGrid>
 
@@ -431,9 +420,9 @@
 								<p:commandButton value="Agregar" icon="fa fa-plus"
 									title="Agregar Existencias"
 									style="width: 125px; border-radius: 3px 3px 3px 3px;"
-									disabled="#{trabajoAnalistaController.disabledButton() != false}"
+									disabled="#{trabajoAnalistaNoActivoController.disabledButton() != false}"
 									process="@this" onsuccess="PF('nuevoDescarga').show();"
-									actionListener="#{trabajoAnalistaController.cargarDetalleMetodo()}"
+									actionListener="#{trabajoAnalistaNoActivoController.cargarDetalleMetodo()}"
 									update="@this,@([id$=messagesForm])">
 
 								</p:commandButton>
@@ -451,22 +440,22 @@
 
 									<p:panel id="detallePro" header="Detalle de Descarga">
 										<p:dataTable id="tblExistenciasMI"
-											value="#{trabajoAnalistaController.movimientoInventarios}"
+											value="#{trabajoAnalistaNoActivoController.movimientoInventarios}"
 											var="movimientoI">
 
 											<p:column headerText="Existencia">
 												<h:outputText
-													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).idExistencia}" />
+													value="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(movimientoI.idExistencia).idExistencia}" />
 											</p:column>
 
 											<p:column headerText="Producto">
 												<h:outputText
-													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).producto.nombrePr}" />
+													value="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(movimientoI.idExistencia).producto.nombrePr}" />
 											</p:column>
 
 											<p:column headerText="Cant. Existente">
 												<h:outputText
-													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).cantidadE}" />
+													value="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(movimientoI.idExistencia).cantidadE}" />
 											</p:column>
 
 											<p:column headerText="Cant. Requerida">
@@ -476,12 +465,12 @@
 											<p:column headerText="Cant. Empleada">
 												<h:outputText value="#{movimientoI.cantidadMov}" />
 												<h:outputText
-													value="#{trabajoAnalistaController.cambiarDatosExistencia(movimientoI.idExistencia).unidadmedida.siglaUm}" />
+													value="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(movimientoI.idExistencia).unidadmedida.siglaUm}" />
 											</p:column>
 
 											<p:column headerText="Tipo Justificación">
 												<h:outputText
-													value="#{trabajoAnalistaController.justificacion(movimientoI.idTipojust)}" />
+													value="#{trabajoAnalistaNoActivoController.justificacion(movimientoI.idTipojust)}" />
 											</p:column>
 
 											<p:column headerText="Justificación">
@@ -494,7 +483,7 @@
 													<!-- **************************  Boton Editar   *************************** -->
 													<p:commandLink process="tblExistenciasMI"
 														icon="ui-icon-check"
-														action="#{trabajoAnalistaController.cargarJustificacion()}"
+														action="#{trabajoAnalistaNoActivoController.cargarJustificacion()}"
 														onsuccess="PF('editarDescarga').show();"
 														update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDescarga">
 
@@ -504,7 +493,7 @@
 
 
 														<f:setPropertyActionListener
-															target="#{trabajoAnalistaController.movimientoInventario}"
+															target="#{trabajoAnalistaNoActivoController.movimientoInventario}"
 															value="#{movimientoI}">
 														</f:setPropertyActionListener>
 
@@ -533,15 +522,15 @@
 									<p:commandButton style="width: 150px; margin: 10px"
 										value="Guardar" icon="fa fa-save"
 										process="@this,formDescargarOT"
-										disabled="#{trabajoAnalistaController.disabledButton() != true}"
-										actionListener="#{trabajoAnalistaController.agregarOrdenI}"
+										disabled="#{trabajoAnalistaNoActivoController.disabledButton() != true}"
+										actionListener="#{trabajoAnalistaNoActivoController.agregarOrdenI}"
 										update="@this,@([id$=messagesForm],[id$=formprincipal]),formDescargarOT,formNuevoDescarga">
 
 									</p:commandButton>
 
 									<p:commandButton style="width: 150px; margin: 10px"
 										icon="fa fa-bitbucket" value="Limpiar"
-										actionListener="#{trabajoAnalistaController.limpiarTodosCampos}"
+										actionListener="#{trabajoAnalistaNoActivoController.limpiarTodosCampos}"
 										update="@this,@([id$=messagesForm]),formDescargarOT">
 									</p:commandButton>
 
@@ -591,18 +580,18 @@
 									legend="Existencias">
 
 									<p:dataTable id="tblMetodo"
-										value="#{trabajoAnalistaController.listaDetalleMetodo}"
+										value="#{trabajoAnalistaNoActivoController.listaDetalleMetodo}"
 										var="metodo" widgetVar="filterServiciosTable"
 										emptyMessage="No se pudo encontrar ninguna coincidencia"
-										filteredValue="#{trabajoAnalistaController.filtroDetalleMetodo}"
+										filteredValue="#{trabajoAnalistaNoActivoController.filtroDetalleMetodo}"
 										rows="5" paginator="true"
 										paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 										rowsPerPageTemplate="5,10,15" paginatorPosition="bottom"
 										rowKey="#{metodo.idDetallemetodo}"
-										selection="#{trabajoAnalistaController.nuevoDetallemetodo}"
+										selection="#{trabajoAnalistaNoActivoController.nuevoDetallemetodo}"
 										selectionMode="single">
 										<p:ajax event="rowSelect"
-											listener="#{trabajoAnalistaController.validarDetalleM()}"
+											listener="#{trabajoAnalistaNoActivoController.validarDetalleM()}"
 											update="@([id$=messagesForm])" />
 
 										<p:column headerText="ID" filterBy="#{metodo.idExistencia}"
@@ -611,10 +600,10 @@
 										</p:column>
 
 										<p:column headerText="Nombre"
-											filterBy="#{trabajoAnalistaController.cambiarDatosExistencia(metodo.idExistencia).producto.nombrePr}"
+											filterBy="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(metodo.idExistencia).producto.nombrePr}"
 											filterMatchMode="contains">
 											<h:outputText
-												value="#{trabajoAnalistaController.cambiarDatosExistencia(metodo.idExistencia).producto.nombrePr}" />
+												value="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(metodo.idExistencia).producto.nombrePr}" />
 										</p:column>
 
 										<p:column headerText="Cant. Req"
@@ -653,25 +642,25 @@
 													<p:outputLabel for="producto" value="Produto: "
 														style="color:white!important" />
 													<p:outputLabel id="producto"
-														value="#{trabajoAnalistaController.cambiarDatosExistencia(trabajoAnalistaController.nuevoMovimientoInventario.idExistencia).producto.nombrePr}"
+														value="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(trabajoAnalistaNoActivoController.nuevoMovimientoInventario.idExistencia).producto.nombrePr}"
 														size="30" maxlength="100" />
 
 													<p:outputLabel for="saldoE" value="Saldo: "
 														style="color:white!important" />
 													<p:outputLabel id="saldoE"
-														value="#{trabajoAnalistaController.nuevoMovimientoInventario.saldoE}"
+														value="#{trabajoAnalistaNoActivoController.nuevoMovimientoInventario.saldoE}"
 														size="30" maxlength="100" />
 
 													<p:outputLabel for="cantidadReq"
 														value="Cantidad Requerida: " style="color:white!important" />
 													<p:outputLabel id="cantidadReq"
-														value="#{trabajoAnalistaController.nuevoMovimientoInventario.cantidadDmt}"
+														value="#{trabajoAnalistaNoActivoController.nuevoMovimientoInventario.cantidadDmt}"
 														size="30" maxlength="100" />
 
 													<p:outputLabel value="Cantidad Empleada: " for="cantidad"
 														style="color:white!important" />
 													<p:inputNumber id="cantidad"
-														value="#{trabajoAnalistaController.nuevoMovimientoInventario.cantidadMov}"
+														value="#{trabajoAnalistaNoActivoController.nuevoMovimientoInventario.cantidadMov}"
 														required="true" emptyValue="zero"
 														requiredMessage="Debe ingresar la cantidad" size="30"
 														maxlength="100">
@@ -682,10 +671,10 @@
 														value="Tipo de Justificación: "
 														style="color:white!important" />
 													<p:selectOneMenu id="tipoJustificacion"
-														value="#{trabajoAnalistaController.nuevoMovimientoInventario.idTipojust}">
+														value="#{trabajoAnalistaNoActivoController.nuevoMovimientoInventario.idTipojust}">
 														<f:selectItem itemLabel="Seleccione..." itemValue="1" />
 														<f:selectItems
-															value="#{trabajoAnalistaController.tipoJustificacions}"
+															value="#{trabajoAnalistaNoActivoController.tipoJustificacions}"
 															itemLabel="#{tipo.nombreJust}"
 															itemValue="#{tipo.idTipojust}" var="tipo">
 														</f:selectItems>
@@ -694,7 +683,7 @@
 													<p:outputLabel id="lblObservaciones" for="observaciones"
 														value="Justificación: " style="color:white!important " />
 													<p:inputTextarea id="observaciones"
-														value="#{trabajoAnalistaController.nuevoMovimientoInventario.observacionesMov}"
+														value="#{trabajoAnalistaNoActivoController.nuevoMovimientoInventario.observacionesMov}"
 														size="100" />
 
 
@@ -727,16 +716,16 @@
 									style="width: 140px; margin: 10px"
 									title="Agregara todo el contenido de la tabla para su posterior registro"
 									process="@this,formNuevoDescarga"
-									disabled="#{trabajoAnalistaController.disabledButtonAgregarTodoDescarga() != true}"
-									actionListener="#{trabajoAnalistaController.agregarTodosMovimientos()}"
+									disabled="#{trabajoAnalistaNoActivoController.disabledButtonAgregarTodoDescarga() != true}"
+									actionListener="#{trabajoAnalistaNoActivoController.agregarTodosMovimientos()}"
 									update="@this,@([id$=messagesForm],[id$=formprincipal])">
 								</p:commandButton>
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
 									process="@this,formNuevoDescarga"
-									actionListener="#{trabajoAnalistaController.agregarMovimientoInv}"
-									disabled="#{trabajoAnalistaController.disabledButtonAgregarDescarga() != true}"
+									actionListener="#{trabajoAnalistaNoActivoController.agregarMovimientoInv}"
+									disabled="#{trabajoAnalistaNoActivoController.disabledButtonAgregarDescarga() != true}"
 									update="@this,@([id$=messagesForm],[id$=formprincipal]),formNuevoDescarga, formDescargarOT">
 								</p:commandButton>
 
@@ -794,25 +783,25 @@
 											<p:outputLabel for="producto" value="Produto: "
 												style="color:white!important" />
 											<p:outputLabel id="producto"
-												value="#{trabajoAnalistaController.cambiarDatosExistencia(trabajoAnalistaController.movimientoInventario.idExistencia).producto.nombrePr}"
+												value="#{trabajoAnalistaNoActivoController.cambiarDatosExistencia(trabajoAnalistaNoActivoController.movimientoInventario.idExistencia).producto.nombrePr}"
 												size="30" maxlength="100" />
 
 											<p:outputLabel for="saldoE" value="Saldo: "
 												style="color:white!important" />
 											<p:outputLabel id="saldoE"
-												value="#{trabajoAnalistaController.movimientoInventario.saldoE}"
+												value="#{trabajoAnalistaNoActivoController.movimientoInventario.saldoE}"
 												size="30" maxlength="100" />
 
 											<p:outputLabel for="cantidadReq" value="Cantidad Requerida: "
 												style="color:white!important" />
 											<p:outputLabel id="cantidadReq"
-												value="#{trabajoAnalistaController.movimientoInventario.cantidadDmt}"
+												value="#{trabajoAnalistaNoActivoController.movimientoInventario.cantidadDmt}"
 												size="30" maxlength="100" />
 
 											<p:outputLabel value="Cantidad Empleada: " for="cantidad"
 												style="color:white!important" />
 											<p:inputNumber id="cantidad"
-												value="#{trabajoAnalistaController.movimientoInventario.cantidadMov}"
+												value="#{trabajoAnalistaNoActivoController.movimientoInventario.cantidadMov}"
 												required="true" emptyValue="zero"
 												requiredMessage="Debe ingresar la cantidad" size="30"
 												maxlength="100">
@@ -822,10 +811,10 @@
 												value="Tipo de Justificación: "
 												style="color:white!important" />
 											<p:selectOneMenu id="tipoJustificacion"
-												value="#{trabajoAnalistaController.movimientoInventario.idTipojust}">
+												value="#{trabajoAnalistaNoActivoController.movimientoInventario.idTipojust}">
 												<f:selectItem itemLabel="Seleccione..." itemValue="1" />
 												<f:selectItems
-													value="#{trabajoAnalistaController.tipoJustificacions}"
+													value="#{trabajoAnalistaNoActivoController.tipoJustificacions}"
 													itemLabel="#{tipo.nombreJust}"
 													itemValue="#{tipo.idTipojust}" var="tipo">
 												</f:selectItems>
@@ -834,7 +823,7 @@
 											<p:outputLabel id="lblObservaciones" for="observaciones"
 												value="Justificación: " style="color:white!important " />
 											<p:inputTextarea id="observaciones"
-												value="#{trabajoAnalistaController.movimientoInventario.observacionesMov}"
+												value="#{trabajoAnalistaNoActivoController.movimientoInventario.observacionesMov}"
 												size="100" />
 
 										</p:panelGrid>
@@ -852,7 +841,7 @@
 
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
-									actionListener="#{trabajoAnalistaController.modificarMovimientoInv}"
+									actionListener="#{trabajoAnalistaNoActivoController.modificarMovimientoInv}"
 									process="@form,formEditarDescarga"
 									update="@this,@([id$=messagesForm],[id$=formprincipal]),formEditarDescarga,formDescargarOT">
 								</p:commandButton>

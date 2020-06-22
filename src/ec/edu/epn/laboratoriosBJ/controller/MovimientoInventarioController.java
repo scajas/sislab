@@ -142,15 +142,10 @@ public class MovimientoInventarioController implements Serializable {
 			nuevoMovimientoInventarioAux.setCantidadMov(new BigDecimal(0));
 
 			// init Orden inventario
-			UnidadLabo uni = new UnidadLabo();
-			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
-			filterOrdenInventarios = ordenInventarios;
 			ordeninventario = new Ordeninventario();
 			nuevoOrdeninventario = new Ordeninventario();
-		
+
 			nuevoOrdeninventario.setFechaingresoOi(new Date());
-		
 
 			// init de Tipo Orden Inventario
 			temptipordeninvs = new ArrayList<Tipordeninv>();
@@ -162,9 +157,9 @@ public class MovimientoInventarioController implements Serializable {
 			// init de Existencia
 			// existencias =
 			// movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
-		
+
 			// transExistencias = existencias;
-		
+
 			// filtrarTransExistencias = existencias;
 			// filtrarExistencias = new ArrayList<Existencia>();
 			tempExistencias = new ArrayList<Existencia>();
@@ -175,7 +170,6 @@ public class MovimientoInventarioController implements Serializable {
 			// init de Saldo Existencia
 			saldoExistencia = new SaldoExistencia();
 			saldoExistencias = saldoExistenciaI.listaSaldoExistenciaAñoActual();
-			
 
 			// init Unidad
 			unidadLabo = ordenInventarioI.obtenerUnidad(su.UNIDAD_USUARIO_LOGEADO);
@@ -189,7 +183,7 @@ public class MovimientoInventarioController implements Serializable {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			 
+
 		}
 	}
 
@@ -198,12 +192,33 @@ public class MovimientoInventarioController implements Serializable {
 	 * temporal
 	 ****/
 
+	public void cargarMovimientosInventario() {
+		UnidadLabo uni = new UnidadLabo();
+		RequestContext context = RequestContext.getCurrentInstance();
+
+			
+		try {
+			if (ordenInventarios.size() == 0) {
+				uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+				ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
+				filterOrdenInventarios = ordenInventarios;
+				utilidades.mensajeInfo("Resultados obtenidos: " + ordenInventarios.size());
+				context.update("formprincipal");
+
+			} else {
+				System.out.println("No es necesario");
+			}
+
+		} catch (Exception e) {
+
+		}
+
+	}
+
 	public void comprobarEdit() {
 		RequestContext context = RequestContext.getCurrentInstance();
 		for (Movimientosinventario m : nuevoMovimientoInventarios) {
 			if (m.getIdExistencia().equals(movInventario.getIdExistencia())) {
-
-		
 
 				context.execute("PF('editarMI').hide();");
 
@@ -268,8 +283,6 @@ public class MovimientoInventarioController implements Serializable {
 		for (Existencia e : tempExistencias) {
 			if (e.getIdExistencia().equals(value.getIdExistencia())) {
 
-	
-
 				tempExistencias.set(i, value);
 
 				break;
@@ -303,9 +316,8 @@ public class MovimientoInventarioController implements Serializable {
 			// init de Existencia
 			/*
 			 * existencias = movimientoInventarioI.listarExistenciaById(su.
-			 * UNIDAD_USUARIO_LOGEADO);
-	 transExistencias = existencias;
-			 
+			 * UNIDAD_USUARIO_LOGEADO); transExistencias = existencias;
+			 * 
 			 */
 			filtrarExistencias.clear();
 			filtrarTransExistencias.clear();
@@ -327,13 +339,13 @@ public class MovimientoInventarioController implements Serializable {
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			 
+
 		}
 
 	}
 
 	public void limpiarMI() {
-	
+
 		/*
 		 * nuevoMovimientoInventario = new Movimientosinventario();
 		 * movimientosinventario = new Movimientosinventario();
@@ -344,9 +356,9 @@ public class MovimientoInventarioController implements Serializable {
 
 	public void cargarMI(String id) {
 		tempMovimientoInventarios.clear();
-	
+
 		tempMovimientoInventarios = ordenInventarioI.listaMovimientoI(id);
-		
+
 	}
 
 	public void agregarMovimiento() {
@@ -370,7 +382,6 @@ public class MovimientoInventarioController implements Serializable {
 					nuevoMovimientoInventario.setSaldoE(getExistencia().getCantidadE());
 					nuevoMovimientoInventario.setDism(BigDecimal.valueOf(cantidadMo));
 					nuevoMovimientoInventario.setIncrem(new BigDecimal(0));
-
 
 					// Añadir a la lista temporal de Existenciass
 					tempExistencias.add(getExistencia());
@@ -396,8 +407,6 @@ public class MovimientoInventarioController implements Serializable {
 				nuevoMovimientoInventario.setIncrem(BigDecimal.valueOf(cantidadMo));
 				nuevoMovimientoInventario.setDism(new BigDecimal(0));
 
-		
-
 				// Añadir a la lista temporal de Existencias
 				tempExistencias.add(getExistencia());
 
@@ -415,7 +424,7 @@ public class MovimientoInventarioController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			 
+
 		}
 
 	}
@@ -434,7 +443,7 @@ public class MovimientoInventarioController implements Serializable {
 		double cantidadEAux = existenciaAux.getCantidadE().doubleValue();
 
 		if (existencia.getUnidadmedida().getIdUmedida() == existenciaAux.getUnidadmedida().getIdUmedida()) {
-	
+
 			cantidadMoAux = nuevoMovimientoInventario.getCantidadMov().doubleValue();
 			nuevoMovimientoInventarioAux.setCantidadMov(nuevoMovimientoInventario.getCantidadMov());
 
@@ -487,8 +496,8 @@ public class MovimientoInventarioController implements Serializable {
 			try {
 				movimientoInventarioI.save(m);
 			} catch (Exception e) {
-			
-				//  
+
+				//
 			}
 
 		}
@@ -496,13 +505,13 @@ public class MovimientoInventarioController implements Serializable {
 
 	/** Actualizar Existencias en la base de datos **/
 	public void actualizarExistencias() {
-	
+
 		for (Existencia existencia : tempExistencias) {
 			try {
 				existenciasI.update(existencia);
 			} catch (Exception e) {
-				
-				//  
+
+				//
 			}
 
 		}
@@ -516,7 +525,7 @@ public class MovimientoInventarioController implements Serializable {
 			if (getIdTemporal().equals("2") || getIdTemporal().equals("3")) {
 
 				if (cantidadMo <= cantidadE) {
-					
+
 					editarMovimientoTemporal();
 					// setMovimientoInventarios(nuevoMovimientoInventarios);
 
@@ -524,13 +533,13 @@ public class MovimientoInventarioController implements Serializable {
 					utilidades.mensajeError("La cantidad es mayor que el saldo existente");
 				}
 			} else {
-			
+
 				editarMovimientoTemporal();
 				// setMovimientoInventarios(nuevoMovimientoInventarios);
 			}
 
 		} catch (Exception e) {
-			 
+
 		}
 
 	}
@@ -538,7 +547,6 @@ public class MovimientoInventarioController implements Serializable {
 	public void editarMovimientoTemporal() {
 		int i = 0;
 		RequestContext context = RequestContext.getCurrentInstance();
-		
 
 		for (Movimientosinventario m : nuevoMovimientoInventarios) {
 			if (m.getIdExistencia().equals(getMovInventario().getIdExistencia())) {
@@ -565,7 +573,7 @@ public class MovimientoInventarioController implements Serializable {
 			utilidades.mensajeInfo(
 					"Se ha eliminado el movimiento de Inventario (" + movInventario.getIdExistencia() + ")");
 		} catch (Exception e) {
-			 
+
 			utilidades.mensajeError("Ha ocurrido un error interno.");
 		}
 
@@ -588,7 +596,6 @@ public class MovimientoInventarioController implements Serializable {
 	public long cambiarFecha(long session) {
 		// nuevoOrdeninventario.setFechaingresoOi(session);
 		Date fecha = new Date(session);
-	
 
 		return session;
 	}
@@ -601,7 +608,6 @@ public class MovimientoInventarioController implements Serializable {
 					|| tipordeninv.getIdTipordeninv() == 7) {
 
 				temptipordeninvs.add(tipordeninv);
-		
 
 			}
 		}
@@ -630,11 +636,12 @@ public class MovimientoInventarioController implements Serializable {
 
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			//ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
+			// ordenInventarios =
+			// ordenInventarioI.getListOIById(uni.getCodigoU());
 
 			utilidades.mensajeInfo("El orden de inventario ( " + nuevoOrdeninventario.getIdOrdeninventario()
 					+ " ) se ha almacenado exitosamente");
-			
+
 			ordenInventarios.add(nuevoOrdeninventario);
 
 			nuevoOrdeninventario = new Ordeninventario();
@@ -642,19 +649,21 @@ public class MovimientoInventarioController implements Serializable {
 			existencias.clear();
 
 			// Llenar las listas con los nuevos registros
-			//ordenInventarios = ordenInventarioI.getListOIById(uni.getCodigoU());
-			//existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
+			// ordenInventarios =
+			// ordenInventarioI.getListOIById(uni.getCodigoU());
+			// existencias =
+			// movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 
 		} catch (Exception e) {
 
 			utilidades.mensajeError("Ha ocurrido un error");
-			 
+
 		}
 	}
 
 	/* PENDIENTE */
 	public void buscar() {
-	
+
 	}
 
 	public void OrdenISelect() {
@@ -682,19 +691,15 @@ public class MovimientoInventarioController implements Serializable {
 			if (codigoAux == null) {
 				codigoAux = (uni.getCodigoU() + "-OI-0000-" + anio);
 			} else {
-			
-			}
 
-		
+			}
 
 			String[] partsId = codigoAux.split("-");
 
 			String codigoCortado = partsId[2];
-		
 
 			Integer codigo = Integer.parseInt(codigoCortado);
 			codigo = codigo + 1;
-		
 
 			String codigoOrden = codigo.toString();
 			// nuevoExistencia.setIdUnidad(su.UNIDAD_USUARIO_LOGEADO);
@@ -725,10 +730,9 @@ public class MovimientoInventarioController implements Serializable {
 				break;
 			}
 
-			
 		} catch (Exception e) {
 			utilidades.mensajeError("Ha ocurrido un error");
-			 
+
 		}
 	}
 
@@ -763,13 +767,13 @@ public class MovimientoInventarioController implements Serializable {
 		} else if (getIdTemporal().equals("7")) {
 
 			context.execute("PF('ingresarMITrans').show();");
-		
+
 		} else {
 			try {
 				context.execute("PF('ingresarMI').show();");
-			
+
 			} catch (Exception e) {
-				 
+
 				utilidades.mensajeError("Debe seleccionar un tipo de Inventario");
 			}
 
@@ -799,7 +803,7 @@ public class MovimientoInventarioController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			 
+
 			utilidades.mensajeError("Ha ocurrido un error");
 		}
 	}
@@ -829,10 +833,9 @@ public class MovimientoInventarioController implements Serializable {
 		try {
 
 			setAux(a);
-			
 
 		} catch (Exception e) {
-			 
+
 		}
 
 	}
@@ -844,16 +847,15 @@ public class MovimientoInventarioController implements Serializable {
 			if (idPanel.equals("7")) {
 				transExistencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 				filtrarTransExistencias = transExistencias;
-				
 
 			} else {
 				existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 				filtrarExistencias = existencias;
-				
+
 			}
 
 		} catch (Exception e) {
-			 
+
 		}
 
 	}
@@ -866,7 +868,7 @@ public class MovimientoInventarioController implements Serializable {
 			if (existencias.size() == 0) {
 				existencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 				filtrarExistencias = existencias;
-				
+
 				context.update("formListadoEx");
 			}
 
@@ -885,7 +887,7 @@ public class MovimientoInventarioController implements Serializable {
 			if (transExistencias.size() == 0) {
 				transExistencias = movimientoInventarioI.listarExistenciaById(su.UNIDAD_USUARIO_LOGEADO);
 				filtrarTransExistencias = transExistencias;
-				
+
 				context.update("formListadoExTransf");
 			}
 
@@ -900,8 +902,6 @@ public class MovimientoInventarioController implements Serializable {
 			RequestContext context = RequestContext.getCurrentInstance();
 
 			if (buscarExistencia(selectExistencia.getIdExistencia()) == false) {
-
-				
 
 				if (getIdTemporal().equals("7")) {
 					if (getAux() == 2) {
@@ -994,8 +994,7 @@ public class MovimientoInventarioController implements Serializable {
 		} else {
 			tempExistencias.clear();
 			tempExistencias.add(getExistencia());
-		
-		
+
 			// PF('tblexis')
 			// context.execute("PF('tblexis')");
 			context.execute("PF('verEx').show();");
@@ -1010,9 +1009,9 @@ public class MovimientoInventarioController implements Serializable {
 
 	/****** Setear valos de combo para validacion ****/
 	public void cambiarCombo(String id) {
-		
+
 		setIdTemporal(id);
-		
+
 	}
 
 	/****** Metodos de manejo de fechas ****/
@@ -1028,21 +1027,15 @@ public class MovimientoInventarioController implements Serializable {
 
 		String dia = parts[2];
 
-
-
 		if (dia.equals("31")) {
 			calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - 1);
-		
 
 			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-			
 
 		} else {
 			calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-			
+
 		}
-
-
 
 		String fecha = sdf.format(calendar.getTime());
 
@@ -1067,8 +1060,6 @@ public class MovimientoInventarioController implements Serializable {
 		SimpleDateFormat mes = new SimpleDateFormat("MMMM");
 
 		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-
-	
 
 		String fecha = mes.format(calendar.getTime());
 
@@ -1100,7 +1091,7 @@ public class MovimientoInventarioController implements Serializable {
 	public void cambiarFechaFiltro() {
 		String fecha = new SimpleDateFormat("dd-MM-yyyy").format(getFechaFiltroAux());
 		setFechaFiltro(fecha);
-		
+
 	}
 
 	public boolean filterByDate(Object value, Object filter, Locale locale) {

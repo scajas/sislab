@@ -50,9 +50,9 @@ import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
-@ManagedBean(name = "trabajoAnalistaController")
+@ManagedBean(name = "trabajoAnalistaNoActivoController")
 @SessionScoped
-public class TrabajoAnalistaController implements Serializable {
+public class TrabajoAnalistaNoActivoController implements Serializable {
 
 	/** VARIABLES DE SESION ***/
 	private static final long serialVersionUID = 6771930005130933302L;
@@ -275,7 +275,7 @@ public class TrabajoAnalistaController implements Serializable {
 		try {
 			UnidadLabo uni = new UnidadLabo();
 			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
-			detallesOrden = detalleOrdenI.listarDetalleOrdenByUsuario((int) su.id_usuario_log, uni.getCodigoU());
+			detallesOrden = detalleOrdenI.listarDetalleOrdenByUsuarioNoActivo((int) su.id_usuario_log, uni.getCodigoU());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -526,10 +526,14 @@ public class TrabajoAnalistaController implements Serializable {
 		} else if (cantidadE <= 0) {
 			utilidades.mensajeError(
 					"Ya no hay saldo para ejecutar este registro, haga un ajuste de inventario positivo en la interfaz (Movimientos de Inventario)");
-
+			System.out.println("ayudaa2" + nuevoDetallemetodo.getIdExistencia());
+			listaDetalleMetodoTemp.add(nuevoDetallemetodo);
+			System.out.println("dasd");
 		} else {
 			utilidades.mensajeError("La cantidad es mayor al saldo");
-
+			System.out.println("ayudaa1");
+			listaDetalleMetodoTemp.add(nuevoDetallemetodo);
+			System.out.println("asdasd");
 		}
 
 		// context.execute("PF('ingresarMI').hide();");
@@ -598,28 +602,14 @@ public class TrabajoAnalistaController implements Serializable {
 			listaDetalleMetodo.clear();
 		} else {
 
-			limpiarTodaslasListasDetalle();
+			listaDetalleMetodo.clear();
+			listaDetalleMetodo = listaDetalleMetodoTemp;
 			System.out.println("estes: " + listaDetalleMetodo.size());
 		}
 
 		context.update("formNuevoDescarga");
 		context.update("formDescargarOT");
 		utilidades.mensajeInfo("Se han agregado todas las descargas.");
-
-	}
-
-	private void limpiarTodaslasListasDetalle() {
-
-		for (Movimientosinventario m : movimientoInventarios) {
-			for (Detallemetodo d : listaDetalleMetodo) {
-				if (d.getIdExistencia().equals(m.getIdExistencia())) {
-					listaDetalleMetodo.remove(d);
-					break;
-				} else {
-					System.out.println("No elimino " + d.getIdExistencia());
-				}
-			}
-		}
 
 	}
 
@@ -750,7 +740,9 @@ public class TrabajoAnalistaController implements Serializable {
 
 	public String metodo(String idMetodo) {
 		String nombre = "";
-
+		
+		System.out.println("Nomnbre: " + idMetodo );
+		
 		Metodo metodo = new Metodo();
 
 		metodo = detalleOrdenI.findMetodoById(idMetodo);
