@@ -13,8 +13,8 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm),4) AS Ingresos, SUM(mi.dism) AS Egresos,
-nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+		<![CDATA[SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm),2) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo,
 se.saldo_e, mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Compra' then 'Compra'
@@ -47,7 +47,7 @@ e."id_grado"=gr."id_grado" and
 u."id_unidad"=e."id_unidad" and us."id_unidad"=u."id_unidad" and
 e."id_umedida"=um."id_umedida" and
 "sigla_um"='L' and us."nombre_usuario" = $P{nombreUsuario} AND
-(oi."id_tipordeninv"='4' OR oi."id_tipordeninv"='6')
+(oi."id_tipordeninv"='2' OR oi."id_tipordeninv"='6')
 AND e.id_existencia = se.id_existencia and se.mes = $P{mes} and se.anio = $P{anio}
 GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
 "sigla_um", mi."aux1", se."saldo_e", mi.saldo_e
@@ -55,7 +55,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
-nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo,
 se.saldo_e, mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -98,7 +98,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
-nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo,
 se.saldo_e, mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Transferencia' then ''
@@ -137,8 +137,8 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
 
 UNION ALL
 
-SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm),4) AS Ingresos, SUM(mi.dism) AS Egresos,
-nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm),2) AS Ingresos, SUM(mi.dism) AS Egresos,
+nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo,
 se.saldo_e, mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Compra' then 'Compra'
@@ -179,7 +179,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
-nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo,
 se.saldo_e, mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -222,7 +222,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia", "nombre_gr",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm) AS Ingresos, SUM(mi.dism) AS Egresos,
-nombre_pr AS Producto, ROUND(mi.saldo_e,4) AS Saldo,
+nombre_pr AS Producto, ROUND(mi.saldo_e,2) AS Saldo,
 se.saldo_e, mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Transferencia' then ''
@@ -261,8 +261,8 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 
 UNION ALL
 
-SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm/1000),4) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
-nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm/1000),2) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),2) AS Saldo,
 (se.saldo_e/1000), mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Compra' then 'Compra'
@@ -297,7 +297,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
-nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),2) AS Saldo,
 (se.saldo_e/1000), mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -331,7 +331,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
-nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),2) AS Saldo,
 (se.saldo_e/1000), mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Transferencia' then ''
@@ -361,8 +361,8 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 
 UNION ALL
 
-SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm/1000),4) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
-nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+SELECT DISTINCT (e."id_existencia"), ROUND(SUM(mi.increm/1000),2) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),2) AS Saldo,
 (se.saldo_e/1000), mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Compra' then 'Compra'
@@ -394,7 +394,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
-nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),2) AS Saldo,
 (se.saldo_e/1000), mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -428,7 +428,7 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 UNION ALL
 
 SELECT DISTINCT (e."id_existencia"), SUM(mi.increm/1000) AS Ingresos, SUM(mi.dism/1000) AS Egresos,
-nombre_pr AS Producto, ROUND((mi.saldo_e/1000),4) AS Saldo,
+nombre_pr AS Producto, ROUND((mi.saldo_e/1000),2) AS Saldo,
 (se.saldo_e/1000), mi."aux1" AS Factura,
 nombre_pv AS Proveedor, "nombre_toi", "nombre_gr", "sigla_um",
 	case when ("nombre_toi") = 'Transferencia' then ''
@@ -458,8 +458,8 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 
 UNION ALL
 
-SELECT e."id_existencia", ROUND(SUM(e.increm),4) AS Ingresos, ROUND(SUM(e.dism),4) AS Egresos,
-nombre_pr AS Producto, ROUND(se.saldo_e,4) AS Saldo,
+SELECT e."id_existencia", ROUND(SUM(e.increm),2) AS Ingresos, ROUND(SUM(e.dism),2) AS Egresos,
+nombre_pr AS Producto, ROUND(se.saldo_e,2) AS Saldo,
 se.saldo_e, "aux1" AS Factura,
 nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
 	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -497,8 +497,8 @@ GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla
 
 UNION ALL
 
-SELECT e."id_existencia", ROUND(SUM(e.increm),4) AS Ingresos, ROUND(SUM(e.dism),4) AS Egresos,
-nombre_pr AS Producto, ROUND(se.saldo_e,4) AS Saldo, se.saldo_e, "aux1" AS Factura,
+SELECT e."id_existencia", ROUND(SUM(e.increm),2) AS Ingresos, ROUND(SUM(e.dism),2) AS Egresos,
+nombre_pr AS Producto, ROUND(se.saldo_e,2) AS Saldo, se.saldo_e, "aux1" AS Factura,
 nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
 	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
 	else ''
@@ -537,8 +537,8 @@ GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla
 
 UNION ALL
 
-SELECT e."id_existencia", ROUND(SUM(e.increm/1000),4) AS Ingresos, ROUND(SUM(e.dism/1000),4) AS Egresos,
-nombre_pr AS Producto, ROUND(se.saldo_e/1000,4) AS Saldo,
+SELECT e."id_existencia", ROUND(SUM(e.increm/1000),2) AS Ingresos, ROUND(SUM(e.dism/1000),2) AS Egresos,
+nombre_pr AS Producto, ROUND(se.saldo_e/1000,2) AS Saldo,
 (se.saldo_e/1000), "aux1" AS Factura,
 nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
 	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -578,8 +578,8 @@ GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla
 
 UNION ALL
 
-SELECT e."id_existencia", ROUND(SUM(e.increm/1000),4) AS Ingresos, ROUND(SUM(e.dism/1000),4) AS Egresos,
-nombre_pr AS Producto, ROUND((se.saldo_e/1000),4) AS Saldo,
+SELECT e."id_existencia", ROUND(SUM(e.increm/1000),2) AS Ingresos, ROUND(SUM(e.dism/1000),2) AS Egresos,
+nombre_pr AS Producto, ROUND((se.saldo_e/1000),2) AS Saldo,
 (se.saldo_e/1000), "aux1" AS Factura,
 nombre_pv AS Proveedor, "toi", "nombre_gr", "sigla_um",
 	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -635,15 +635,15 @@ order by Producto]]>
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="69" splitType="Stretch">
+		<band height="38" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="114" height="38" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
+				<reportElement x="0" y="0" width="92" height="38" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
@@ -651,16 +651,16 @@ order by Producto]]>
 				<textFieldExpression><![CDATA["  "+$F{producto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="488" y="0" width="67" height="38" uuid="4df96ea3-64f3-42cb-a52c-d87baf99edc4"/>
+				<reportElement x="488" y="0" width="45" height="38" uuid="4df96ea3-64f3-42cb-a52c-d87baf99edc4"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+$F{saldo}+ " " +$F{sigla_um}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" "+$F{saldo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="378" y="0" width="55" height="38" uuid="a2a581c9-6bdc-4a0a-a1b4-ed82695aa253"/>
@@ -684,7 +684,7 @@ order by Producto]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA["  "+$F{case}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{case} == null)?"":$F{case}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="187" y="0" width="90" height="38" uuid="e5358c4a-53e5-4bdf-9b16-da62d2586ea9"/>
@@ -696,7 +696,7 @@ order by Producto]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" " + $F{factura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{factura} == null)?"":$F{factura}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="433" y="0" width="55" height="38" uuid="180ec6f8-819b-4003-8317-85bec0e7ebb0"/>
@@ -720,7 +720,44 @@ order by Producto]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+$F{proveedor}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{proveedor} == null)?"":$F{proveedor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="533" y="0" width="22" height="38" uuid="9b0bdba8-c8fa-4d6f-8f77-220b24033d84"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sigla_um}.equals("mL") ? "L" :
+( $F{sigla_um}.equals("L") ? "L" :
+    ($F{sigla_um}.equals("g") ? "kg" :
+      ($F{sigla_um}.equals("kg") ? "kg" :
+      "")
+    )
+  )]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="92" y="0" width="22" height="38" uuid="0e8255ce-0f1a-4053-a651-34a3ae846c3c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_gr}.equals("Analítico") ? "G.R" :
+($F{nombre_gr}.equals("Técnico") ? "T" :
+    ($F{nombre_gr}.equals("USP") ? "USP" : "")
+)]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

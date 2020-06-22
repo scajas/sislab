@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +31,6 @@ import ec.edu.epn.laboratorioBJ.beans.TipoProductoDAO;
 import ec.edu.epn.laboratorioBJ.entities.Caracteristica;
 import ec.edu.epn.laboratorioBJ.entities.Existencia;
 import ec.edu.epn.laboratorioBJ.entities.Tipoproducto;
-import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.laboratorios.utilidades.conexionPostgres;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
 
@@ -84,7 +82,6 @@ public class ReporteNoConsepUnidadController implements Serializable {
 	private String mes;
 	private String anio;
 	private String formato;
-	private Utilidades utilidades;
 	// Metodo Init
 	@PostConstruct
 	public void init() {
@@ -93,7 +90,6 @@ public class ReporteNoConsepUnidadController implements Serializable {
 			anio = new String();
 			formato = new String();
 			llenarListaAño();
-			utilidades = new Utilidades();
 
 		} catch (Exception e) {
 			
@@ -111,11 +107,6 @@ public class ReporteNoConsepUnidadController implements Serializable {
 
 	public StreamedContent getStreamFile() {
 		return streamFile;
-	}
-
-	public String cambiarFormatoDouble(double numero) {
-		DecimalFormat formato = new DecimalFormat("#.00");
-		return formato.format(numero);
 	}
 
 	/****** Generacion de PDF ****/

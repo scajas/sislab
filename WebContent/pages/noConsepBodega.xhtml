@@ -11,7 +11,7 @@
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
 
-	<ui:define name="pageTitle">Reporte No Consep Bodega</ui:define>
+	<ui:define name="pageTitle">Reporte Consep Bodega</ui:define>
 	<ui:define name="body">
 
 		<h:head>
@@ -85,14 +85,6 @@
 											</f:selectItems>
 										</p:selectOneMenu>
 
-										<p:outputLabel value="Formato:" for="formato"
-											style="color:white!important" />
-										<p:selectOneMenu id="formato"
-											value="#{noConsepBodega.formato}" required="true" size="24">
-											<f:selectItem itemLabel="PDF" itemValue="PDF" />
-											<f:selectItem itemLabel="EXCEL" itemValue="EXCEL" />
-										</p:selectOneMenu>
-
 									</p:panelGrid>
 
 									<br /> <br />
@@ -136,7 +128,7 @@
 						style="border:0px solid #CAD6E0;" width="50" height="50" />
 				</center>
 			</p:dialog>
-
+			
 			<h:form>
 				<p:dialog id="dialogReporteServ" resizable="true"
 					widgetVar="reporteConcepBodega" modal="true" hideEffect="fade"

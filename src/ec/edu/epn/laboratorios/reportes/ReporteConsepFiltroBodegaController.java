@@ -62,13 +62,14 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 	private String mes;
 	private String anio;
 	private String formato;
-	private String bodega;
+	private laboratory bodega = new laboratory();
 
 	// Metodo Init
 	@PostConstruct
 	public void init() {
 		try {
 
+			bodega = new laboratory();
 			bodegas = laboratoryI.ListarBodegaById((int)su.id_usuario_log);
 			setMes(new String());
 			setAnio(new String());
@@ -87,7 +88,7 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 		String[] partsFecha = fecha.split("-");
 		int anio = Integer.valueOf(partsFecha[0]);
 
-		for (int i = a1; i < anio; i++) {
+		for (int i = a1; i <= anio; i++) {
 			anios.add(String.valueOf(i));
 		}
 
@@ -104,8 +105,6 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 			}
 		}
 
-		System.out.println("Este es el mes: " + mes);
-
 		return mes;
 	}
 
@@ -118,10 +117,15 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 		return fechaFinal;
 	}
 
+	public StreamedContent getStreamFile() {
+		return streamFile;
+	}
+	
 	public void generarPDF() throws Exception {
+		
+		
 		try {
 
-			System.out.println("Bodega: " + bodega);
 			if (streamFile != null)
 				streamFile.getStream().close();
 
@@ -135,7 +139,7 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 			} else {
 				direccion = direccion + "/";
 			}
-
+			System.out.println("Entra al Boton Generar PDF");
 			Map<String, Object> parametros = new HashMap<String, Object>();
 			parametros.put("imagen", servletContext.getRealPath("/"));
 			parametros.put("subReporte", servletContext.getRealPath("/"));
@@ -143,10 +147,10 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 			parametros.put("mes", Integer.parseInt(mes));
 			parametros.put("anio", Integer.parseInt(anio));
 			parametros.put("nombreMes", obtenerMes(Integer.parseInt(mes)));
-			parametros.put("nombreBodega", bodega);
+			parametros.put("nombreBodega", bodega.getNombreBg());
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/reporteFiltroBodega.jrxml");
+					.getRealPath("/reportes/reporteConcepFiltroBodega.jrxml");
 			InputStream input = new FileInputStream(new File(jrxmlFile));
 			JasperReport jasperReport = JasperCompileManager.compileReport(input);
 			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
@@ -154,12 +158,12 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "reporteConcepBodega.pdf");
+			File destFile = new File(sourceFile.getParent(), "reporteConcepFiltroBodega.pdf");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
 			InputStream stream = new FileInputStream(destFile);
 
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteConcepBodega.pdf");
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteConcepFiltroBodega.pdf");
 
 		} catch (Exception e) {
 
@@ -188,10 +192,6 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;
-	}
-
-	public StreamedContent getStreamFile() {
-		return streamFile;
 	}
 
 	public String getMes() {
@@ -226,20 +226,20 @@ public class ReporteConsepFiltroBodegaController implements Serializable {
 		this.anios = anios;
 	}
 
-	public String getBodega() {
-		return bodega;
-	}
-
-	public void setBodega(String bodega) {
-		this.bodega = bodega;
-	}
-
 	public List<laboratory> getBodegas() {
 		return bodegas;
 	}
 
 	public void setBodegas(List<laboratory> bodegas) {
 		this.bodegas = bodegas;
+	}
+
+	public laboratory getBodega() {
+		return bodega;
+	}
+
+	public void setBodega(laboratory bodega) {
+		this.bodega = bodega;
 	}
 
 }

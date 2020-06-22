@@ -321,19 +321,19 @@ ORDER BY "nombre_pr"]]>
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[" "+ $F{factura}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{factura} == null)?"":$F{factura}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="488" y="0" width="67" height="39" uuid="cb0759fe-58e2-4312-acdb-a8d678467dc6"/>
+					<reportElement x="488" y="0" width="45" height="39" uuid="cb0759fe-58e2-4312-acdb-a8d678467dc6"/>
 					<box>
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
 						<bottomPen lineWidth="0.25"/>
-						<rightPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[" "+ $F{saldo}+ " " +$F{sigla_um}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[" "+ $F{saldo}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="129" y="0" width="83" height="39" uuid="f404391b-b467-4097-9a94-04f61dfc618d"/>
@@ -345,7 +345,7 @@ ORDER BY "nombre_pr"]]>
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[" "+$F{case}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{case} == null)?"":$F{case}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="295" y="0" width="81" height="39" uuid="c4b9d70c-e192-447e-bcc6-f74456d652b2"/>
@@ -357,7 +357,7 @@ ORDER BY "nombre_pr"]]>
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[" "+ $F{nombre_pv}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{nombre_pv} == null)?"":$F{nombre_pv}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="376" y="0" width="55" height="39" uuid="abc277bc-b5c7-4cfc-9e44-beadc585da3d"/>
@@ -384,18 +384,55 @@ ORDER BY "nombre_pr"]]>
 					<textFieldExpression><![CDATA[" "+ $F{egresos}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="0" width="129" height="39" uuid="28f460f7-9eb6-4983-87ed-e9d26c1f0a14"/>
+					<reportElement x="0" y="0" width="109" height="39" uuid="28f460f7-9eb6-4983-87ed-e9d26c1f0a14"/>
 					<box>
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
 						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " +$F{nombre_pr}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="533" y="0" width="22" height="39" uuid="748a0d23-9d18-446e-9f48-c049d619fc7b"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.0"/>
 						<bottomPen lineWidth="0.25"/>
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement verticalAlignment="Middle">
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[" " +$F{nombre_pr}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{sigla_um}.equals("mL") ? "L" :
+( $F{sigla_um}.equals("L") ? "L" :
+    ($F{sigla_um}.equals("g") ? "kg" :
+      ($F{sigla_um}.equals("kg") ? "kg" :
+      "")
+    )
+  )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="109" y="0" width="20" height="39" uuid="1fb6d1ef-c86d-456e-bb53-f2ae3dd52ac1"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_gr}.equals("Analítico") ? "G.R" :
+($F{nombre_gr}.equals("Técnico") ? "T" :
+    ($F{nombre_gr}.equals("USP") ? "USP" : "")
+)]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
