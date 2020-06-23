@@ -94,7 +94,7 @@
 										<p:commandLink
 											onclick="PrimeFaces.monitorDownload(start, stop);"
 											id="btnGenerarReporte"
-											oncomplete="PF('reporteConcepUnidad').show();"
+											oncomplete="PF('reporteNoConcepUnidad').show();"
 											actionListener="#{reporteConsepUnidad.generarPDF}"
 											update="@([id$=dialogReporteServ], [id$=pdfView])"
 											process="@this,formReporte">
@@ -131,14 +131,14 @@
 
 			<h:form>
 				<p:dialog id="dialogReporteServ" resizable="true"
-					widgetVar="reporteConcepUnidad" modal="true" hideEffect="fade"
+					widgetVar="reporteNoConcepUnidad" modal="true" hideEffect="fade"
 					responsive="true" dynamic="true" width="65%"
 					header="Reporte Concep Unidad" onShow="stop()">
 					<p:panel>
 
 						<p:commandLink id="btnCerrarDialogs" ajax="false"
 							action="#{reporteConsepUnidad.cerrarArchivo()}"
-							onsuccess="PF('reporteConcepUnidad').hide();">
+							onsuccess="PF('reporteNoConcepUnidad').hide();">
 							<h:graphicImage value="/images/dashboard/NoVerificado.png"
 								title="Cerrar" style="border:0px solid #CAD6E0;" width="25"
 								height="25" />
@@ -159,8 +159,6 @@
 
 				</p:dialog>
 			</h:form>
-
-
 
 		</h:body>
 

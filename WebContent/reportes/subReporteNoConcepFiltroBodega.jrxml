@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReporteNoConcepFiltroBodega" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e040f2df-e590-4546-a1a2-2f75fb452d69">
-	<property name="ireport.zoom" value="1.4641000000000017"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="3.452271214393106"/>
+	<property name="ireport.x" value="1145"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="nombreUsuario" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -16,8 +16,8 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT e."id_existencia", ROUND(SUM(mi.increm),3) AS Ingresos, ROUND(SUM(mi.dism),4) AS Egresos,
-nombre_pr AS nombre_pr, ROUND(mi.saldo_e,4) AS Saldo,MAX(mi.aux1) AS Factura,
+		<![CDATA[SELECT e."id_existencia", ROUND(SUM(mi.increm),2) AS Ingresos, ROUND(SUM(mi.dism),2) AS Egresos,
+nombre_pr AS nombre_pr, ROUND(mi.saldo_e,2) AS Saldo,MAX(mi.aux1) AS Factura,
 nombre_pv AS nombre_pv, "nombre_toi", "nombre_gr",
 nombre_bg AS nombre_bg, "sigla_um",
 	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -65,8 +65,8 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 
 UNION ALL
 
-SELECT e."id_existencia", ROUND(SUM(mi.increm/1000),4) AS Ingresos, ROUND(SUM(mi.dism/1000),4) AS Egresos,
-nombre_pr AS nombre_pr, ROUND(mi.saldo_e/1000,4) AS Saldo,MAX(mi.aux1) AS Factura,
+SELECT e."id_existencia", ROUND(SUM(mi.increm/1000),2) AS Ingresos, ROUND(SUM(mi.dism/1000),2) AS Egresos,
+nombre_pr AS nombre_pr, ROUND(mi.saldo_e/1000,2) AS Saldo,MAX(mi.aux1) AS Factura,
 nombre_pv AS nombre_pv, "nombre_toi", "nombre_gr",
 nombre_bg AS nombre_bg, "sigla_um",
 	case when ("nombre_toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -112,8 +112,8 @@ GROUP BY "nombre_pr", "nombre_pv", "nombre_toi", e."id_existencia",
 
 UNION ALL
 
-SELECT e."id_existencia", ROUND(SUM(e.increm),4) AS Ingresos, ROUND(SUM(e.dism),4) AS Egresos,
-nombre_pr AS nombre_pr, ROUND(saldo_e,4) AS Saldo,MAX(aux1) AS Factura,
+SELECT e."id_existencia", ROUND(SUM(e.increm),2) AS Ingresos, ROUND(SUM(e.dism),2) AS Egresos,
+nombre_pr AS nombre_pr, ROUND(saldo_e,2) AS Saldo,MAX(aux1) AS Factura,
 nombre_pv AS nombre_pv, "toi", "nombre_gr",
 nombre_bg AS nombre_bg, "sigla_um",
 	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -179,8 +179,8 @@ GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr",
 
 UNION ALL
 
-SELECT e."id_existencia", ROUND(SUM(e.increm/1000),4) AS Ingresos, ROUND(SUM(e.dism/1000),4) AS Egresos,
-nombre_pr AS nombre_pr, ROUND(se.saldo_e/1000,4) AS Saldo,MAX(aux1) AS Factura,
+SELECT e."id_existencia", ROUND(SUM(e.increm/1000),2) AS Ingresos, ROUND(SUM(e.dism/1000),2) AS Egresos,
+nombre_pr AS nombre_pr, ROUND(se.saldo_e/1000,2) AS Saldo,MAX(aux1) AS Factura,
 nombre_pv AS nombre_pv, "toi", "nombre_gr",
 nombre_bg AS nombre_bg, "sigla_um",
 	case when ("toi") = 'Ajuste de inventario (-)' then 'Consumo'
@@ -261,7 +261,7 @@ ORDER BY "nombre_pr"]]>
 	<columnHeader>
 		<band height="21" splitType="Stretch">
 			<textField>
-				<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#929292" uuid="bd2c5eff-0a7f-4cf0-aecd-ef6aeb9fc3b4"/>
+				<reportElement mode="Opaque" x="0" y="0" width="555" height="21" backcolor="#929292" uuid="bd2c5eff-0a7f-4cf0-aecd-ef6aeb9fc3b4"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -277,47 +277,38 @@ ORDER BY "nombre_pr"]]>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="90" splitType="Stretch">
+		<band height="37" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="114" height="38" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
+				<reportElement x="94" y="0" width="20" height="37" uuid="e2422c7c-b81c-440e-9bf8-f2f272a84cdd"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[" " + $F{nombre_pr}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nombre_gr}.equals("Analítico") ? "G.R" :
+($F{nombre_gr}.equals("Técnico") ? "T" :
+    ($F{nombre_gr}.equals("USP") ? "USP" : "")
+)]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="488" y="0" width="67" height="38" uuid="4df96ea3-64f3-42cb-a52c-d87baf99edc4"/>
+				<reportElement x="488" y="0" width="45" height="37" uuid="4df96ea3-64f3-42cb-a52c-d87baf99edc4"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+ $F{saldo}+ " " +$F{sigla_um}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" "+ $F{saldo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="433" y="0" width="55" height="38" uuid="180ec6f8-819b-4003-8317-85bec0e7ebb0"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+ $F{egresos}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="378" y="0" width="55" height="38" uuid="a2a581c9-6bdc-4a0a-a1b4-ed82695aa253"/>
+				<reportElement x="378" y="0" width="55" height="37" uuid="a2a581c9-6bdc-4a0a-a1b4-ed82695aa253"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -329,7 +320,7 @@ ORDER BY "nombre_pr"]]>
 				<textFieldExpression><![CDATA[" "+ $F{ingresos}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="114" y="0" width="73" height="38" uuid="ac56f2bd-e235-40e0-80af-89b8bb2135da"/>
+				<reportElement x="114" y="0" width="73" height="37" uuid="ac56f2bd-e235-40e0-80af-89b8bb2135da"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -338,10 +329,10 @@ ORDER BY "nombre_pr"]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+$F{case}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{case} == null)?"":$F{case}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="187" y="0" width="90" height="38" uuid="e5358c4a-53e5-4bdf-9b16-da62d2586ea9"/>
+				<reportElement x="187" y="0" width="90" height="37" uuid="e5358c4a-53e5-4bdf-9b16-da62d2586ea9"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -350,10 +341,10 @@ ORDER BY "nombre_pr"]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+ $F{factura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{factura} == null)?"":$F{factura}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="277" y="0" width="101" height="38" uuid="9caf48eb-1af2-492d-aa3c-9ee10daf8821"/>
+				<reportElement x="277" y="0" width="101" height="37" uuid="9caf48eb-1af2-492d-aa3c-9ee10daf8821"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -362,7 +353,53 @@ ORDER BY "nombre_pr"]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+ $F{nombre_pv}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{nombre_pv} == null)?"":$F{nombre_pv}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="433" y="0" width="55" height="37" uuid="180ec6f8-819b-4003-8317-85bec0e7ebb0"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[" "+ $F{egresos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="94" height="37" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $F{nombre_pr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="533" y="0" width="22" height="37" uuid="208b452c-6ddf-49fe-b954-221432b605c8"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sigla_um}.equals("mL") ? "L" :
+( $F{sigla_um}.equals("L") ? "L" :
+    ($F{sigla_um}.equals("g") ? "kg" :
+      ($F{sigla_um}.equals("kg") ? "kg" :
+      "")
+    )
+  )]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

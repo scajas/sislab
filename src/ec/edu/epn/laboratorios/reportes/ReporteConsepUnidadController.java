@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Connection;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -99,20 +97,6 @@ public class ReporteConsepUnidadController implements Serializable {
 		}
 	}
 
-	/****** Mensajes Personalizados ****/
-	public void mensajeError(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "ERROR!", mensaje));
-	}
-
-	public void mensajeInfo(String mensaje) {
-
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFORMACIÓN", mensaje));
-
-	}
-
 	/****** Metodo para setear la fecha ****/
 	public String cambioFecha(Date fecha) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -124,11 +108,6 @@ public class ReporteConsepUnidadController implements Serializable {
 
 	public StreamedContent getStreamFile() {
 		return streamFile;
-	}
-
-	public String cambiarFormatoDouble(double numero) {
-		DecimalFormat formato = new DecimalFormat("#.00");
-		return formato.format(numero);
 	}
 
 	/****** Generacion de PDF ****/
@@ -205,7 +184,7 @@ public class ReporteConsepUnidadController implements Serializable {
 		String[] partsFecha = fecha.split("-");
 		int anio = Integer.valueOf(partsFecha[0]);
 
-		for (int i = a1; i < anio; i++) {
+		for (int i = a1; i <= anio; i++) {
 			anios.add(String.valueOf(i));
 		}
 

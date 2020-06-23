@@ -77,7 +77,7 @@ public class ReporteConsepBodegaController implements Serializable {
 		String[] partsFecha = fecha.split("-");
 		int anio = Integer.valueOf(partsFecha[0]);
 
-		for (int i = a1; i < anio; i++) {
+		for (int i = a1; i <= anio; i++) {
 			anios.add(String.valueOf(i));
 		}
 

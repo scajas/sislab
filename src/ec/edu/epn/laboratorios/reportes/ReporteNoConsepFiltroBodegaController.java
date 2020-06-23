@@ -69,7 +69,7 @@ public class ReporteNoConsepFiltroBodegaController implements Serializable {
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/CaracteristicaDAOImplement!ec.edu.epn.laboratorioBJ.beans.CaracteristicaDAO")
 	private CaracteristicaDAO caracteristicaI;
-	
+
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratoryDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO")
 	private LaboratoryDAO laboratoryI;
 
@@ -85,14 +85,13 @@ public class ReporteNoConsepFiltroBodegaController implements Serializable {
 
 	private List<String> anios = new ArrayList<String>();
 	private StreamedContent streamFile = null;
-	
+
 	private List<laboratory> bodegas = new ArrayList<laboratory>();
 	private laboratory bodega = new laboratory();
 
 	private String mes;
 	private String anio;
 	private String formato;
-	
 
 	// Metodo Init
 	@PostConstruct
@@ -102,17 +101,14 @@ public class ReporteNoConsepFiltroBodegaController implements Serializable {
 			anio = new String();
 			formato = new String();
 			llenarListaAño();
-			
 			bodega = new laboratory();
-			
 			bodegas = laboratoryI.ListarBodegaById((int) su.id_usuario_log);
 
 		} catch (Exception e) {
-	
+
 		}
 	}
 
-	
 	/****** Metodo para setear la fecha ****/
 	public String cambioFecha(Date fecha) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -194,7 +190,7 @@ public class ReporteNoConsepFiltroBodegaController implements Serializable {
 			Connection con = conexionSQL.Conexion();
 			return con;
 		} catch (Exception e) {
-	
+
 		}
 		return null;
 	}
@@ -206,7 +202,7 @@ public class ReporteNoConsepFiltroBodegaController implements Serializable {
 		String[] partsFecha = fecha.split("-");
 		int anio = Integer.valueOf(partsFecha[0]);
 
-		for (int i = a1; i < anio; i++) {
+		for (int i = a1; i <= anio; i++) {
 			anios.add(String.valueOf(i));
 		}
 
@@ -225,10 +221,8 @@ public class ReporteNoConsepFiltroBodegaController implements Serializable {
 			}
 		}
 
-
 		return mes;
 	}
-
 
 	public void setStreamFile(StreamedContent streamFile) {
 		this.streamFile = streamFile;

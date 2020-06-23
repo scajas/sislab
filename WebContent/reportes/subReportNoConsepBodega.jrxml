@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReportNoConsepBodega" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="07247824-2940-4550-9ced-5f04b3fb77ed">
-	<property name="ireport.zoom" value="1.1289478601075547"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.zoom" value="1.5026296018031566"/>
+	<property name="ireport.x" value="24"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="anio" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -304,7 +304,7 @@ ORDER BY nombre_pr]]>
 		<groupHeader>
 			<band height="21">
 				<textField>
-					<reportElement mode="Opaque" x="0" y="0" width="555" height="20" backcolor="#929292" uuid="9b2d420d-862e-4207-bf6b-04d39e08a8ab"/>
+					<reportElement mode="Opaque" x="0" y="1" width="555" height="20" backcolor="#929292" uuid="9b2d420d-862e-4207-bf6b-04d39e08a8ab"/>
 					<box>
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
@@ -321,7 +321,7 @@ ORDER BY nombre_pr]]>
 		</groupHeader>
 	</group>
 	<detail>
-		<band height="40">
+		<band height="39">
 			<textField>
 				<reportElement x="295" y="0" width="81" height="39" uuid="a4755065-3b65-4f40-9c32-a188066a70f5"/>
 				<box>
@@ -332,21 +332,7 @@ ORDER BY nombre_pr]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+ $F{nombre_pv}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="0" width="129" height="39" uuid="f851114a-f1c3-47cb-9b98-b12945120591"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" " +$F{nombre_pr}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{nombre_pv} == null)?"":$F{nombre_pv}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="129" y="0" width="83" height="39" uuid="7b82aeeb-a660-493f-a11a-901567e1c4b4"/>
@@ -358,19 +344,19 @@ ORDER BY nombre_pr]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+$F{case}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{case} == null)?"":$F{case}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="488" y="0" width="67" height="39" uuid="396bf53f-2416-42b3-985f-bf2e1ec812ae"/>
+				<reportElement x="488" y="0" width="45" height="39" uuid="396bf53f-2416-42b3-985f-bf2e1ec812ae"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+ $F{saldo}+ " " +$F{sigla_um}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" "+ $F{saldo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="431" y="0" width="57" height="39" uuid="82c227e8-b632-4d58-9888-f46470ef05e4"/>
@@ -394,7 +380,7 @@ ORDER BY nombre_pr]]>
 					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+ $F{factura}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{factura} == null)?"":$F{factura}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="376" y="0" width="55" height="39" uuid="fbe8c05e-01c9-4a3a-bc15-e766a90c40bf"/>
@@ -407,6 +393,57 @@ ORDER BY nombre_pr]]>
 				</box>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[" "+ $F{ingresos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="109" y="0" width="20" height="39" uuid="b3b100ac-9741-4803-8fae-344047f4539b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_gr}.equals("Analítico") ? "G.R" :
+($F{nombre_gr}.equals("Técnico") ? "T" :
+    ($F{nombre_gr}.equals("USP") ? "USP" : "")
+)]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="109" height="39" uuid="f851114a-f1c3-47cb-9b98-b12945120591"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " +$F{nombre_pr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="533" y="0" width="22" height="39" uuid="74a8bf9d-6153-4216-a27c-913972805b4d"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sigla_um}.equals("mL") ? "L" :
+( $F{sigla_um}.equals("L") ? "L" :
+    ($F{sigla_um}.equals("g") ? "kg" :
+      ($F{sigla_um}.equals("kg") ? "kg" :
+      "")
+    )
+  )]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

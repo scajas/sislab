@@ -78,7 +78,7 @@ public class ReporteNoConsepBodegaController implements Serializable {
 		String[] partsFecha = fecha.split("-");
 		int anio = Integer.valueOf(partsFecha[0]);
 
-		for (int i = a1; i < anio; i++) {
+		for (int i = a1; i <= anio; i++) {
 			anios.add(String.valueOf(i));
 		}
 
@@ -133,7 +133,7 @@ public class ReporteNoConsepBodegaController implements Serializable {
 			parametros.put("nombreMes", obtenerMes(Integer.parseInt(mes)));
 
 			String jrxmlFile = FacesContext.getCurrentInstance().getExternalContext()
-					.getRealPath("/reportes/noConsepBodega.jrxml");
+					.getRealPath("/reportes/reporteNoConcepBodega.jrxml");
 			InputStream input = new FileInputStream(new File(jrxmlFile));
 			JasperReport jasperReport = JasperCompileManager.compileReport(input);
 			parametros.put(JRParameter.REPORT_CONNECTION, coneccionSQL());
@@ -141,12 +141,12 @@ public class ReporteNoConsepBodegaController implements Serializable {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros);
 
 			File sourceFile = new File(jrxmlFile);
-			File destFile = new File(sourceFile.getParent(), "noConsepBodega.pdf");
+			File destFile = new File(sourceFile.getParent(), "reporteNoConcepBodega.pdf");
 
 			JasperExportManager.exportReportToPdfFile(jasperPrint, destFile.toString());
 			InputStream stream = new FileInputStream(destFile);
 
-			streamFile = new DefaultStreamedContent(stream, "application/pdf", "noConsepBodega.pdf");
+			streamFile = new DefaultStreamedContent(stream, "application/pdf", "reporteNoConcepBodega.pdf");
 
 		} catch (Exception e) {	
 

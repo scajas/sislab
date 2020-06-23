@@ -70,7 +70,7 @@ ORDER BY b.nombre_bg]]>
 		</groupHeader>
 	</group>
 	<title>
-		<band height="90" splitType="Stretch">
+		<band height="168" splitType="Stretch">
 			<staticText>
 				<reportElement x="112" y="12" width="357" height="20" uuid="2ae957fd-375c-4b02-9ad8-cfcbd0842997"/>
 				<textElement textAlignment="Center" verticalAlignment="Bottom">
@@ -116,45 +116,41 @@ ORDER BY b.nombre_bg]]>
 				<reportElement x="13" y="13" width="89" height="62" uuid="7b934e43-bfd8-49ff-a224-27bcaca017e9"/>
 				<imageExpression><![CDATA[$P{imagen}.toString()+ "images/logoSII/epnReporte.png"]]></imageExpression>
 			</image>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="68">
 			<staticText>
-				<reportElement x="0" y="0" width="82" height="20" uuid="5311f445-057a-48d9-a380-0c3ada932ea7"/>
+				<reportElement x="0" y="97" width="82" height="20" uuid="5311f445-057a-48d9-a380-0c3ada932ea7"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Bodega:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="20" width="82" height="20" uuid="a38045fe-336d-44dd-acb3-164c6cf02373"/>
+				<reportElement x="0" y="117" width="82" height="20" uuid="a38045fe-336d-44dd-acb3-164c6cf02373"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Responsable:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="40" width="82" height="20" uuid="f387f897-16c4-47c7-b9b0-b41fff821863"/>
+				<reportElement x="0" y="137" width="82" height="20" uuid="f387f897-16c4-47c7-b9b0-b41fff821863"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Mes:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="82" y="0" width="171" height="20" uuid="a45ff099-a744-4156-a4ef-bb40ab05fd31"/>
+				<reportElement x="82" y="97" width="171" height="20" uuid="a45ff099-a744-4156-a4ef-bb40ab05fd31"/>
 				<textFieldExpression><![CDATA[$F{nombre_bg}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="82" y="40" width="100" height="20" uuid="952e2c1d-d68b-4c09-bc2b-d624089793cb"/>
-				<textFieldExpression><![CDATA[$P{nombreMes} + " " + $P{anio}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="82" y="20" width="171" height="20" uuid="146704e9-5c19-47fd-b246-f5f12535cd7c"/>
+				<reportElement x="82" y="117" width="171" height="20" uuid="146704e9-5c19-47fd-b246-f5f12535cd7c"/>
 				<textFieldExpression><![CDATA[($F{nombres_pe}.equals("                                                  ") ? "" + $F{nombre_usuario} :  "" + $F{nombres_pe})]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="82" y="137" width="100" height="20" uuid="952e2c1d-d68b-4c09-bc2b-d624089793cb"/>
+				<textFieldExpression><![CDATA[$P{nombreMes} + " " + $P{anio}]]></textFieldExpression>
+			</textField>
 		</band>
-	</pageHeader>
+	</title>
 	<columnHeader>
 		<band height="35">
 			<staticText>
@@ -257,8 +253,8 @@ ORDER BY b.nombre_bg]]>
 			</staticText>
 		</band>
 	</columnHeader>
-	<pageFooter>
-		<band height="42" splitType="Stretch">
+	<lastPageFooter>
+		<band height="46">
 			<textField>
 				<reportElement x="0" y="0" width="100" height="20" uuid="a7fbc072-1705-47d4-ba21-dd1484a29356"/>
 				<textElement verticalAlignment="Middle">
@@ -275,5 +271,5 @@ ORDER BY b.nombre_bg]]>
 				<text><![CDATA[Quito,]]></text>
 			</staticText>
 		</band>
-	</pageFooter>
+	</lastPageFooter>
 </jasperReport>
