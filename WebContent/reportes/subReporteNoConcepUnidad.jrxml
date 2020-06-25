@@ -3,6 +3,7 @@
 	<property name="ireport.zoom" value="1.4641000000000035"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
 	<parameter name="anio" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
@@ -801,7 +802,7 @@ AND e."id_existencia" NOT IN (SELECT e."id_existencia"
 				AND us."nombre_usuario" = $P{nombreUsuario}
 				AND "cantidad_mov" NOT IN ('0'))
 GROUP BY "nombre_pr", "nombre_pv", e."id_existencia", "nombre_gr", "toi", "sigla_um", "aux1", se.saldo_e
-order by Producto]]>
+ORDER BY Producto]]>
 	</queryString>
 	<field name="id_existencia" class="java.lang.String"/>
 	<field name="ingresos" class="java.math.BigDecimal"/>
@@ -817,143 +818,155 @@ order by Producto]]>
 	<field name="nombre_gr" class="java.lang.String"/>
 	<field name="sigla_um" class="java.lang.String"/>
 	<field name="case" class="java.lang.String"/>
-	<detail>
-		<band height="38" splitType="Stretch">
-			<textField>
-				<reportElement x="0" y="0" width="93" height="38" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{producto}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="488" y="0" width="45" height="38" uuid="4df96ea3-64f3-42cb-a52c-d87baf99edc4"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{saldo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="378" y="0" width="55" height="38" uuid="a2a581c9-6bdc-4a0a-a1b4-ed82695aa253"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{ingresos}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="197" y="0" width="90" height="38" uuid="e5358c4a-53e5-4bdf-9b16-da62d2586ea9"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{factura} == null)?"":$F{factura}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="433" y="0" width="55" height="38" uuid="180ec6f8-819b-4003-8317-85bec0e7ebb0"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" "+$F{egresos}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="287" y="0" width="91" height="38" uuid="9caf48eb-1af2-492d-aa3c-9ee10daf8821"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{proveedor} == null)?"":$F{proveedor}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="113" y="0" width="84" height="38" uuid="fda539ab-9c3b-4ee6-9331-761de510823d"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($F{case} == null)?"N/A":$F{case}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="533" y="0" width="22" height="38" uuid="0d56d9f2-23cf-4e69-93d1-ab9896b3db6c"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{sigla_um}.equals("mL") ? "L" :
+	<variable name="sumaProducto" class="java.lang.Double" resetType="Group" resetGroup="Productos" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo}]]></variableExpression>
+	</variable>
+	<variable name="egresosTotales" class="java.lang.Double" resetType="Group" resetGroup="Productos" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos}]]></variableExpression>
+	</variable>
+	<variable name="ingresosTotales" class="java.lang.Double" resetType="Group" resetGroup="Productos" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos}]]></variableExpression>
+	</variable>
+	<group name="Productos">
+		<groupExpression><![CDATA[$F{producto}]]></groupExpression>
+	</group>
+	<group name="ProductosbySigla">
+		<groupExpression><![CDATA[$F{nombre_gr}.equals("Analítico") ? "G.R" :
+($F{nombre_gr}.equals("Técnico") ? "T" :
+    ($F{nombre_gr}.equals("USP") ? "USP" : "")
+)]]></groupExpression>
+		<groupFooter>
+			<band height="38">
+				<textField>
+					<reportElement x="0" y="0" width="93" height="38" uuid="d3a4360d-9e6c-4b67-86cc-baf675585c29"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" "+$F{producto}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="196" y="0" width="90" height="38" uuid="e5358c4a-53e5-4bdf-9b16-da62d2586ea9"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{factura} == null)?"":$F{factura}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="286" y="0" width="91" height="38" uuid="9caf48eb-1af2-492d-aa3c-9ee10daf8821"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{proveedor} == null)?"":$F{proveedor}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="112" y="0" width="84" height="38" uuid="fda539ab-9c3b-4ee6-9331-761de510823d"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{case} == null)?"N/A":$F{case}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="532" y="0" width="23" height="38" uuid="0d56d9f2-23cf-4e69-93d1-ab9896b3db6c"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sigla_um}.equals("mL") ? "L" :
 ( $F{sigla_um}.equals("L") ? "L" :
     ($F{sigla_um}.equals("g") ? "kg" :
       ($F{sigla_um}.equals("kg") ? "kg" :
       "")
     )
   )]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="93" y="0" width="20" height="38" uuid="f952c7ef-6de7-4480-868e-8c811fd588b5"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_gr}.equals("Analítico") ? "G.R" :
+				</textField>
+				<textField>
+					<reportElement x="92" y="0" width="20" height="38" uuid="f952c7ef-6de7-4480-868e-8c811fd588b5"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombre_gr}.equals("Analítico") ? "G.R" :
 ($F{nombre_gr}.equals("Técnico") ? "T" :
     ($F{nombre_gr}.equals("USP") ? "USP" : "")
 )]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="487" y="0" width="45" height="38" uuid="6906ad30-4225-46e9-a204-dd6682ae2f97"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{sumaProducto}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="377" y="0" width="55" height="38" uuid="7b1323ca-fbcc-4741-822e-f0611dd9ed10"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{ingresosTotales}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="432" y="0" width="55" height="38" uuid="040ea4ac-a9b4-433f-8384-2c931d270e1f"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{egresosTotales}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
 </jasperReport>
