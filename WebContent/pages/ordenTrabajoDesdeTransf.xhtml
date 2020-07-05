@@ -33,7 +33,17 @@
 
 	</script>
 		</h:head>
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
 
+		</p:dialog>
 
 		<h:body onload="rc();">
 
@@ -133,7 +143,7 @@
 
 										<h:outputLabel value="Fecha desde: "
 											style="color:white!important; font-size: 17px" />
-										<p:calendar id="fechaInicio"
+										<p:calendar id="fechaInicio" readonlyInput="true"
 											value="#{ordenTransferenciaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es"
 											onkeypress="return permite(event, 'none')"
@@ -146,7 +156,7 @@
 
 										<h:outputLabel value="Fecha hasta: "
 											style="color:white!important; font-size: 17px" />
-										<p:calendar id="fechaFinal"
+										<p:calendar id="fechaFinal" readonlyInput="true"
 											disabled="#{ordenTransferenciaController.disabledSelectItem() != true}"
 											value="#{ordenTransferenciaController.fechaFinal}"
 											mindate="#{ordenTransferenciaController.fechaInicio}"
@@ -792,8 +802,7 @@
 														style="color:white!important" />
 													<p:commandLink process="@form"
 														actionListener="#{ordenTransferenciaController.cargarPersonal(0)}"
-														onsuccess="PF('listadoPer').show()"
-														disabled="#{ordenTransferenciaController.disabledButtonPer() != true}">
+														onsuccess="PF('listadoPer').show()">
 														<center>
 															<h:graphicImage value="/images/archivos/busqueda.png"
 																class="btn bt-success" title="Buscar"
@@ -821,7 +830,7 @@
 
 													<h:outputLabel value="Fecha inicio: "
 														style="color:white!important; font-size: 17px" />
-													<p:calendar id="fechaInicio"
+													<p:calendar id="fechaInicio" readonlyInput="true"
 														value="#{ordenTransferenciaController.nuevoDetalleOrden.fechaInicioAnalisis}"
 														pattern="dd/MM/yyyy" locale="es"
 														onkeypress="return permite(event, 'none')"
@@ -829,17 +838,13 @@
 														effect="fadeIn" effectDuration="100" showOn="button"
 														size="24">
 														<p:ajax event="dateSelect" update="fechaFinal"
-															listener="#{ordenTransferenciaController.cambiarFecha()}"
-															async="false">
-														</p:ajax>
-														<p:ajax event="dateSelect" update="fechaFinal"
-															async="false" />
+															listener="#{ordenTransferenciaController.cambioFechas}" />
 
 													</p:calendar>
 
 													<h:outputLabel value="Fecha fin: "
 														style="color:white!important; font-size: 17px" />
-													<p:calendar id="fechaFinal"
+													<p:calendar id="fechaFinal" readonlyInput="true"
 														disabled="#{ordenTransferenciaController.disabledDate() != true}"
 														value="#{ordenTransferenciaController.nuevoDetalleOrden.fechaFinAnalisis}"
 														mindate="#{ordenTransferenciaController.nuevoDetalleOrden.fechaInicioAnalisis}"
@@ -848,15 +853,14 @@
 														requiredMessage="Fecha Final Requerida" navigator="true"
 														effect="fadeIn" effectDuration="100" showOn="button"
 														size="24">
-
+														<p:ajax event="dateSelect" update="fechaFinal" />
 													</p:calendar>
 
 													<p:outputLabel value="Muestra: "
 														style="color:white!important" />
 													<p:commandLink process="@form"
 														actionListener="#{ordenTransferenciaController.cargarMuestras(0)}"
-														onsuccess="PF('listadoM').show()"
-														disabled="#{ordenTransferenciaController.disabledButtonM() != true}">
+														onsuccess="PF('listadoM').show()">
 														<center>
 															<h:graphicImage value="/images/archivos/busqueda.png"
 																class="btn bt-success" title="Buscar"
@@ -1600,7 +1604,7 @@
 
 												<h:outputLabel value="Fecha inicio: "
 													style="color:white!important; font-size: 17px" />
-												<p:calendar id="fechaInicio"
+												<p:calendar id="fechaInicio" readonlyInput="true"
 													value="#{ordenTransferenciaController.detalleOrden.fechaInicioAnalisis}"
 													pattern="dd/MM/yyyy" locale="es"
 													onkeypress="return permite(event, 'none')"
@@ -1613,7 +1617,7 @@
 
 												<h:outputLabel value="Fecha fin: "
 													style="color:white!important; font-size: 17px" />
-												<p:calendar id="fechaFinal"
+												<p:calendar id="fechaFinal" readonlyInput="true"
 													disabled="#{ordenTransferenciaController.disabledDateEdit() != true}"
 													value="#{ordenTransferenciaController.detalleOrden.fechaFinAnalisis}"
 													mindate="#{ordenTransferenciaController.detalleOrden.fechaInicioAnalisis}"
@@ -2088,7 +2092,7 @@
 
 									<h:outputLabel value="Fecha Cierre: "
 										style="color:white!important; font-size: 17px" />
-									<p:calendar id="fechaCierre"
+									<p:calendar id="fechaCierre" readonlyInput="true"
 										value="#{ordenTransferenciaController.ordenTrabajo.fechaCierre}"
 										maxdate="#{ordenTransferenciaController.ordenTrabajo.fechaentregaOt}"
 										pattern="dd/MM/yyyy" locale="es"
@@ -2164,7 +2168,7 @@
 
 									<h:outputLabel value="Fecha Entrega: "
 										style="color:white!important; font-size: 17px" />
-									<p:calendar id="fechaEntrega"
+									<p:calendar id="fechaEntrega" readonlyInput="true"
 										value="#{ordenTransferenciaController.ordenTrabajo.fechaentregaOt}"
 										mindate="#{ordenTransferenciaController.ordenTrabajo.fechaCierre}"
 										pattern="dd/MM/yyyy" locale="es"
