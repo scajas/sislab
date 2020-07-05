@@ -33,7 +33,20 @@
 	</script>
 		</h:head>
 
-		<h:body>
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
+
+		</p:dialog>
+
+		<h:body >
+
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
@@ -523,19 +536,7 @@
 
 			</h:form>
 
-			<p:dialog modal="true" widgetVar="statusDialog"
-				header="Exportando Archivo" draggable="false" closable="false"
-				resizable="false">
-				<center>
-					<h:graphicImage value="/images/archivos/cargando.gif"
-						title="Descargando" style="border:0px solid #CAD6E0;" width="50"
-						height="50" />
-				</center>
-			</p:dialog>
-
 		</h:body>
-
-
 
 		<script type="text/javascript">
 			function start(){

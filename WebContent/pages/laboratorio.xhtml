@@ -31,11 +31,24 @@
 	</script>
 		</h:head>
 
-		<h:body>
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
+
+		</p:dialog>
+
+		<h:body >
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
 			<h:form id="formPrincipal">
+
 				<p:panel>
 					<p:fieldset legend="Laboratorio"
 						style="border-radius: 5px 5px 5px 5px;
@@ -171,7 +184,6 @@
 								layout="grid"
 								style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left;">
 
-
 								<p:outputLabel id="lblUnidad" for="unidad" value="Unidad: *"
 									style="color:white!important" />
 
@@ -180,11 +192,9 @@
 									filter="true" filterMatchMode="contains">
 									<p:ajax event="focus" process="unidad"
 										update="seleccionarImagen" />
-									<f:selectItem itemLabel="Por favor seleccione"
-										itemValue="#{laboratorioController.unidadSelectEmpty}" />
+									<f:selectItem  itemLabel="Por favor seleccione" itemValue="" />
 									<f:selectItems value="#{laboratorioController.unidades}"
 										itemLabel="#{uni.nombreU}" itemValue="#{uni}" var="uni">
-
 									</f:selectItems>
 
 									<p:ajax event="itemSelect"
@@ -206,8 +216,8 @@
 
 								<p:inputText id="centrocosto"
 									value="#{laboratorioController.nuevoLaboratorioLab.centrocostoL}"
-									size="30" maxlength="20" placeholder="ejm. B.18.15.11">
-									<p:ajax event="keyup" update="seleccionarImagen" />
+									size="30" maxlength="20">
+								
 								</p:inputText>
 
 								<p:outputLabel id="lblResponsable" for="responsable"
@@ -223,30 +233,27 @@
 
 								<p:inputText id="email"
 									value="#{laboratorioController.nuevoLaboratorioLab.emailL}"
-									maxlength="50" size="30" placeholder="ejemplo@yahoo.com">
+									maxlength="50" size="30">
 								</p:inputText>
 
 								<p:outputLabel id="lblDireccion" for="direccion"
 									value="Dirección: " style="color:white!important" />
 								<p:inputTextarea id="direccion"
 									value="#{laboratorioController.nuevoLaboratorioLab.direccionL}"
-									maxlength="100" rows="5" cols="30"
-									placeholder="ejm. Av. de La Prensa" />
+									maxlength="100" rows="5" cols="30" />
 
 								<p:outputLabel id="lblTelefono" for="telefono"
 									value="Teléfono: " style="color:white!important" />
 								<p:inputMask id="telefono"
 									value="#{laboratorioController.nuevoLaboratorioLab.telefonoL}"
-									maxlength="15" size="30" mask="999-9999"
-									placeholder="ejm. 123-4567">
+									maxlength="15" size="30" mask="999-9999">
 								</p:inputMask>
 
 								<p:outputLabel id="lblFax" for="fax" value="Fax: "
 									style="color:white!important" />
 								<p:inputMask id="fax"
 									value="#{laboratorioController.nuevoLaboratorioLab.faxL}"
-									maxlength="15" size="30" mask="999-9999"
-									placeholder="ejm. 123-4567">
+									maxlength="15" size="30" mask="999-9999">
 								</p:inputMask>
 
 								<p:outputLabel id="lblLeyendaPro" for="leyendaPro"
@@ -615,7 +622,7 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
-
+		
 		</script>
 
 	</ui:define>

@@ -32,6 +32,18 @@
 	</script>
 		</h:head>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
+
+		</p:dialog>
+
 		<h:body>
 
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
@@ -40,7 +52,7 @@
 			<h:form id="formprincipal">
 
 				<p:panel>
-					<p:fieldset legend="BODEGA"
+					<p:fieldset legend="Bodega"
 						style="border-radius: 5px 5px 5px 5px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
@@ -230,9 +242,9 @@
 								<p:commandButton value="Guardar" icon="fa fa-save"
 									style="width: 115px; margin: 10px"
 									actionListener="#{bodegaController.agregarBodega}"
-									oncomplete="PF('filterBodegaTable').filter();"
 									process="@this,formnuevoB"
-									update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoB">
+									update="@this,@([id$=messagesForm],[id$=formprincipal]),formnuevoB"
+									oncomplete="PF('filterBodegaTable').filter();">
 
 								</p:commandButton>
 

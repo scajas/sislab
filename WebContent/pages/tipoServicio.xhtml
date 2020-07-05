@@ -32,13 +32,27 @@
 	</script>
 		</h:head>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
 
-		<h:body>
+		</p:dialog>
+		<h:body onload="actualizar();">
 
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
 
 			<h:form id="formPrincipal">
-				<p:growl id="messagesForm" sticky="false" showDetail="true"
-					autoupdate="true" life="3000" />
+
+
+				<p:remoteCommand name="actualizar" update="@this" />
+
 
 				<p:panel>
 					<p:fieldset legend="Tipo Servicio"
@@ -320,6 +334,11 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
+
+			window.onbeforeunload = function(event) {
+				actualizar();
+			    event.returnValue = "";
+			};
 
 		</script>
 

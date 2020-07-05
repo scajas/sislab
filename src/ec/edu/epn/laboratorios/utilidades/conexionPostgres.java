@@ -20,7 +20,7 @@ public class conexionPostgres implements Serializable {
 			if (conexion != null)
 
 			Class.forName("org.postgresql.Driver");
-			conexion = DriverManager.getConnection("jdbc:postgresql://192.168.1.117:5432/bddcorpepn", userName,
+			conexion = DriverManager.getConnection("jdbc:postgresql://192.168.1.123:5432/bddcorpepn", userName,
 			password);
 
 		} catch (Exception e) {

@@ -31,11 +31,26 @@
 
 	</script>
 		</h:head>
-		<h:body>
+
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
+
+		</p:dialog>
+
+		<h:body onload="actualizar();">
 
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 			<h:form id="formPrincipal">
+
+				<p:remoteCommand name="actualizar" update="@this" />
 
 				<p:panel>
 					<p:fieldset legend="Servicio"
@@ -251,7 +266,7 @@
 								</p:selectOneMenu>
 
 								<p:outputLabel id="lblEstadoServicio" for="estadoServicio"
-									value="Estado: " style="color:white!important" />
+									value="Estado Servicio: *" style="color:white!important" />
 								<p:selectOneMenu id="estadoServicio" autoWidth="false"
 									value="#{servicioController.nuevoServicio.estadoServicio}"
 									size="30" effect="fold">
@@ -379,7 +394,7 @@
 									<p:selectOneMenu id="estadoServicio" autoWidth="false"
 										value="#{servicioController.servicio.estadoServicio}"
 										size="30" effect="fold">
-										<f:selectItem itemLabel="Por favor Seleccione..." itemValue="" />
+
 										<f:selectItem itemLabel="Activo" itemValue="ACTIVO" />
 										<f:selectItem itemLabel="Inactivo" itemValue="INACTIVO" />
 									</p:selectOneMenu>
@@ -446,6 +461,10 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
+			window.onbeforeunload = function(event) {
+				actualizar();
+			    event.returnValue = "";
+			};
 
 		</script>
 

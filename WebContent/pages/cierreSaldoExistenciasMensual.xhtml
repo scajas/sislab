@@ -10,6 +10,7 @@
 	xmlns:ps="http://primefaces.org/apark"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
+
 	<ui:define name="pageTitle">Saldo Existencia</ui:define>
 	<ui:define name="body">
 
@@ -32,72 +33,76 @@
 	</script>
 		</h:head>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
+
+		</p:dialog>
+
 		<h:body>
 
+			<p:growl id="messagesForm" sticky="false" showDetail="true"
+				autoupdate="true" life="3000" />
+
 			<h:form id="formprincipal">
-				<p:growl id="messagesForm" showDetail="true" autoupdate="true"
-					life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="Saldo Existencia Mensual"
-						style="border-radius: 5px 5px 5px 5px;
+						style="border-radius: 10px 10px 10px 10px;
 						-moz-border-radius: 10px 10px 10px 10px;
 						-webkit-border-radius: 10px 10px 10px 10px;
 						border: 0px solid #000000;
 						border-style: double;
 						border-width: 1px;
-						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1
-						;width: '90%';">
-						<br />
+						border-color: #11B2F1;border-style: double; border-width: 1px; border-color: #11B2F1">
 						<br />
 
-						<h:form>
-							<p:growl id="msgs" showDetail="true" />
+						<h:form id="formBuscar">
 							<center>
-								<p:panel header="Seleccione el mes"
-									style="margin-bottom:10px; width:70%; ">
-									<h:panelGrid columns="2" cellpadding="5">
-										<br />
-										<br />
-									</h:panelGrid>
+								<p:panel header="Seleccione el mes" style="width:50%">
 
-									<h:panelGrid columns="2" cellpadding="5" style="width: 30%; ">
+									<div class="ui-fluid">
+										<p:panelGrid columns="2" styleClass="ui-panelgrid-blank"
+											columnClasses="pnlGridFondoFilas,pnlGridAjusteDivs"
+											style="-webkit-box-shadow: -0px -0px 1px 0px rgba(0,0,0,0.75);text-align: left; width: 70%"
+											layout="grid">
 
-										<h:outputText for="selectmes" value="MES: "
-											style="font-weight:bold; float: center; " />
+											<h:outputLabel value="Mes: " for="mes"
+												style="font-size: 15px" />
 
-										<p:selectOneMenu id="MesRapido"
-											value="#{saldoExistenciaController.mes1}" style="width:150px">
-											<p:ajax listener="#{saldoExistenciaController.mesString}"
-												update="@([id$=mes]),@([id$=mes2])" />
-											<f:selectItem itemLabel="Seleccione..." itemValue="null" />
-											<f:selectItem itemLabel="Enero" itemValue="1" />
-											<f:selectItem itemLabel="Febrero" itemValue="2" />
-											<f:selectItem itemLabel="Marzo" itemValue="3" />
-											<f:selectItem itemLabel="Abril" itemValue="4" />
-											<f:selectItem itemLabel="Mayo" itemValue="5" />
-											<f:selectItem itemLabel="Junio" itemValue="6" />
-											<f:selectItem itemLabel="Julio" itemValue="7" />
-											<f:selectItem itemLabel="Agosto" itemValue="8" />
-											<f:selectItem itemLabel="Septiembre" itemValue="9" />
-											<f:selectItem itemLabel="Octubre" itemValue="10" />
-											<f:selectItem itemLabel="Noviembre" itemValue="11" />
-											<f:selectItem itemLabel="Diciembre" itemValue="12" />
+											<p:selectOneMenu id="mes"
+												value="#{saldoExistenciaController.mes1}">
+												<p:ajax listener="#{saldoExistenciaController.mesString}"
+													update="@([id$=mes]),@([id$=mes2])" />
+												<f:selectItem itemLabel="Seleccione..." itemValue="null" />
+												<f:selectItem itemLabel="Enero" itemValue="1" />
+												<f:selectItem itemLabel="Febrero" itemValue="2" />
+												<f:selectItem itemLabel="Marzo" itemValue="3" />
+												<f:selectItem itemLabel="Abril" itemValue="4" />
+												<f:selectItem itemLabel="Mayo" itemValue="5" />
+												<f:selectItem itemLabel="Junio" itemValue="6" />
+												<f:selectItem itemLabel="Julio" itemValue="7" />
+												<f:selectItem itemLabel="Agosto" itemValue="8" />
+												<f:selectItem itemLabel="Septiembre" itemValue="9" />
+												<f:selectItem itemLabel="Octubre" itemValue="10" />
+												<f:selectItem itemLabel="Noviembre" itemValue="11" />
+												<f:selectItem itemLabel="Diciembre" itemValue="12" />
 
-										</p:selectOneMenu>
+											</p:selectOneMenu>
 
-									</h:panelGrid>
-
-									<p:separator />
+										</p:panelGrid>
+									</div>
 
 								</p:panel>
 							</center>
 						</h:form>
-
 						<br />
-						<br />
-						<br />
-
 						<center>
 							<h:outputText value="ESCUELA POLITECNICA NACIONAL"
 								style="font-weight:bold" />
@@ -132,115 +137,115 @@
 						</div>
 						<br />
 						<br />
-						<p:separator />
+						<br />
 
-						<p:dataTable id="tblTipoProveedor"
+						<p:dataTable id="tblSaldo"
 							value="#{saldoExistenciaController.existencias}" var="salExis"
-							widgetVar="filterSaldoExisTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
-							scrollable="true" scrollHeight="550">
-
+							scrollable="true" scrollHeight="200" stickyHeader="true" resizableColumns="true">
 							<f:facet name="header">
-            				Saldo Existencias            		
+								<h:outputText value="Saldo Existencia" />
 							</f:facet>
 
-							<p:column style="width: 10%">
+							<p:column width="12%">
 								<f:facet name="header">
-									<h:outputText value="ID Existencia"></h:outputText>
+									<h:outputText value="ID Existencia" />
 								</f:facet>
 								<h:outputText value="#{salExis.idExistencia}" />
 							</p:column>
 
-							<p:column style="width: 16%">
+							<p:column>
 								<f:facet name="header">
-									<h:outputText value="Producto"></h:outputText>
+									<h:outputText value="Producto" />
 								</f:facet>
 								<h:outputText value="#{salExis.producto.nombrePr}" />
 							</p:column>
 
-							<p:column style="width: 10%">
+							<p:column width="7%">
 								<f:facet name="header">
-									<h:outputText value="Saldo"></h:outputText>
+									<h:outputText value="Saldo" />
 								</f:facet>
 								<h:outputText value="#{salExis.cantidadE}" />
 							</p:column>
 
-							<p:column style="width: 5%">
+							<p:column width="6%">
 								<f:facet name="header">
-									<h:outputText value="UM"></h:outputText>
+									<h:outputText value="UM" />
 								</f:facet>
 								<h:outputText value="#{salExis.unidadmedida.siglaUm}" />
 							</p:column>
 
-							<p:column style="width: 8%">
+							<p:column width="8%">
 								<f:facet name="header">
-									<h:outputText value="Grado"></h:outputText>
+									<h:outputText value="Grado" />
 								</f:facet>
 								<h:outputText value="#{salExis.grado.nombreGr}" />
 							</p:column>
 
-
-							<p:column style="width: 16%">
+							<p:column>
 								<f:facet name="header">
-									<h:outputText value="Producto"></h:outputText>
+									<h:outputText value="Tipo de Producto" />
 								</f:facet>
 								<h:outputText
 									value="#{salExis.producto.tipoproducto.nombreTprod}" />
 							</p:column>
-
 						</p:dataTable>
 
 						<br />
+						<br />
 						<center>
-							<div style="text-align: center">
-								<p:commandButton icon="ui-icon-check"
-									onclick="PF('cdGuardarSaldoE').show();" value="Guardar" />
-								<p:spacer width="60" height="10" />
+							<table width="200" style="BORDER: #000000 0px solid;"
+								align="center">
+								<tr align="center">
+									<td><p:commandLink process="@this" icon="ui-icon-check"
+											onclick="PF('nuevoSaldo').show();">
+
+											<h:graphicImage value="/images/archivos/guardar.png"
+												title="Nuevo" style="border:0px solid #CAD6E0;" width="35"
+												height="35" />
+
+										</p:commandLink>
+										<p>
+											<strong>Guardar</strong>
+										</p></td>
+									<td><h:commandLink>
+											<h:graphicImage value="/images/excel.png" width="35px"
+												height="35px" />
+
+											<pe:exporter type="xlsx" target="tblSaldo"
+												fileName="SaldoExistencia" orientation="Landscape"
+												datasetPadding="4" facetBackground="#778d9b"
+												facetFontSize="13" facetFontStyle="BOLD" cellFontSize="10" />
 
 
+										</h:commandLink>
+										<p>
+											<strong>Exportar</strong>
+										</p></td>
 
-								<p:commandLink id="excelExport"
-									onclick="PrimeFaces.monitorDownload(start, stop);">
-									<h:graphicImage value="/images/excel.png" width="35px"
-										height="35px" />
-									<pe:exporter type="xlsx" target="tblTipoProveedor"
-										fileName="Saldo Existencias"
-										tableTitle="ESCUELA POLITECNICA NACIONAL SALDO EXISTENCIA MENSUAL"
-										pageOnly="true" selectionOnly="false" orientation="Landscape"
-										datasetPadding="4" />
-								</p:commandLink>
 
-							</div>
-
+								</tr>
+							</table>
 						</center>
 					</p:fieldset>
+
 				</p:panel>
-
 			</h:form>
 
-			<p:dialog modal="true" widgetVar="statusDialog" header="Descargando"
-				draggable="false" closable="false" resizable="false">
-				<p:graphicImage name="/images/archivos/cargando.gif" />
-			</p:dialog>
-
-			<!-- Panel par Guardar -->
-
-			<h:form id="guardarSaldoE">
-				<p:confirmDialog showEffect="fade" hideEffect="fade"
-					widgetVar="cdGuardarSaldoE" header="Confirmar..." id="mes2"
-					message="Esta seguro que desea Guardar los Saldos del mes: #{saldoExistenciaController.mesvalue}">
-					<center>
-						<p:commandButton value="Aceptar"
-							onsuccess="PF('cdGuardarSaldoE').hide();"
-							actionListener="#{saldoExistenciaController.guardar}"
-							icon="pi pi-check" type="submit"
-							update="@this,@([id$=messagesForm],[id$=formprincipal])" />
-						<p:commandButton value="Cancelar"
-							onclick="PF('cdGuardarSaldoE').hide();" type="button" />
-					</center>
-				</p:confirmDialog>
-
-			</h:form>
+			<p:confirmDialog showEffect="fade" hideEffect="fade"
+				widgetVar="nuevoSaldo" header="Cierre Saldo Mensual"
+				message="¿Desea Cerrar los Saldos del mes : #{saldoExistenciaController.mesvalue} ?">
+				<center>
+					<p:commandButton value="Aceptar"
+						onsuccess="PF('nuevoSaldo').hide();"
+						actionListener="#{saldoExistenciaController.guardar}"
+						icon="fa fa-save" type="submit"
+						update="@this,@([id$=messagesForm],[id$=formprincipal])" />
+					<p:commandButton value="Atrás " style="width: 115px; margin: 5px"
+						icon="fa fa-arrow-left" onclick="PF('nuevoSaldo').hide();"
+						process="@none" />
+				</center>
+			</p:confirmDialog>
 
 		</h:body>
 
@@ -254,6 +259,16 @@
 			}
 
 		</script>
-
+		<style type="text/css">
+		.ui-dialog-content {
+			max-width: 1500px !important;
+			max-height: 500px !important;
+			margin-bottom: 5px !important;
+		}
+		
+		.ui-datatable-scrollable-theadclone {
+			visibility: collapse;
+		}
+</style>
 	</ui:define>
 </ui:composition>

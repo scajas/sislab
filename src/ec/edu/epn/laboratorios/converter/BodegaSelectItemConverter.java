@@ -15,7 +15,7 @@ public class BodegaSelectItemConverter extends SelectItemsConverter{
 	@Override
 	public String getAsString(FacesContext context, UIComponent component,
 			Object value) {
-		String id = (value instanceof laboratory) ? ((laboratory) value).getIdBodega()
+		Integer id = (value instanceof laboratory) ? ((laboratory) value).getIdBodega()
 				: null;
 		return (id != null) ? String.valueOf(id) : null;
 
