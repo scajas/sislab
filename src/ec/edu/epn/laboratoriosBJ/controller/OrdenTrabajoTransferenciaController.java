@@ -279,6 +279,11 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 			/** Detalle Orden Trabajo **/
 			limpiarDetalleOT();
 			listaDetalleOrden.clear();
+			listaDetalleOrden.clear();
+			listaDetalleOrdenTemp.clear();
+			listaDetalleOrdenAdd.clear();
+			listaDetalleOrdenDelete.clear();
+			listaDetalleOrdenMuestra.clear();
 			// listaOrdenTrabajo = new ArrayList<OrdenTrabajo>();
 
 			setTempIdServ(0);
@@ -311,17 +316,20 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 			transferenciaInterna = new TransferenciaInterna();
 			selectTransferenciaInterna = new TransferenciaInterna();
 			transferenciaInternas.clear();
-			filtroAllServicios.clear();
+		
 
 			// Muestra
 			muestras.clear();
 
 			// Personal
 			personalLabs.clear();
+			filtroPersonalLabs.clear();
+			tempPersonalLabs.clear();
 			personalLab = new PersonalLab();
 
-			//muestraDT
+			// muestraDT
 			listaDetalleOrdenMuestra.clear();
+			filtroMuestras.clear();
 			disabledSelectItem();
 
 		} catch (Exception e) {
@@ -339,8 +347,8 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 
 	public void guardarOT() {
 		try {
-			
-			if(getTempIdTablaM() == listaDetalleOrden.size()){
+
+			if (getTempIdTablaM() == listaDetalleOrden.size()) {
 				/** Creacion de ID Proforma **/
 				obtenerIDOT();
 
@@ -354,14 +362,14 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 				/** agregar a la vista **/
 				listaOrdenTrabajo.add(nuevoOrdenTrabajo);
 
-				mensajeInfo("Se ha guardado el nuevo orden de trabajo con el id (" + nuevoOrdenTrabajo.getIdOrden() + ")");
+				mensajeInfo(
+						"Se ha guardado el nuevo orden de trabajo con el id (" + nuevoOrdenTrabajo.getIdOrden() + ")");
 
 				/** Limpiar todos los campos **/
 				limpiarTodosCampos();
-			}else{
+			} else {
 				mensajeError("Aun quedan servicios pendientes que registrar");
 			}
-				
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -694,7 +702,7 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 
 		mensajeInfo("Se ha agregado exitosamente.");
 		limpiarDetalleOT();
-		
+
 		if (nuevoOrdenTrabajo.getNumeromuestraOt() == 0) {
 			nuevoDetalleOrden.setMuestra(ordenTrabajoI.muestraDefault());
 		}
@@ -842,6 +850,13 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 				System.out.println("Entra al else");
 			}
 		}
+	}
+	
+	public void cambioFechas(){
+		System.out.println("Hola!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("Esta es la fecha:" + cambioFecha(nuevoDetalleOrden.getFechaInicioAnalisis()));
+		nuevoDetalleOrden.setFechaFinAnalisis(nuevoDetalleOrden.getFechaInicioAnalisis());
+		
 	}
 
 	public void cambiarIDDetalleOT(OrdenTrabajo o) {
@@ -1117,7 +1132,6 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 			System.out.println("Lista de detallePro: " + listaDetalleOrden.size());
 			context.execute("PF('" + panel + "').show();");
 		}
-	
 
 	}
 
@@ -1159,14 +1173,14 @@ public class OrdenTrabajoTransferenciaController implements Serializable {
 			if (nuevoOrdenTrabajo.getNumeromuestraOt() == 0) {
 				nuevoDetalleOrden.setMuestra(ordenTrabajoI.muestraDefault());
 				setTempIdTablaM(servicios.size());
-			}else{
+			} else {
 				setTempIdTablaM(servicios.size() * nuevoOrdenTrabajo.getNumeromuestraOt());
 			}
 			cargarServicios();
 			cambiarIdTempPanel(0, 0);
 			context.execute("PF('detalleOT').show();");
 			context.update("formDetalleOT");
-			//context.execute("PF('filterServiciosTable').filter();");
+			// context.execute("PF('filterServiciosTable').filter();");
 		}
 	}
 

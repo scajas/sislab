@@ -216,6 +216,13 @@ public class OrdenInternaController implements Serializable {
 		nuevoOrdenTrabajo.setFechaordenOt(new Date());
 
 	}
+	
+	public void cambioFechas(){
+		System.out.println("Hola!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("Esta es la fecha:" + cambioFecha(nuevoDetalleOrden.getFechaInicioAnalisis()));
+		nuevoDetalleOrden.setFechaFinAnalisis(nuevoDetalleOrden.getFechaInicioAnalisis());
+		
+	}
 
 	public void limpiarDetalleOT() {
 		nuevoDetalleOrden = new Detalleorden();
@@ -250,17 +257,23 @@ public class OrdenInternaController implements Serializable {
 			// Servicio
 			servicio = new Servicio();
 			nuevoServicio = new Servicio();
-			servicios = new ArrayList<Servicio>();
-			filtroServicios = new ArrayList<Servicio>();
-			allServicios = new ArrayList<Servicio>();
-			filtroAllServicios = new ArrayList<Servicio>();
+			servicios.clear();
+			filtroServicios.clear();
+			allServicios.clear();
+			filtroAllServicios.clear();
 
 			// Cliente
 			cliente = new Cliente();
-			clientes = new ArrayList<Cliente>();
-			filtroClientes = new ArrayList<Cliente>();
+			clientes.clear();
+			filtroClientes.clear();
 
 			disabledSelectItem();
+			
+			//personal
+			personalLabs.clear();
+			personalLab = new PersonalLab();
+			filtroPersonalLabs.clear();
+			tempPersonalLabs.clear();
 
 		} catch (Exception e) {
 			e.printStackTrace();

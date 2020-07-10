@@ -34,8 +34,20 @@
 	</script>
 		</h:head>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
 
-		<h:body onload="rc();">
+		</p:dialog>
+
+
+		<h:body onload="rc();actualizar();">
 
 			<p:growl id="messagesForm" showDetail="true" sticky="false"
 				autoupdate="true" life="3000" />
@@ -44,6 +56,8 @@
 				<p:remoteCommand name="rc"
 					action="#{ordenInternaController.limpiarTodosCampos()}"
 					update="formprincipal" />
+				<p:remoteCommand name="actualizar"
+					update="@this,@([id$=messagesForm],[id$=formprincipal])" />
 
 				<p:panel>
 
@@ -107,7 +121,7 @@
 
 										<h:outputLabel value="Fecha desde: "
 											style="color:white!important; font-size: 17px" />
-										<p:calendar id="fechaInicio"
+										<p:calendar id="fechaInicio" readonlyInput="true"
 											value="#{ordenInternaController.fechaInicio}"
 											pattern="dd/MM/yyyy" locale="es"
 											onkeypress="return permite(event, 'none')"
@@ -120,7 +134,7 @@
 
 										<h:outputLabel value="Fecha hasta: "
 											style="color:white!important; font-size: 17px" />
-										<p:calendar id="fechaFinal"
+										<p:calendar id="fechaFinal" readonlyInput="true"
 											disabled="#{ordenInternaController.disabledSelectItem() != true}"
 											value="#{ordenInternaController.fechaFinal}"
 											mindate="#{ordenInternaController.fechaInicio}"
@@ -798,28 +812,28 @@
 
 													<h:outputLabel value="Fecha inicio: "
 														style="color:white!important; font-size: 17px" />
-													<p:calendar id="fechaInicio"
+													<p:calendar id="fechaInicio" readonlyInput="true"
 														value="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
 														pattern="dd/MM/yyyy" locale="es"
 														onkeypress="return permite(event, 'none')"
 														requiredMessage="Fecha Inicial Requerida" navigator="true"
 														effect="fadeIn" effectDuration="100" showOn="button"
 														size="24">
-														<p:ajax event="dateSelect" update="fechaFinal" />
-														<p:ajax event="keyup" update="fechaFinal" />
+														<p:ajax event="dateSelect" update="fechaFinal" listener="#{ordenInternaController.cambioFechas}"/>
+
 													</p:calendar>
 
 													<h:outputLabel value="Fecha fin: "
 														style="color:white!important; font-size: 17px" />
-													<p:calendar id="fechaFinal"
+													<p:calendar id="fechaFinal" readonlyInput="true"
 														disabled="#{ordenInternaController.disabledDate() != true}"
 														value="#{ordenInternaController.nuevoDetalleOrden.fechaFinAnalisis}"
 														mindate="#{ordenInternaController.nuevoDetalleOrden.fechaInicioAnalisis}"
-														pattern="dd/MM/yyyy" locale="es" required="true"
+														pattern="dd/MM/yyyy" locale="es"
 														onkeypress="return permite(event, 'none')"
-														requiredMessage="Fecha Final Requerida" navigator="true"
-														effect="fadeIn" effectDuration="100" showOn="button"
-														size="24">
+														navigator="true" effect="fadeIn" effectDuration="100"
+														showOn="button" size="24">
+														<p:ajax event="dateSelect" update="fechaFinal" />
 
 													</p:calendar>
 												</p:panelGrid>
@@ -1543,7 +1557,7 @@
 
 												<h:outputLabel value="Fecha inicio: "
 													style="color:white!important; font-size: 17px" />
-												<p:calendar id="fechaInicio"
+												<p:calendar id="fechaInicio" readonlyInput="true" 
 													value="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
 													pattern="dd/MM/yyyy" locale="es"
 													onkeypress="return permite(event, 'none')"
@@ -1556,7 +1570,7 @@
 
 												<h:outputLabel value="Fecha fin: "
 													style="color:white!important; font-size: 17px" />
-												<p:calendar id="fechaFinal"
+												<p:calendar id="fechaFinal" readonlyInput="true"
 													disabled="#{ordenInternaController.disabledDateEdit() != true}"
 													value="#{ordenInternaController.detalleOrden.fechaFinAnalisis}"
 													mindate="#{ordenInternaController.detalleOrden.fechaInicioAnalisis}"
@@ -1817,7 +1831,7 @@
 
 									<h:outputLabel value="Fecha Cierre: "
 										style="color:white!important; font-size: 17px" />
-									<p:calendar id="fechaCierre"
+									<p:calendar id="fechaCierre" readonlyInput="true"
 										value="#{ordenInternaController.ordenTrabajo.fechaCierre}"
 										maxdate="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
 										pattern="dd/MM/yyyy" locale="es"
@@ -1893,7 +1907,7 @@
 
 									<h:outputLabel value="Fecha Entrega: "
 										style="color:white!important; font-size: 17px" />
-									<p:calendar id="fechaEntrega"
+									<p:calendar id="fechaEntrega" readonlyInput="true"
 										value="#{ordenInternaController.ordenTrabajo.fechaentregaOt}"
 										mindate="#{ordenInternaController.ordenTrabajo.fechaCierre}"
 										pattern="dd/MM/yyyy" locale="es"

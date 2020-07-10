@@ -31,19 +31,28 @@
 
 	</script>
 		</h:head>
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
 
+		</p:dialog>
 
 		<h:body onload="rc();">
 
+			<p:growl id="messagesForm" showDetail="true" sticky="true"
+				autoupdate="true" life="1000" />
 
 			<h:form id="formprincipal">
 
 				<p:remoteCommand name="rc"
 					action="#{trabajoAnalistaNoActivoController.limpiarTodosCampos()}"
 					update="formprincipal" />
-
-				<p:growl id="messagesForm" showDetail="true" sticky="true"
-					autoupdate="true" life="1000" />
 
 				<p:panel>
 					<p:fieldset legend="Trabajo Analista"
@@ -59,8 +68,8 @@
 						<br />
 
 						<p:dataTable id="tblTrabajoAnalista"
-							value="#{trabajoAnalistaNoActivoController.detallesOrden}" var="detalleO"
-							widgetVar="filtereditarMetodoOTable"
+							value="#{trabajoAnalistaNoActivoController.detallesOrden}"
+							var="detalleO" widgetVar="filtereditarMetodoOTable"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							rows="10" paginator="true"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -100,7 +109,7 @@
 								<h:outputText
 									value="#{trabajoAnalistaNoActivoController.servicio(detalleO.idServicio)}" />
 							</p:column>
-							
+
 							<p:column headerText="Metodo"
 								filterBy="#{trabajoAnalistaNoActivoController.metodo(detalleO.idMetodo)}"
 								filterStyle="width: 80%">
@@ -221,7 +230,8 @@
 									<p:selectOneMenu id="metodo"
 										value="#{trabajoAnalistaNoActivoController.detalleOrden.idMetodo}">
 
-										<f:selectItems value="#{trabajoAnalistaNoActivoController.metodos}"
+										<f:selectItems
+											value="#{trabajoAnalistaNoActivoController.metodos}"
 											itemLabel="#{metodo.nombreMt}" itemValue="#{metodo.idMetodo}"
 											var="metodo">
 										</f:selectItems>
