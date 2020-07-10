@@ -155,7 +155,7 @@ public class LaboratorioController implements Serializable {
 
 		boolean resultado = false;
 
-		if (unidadSelect.getNombreU() == null) {
+		if (unidadSelect.getNombreU() == "") {
 
 			utilidades.mensajeError("Debe Seleccionar la Unidad.");
 			resultado = false;
@@ -175,14 +175,6 @@ public class LaboratorioController implements Serializable {
 		}
 		if (buscarLaboratorioLab(nuevoLaboratorioLab.getNombreL()) == true) {
 			utilidades.mensajeError("El laboratorio (" + nuevoLaboratorioLab.getNombreL() + ") ya existe.");
-			resultado = false;
-
-		} else {
-			resultado = true;
-		}
-		if (nuevoLaboratorioLab.getCentrocostoL() == null || nuevoLaboratorioLab.getCentrocostoL().equals("")) {
-
-			utilidades.mensajeError("Debe Ingresar el Centro de Costo.");
 			resultado = false;
 
 		} else {

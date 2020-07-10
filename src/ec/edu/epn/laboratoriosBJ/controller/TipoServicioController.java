@@ -48,7 +48,7 @@ public class TipoServicioController implements Serializable {
 
 	private List<Tiposervicio> filtroTipoServicio = new ArrayList<>();
 	private Utilidades utilidades;
-	
+
 	// Metodo Init
 	@PostConstruct
 	public void init() {
@@ -108,19 +108,20 @@ public class TipoServicioController implements Serializable {
 
 				context.execute("PF('modificarTipoServicio').hide();");
 
-				utilidades.mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo(
+						"El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
 
 			} else if (buscarTipoServicio(tipoServicio.getNombreTs()) == false) {
 
 				tipoServicioI.update(tipoServicio);
 				tipoServicios = tipoServicioI.getListTS();
-
-				utilidades.mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
+				utilidades.mensajeInfo(
+						"El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha actualizado exitosamente");
 
 				context.execute("PF('modificarTipoServicio').hide();");
 
 			} else {
-				tipoServicios = tipoServicioI.getListTS();
+
 				utilidades.mensajeError("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") ya existe.");
 			}
 
@@ -137,7 +138,8 @@ public class TipoServicioController implements Serializable {
 			tipoServicioI.delete(tipoServicio);
 			tipoServicios = tipoServicioI.getListTS();
 
-			utilidades.mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha eliminado exitosamente");
+			utilidades
+					.mensajeInfo("El Tipo Servicio (" + tipoServicio.getNombreTs() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
 
@@ -160,7 +162,7 @@ public class TipoServicioController implements Serializable {
 		try {
 			tipoServicios = tipoServicioI.getAll(Tiposervicio.class);
 		} catch (Exception e) {
-		
+
 		}
 
 		boolean resultado = false;

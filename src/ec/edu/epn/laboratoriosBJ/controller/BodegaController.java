@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 import ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO;
+import ec.edu.epn.laboratorioBJ.beans.UnidadDAO;
+import ec.edu.epn.laboratorioBJ.entities.UnidadLabo;
 import ec.edu.epn.laboratorioBJ.entities.laboratory;
 import ec.edu.epn.laboratorios.utilidades.Utilidades;
 import ec.edu.epn.seguridad.VO.SesionUsuario;
@@ -35,8 +37,10 @@ public class BodegaController implements Serializable {
 	/** SERIVICIOS **/
 
 	@EJB(lookup = "java:global/ServiciosSeguridadEPN/LaboratoryDAOImplement!ec.edu.epn.laboratorioBJ.beans.LaboratoryDAO")
-
 	private LaboratoryDAO laboratoryI;
+
+	@EJB(lookup = "java:global/ServiciosSeguridadEPN/UnidadDAOImplement!ec.edu.epn.laboratorioBJ.beans.UnidadDAO")
+	private UnidadDAO unidadI;
 
 	// variables de la clase
 	private laboratory bodega;
@@ -52,7 +56,7 @@ public class BodegaController implements Serializable {
 	public void init() {
 		try {
 
-			bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
+			updateTable();
 			bodega = new laboratory();
 			nuevoBodega = new laboratory();
 			utilidades = new Utilidades();
@@ -60,6 +64,20 @@ public class BodegaController implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void updateTable() {
+
+		try {
+			UnidadLabo uni = new UnidadLabo();
+			uni = (UnidadLabo) unidadI.getById(UnidadLabo.class, su.UNIDAD_USUARIO_LOGEADO);
+			System.out.println("unidad obtenida" + uni.getIdUnidad());
+			bodegas = laboratoryI.ListarBodegaById(uni.getIdUnidad());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/****** Nuevo ****/
@@ -78,7 +96,7 @@ public class BodegaController implements Serializable {
 				Long iduser = su.id_usuario_log;
 				nuevoBodega.setIdUsuario(iduser.intValue());
 				laboratoryI.save(nuevoBodega);
-				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
+				updateTable();
 				utilidades.mensajeInfo("La Bodega (" + nuevoBodega.getNombreBg() + ") se ha almacenado exitosamente");
 				nuevoBodega = new laboratory();
 				context.execute("PF('nuevoB').hide();");
@@ -98,20 +116,19 @@ public class BodegaController implements Serializable {
 
 			if (bodega.getNombreBg().equals(getNombreB())) {
 				laboratoryI.update(bodega);
-				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
+				updateTable();
 
-				utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
+				utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
 			} else if (buscarBodega(bodega.getNombreBg()) == false) {
 				laboratoryI.update(bodega);
-				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
-
-				utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ")se ha actualizado exitosamente");
+				updateTable();
+				utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ") se ha actualizado exitosamente");
 				context.execute("PF('modificarB').hide();");
 
 			} else {
-				bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
+
 				utilidades.mensajeError("La Bodega (" + bodega.getNombreBg() + ") ya existe.");
 			}
 
@@ -124,8 +141,7 @@ public class BodegaController implements Serializable {
 		try {
 
 			laboratoryI.delete(bodega);
-			bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
-
+			updateTable();
 			utilidades.mensajeInfo("La Bodega (" + bodega.getNombreBg() + ") se ha eliminado exitosamente");
 
 		} catch (Exception e) {
@@ -141,7 +157,7 @@ public class BodegaController implements Serializable {
 
 	private boolean buscarBodega(String valor) {
 		try {
-			bodegas = laboratoryI.ListarBodegaById(su.UNIDAD_USUARIO_LOGEADO);
+			updateTable();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -32,8 +32,19 @@
 	</script>
 		</h:head>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
 
-		<h:body>
+		</p:dialog>
+
+		<h:body >
 
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
@@ -71,7 +82,7 @@
 						<br />
 						<br />
 
-						<p:dataTable id="tblGrado" value="#{gradoController.grados}"
+						<p:dataTable id="tblGrados" value="#{gradoController.grados}"
 							var="grado" widgetVar="tblGrados"
 							emptyMessage="No se pudo encontrar ninguna coincidencia"
 							filteredValue="#{gradoController.filtroGrado}"
@@ -95,17 +106,16 @@
 
 							<!-- **************************  Boton Modificar   *************************** -->
 
-							<p:column headerText="Acciones">
+							<p:column headerText="Acciones" width="10%">
 								<center>
 									<p:commandLink
 										action="#{gradoController.pasarNombre(grado.nombreGr)}"
-										update=":formModificarGrado,@this" process="@this,tblGrado"
+										update=":formModificarGrado,@this" process="@this,tblGrados"
 										oncomplete="PF('modificarGrado').show();">
 
 										<h:graphicImage value="/images/archivos/editar.png"
 											title="Modificar" style="border:0px solid #CAD6E0;"
 											width="35" height="35" />
-
 
 										<f:setPropertyActionListener target="#{gradoController.grado}"
 											value="#{grado}">
@@ -285,7 +295,7 @@
 
 			<h:form id="eliminarG">
 				<p:confirmDialog
-					message="¿Esta seguro(a) que desea eliminar el Grado seleccionado"
+					message="¿Esta seguro(a) que desea eliminar el Grado seleccionado?"
 					header="Eliminar Grado" severity="info" widgetVar="eliminarG">
 					<center>
 
@@ -308,8 +318,6 @@
 
 		</h:body>
 
-
-
 		<script type="text/javascript">
 			function start(){
 			PF('statusDialog').show();
@@ -318,7 +326,7 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
-
+			
 		</script>
 
 	</ui:define>

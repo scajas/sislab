@@ -8,7 +8,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:v="http://validators.epn.edu.ec.com"
 	xmlns:ps="http://primefaces.org/apark">
- 
+
 
 	<ui:define name="pageTitle">Existencias</ui:define>
 	<ui:define name="body">
@@ -32,13 +32,26 @@
 	</script>
 		</h:head>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
 
-		<h:body>
+		</p:dialog>
+
+		<h:body onload="actualizar();">
 
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
 
 			<h:form id="formPrincipal">
+
+				<p:remoteCommand name="actualizar" update="@this" />
 
 				<p:panel>
 					<p:fieldset legend="Existencias"
@@ -523,8 +536,8 @@
 								<center>
 									<f:facet name="title">
 										<center>
-											<p:graphicImage value="/images/product.png"
-												width="25" height="25" />
+											<p:graphicImage value="/images/product.png" width="25"
+												height="25" />
 										</center>
 
 										<h:outputText value="Productos" />
@@ -574,8 +587,8 @@
 								<center>
 									<f:facet name="title">
 										<center>
-											<p:graphicImage value="/images/configurar.png"
-												width="25" height="25" />
+											<p:graphicImage value="/images/configurar.png" width="25"
+												height="25" />
 										</center>
 
 										<h:outputText value="Info. Técnica" />
@@ -714,7 +727,7 @@
 											</f:selectItems>
 										</p:selectOneMenu>
 
-										<p:outputLabel id="lblTipo" for="tipo" value="Tipo: * "
+										<p:outputLabel id="lblTipo" for="tipo" value="Tipo de Producto: * "
 											style="color:white!important" />
 										<p:selectOneMenu id="tipo"
 											value="#{existenciasController.tipoproductoSelect}">
@@ -730,7 +743,8 @@
 											style="color:white!important" />
 										<p:selectOneMenu id="pureza"
 											value="#{existenciasController.purezaSelect}">
-											<f:selectItem itemLabel="Por favor seleccione" itemValue="#{existenciasController.pureza}" />
+											<f:selectItem itemLabel="Por favor seleccione"
+												itemValue="#{existenciasController.pureza}" />
 											<f:selectItems value="#{existenciasController.purezas}"
 												itemLabel="#{pureza.nombrePureza}" itemValue="#{pureza}"
 												var="pureza">
@@ -841,8 +855,8 @@
 								<center>
 									<f:facet name="title">
 										<center>
-											<p:graphicImage value="/images/confirm.png"
-												width="25" height="25" />
+											<p:graphicImage value="/images/confirm.png" width="25"
+												height="25" />
 										</center>
 
 										<h:outputText value="Confirmar" />
@@ -1215,16 +1229,20 @@
 			function stop(){
 			PF('statusDialog').hide();
 			}
+			window.onbeforeunload = function(event) {
+				actualizar();
+			    event.returnValue = "";
+			};
 
 		</script>
 
 		<!-- **************************  Scroll en dialogo   *************************** -->
 		<style type="text/css">
-.ui-dialog-content {
-	max-width: 1500px !important;
-	max-height: 500px !important;
-	margin-bottom: 5px !important;
-}
+		.ui-dialog-content {
+			max-width: 1500px !important;
+			max-height: 500px !important;
+			margin-bottom: 5px !important;
+		}
 </style>
 
 	</ui:define>

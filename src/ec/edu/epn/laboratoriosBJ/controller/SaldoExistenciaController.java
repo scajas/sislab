@@ -84,7 +84,6 @@ public class SaldoExistenciaController implements Serializable {
 
 				SaldoExistencia saldo = new SaldoExistencia();
 				SaldoExistenciaPK saldopk = new SaldoExistenciaPK();
-
 				saldopk.setAnio(getanio());
 				saldopk.setIdExistencia(existencia.getIdExistencia());
 				saldopk.setMes(mes1);
@@ -106,7 +105,6 @@ public class SaldoExistenciaController implements Serializable {
 
 					} else {
 						mensajeVal = "saldoCerrado";
-
 						break;
 
 					}
@@ -126,16 +124,6 @@ public class SaldoExistenciaController implements Serializable {
 			utilidades.mensajeError("Debe seleccionar un mes");
 
 		}
-
-	}
-
-	public void mesnsajesGuardar() {
-
-		utilidades.mensajeInfo("Ya ha cerrado el saldo para el mes" + mes1);
-
-	}
-
-	public void validarMes() {
 
 	}
 
@@ -241,12 +229,7 @@ public class SaldoExistenciaController implements Serializable {
 	public void setMes(String mes) {
 		this.mes = mes;
 	}
-	/*
-	 * public List<String> getMeses() { return meses; }
-	 * 
-	 * public void setMeses(List<String> meses) { this.meses = meses; }
-	 */
-
+	
 	public Integer getMes1() {
 		return mes1;
 	}

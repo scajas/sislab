@@ -193,9 +193,13 @@ public class ServicioController implements Serializable {
 
 			} else if (nuevoServicio.getPrecioS() == 0) {
 
-				utilidades.mensajeError("El Precio tiene que ser mayor a cero");
+				utilidades.mensajeError("El Precio tiene que ser mayor a cero.");
 
-			} else {
+			} else if (nuevoServicio.getEstadoServicio() == ""){
+				
+				utilidades.mensajeError("Debe seleccionar el Estado del Servicio.");
+			} 
+			else {
 				createIdExistencia();
 			}
 

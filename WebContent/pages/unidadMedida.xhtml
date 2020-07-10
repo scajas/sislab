@@ -32,7 +32,19 @@
 	</script>
 		</h:head>
 
-		<h:body>
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
+
+		</p:dialog>
+
+		<h:body >
 
 			<p:growl id="messagesForm" sticky="false" showDetail="true"
 				autoupdate="true" life="3000" />
@@ -101,7 +113,7 @@
 
 							<!-- **************************  Boton Modificar   *************************** -->
 
-							<p:column headerText="Acciones">
+							<p:column headerText="Acciones" width="10%">
 								<center>
 									<p:commandLink
 										action="#{unidadMedidaController.pasarNombre(unidad.medidaUm)}"
@@ -189,7 +201,7 @@
 									style="color:white!important" size="30" />
 								<p:inputText id="sigla"
 									value="#{unidadMedidaController.nuevoUnidadMedida.siglaUm}"
-									size="30" maxlength="20">
+									size="30" maxlength="10">
 								</p:inputText>
 
 							</p:panelGrid>
@@ -274,7 +286,7 @@
 										style="color:white!important" />
 									<p:inputText id="sigla"
 										value="#{unidadMedidaController.unidadMedida.siglaUm}"
-										size="30" maxlength="20">
+										size="30" maxlength="10">
 									</p:inputText>
 
 								</p:panelGrid>

@@ -33,8 +33,19 @@
 	</script>
 		</h:head>
 
+		<p:ajaxStatus onstart="PF('statusDialog').show()"
+			onsuccess="PF('statusDialog').hide()" />
+		<p:dialog id="progressImage" widgetVar="statusDialog" modal="true"
+			draggable="false" closable="false" resizable="false"
+			header="Cargando, por favor espere.">
+			<center>
+				<h:graphicImage value="/images/archivos/cargando.gif"
+					style="border:0px solid #CAD6E0;" width="50" height="50" />
+			</center>
 
-		<h:body onload="rc();">
+		</p:dialog>
+
+		<h:body onload="rc();actualizar()">
 
 			<p:growl id="messagesForm" showDetail="true" sticky="false"
 				autoupdate="true" life="3000" />
@@ -43,6 +54,7 @@
 				<p:remoteCommand name="rc"
 					action="#{proformaController.limpiarTodosCampos()}"
 					update="@this,@([id$=messagesForm],[id$=formprincipal]),formAgregarPro" />
+				<p:remoteCommand name="actualizar" update="@this,@([id$=messagesForm],[id$=formprincipal])" />
 
 				<p:panel>
 
@@ -50,7 +62,8 @@
 
 					<!-- Boton De Nuevo -->
 					<center>
-						<p:commandLink process="@this" icon="ui-icon-check" actionListener="#{proformaController.limpiarTodosCampos}"
+						<p:commandLink process="@this" icon="ui-icon-check"
+							actionListener="#{proformaController.limpiarTodosCampos}"
 							onclick="PF('nuevoPro').show()" update="@this,formAgregarPro">
 
 							<h:graphicImage value="/images/archivos/agregar.png"
@@ -553,11 +566,13 @@
 											</p:column>
 
 											<p:column headerText="V. U.">
-												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
+												<h:outputText
+													value="#{proformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
 											</p:column>
 
 											<p:column headerText="T. S.">
-												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
+												<h:outputText
+													value="#{proformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
 											</p:column>
 
 											<p:column headerText="Acciones">
@@ -1260,11 +1275,13 @@
 											</p:column>
 
 											<p:column headerText="V. U.">
-												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
+												<h:outputText
+													value="#{proformaController.cambiarFormatoDouble(detallePro.servicio.precioS)}" />
 											</p:column>
 
 											<p:column headerText="T. S.">
-												<h:outputText value="#{proformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
+												<h:outputText
+													value="#{proformaController.cambiarFormatoDouble(detallePro.totalservicioPo)}" />
 											</p:column>
 
 											<p:column headerText="Acciones">
@@ -1322,7 +1339,8 @@
 												<p:row>
 													<p:column colspan="6" style="text-align:right"
 														footerText="IVA (#{proformaController.cambiarFormatoDouble(proformaController.proforma.cliente.tipocliente.ivaTcl)} %): " />
-													<p:column footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.ivaPo)}" />
+													<p:column
+														footerText="#{proformaController.cambiarFormatoDouble(proformaController.proforma.ivaPo)}" />
 												</p:row>
 
 												<p:row>
