@@ -1,8 +1,0 @@
-/bin/*
-/target/*
-/build/*
-/.settings/*
-.classpath
-.project
-.tern-project
-/target/
